@@ -1,0 +1,22 @@
+{
+  "name": "space.js",
+  "version": "0.1.0",
+  "description": "Future web UI",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./three": "./src/three.js",
+    "./src/*": "./src/*"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pschroen/space.js"
+  },
+  "bugs": {
+    "url": "https://github.com/pschroen/space.js/issues"
+  },
+  "homepage": "https://space.js.org",
+  "author": "pschroen",
+  "license": "MIT"
+}
