@@ -1,6 +1,7 @@
 # Space.js
 
 [![NPM Package][npm]][npm-url]
+[![DeepScan][deepscan]][deepscan-url]
 
 This library is part of two sibling libraries, [Space.js](https://github.com/pschroen/space.js) for UI, Panel components, Tween, Web Audio, loaders, utilities, and [Alien.js](https://github.com/pschroen/alien.js) for 3D utilities, materials, shaders and physics.
 
@@ -122,3 +123,5 @@ npx eslint examples/*.html
 
 [npm]: https://img.shields.io/npm/v/space.js
 [npm-url]: https://www.npmjs.com/package/space.js
+[deepscan]: https://deepscan.io/api/teams/20020/projects/23965/branches/733215/badge/grade.svg
+[deepscan-url]: https://deepscan.io/dashboard#view=project&tid=20020&pid=23965&bid=733215
