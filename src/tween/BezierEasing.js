@@ -13,8 +13,6 @@ const SUBDIVISION_MAX_ITERATIONS = 10;
 const kSplineTableSize = 11;
 const kSampleStepSize = 1 / (kSplineTableSize - 1);
 
-const float32ArraySupported = typeof Float32Array === 'function';
-
 function A(aA1, aA2) {
     return 1 - 3 * aA2 + 3 * aA1;
 }
@@ -85,7 +83,7 @@ export default function bezier(mX1, mY1, mX2, mY2) {
     }
 
     // Precompute samples table
-    const sampleValues = float32ArraySupported ? new Float32Array(kSplineTableSize) : new Array(kSplineTableSize);
+    const sampleValues = new Float32Array(kSplineTableSize);
     for (let i = 0; i < kSplineTableSize; i++) {
         sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
     }
