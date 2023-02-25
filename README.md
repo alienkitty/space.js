@@ -3,10 +3,10 @@
 [![NPM Package][npm]][npm-url]
 [![DeepScan][deepscan]][deepscan-url]
 
-This library is part of two sibling libraries, [Space.js](https://github.com/pschroen/space.js) for UI, Panel components, Tween, Web Audio, loaders, utilities, and [Alien.js](https://github.com/pschroen/alien.js) for 3D utilities, materials, shaders and physics.
+This library is part of two sibling libraries, [Space.js](https://github.com/alienkitty/space.js) for UI, Panel components, Tween, Web Audio, loaders, utilities, and [Alien.js](https://github.com/alienkitty/alien.js) for 3D utilities, materials, shaders and physics.
 
 <p>
-    <img src="https://github.com/pschroen/space.js/raw/main/space.js.png" alt="Space.js">
+    <img src="https://github.com/alienkitty/space.js/raw/main/space.js.png" alt="Space.js">
 </p>
 
 ### Usage
@@ -16,23 +16,23 @@ Space.js is divided into two entry points depending on your use case.
 The main entry point without any dependencies is for the UI components, loaders and utilities.
 
 ```sh
-npm i space.js
+npm i @alienkitty/space.js
 ```
 
 ```js
-import { ... } from 'space.js';
+import { ... } from '@alienkitty/space.js';
 ```
 
 For example the UI and Panel components:
 
 ```js
-import { Panel, PanelItem, UI } from 'space.js';
+import { Panel, PanelItem, UI } from '@alienkitty/space.js';
 ```
 
-[Tween](https://github.com/pschroen/alien.js/wiki/Tween) animation engine:
+[Tween](https://github.com/alienkitty/alien.js/wiki/Tween) animation engine:
 
 ```js
-import { ticker, tween } from 'space.js';
+import { ticker, tween } from '@alienkitty/space.js';
 
 ticker.start();
 
@@ -48,7 +48,7 @@ tween(data, { radius: 24, spring: 1.2, damping: 0.4 }, 1000, 'easeOutElastic', n
 Web Audio engine:
 
 ```js
-import { BufferLoader, WebAudio } from 'space.js';
+import { BufferLoader, WebAudio } from '@alienkitty/space.js';
 
 const bufferLoader = new BufferLoader(['assets/sounds/gong.mp3']);
 await bufferLoader.ready();
@@ -62,14 +62,14 @@ window.addEventListener('pointerdown', () => {
 });
 ```
 
-And the `space.js/three` entry point for [three](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
+And the `@alienkitty/space.js/three` entry point for [three](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
 
 ```sh
-npm i three space.js
+npm i three @alienkitty/space.js
 ```
 
 ```js
-import { EnvironmentTextureLoader, MaterialPanelController, Point3D, Sound3D } from 'space.js/three';
+import { EnvironmentTextureLoader, MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/three';
 ```
 
 ### Examples
@@ -106,7 +106,7 @@ import { EnvironmentTextureLoader, MaterialPanelController, Point3D, Sound3D } f
 Clone this repository and run the examples:
 
 ```sh
-git clone https://github.com/pschroen/space.js
+git clone https://github.com/alienkitty/space.js
 cd space.js
 npx servez
 ```
@@ -122,17 +122,17 @@ npx eslint examples/*.html
 
 ### Resources
 
-* [Tween](https://github.com/pschroen/alien.js/wiki/Tween)
-* [Changelog](https://github.com/pschroen/space.js/releases)
+* [Tween](https://github.com/alienkitty/alien.js/wiki/Tween)
+* [Changelog](https://github.com/alienkitty/space.js/releases)
 
 ### See also
 
-* [Alien.js](https://github.com/pschroen/alien.js)
+* [Alien.js](https://github.com/alienkitty/alien.js)
 * [Three.js](https://github.com/mrdoob/three.js)
 * [OGL](https://github.com/oframe/ogl)
 
 
-[npm]: https://img.shields.io/npm/v/space.js
-[npm-url]: https://www.npmjs.com/package/space.js
+[npm]: https://img.shields.io/npm/v/@alienkitty/space.js
+[npm-url]: https://www.npmjs.com/package/@alienkitty/space.js
 [deepscan]: https://deepscan.io/api/teams/20020/projects/23965/branches/733215/badge/grade.svg
 [deepscan-url]: https://deepscan.io/dashboard#view=project&tid=20020&pid=23965&bid=733215

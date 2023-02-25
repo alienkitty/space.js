@@ -1,5 +1,5 @@
 {
-  "name": "space.js",
+  "name": "@alienkitty/space.js",
   "version": "0.1.0",
   "description": "Future web UI",
   "type": "module",
@@ -11,10 +11,10 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/pschroen/space.js"
+    "url": "https://github.com/alienkitty/space.js"
   },
   "bugs": {
-    "url": "https://github.com/pschroen/space.js/issues"
+    "url": "https://github.com/alienkitty/space.js/issues"
   },
   "homepage": "https://space.js.org",
   "author": "pschroen",
