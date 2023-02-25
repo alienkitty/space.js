@@ -40,7 +40,9 @@ const data = {
     radius: 0
 };
 
-tween(data, { radius: 24, spring: 1.2, damping: 0.4 }, 1000, 'easeOutElastic');
+tween(data, { radius: 24, spring: 1.2, damping: 0.4 }, 1000, 'easeOutElastic', null, () => {
+    console.log(data.radius);
+});
 ```
 
 Web Audio engine:
@@ -49,11 +51,15 @@ Web Audio engine:
 import { BufferLoader, WebAudio } from 'space.js';
 
 const bufferLoader = new BufferLoader(['assets/sounds/gong.mp3']);
+await bufferLoader.ready();
 WebAudio.init(bufferLoader.files, { sampleRate: 48000 });
 
 const gong = WebAudio.get('gong');
 gong.gain.set(0.5);
-gong.play();
+
+window.addEventListener('pointerdown', () => {
+    gong.play();
+});
 ```
 
 And the `space.js/three` entry point for [three](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
@@ -89,6 +95,11 @@ import { EnvironmentTextureLoader, MaterialPanelController, Point3D, Sound3D } f
 #### thread
 
 [canvas](https://space.js.org/examples/thread_canvas.html) (noise)  
+
+#### test
+
+[tween](https://space.js.org/examples/test_tween.html)  
+[sound](https://space.js.org/examples/test_sound.html)  
 
 ### Getting started
 
