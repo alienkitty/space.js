@@ -62,14 +62,14 @@ window.addEventListener('pointerdown', () => {
 });
 ```
 
-And the `@alienkitty/space.js/three` entry point for [three](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
+And the `@alienkitty/space.js/three` entry point for [three.js](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
 
 ```sh
 npm i three @alienkitty/space.js
 ```
 
 ```js
-import { EnvironmentTextureLoader, MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/three';
+import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/three';
 ```
 
 ### Examples
