@@ -151,6 +151,8 @@
 
                     this.thread.init({ params: this.params, buffer: [this.params.canvas] });
                 } else {
+                    ticker.start();
+
                     this.noise = new CanvasNoise(this.params);
                 }
             }
