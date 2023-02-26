@@ -137,7 +137,7 @@
             }
 
             static initThread() {
-                if ('transferControlToOffscreen' in this.params.canvas) {
+                if ('transferControlToOffscreen' in this.params.canvas && !/firefox/i.test(navigator.userAgent)) {
                     this.thread = new Thread({
                         imports: [
                             ['../src/index.js', 'ticker']
