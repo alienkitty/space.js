@@ -134,5 +134,5 @@ npx eslint examples/*.html
 
 [npm]: https://img.shields.io/npm/v/@alienkitty/space.js
 [npm-url]: https://www.npmjs.com/package/@alienkitty/space.js
-[deepscan]: https://deepscan.io/api/teams/20020/projects/23965/branches/733215/badge/grade.svg
-[deepscan-url]: https://deepscan.io/dashboard#view=project&tid=20020&pid=23965&bid=733215
+[deepscan]: https://deepscan.io/api/teams/20020/projects/23997/branches/734568/badge/grade.svg
+[deepscan-url]: https://deepscan.io/dashboard#view=project&tid=20020&pid=23997&bid=734568
