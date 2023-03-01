@@ -130,7 +130,9 @@
                     top: '50%',
                     marginLeft: -this.view.width / 2,
                     marginTop: -this.view.height / 2,
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
                 });
                 document.body.appendChild(this.view.element);
 
