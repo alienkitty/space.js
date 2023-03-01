@@ -20,7 +20,7 @@
         const gong = WebAudio.get('gong');
         gong.gain.set(0.5);
 
-        window.addEventListener('pointerdown', () => {
+        document.addEventListener('pointerdown', () => {
             gong.play();
         });
     </script>
