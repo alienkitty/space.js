@@ -81,6 +81,7 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 [progress](https://space.js.org/examples/progress.html) (svg)  
 [progress indeterminate](https://space.js.org/examples/progress_indeterminate.html) (svg)  
 [close](https://space.js.org/examples/close.html) (svg)  
+[tween](https://space.js.org/examples/tween.html) (svg)  
 [magnetic](https://space.js.org/examples/magnetic.html) (component, svg)  
 [styles](https://space.js.org/examples/styles.html)  
 [fps](https://space.js.org/examples/fps.html)  
@@ -90,6 +91,7 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 
 #### audio
 
+[gong](https://space.js.org/examples/audio_gong.html)  
 [rhythm](https://space.js.org/examples/audio_rhythm.html)  
 
 #### thread
