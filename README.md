@@ -57,7 +57,7 @@ WebAudio.init(bufferLoader.files, { sampleRate: 48000 });
 const gong = WebAudio.get('gong');
 gong.gain.set(0.5);
 
-window.addEventListener('pointerdown', () => {
+document.addEventListener('pointerdown', () => {
     gong.play();
 });
 ```

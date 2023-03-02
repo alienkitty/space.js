@@ -20,7 +20,7 @@
         const gong = WebAudio.get('gong');
         gong.gain.set(0.5);
 
-        window.addEventListener('pointerdown', ({ clientX, clientY }) => {
+        document.addEventListener('pointerdown', ({ clientX, clientY }) => {
             const normalX = clientX / document.documentElement.clientWidth;
             const normalY = clientY / document.documentElement.clientHeight;
             const pan = clamp(((normalX * 2) - 1) * 0.8, -1, 1);
