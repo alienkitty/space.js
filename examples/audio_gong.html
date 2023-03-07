@@ -11,14 +11,13 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { BufferLoader, WebAudio, clamp } from '../src/index.js';
+        import { BufferLoader, WebAudio, clamp, delayedCall, guid, ticker } from '../src/index.js';
+
+        ticker.start();
 
         const bufferLoader = new BufferLoader(['assets/sounds/gong.mp3']);
         await bufferLoader.ready();
         WebAudio.init(bufferLoader.files, { sampleRate: 48000 });
-
-        const gong = WebAudio.get('gong');
-        gong.gain.set(0.5);
 
         document.addEventListener('pointerdown', ({ clientX, clientY }) => {
             const normalX = clientX / document.documentElement.clientWidth;
@@ -26,9 +25,15 @@
             const pan = clamp(((normalX * 2) - 1) * 0.8, -1, 1);
             const rate = clamp(0.8 + (1 - normalY) * 0.4, 0.8, 1.2);
 
+            const gong = WebAudio.clone('gong', guid());
+            gong.gain.set(0.5);
             gong.stereoPan.set(pan);
             gong.playbackRate.set(rate);
             gong.play();
+
+            delayedCall(6000, () => {
+                gong.destroy();
+            });
         });
     </script>
 </head>
