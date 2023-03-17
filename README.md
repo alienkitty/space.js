@@ -122,6 +122,40 @@ npx eslint examples/about/src
 npx eslint examples/*.html
 ```
 
+### Roadmap
+
+#### v1.0
+
+* [x] Initial release based on the UI components from [Multiuser Blocks](https://multiuser-blocks.glitch.me/)
+
+#### v1.1
+
+* [ ] Three.js material UI
+
+#### v1.2
+
+* [ ] Material texture drag and drop
+* [ ] Material texture thumbnails
+
+#### v1.3
+
+* [ ] GLTF drag and drop
+* [ ] Load/save scene
+
+#### v1.4
+
+* [ ] Move objects
+* [ ] Change camera perspective
+
+#### v1.5
+
+* [ ] OGL version
+* [ ] Documentation
+
+#### v1.6
+
+* [ ] WebXR version
+
 ### Resources
 
 * [Tween](https://github.com/alienkitty/alien.js/wiki/Tween)
