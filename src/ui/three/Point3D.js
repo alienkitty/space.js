@@ -249,14 +249,14 @@ export class Point3D extends Group {
         return null;
     };
 
-    constructor(object, {
-        name = object.geometry.type,
-        type = object.material.type,
+    constructor(mesh, {
+        name = mesh.material.name || mesh.geometry.type,
+        type = mesh.material.type,
         noTracker
     } = {}) {
         super();
 
-        this.object = object;
+        this.object = mesh;
         this.name = name;
         this.type = type;
         this.noTracker = noTracker;
@@ -270,6 +270,8 @@ export class Point3D extends Group {
 
         this.initMesh();
         this.initViews();
+
+        Point3D.add(this);
     }
 
     initMesh() {
@@ -300,15 +302,19 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
+        this.target = new Interface('.target');
+        this.target.css({ position: 'static' });
+        Point3D.container.add(this.target);
+
         this.line = new Line(context);
-        Point3D.container.add(this.line);
+        this.target.add(this.line);
 
         this.reticle = new Reticle();
-        Point3D.container.add(this.reticle);
+        this.target.add(this.reticle);
 
         if (!this.noTracker) {
             this.tracker = new Tracker();
-            Point3D.container.add(this.tracker);
+            this.target.add(this.tracker);
         }
 
         this.point = new Point(this, this.tracker);
@@ -316,7 +322,7 @@ export class Point3D extends Group {
             name: this.name,
             type: this.type
         });
-        Point3D.container.add(this.point);
+        this.target.add(this.point);
 
         this.panel = this.point.text.panel;
     }
@@ -487,14 +493,7 @@ export class Point3D extends Group {
 
     destroy = () => {
         this.animateOut(false, () => {
-            this.point = this.point.destroy();
-
-            if (this.tracker) {
-                this.tracker = this.tracker.destroy();
-            }
-
-            this.reticle = this.reticle.destroy();
-            this.line = this.line.destroy();
+            this.target = this.target.destroy();
         });
     };
 }
