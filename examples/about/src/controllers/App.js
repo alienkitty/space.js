@@ -1,19 +1,16 @@
-import { Stage, WebAudio, ticker, wait } from '@alienkitty/space.js/three';
+import { Stage, ticker, wait } from '@alienkitty/space.js/three';
 
-import { Global } from '../config/Global.js';
-import { AudioController } from './audio/AudioController.js';
 import { WorldController } from './world/WorldController.js';
-import { FluidController } from './world/FluidController.js';
+import { CameraController } from './world/CameraController.js';
+import { SceneController } from './world/SceneController.js';
+import { InputManager } from './world/InputManager.js';
+import { RenderManager } from './world/RenderManager.js';
+import { PanelController } from './panel/PanelController.js';
+import { SceneView } from '../views/SceneView.js';
 import { UI } from '../views/UI.js';
-import { Trackers } from '../views/Trackers.js';
 
 export class App {
-    static async init(bufferLoader) {
-        this.bufferLoader = bufferLoader;
-
-        const sound = localStorage.getItem('sound');
-        Global.SOUND = sound ? JSON.parse(sound) : true;
-
+    static async init() {
         this.initWorld();
         this.initViews();
         this.initControllers();
@@ -23,10 +20,12 @@ export class App {
 
         await Promise.all([
             document.fonts.ready,
-            this.bufferLoader.ready()
+            SceneController.ready(),
+            WorldController.textureLoader.ready(),
+            WorldController.environmentLoader.ready()
         ]);
 
-        this.initAudio();
+        this.initPanel();
     }
 
     static initWorld() {
@@ -35,22 +34,26 @@ export class App {
     }
 
     static initViews() {
+        this.view = new SceneView();
+        WorldController.scene.add(this.view);
+
         this.ui = new UI();
         Stage.add(this.ui);
-
-        this.trackers = new Trackers();
-        Stage.add(this.trackers);
     }
 
     static initControllers() {
-        const { renderer, scene, camera, screen } = WorldController;
+        const { renderer, scene, camera } = WorldController;
 
-        FluidController.init(renderer, scene, camera, screen, this.trackers);
+        CameraController.init(camera);
+        SceneController.init(this.view);
+        InputManager.init(camera);
+        RenderManager.init(renderer, scene, camera);
     }
 
-    static initAudio() {
-        WebAudio.init(this.bufferLoader.files, { sampleRate: 48000 });
-        AudioController.init(this.ui.instructions);
+    static initPanel() {
+        const { renderer, scene, camera } = WorldController;
+
+        PanelController.init(renderer, scene, camera, this.view, this.ui);
     }
 
     static addListeners() {
@@ -65,18 +68,21 @@ export class App {
     static onResize = () => {
         const width = document.documentElement.clientWidth;
         const height = document.documentElement.clientHeight;
-        const dpr = 1;
+        const dpr = window.devicePixelRatio;
 
         WorldController.resize(width, height, dpr);
-        AudioController.resize();
-        FluidController.resize(width, height, dpr);
+        CameraController.resize(width, height);
+        SceneController.resize();
+        RenderManager.resize(width, height, dpr);
     };
 
     static onUpdate = (time, delta, frame) => {
         WorldController.update(time, delta, frame);
-        FluidController.update();
-
-        this.ui.update();
+        CameraController.update();
+        SceneController.update();
+        InputManager.update(time);
+        RenderManager.update(time, delta, frame);
+        PanelController.update(time);
     };
 
     /**
@@ -84,9 +90,8 @@ export class App {
      */
 
     static start = async () => {
-        AudioController.start();
-        AudioController.trigger('fluid_start');
-        FluidController.animateIn();
+        WorldController.animateIn();
+        SceneController.animateIn();
 
         await wait(1000);
 

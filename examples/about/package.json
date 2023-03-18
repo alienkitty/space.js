@@ -7,6 +7,7 @@
     "start": "servez public"
   },
   "dependencies": {
+    "@alienkitty/alien.js": "alienkitty/alien.js#dev",
     "@alienkitty/space.js": "alienkitty/space.js#dev",
     "three": "latest"
   },

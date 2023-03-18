@@ -1,8 +1,7 @@
-import { Interface } from '@alienkitty/space.js/three';
+import { HeaderInfo, Interface } from '@alienkitty/space.js/three';
 
 import { Config } from '../../config/Config.js';
 import { NavLink } from './NavLink.js';
-import { HeaderInfo } from './HeaderInfo.js';
 
 export class Header extends Interface {
     constructor() {

@@ -28,8 +28,20 @@
 
 :root {
     --bg-color: #000;
+    --ui-font-family: 'Roboto Mono', monospace;
+    --ui-font-weight: 400;
+    --ui-font-size: 11px;
+    --ui-line-height: 15px;
+    --ui-letter-spacing: 0.03em;
+    --ui-number-letter-spacing: 0.5px;
+    --ui-secondary-font-size: 10px;
+    --ui-secondary-letter-spacing: 0.5px;
     --ui-color: rgba(255, 255, 255, 0.94);
     --ui-color-triplet: 255, 255, 255;
+    --ui-invert-light-color: #000;
+    --ui-invert-light-color-triplet: 0, 0, 0;
+    --ui-invert-dark-color: rgba(255, 255, 255, 0.94);
+    --ui-invert-dark-color-triplet: 255, 255, 255;
 }
 
 *, :after, :before {
@@ -81,4 +93,9 @@ a:hover, a:focus {
 ::selection {
     background-color: var(--ui-color);
     color: var(--bg-color);
+}
+
+.ui .info, .ui .target {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
 }
