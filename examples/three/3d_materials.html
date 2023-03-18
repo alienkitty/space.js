@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Materials — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { BoxGeometry, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+
+        // init
+
+        const camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
+        camera.position.z = 1;
+
+        const scene = new Scene();
+
+        const geometry = new BoxGeometry(0.2, 0.2, 0.2);
+        const material = new MeshNormalMaterial();
+
+        const mesh = new Mesh(geometry, material);
+        scene.add(mesh);
+
+        const renderer = new WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', onWindowResize);
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // panel
+
+        import { MaterialPanelController, Point3D, UI } from '../../src/three.js';
+
+        const ui = new UI({ fps: true });
+        ui.animateIn();
+        document.body.appendChild(ui.element);
+
+        Point3D.init(scene, camera);
+
+        const point = new Point3D(mesh);
+        scene.add(point);
+
+        MaterialPanelController.init(point, material);
+
+        // animation
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            mesh.rotation.x = time / 2000;
+            mesh.rotation.y = time / 1000;
+
+            renderer.render(scene, camera);
+
+            Point3D.update(time / 1000); // seconds
+            ui.update();
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</head>
+<body>
+</body>
+</html>

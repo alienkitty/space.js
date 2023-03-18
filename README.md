@@ -89,6 +89,10 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 [panel](https://space.js.org/examples/panel.html) (standalone)  
 [ufo](https://ufo.ai/) (2d scene, smooth scroll with skew effect)  
 
+#### 3d
+
+[materials](https://space.js.org/examples/three/3d_materials.html)  
+
 #### audio
 
 [gong](https://space.js.org/examples/audio_gong.html)  
@@ -119,6 +123,7 @@ npx servez
 npm i -D eslint eslint-plugin-html
 npx eslint src
 npx eslint examples/about/src
+npx eslint examples/three/*.html
 npx eslint examples/*.html
 ```
 
