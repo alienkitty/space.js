@@ -14,7 +14,7 @@ export class AssetLoader extends Loader {
 
         if (cached) {
             promise = Promise.resolve(cached);
-        } else if (/\.(jpe?g|png|gif|svg)/.test(path)) {
+        } else if (/\.(jpe?g|png|webp|gif|svg)/.test(path)) {
             promise = this.loadImage(path);
         } else if (/\.json/.test(path)) {
             promise = this.loadData(path);
