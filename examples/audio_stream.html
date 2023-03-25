@@ -13,9 +13,11 @@
     <script type="module">
         import { WebAudio } from '../src/index.js';
 
+        WebAudio.init({ sampleRate: 48000 });
+        WebAudio.setCrossOrigin('anonymous');
+
         // Shoutcast streams append a semicolon (;) to the URL
-        WebAudio.crossOrigin = 'anonymous';
-        WebAudio.init({ protonradio: 'https://shoutcast.protonradio.com/;' }, { sampleRate: 48000 });
+        WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
 
         const protonradio = WebAudio.get('protonradio');
         protonradio.gain.set(1);

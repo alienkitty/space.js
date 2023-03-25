@@ -50,9 +50,10 @@ Web Audio engine:
 ```js
 import { BufferLoader, WebAudio } from '@alienkitty/space.js';
 
-const bufferLoader = new BufferLoader(['assets/sounds/gong.mp3']);
-await bufferLoader.ready();
-WebAudio.init(bufferLoader.files, { sampleRate: 48000 });
+const bufferLoader = new BufferLoader();
+await bufferLoader.loadAllAsync(['assets/sounds/gong.mp3']);
+WebAudio.init({ sampleRate: 48000 });
+WebAudio.load(bufferLoader.files);
 
 const gong = WebAudio.get('gong');
 gong.gain.set(0.5);

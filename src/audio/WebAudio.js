@@ -12,7 +12,7 @@ export class WebAudio {
     static path = '';
     static crossOrigin;
 
-    static init(assets = {}, options) {
+    static init(options) {
         this.context = new AudioContext(options);
         this.sounds = {};
 
@@ -22,14 +22,16 @@ export class WebAudio {
         this.gain = new WebAudioParam(this, 'output', 'gain', 1);
 
         this.input = this.output;
-
-        for (const path in assets) {
-            this.add(this, basename(path), assets[path]);
-        }
     }
 
     static get enabled() {
         return this.context.state === 'running';
+    }
+
+    static load(files = {}) {
+        for (const path in files) {
+            this.add(this, basename(path), files[path]);
+        }
     }
 
     static add(parent, id, buffer, bypass) {

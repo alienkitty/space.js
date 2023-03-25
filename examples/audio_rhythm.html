@@ -585,7 +585,8 @@
             }
 
             static initLoader() {
-                this.bufferLoader = new BufferLoader([
+                this.bufferLoader = new BufferLoader();
+                this.bufferLoader.loadAll([
                     'assets/sounds/metal_monk_loop.mp3',
                     'assets/sounds/ethereal_bells.mp3',
                     'assets/sounds/accent_transition_1.mp3',
@@ -604,7 +605,8 @@
             }
 
             static initAudio() {
-                WebAudio.init(this.bufferLoader.files, { sampleRate: 48000 });
+                WebAudio.init({ sampleRate: 48000 });
+                WebAudio.load(this.bufferLoader.files);
                 AudioController.init(this.ui.instructions);
             }
 

@@ -9,8 +9,8 @@ import { ImageBitmapLoaderThread } from '../ImageBitmapLoaderThread.js';
 import { Loader } from '../Loader.js';
 
 export class TextureLoader extends Loader {
-    constructor(assets, callback) {
-        super(assets, callback);
+    constructor() {
+        super();
 
         this.defaultOptions = {
             imageOrientation: 'flipY',
