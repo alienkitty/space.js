@@ -63,6 +63,25 @@ document.addEventListener('pointerdown', () => {
 });
 ```
 
+Audio stream support:
+
+```js
+import { WebAudio } from '@alienkitty/space.js';
+
+WebAudio.init({ sampleRate: 48000 });
+WebAudio.setCrossOrigin('anonymous');
+
+// Shoutcast streams append a semicolon (;) to the URL
+WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
+
+const protonradio = WebAudio.get('protonradio');
+protonradio.gain.set(1);
+
+document.addEventListener('pointerdown', () => {
+    protonradio.play();
+});
+```
+
 And the `@alienkitty/space.js/three` entry point for [three.js](https://github.com/mrdoob/three.js) UI components, loaders and utilities.
 
 ```sh
@@ -103,11 +122,6 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 #### thread
 
 [canvas](https://space.js.org/examples/thread_canvas.html) (noise)  
-
-#### test
-
-[tween](https://space.js.org/examples/test_tween.html)  
-[sound](https://space.js.org/examples/test_sound.html)  
 
 ### Getting started
 

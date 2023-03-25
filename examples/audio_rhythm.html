@@ -147,7 +147,7 @@
 
             static addListeners() {
                 document.addEventListener('visibilitychange', this.onVisibility);
-                window.addEventListener('pointerdown', this.onPointerDown);
+                document.addEventListener('pointerdown', this.onPointerDown);
 
                 this.instructions.toggle(true);
             }
@@ -576,12 +576,12 @@
                 this.initLoader();
                 this.initViews();
 
+                this.addListeners();
+
                 await this.bufferLoader.ready();
 
                 this.initAudio();
                 this.initPanel();
-
-                this.addListeners();
             }
 
             static initLoader() {
@@ -607,6 +607,7 @@
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
                 WebAudio.load(this.bufferLoader.files);
+
                 AudioController.init(this.ui.instructions);
             }
 
