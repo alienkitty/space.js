@@ -109,7 +109,7 @@ export class PanelItem extends Interface {
      */
 
     animateIn = (delay, fast) => {
-        if (this.data && this.data.type === 'group') {
+        if (this.data && this.data.type === 'divider') {
             this.line.clearTween().css({ scaleX: 0, opacity: 1 }).tween({ scaleX: 1 }, 400, 'easeInOutCubic', delay);
         }
 
@@ -117,7 +117,7 @@ export class PanelItem extends Interface {
     };
 
     animateOut = (index, total, delay, callback) => {
-        if (this.data && this.data.type === 'group') {
+        if (this.data && this.data.type === 'divider') {
             this.line.clearTween().tween({ scaleX: 0, opacity: 0 }, 500, 'easeInCubic', delay);
         }
 
