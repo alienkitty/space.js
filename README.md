@@ -96,6 +96,7 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 #### audio
 
 [gong](https://space.js.org/examples/audio_gong.html)  
+[stream](https://space.js.org/examples/audio_stream.html)  
 [rhythm](https://space.js.org/examples/audio_rhythm.html)  
 
 #### thread
