@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { Interface, WebAudio, ticker } from '../src/index.js';
+        import { Interface, Panel, PanelItem, WebAudio, ticker } from '../src/index.js';
 
         class Instructions extends Interface {
             constructor() {
@@ -137,12 +137,65 @@
             };
         }
 
+        class PanelController {
+            static init(ui) {
+                this.ui = ui;
+
+                this.initPanel();
+            }
+
+            static initPanel() {
+                const { protonradio } = AudioController;
+
+                const panel = new Panel();
+                panel.animateIn();
+                this.ui.add(panel);
+
+                const items = [
+                    {
+                        label: 'Proton Radio'
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        label: 'Volume',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.gain.value,
+                        callback: value => {
+                            protonradio.gain.value = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        label: 'Pan',
+                        min: -1,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.stereoPan.value,
+                        callback: value => {
+                            protonradio.stereoPan.value = value;
+                        }
+                    }
+                ];
+
+                items.forEach(data => {
+                    panel.add(new PanelItem(data));
+                });
+            }
+        }
+
         class App {
             static async init() {
                 this.initViews();
-                this.initAudio();
 
                 this.addListeners();
+
+                this.initAudio();
+                this.initPanel();
             }
 
             static initViews() {
@@ -152,11 +205,15 @@
 
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
-                
+
                 // Shoutcast streams append a semicolon (;) to the URL
                 WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
 
                 AudioController.init(this.ui.instructions);
+            }
+
+            static initPanel() {
+                PanelController.init(this.ui);
             }
 
             static addListeners() {
