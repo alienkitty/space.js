@@ -46,6 +46,11 @@ export class Sound {
     }
 
     play(startTime = this.context.currentTime + 0.01) {
+        if (this.element) {
+            this.element.loop = this.loop;
+            this.element.play();
+        }
+
         if (!this.ready) {
             this.load();
         }
@@ -61,10 +66,7 @@ export class Sound {
                 this.stereo.pan.setValueAtTime(this.stereoPan.value, startTime);
             }
 
-            if (this.element) {
-                this.element.loop = this.loop;
-                this.element.play();
-            } else {
+            if (!this.element) {
                 if (this.isStopping && this.loop) {
                     this.isStopping = false;
                     return;
