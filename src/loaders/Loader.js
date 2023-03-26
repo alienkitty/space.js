@@ -14,7 +14,7 @@ export class Loader {
         this.loaded = 0;
         this.progress = 0;
         this.path = '';
-        this.crossOrigin;
+        this.crossOrigin = 'anonymous';
         this.fetchOptions;
         this.cache = false;
         this.files = {};

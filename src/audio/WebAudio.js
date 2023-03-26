@@ -10,7 +10,7 @@ import { basename } from '../utils/Utils.js';
 
 export class WebAudio {
     static path = '';
-    static crossOrigin;
+    static crossOrigin = 'anonymous';
 
     static init(options) {
         this.context = new AudioContext(options);

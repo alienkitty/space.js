@@ -69,7 +69,6 @@ Audio stream support:
 import { WebAudio } from '@alienkitty/space.js';
 
 WebAudio.init({ sampleRate: 48000 });
-WebAudio.setCrossOrigin('anonymous');
 
 // Shoutcast streams append a semicolon (;) to the URL
 WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
