@@ -33,7 +33,7 @@ export class EventEmitter {
         }
     }
 
-    emit(type, event = {}) {
+    emit(type, ...event) {
         if (!this.callbacks[type]) {
             return;
         }
@@ -41,7 +41,7 @@ export class EventEmitter {
         const stack = this.callbacks[type].slice();
 
         for (let i = 0, l = stack.length; i < l; i++) {
-            stack[i].call(this, event);
+            stack[i].call(this, ...event);
         }
     }
 
