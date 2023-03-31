@@ -17,6 +17,7 @@ export class Link extends Interface {
         this.callback = callback;
 
         this.initHTML();
+        this.setValue(this.value);
 
         this.addListeners();
     }
@@ -73,13 +74,7 @@ export class Link extends Interface {
     };
 
     onClick = () => {
-        const value = this.value;
-
-        this.events.emit('update', value);
-
-        if (this.callback) {
-            this.callback(value);
-        }
+        this.update();
     };
 
     /**
@@ -91,7 +86,15 @@ export class Link extends Interface {
 
         this.element.childNodes[0].nodeValue = this.value;
 
-        return this;
+        this.update();
+    };
+
+    update = () => {
+        this.events.emit('update', this.value, this);
+
+        if (this.callback) {
+            this.callback(this.value, this);
+        }
     };
 
     destroy = () => {

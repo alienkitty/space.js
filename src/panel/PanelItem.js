@@ -66,8 +66,8 @@ export class PanelItem extends Interface {
                 padding: '2px 10px 0'
             });
 
-            this.link = new Link(this.data);
-            this.add(this.link);
+            this.view = new Link(this.data);
+            this.add(this.view);
         } else if (this.data.type === 'list') {
             this.css({
                 boxSizing: 'border-box',
@@ -79,8 +79,8 @@ export class PanelItem extends Interface {
             const index = list.indexOf(this.data.value);
             const callback = this.data.callback;
 
-            this.list = new List({ list, index, callback });
-            this.add(this.list);
+            this.view = new List({ list, index, callback });
+            this.add(this.view);
         } else if (this.data.type === 'slider') {
             this.css({
                 boxSizing: 'border-box',
@@ -88,8 +88,8 @@ export class PanelItem extends Interface {
                 padding: '0 10px'
             });
 
-            this.slider = new Slider(this.data);
-            this.add(this.slider);
+            this.view = new Slider(this.data);
+            this.add(this.view);
         } else if (this.data.type === 'color') {
             this.css({
                 boxSizing: 'border-box',
@@ -99,8 +99,8 @@ export class PanelItem extends Interface {
                 marginBottom: 7
             });
 
-            this.color = new ColorPicker(this.data);
-            this.add(this.color);
+            this.view = new ColorPicker(this.data);
+            this.add(this.view);
         }
     }
 
@@ -109,7 +109,13 @@ export class PanelItem extends Interface {
      */
 
     animateIn = (delay, fast) => {
-        this.clearTween().css({ y: fast ? 0 : -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 400, 'easeOutCubic', delay);
+        this.clearTween();
+
+        if (fast) {
+            this.css({ y: 0, opacity: 1 });
+        } else {
+            this.css({ y: -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 400, 'easeOutCubic', delay);
+        }
     };
 
     animateOut = (index, total, delay, callback) => {
@@ -118,5 +124,18 @@ export class PanelItem extends Interface {
                 callback();
             }
         });
+    };
+
+    enable = (target = this) => {
+        target.clearTween();
+        target.tween({ opacity: 1 }, 500, 'easeInOutSine', () => {
+            target.css({ pointerEvents: 'auto' });
+        });
+    };
+
+    disable = (target = this) => {
+        target.clearTween();
+        target.css({ pointerEvents: 'none' });
+        target.tween({ opacity: 0.35 }, 500, 'easeInOutSine');
     };
 }

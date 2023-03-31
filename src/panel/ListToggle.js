@@ -97,6 +97,8 @@ export class ListToggle extends Interface {
 
     active = () => {
         this.clicked = true;
+        this.text.css({ y: -8, opacity: 0 });
+        this.over.css({ y: 0, opacity: 1 });
     };
 
     inactive = () => {

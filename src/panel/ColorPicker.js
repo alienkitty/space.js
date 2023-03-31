@@ -46,9 +46,9 @@ export class ColorPicker extends Interface {
         this.isOpen = false;
         this.isDown = false;
         this.firstDown = false;
-        this.lastCursor = 'auto';
+        this.lastCursor = '';
         this.lastValue = this.value.getHex();
-        this.fastClose = false;
+        this.fastClose = true;
 
         this.h = 0;
         this.s = 0;
@@ -58,7 +58,7 @@ export class ColorPicker extends Interface {
 
         this.initHTML();
         this.initColorRing();
-        this.setValue(this.value);
+        this.setValue(this.value, true);
 
         this.addListeners();
     }
@@ -331,6 +331,8 @@ export class ColorPicker extends Interface {
     };
 
     onPointerDown = e => {
+        e.stopPropagation();
+
         if (!this.isOpen) {
             return;
         }
@@ -455,7 +457,7 @@ export class ColorPicker extends Interface {
         this.parent.css({ height });
     };
 
-    setValue = value => {
+    setValue = (value, force) => {
         if (value && value.isColor) {
             this.value.copy(value);
         } else {
@@ -464,9 +466,7 @@ export class ColorPicker extends Interface {
 
         this.value.getHSL(this);
 
-        this.update();
-
-        return this;
+        this.update(force);
     };
 
     setHSL = (h, s, l) => {
@@ -477,8 +477,6 @@ export class ColorPicker extends Interface {
         this.l = l;
 
         this.update();
-
-        return this;
     };
 
     cursor = (cursor = '') => {
@@ -489,7 +487,7 @@ export class ColorPicker extends Interface {
         }
     };
 
-    update = () => {
+    update = force => {
         this.moveMarkers();
 
         this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
@@ -500,14 +498,14 @@ export class ColorPicker extends Interface {
 
         const value = this.value.getHex();
 
-        if (value !== this.lastValue) {
+        if (value !== this.lastValue || force) {
             this.lastValue = value;
 
             if (this.isDown) {
-                this.events.emit('update', this.value);
+                this.events.emit('update', this.value, this);
 
                 if (this.callback) {
-                    this.callback(this.value);
+                    this.callback(this.value, this);
                 }
             }
         }

@@ -22,35 +22,42 @@ export class List extends Interface {
 
         this.initHTML();
         this.initViews();
+        this.setIndex(this.index);
     }
 
     initHTML() {
         this.css({
+            width: '100%'
+        });
+
+        this.container = new Interface('.container');
+        this.container.css({
             width: '100%',
             height: 18
         });
+        this.add(this.container);
     }
 
     initViews() {
         if (this.list.length > 2) {
             const item = new ListSelect({ list: this.list, index: this.index });
             item.events.on('click', this.onClick);
-            this.add(item);
+            this.container.add(item);
             this.items.push(item);
         } else {
-            this.list.forEach((label, i) => {
-                const item = new ListToggle({ label, index: i });
+            this.list.forEach((label, index) => {
+                const item = new ListToggle({ label, index });
                 item.events.on('click', this.onClick);
-
-                if (this.index === i) {
-                    item.onHover({ type: 'mouseenter' });
-                    item.active();
-                }
-
-                this.add(item);
+                this.container.add(item);
                 this.items.push(item);
             });
         }
+    }
+
+    removeListeners() {
+        this.items.forEach(item => {
+            item.events.off('click', this.onClick);
+        });
     }
 
     /**
@@ -58,19 +65,58 @@ export class List extends Interface {
      */
 
     onClick = ({ target }) => {
-        const value = this.list[target.index];
+        this.index = target.index;
 
-        this.events.emit('update', value);
+        this.update();
+    };
+
+    /**
+     * Public methods
+     */
+
+    setContent = content => {
+        if (!this.group) {
+            this.group = new Interface('.group');
+            this.group.css({
+                position: 'relative',
+                left: -10
+            });
+            this.add(this.group);
+        }
+
+        const oldGroup = this.group;
+
+        const newGroup = this.group.clone();
+        newGroup.add(content);
+
+        this.replace(oldGroup, newGroup);
+        this.group = newGroup;
+
+        oldGroup.destroy();
+    };
+
+    setIndex = index => {
+        this.index = index;
+
+        this.update();
+    };
+
+    update = () => {
+        const value = this.list[this.index];
+
+        this.events.emit('update', value, this);
 
         if (this.callback) {
-            this.callback(value);
+            this.callback(value, this);
         }
 
         if (this.list.length > 2) {
             return;
         }
 
-        if (!target.clicked) {
+        const target = this.items[this.index];
+
+        if (target && !target.clicked) {
             target.active();
         }
 
@@ -79,5 +125,11 @@ export class List extends Interface {
                 item.inactive();
             }
         });
+    };
+
+    destroy = () => {
+        this.removeListeners();
+
+        return super.destroy();
     };
 }
