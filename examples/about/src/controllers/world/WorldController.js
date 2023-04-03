@@ -18,7 +18,7 @@ export class WorldController {
         this.renderer = new WebGLRenderer({
             powerPreference: 'high-performance',
             stencil: false,
-            // antialias: true,
+            antialias: true,
             // alpha: true
         });
         // this.element = this.renderer.domElement;
