@@ -43,7 +43,6 @@ export class Slider extends Interface {
         this.setValue(this.value, true);
 
         this.addListeners();
-        this.update();
     }
 
     initHTML() {
