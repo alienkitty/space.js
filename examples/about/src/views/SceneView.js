@@ -1,4 +1,4 @@
-import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, Color, Group, Mesh, MeshStandardMaterial } from 'three';
 
 import { InputManager } from '../controllers/world/InputManager.js';
 
@@ -13,12 +13,14 @@ export class SceneView extends Group {
     }
 
     initMesh() {
-        this.geometry = new BoxGeometry(1, 1, 1);
+        this.geometry = new BoxGeometry();
 
         this.material = new MeshStandardMaterial({
             name: 'Hello World',
-            metalness: 0.9,
-            roughness: 0.3,
+            color: new Color().offsetHSL(0, 0, -0.65),
+            metalness: 0.6,
+            roughness: 0.7,
+            envMapIntensity: 1,
             flatShading: true
         });
 
