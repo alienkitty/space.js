@@ -1,4 +1,4 @@
-import { Stage, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, Thread, ticker, wait } from '@alienkitty/space.js/three';
 
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
@@ -11,6 +11,10 @@ import { UI } from '../views/UI.js';
 
 export class App {
     static async init() {
+        if (!/firefox/i.test(navigator.userAgent)) {
+            this.initThread();
+        }
+
         this.initWorld();
         this.initViews();
         this.initControllers();
@@ -26,6 +30,12 @@ export class App {
         ]);
 
         this.initPanel();
+    }
+
+    static initThread() {
+        ImageBitmapLoaderThread.init();
+
+        Thread.shared();
     }
 
     static initWorld() {

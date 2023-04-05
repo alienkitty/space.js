@@ -9,6 +9,7 @@ export class WorldController {
         this.initWorld();
         this.initLights();
         this.initLoaders();
+        this.initEnvironment();
         this.initControls();
 
         this.addListeners();
@@ -63,6 +64,10 @@ export class WorldController {
         this.textureLoader = new TextureLoader();
         this.environmentLoader = new EnvironmentTextureLoader(this.renderer);
         this.bufferGeometryLoader = new BufferGeometryLoader();
+    }
+
+    static async initEnvironment() {
+        this.scene.environment = await this.loadEnvironmentTexture('assets/textures/env/jewelry_black_contrast.jpg');
     }
 
     static initControls() {
