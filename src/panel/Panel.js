@@ -52,7 +52,7 @@ export class Panel extends Interface {
         if (open) {
             this.items.forEach(item => {
                 if (item.element.contains(target.element)) {
-                    if (item.view && item.view.group) {
+                    if (item.view && item.view.group && item.view.container) {
                         item.disable(item.view.container);
                     }
 
@@ -65,7 +65,7 @@ export class Panel extends Interface {
             this.openColor = target;
         } else {
             this.items.forEach(item => {
-                if (item.view && item.view.group) {
+                if (item.view && item.view.group && item.view.container) {
                     item.enable(item.view.container);
                 }
 

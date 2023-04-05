@@ -6,6 +6,7 @@ import { Interface } from '../utils/Interface.js';
 import { Link } from './Link.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
+import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
 
 export class PanelItem extends Interface {
@@ -89,6 +90,14 @@ export class PanelItem extends Interface {
             });
 
             this.view = new Slider(this.data);
+            this.add(this.view);
+        } else if (this.data.type === 'content') {
+            this.css({
+                boxSizing: 'border-box',
+                width
+            });
+
+            this.view = new Content(this.data);
             this.add(this.view);
         } else if (this.data.type === 'color') {
             this.css({
