@@ -4,9 +4,9 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
+import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 
 export class StandardMaterialPanel extends Panel {
     static type = [
@@ -23,7 +23,8 @@ export class StandardMaterialPanel extends Panel {
         ],
         standard: [
             'roughness',
-            'metalness'
+            'metalness',
+            'envMapIntensity'
         ]
     };
 
@@ -38,64 +39,28 @@ export class StandardMaterialPanel extends Panel {
     initPanel() {
         const material = this.material;
 
+        const materialOptions = {
+            Common: StandardMaterialCommonPanel,
+            Env: StandardMaterialEnvPanel
+        };
+
         const items = [
             {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: material.color,
-                callback: value => {
-                    material.color.copy(value);
-                }
-            },
-            {
-                type: 'color',
-                value: material.emissive,
-                callback: value => {
-                    material.emissive.copy(value);
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Rough',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: material.roughness,
-                callback: value => {
-                    material.roughness = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Metal',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: material.metalness,
-                callback: value => {
-                    material.metalness = value;
-                }
-            },
-            {
                 type: 'list',
-                list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, material.flatShading),
-                callback: value => {
-                    material.flatShading = FlatShadingOptions[value];
-                    material.needsUpdate = true;
-                }
-            },
-            {
-                type: 'list',
-                list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, material.wireframe),
-                callback: value => {
-                    material.wireframe = WireframeOptions[value];
+                list: materialOptions,
+                value: 'Common',
+                callback: (value, panel) => {
+                    const MaterialPanel = materialOptions[value];
+
+                    const materialPanel = new MaterialPanel(material);
+                    materialPanel.animateIn(true);
+
+                    panel.setContent(materialPanel);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

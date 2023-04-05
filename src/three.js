@@ -50,6 +50,7 @@ export { Slider } from './panel/Slider.js';
 export { ColorPicker } from './panel/ColorPicker.js';
 export * from './panel/three/MaterialPanelController.js';
 export * from './panel/three/MaterialPanelOptions.js';
+export * from './panel/three/MaterialPanels.js';
 
 // UI
 export { UI } from './ui/UI.js';

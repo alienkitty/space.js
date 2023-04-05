@@ -4,9 +4,9 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { CombineOptions, WireframeOptions } from './MaterialPanelOptions.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
+import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
 
 export class BasicMaterialPanel extends Panel {
     static type = [
@@ -34,60 +34,28 @@ export class BasicMaterialPanel extends Panel {
     initPanel() {
         const material = this.material;
 
+        const materialOptions = {
+            Common: BasicMaterialCommonPanel,
+            Env: BasicMaterialEnvPanel
+        };
+
         const items = [
             {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: material.color,
-                callback: value => {
-                    material.color.copy(value);
-                }
-            },
-            {
                 type: 'list',
-                list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, material.wireframe),
-                callback: value => {
-                    material.wireframe = WireframeOptions[value];
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
-                type: 'list',
-                list: CombineOptions,
-                value: getKeyByValue(CombineOptions, material.combine),
-                callback: value => {
-                    material.combine = CombineOptions[value];
-                    material.needsUpdate = true;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Reflect',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: material.reflectivity,
-                callback: value => {
-                    material.reflectivity = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Refract',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: material.refractionRatio,
-                callback: value => {
-                    material.refractionRatio = value;
+                list: materialOptions,
+                value: 'Common',
+                callback: (value, panel) => {
+                    const MaterialPanel = materialOptions[value];
+
+                    const materialPanel = new MaterialPanel(material);
+                    materialPanel.animateIn(true);
+
+                    panel.setContent(materialPanel);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {
