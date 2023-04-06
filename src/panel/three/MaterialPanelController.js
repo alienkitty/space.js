@@ -192,7 +192,7 @@ export class MaterialPanelController {
         ];
 
         items.forEach(data => {
-            this.ui.addPanel(new PanelItem(data));
+            ui.addPanel(new PanelItem(data));
         });
     }
 }
