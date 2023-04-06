@@ -29,6 +29,7 @@ export class Point3D extends Group {
         this.objects = [];
         this.points = [];
         this.raycaster = new Raycaster();
+        this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
         this.hover = null;
@@ -298,6 +299,7 @@ export class Point3D extends Group {
         this.mesh.position.y = this.mesh.position.y - center.y; // Y flipped
         this.mesh.position.z = this.mesh.position.z + center.z;
         this.mesh.scale.copy(this.object.scale);
+        this.mesh.layers.set(31); // Last layer
         this.add(this.mesh);
     }
 
