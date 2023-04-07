@@ -1,6 +1,6 @@
 import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapping, ReinhardToneMapping } from 'three';
 
-import { PanelItem, Point3D, Stage, brightness, getKeyByValue } from '@alienkitty/space.js/three';
+import { Panel, PanelItem, Point3D, Stage, brightness, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { RenderManager } from '../world/RenderManager.js';
 import { ScenePanelController } from './ScenePanelController.js';
@@ -45,6 +45,58 @@ export class PanelController {
             Off: false,
             Post: true
         };
+
+        const postItems = [
+            {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                label: 'Thresh',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: luminosityMaterial.uniforms.uThreshold.value,
+                callback: value => {
+                    luminosityMaterial.uniforms.uThreshold.value = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Smooth',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: luminosityMaterial.uniforms.uSmoothing.value,
+                callback: value => {
+                    luminosityMaterial.uniforms.uSmoothing.value = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Strength',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: RenderManager.bloomStrength,
+                callback: value => {
+                    RenderManager.bloomStrength = value;
+                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Radius',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: RenderManager.bloomRadius,
+                callback: value => {
+                    RenderManager.bloomRadius = value;
+                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+                }
+            }
+        ];
 
         const items = [
             {
@@ -97,57 +149,25 @@ export class PanelController {
                 type: 'list',
                 list: postOptions,
                 value: getKeyByValue(postOptions, RenderManager.enabled),
-                callback: value => {
+                callback: (value, panel) => {
+                    if (!panel.group) {
+                        const postPanel = new Panel();
+                        postPanel.animateIn(true);
+
+                        postItems.forEach(data => {
+                            postPanel.add(new PanelItem(data));
+                        });
+
+                        panel.setContent(postPanel);
+                    }
+
                     RenderManager.enabled = postOptions[value];
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
-                type: 'slider',
-                label: 'Thresh',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: luminosityMaterial.uniforms.uThreshold.value,
-                callback: value => {
-                    luminosityMaterial.uniforms.uThreshold.value = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Smooth',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: luminosityMaterial.uniforms.uSmoothing.value,
-                callback: value => {
-                    luminosityMaterial.uniforms.uSmoothing.value = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Strength',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: RenderManager.bloomStrength,
-                callback: value => {
-                    RenderManager.bloomStrength = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Radius',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: RenderManager.bloomRadius,
-                callback: value => {
-                    RenderManager.bloomRadius = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+
+                    if (RenderManager.enabled) {
+                        panel.group.show();
+                    } else {
+                        panel.group.hide();
+                    }
                 }
             }
         ];

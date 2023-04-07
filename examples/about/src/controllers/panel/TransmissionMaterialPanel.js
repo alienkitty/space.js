@@ -11,13 +11,11 @@ export class TransmissionMaterialPanel extends Panel {
 
     static properties = {
         common: [
-            'color',
             'emissive',
             'flatShading',
             'wireframe'
         ],
         standard: [
-            'metalness',
             'envMapIntensity'
         ],
         physical: [
@@ -35,7 +33,9 @@ export class TransmissionMaterialPanel extends Panel {
             'sheenColor'
         ],
         transmission: [
+            'color',
             'roughness',
+            'metalness',
             '_transmission',
             'chromaticAberration',
             'anisotropy'
@@ -52,6 +52,9 @@ export class TransmissionMaterialPanel extends Panel {
 
     initPanel() {
         const material = this.material;
+
+        // Override defaults
+        material._transmission = 1;
 
         const materialOptions = {
             Common: PhysicalMaterialCommonPanel,

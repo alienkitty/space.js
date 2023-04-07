@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping, AmbientLight, Color, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping, AmbientLight, BasicShadowMap, Color, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -26,6 +26,10 @@ export class WorldController {
         this.element = new Interface(this.renderer.domElement);
         this.element.css({ opacity: 0 });
 
+        // Shadows
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = BasicShadowMap;
+
         // Tone mapping
         this.renderer.toneMapping = ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
@@ -34,9 +38,9 @@ export class WorldController {
         this.scene = new Scene();
         this.scene.background = new Color(Stage.rootStyle.getPropertyValue('--bg-color').trim());
         this.camera = new PerspectiveCamera(30);
-        this.camera.near = 0.1;
-        this.camera.far = 1000;
-        this.camera.position.z = 10;
+        this.camera.near = 0.5;
+        this.camera.far = 40;
+        this.camera.position.set(0, 6, 8);
         this.camera.lookAt(this.scene.position);
 
         // Global geometries
@@ -48,6 +52,9 @@ export class WorldController {
         this.aspect = { value: 1 };
         this.time = { value: 0 };
         this.frame = { value: 0 };
+
+        // Global settings
+        this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
     }
 
     static initLights() {
@@ -56,7 +63,10 @@ export class WorldController {
         this.scene.add(new HemisphereLight(0x606060, 0x404040));
 
         const light = new DirectionalLight(0xffffff, 0.4);
-        light.position.set(0.6, 0.5, 1);
+        light.position.set(5, 5, 5);
+        light.castShadow = true;
+        light.shadow.mapSize.width = 2048;
+        light.shadow.mapSize.height = 2048;
         this.scene.add(light);
     }
 

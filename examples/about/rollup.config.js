@@ -20,7 +20,9 @@ export default {
     production && terser({
       output: {
         preamble: `// ${timestamp()}`
-      }
+      },
+      keep_classnames: true,
+      keep_fnames: true
     })
   ]
 };

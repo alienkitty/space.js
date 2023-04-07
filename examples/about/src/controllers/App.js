@@ -82,14 +82,14 @@ export class App {
 
         WorldController.resize(width, height, dpr);
         CameraController.resize(width, height);
-        SceneController.resize();
+        SceneController.resize(width, height);
         RenderManager.resize(width, height, dpr);
     };
 
     static onUpdate = (time, delta, frame) => {
         WorldController.update(time, delta, frame);
         CameraController.update();
-        SceneController.update();
+        SceneController.update(time);
         InputManager.update(time);
         RenderManager.update(time, delta, frame);
         PanelController.update(time);

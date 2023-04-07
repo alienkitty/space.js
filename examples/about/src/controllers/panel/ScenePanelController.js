@@ -1,3 +1,5 @@
+import { Vector3 } from 'three';
+
 import { MaterialOptions, MaterialPanelController, Point3D } from '@alienkitty/space.js/three';
 
 import { MeshTransmissionMaterial } from '@alienkitty/alien.js/three';
@@ -25,7 +27,9 @@ export class ScenePanelController {
             Normal: MaterialOptions.Normal
         };
 
-        const objects = [this.view];
+        const { darkPlanet, floatingCrystal, abstractCube } = this.view;
+
+        const objects = [darkPlanet, floatingCrystal, abstractCube];
 
         objects.forEach(object => {
             const { geometry, material } = object.mesh;
@@ -38,5 +42,9 @@ export class ScenePanelController {
 
             MaterialPanelController.init(object.point, object.mesh, materialOptions);
         });
+
+        // Shrink tracker meshes a little bit
+        floatingCrystal.point.mesh.scale.multiply(new Vector3(1, 0.9, 1));
+        abstractCube.point.mesh.scale.multiplyScalar(0.9);
     }
 }
