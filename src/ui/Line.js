@@ -39,7 +39,7 @@ export class Line extends Component {
     resize = () => {
         // Context properties need to be reassigned after resize
         this.context.lineWidth = 1.5;
-        this.context.strokeStyle = getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color').trim();
+        this.context.strokeStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;
 
         this.update();
     };

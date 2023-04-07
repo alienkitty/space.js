@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Gong — Space.js</title>
+    <title>Stream — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { BufferLoader, Interface, WebAudio, clamp, delayedCall, guid, ticker } from '../src/index.js';
+        import { Interface, Panel, PanelItem, WebAudio, ticker } from '../src/index.js';
 
         class Instructions extends Interface {
             constructor() {
@@ -101,7 +101,14 @@
             static init(instructions) {
                 this.instructions = instructions;
 
+                this.initSounds();
+
                 this.addListeners();
+            }
+
+            static initSounds() {
+                this.protonradio = WebAudio.get('protonradio');
+                this.protonradio.gain.set(1);
             }
 
             static addListeners() {
@@ -123,41 +130,72 @@
                 }
             };
 
-            static onPointerDown = ({ clientX, clientY }) => {
+            static onPointerDown = () => {
                 // this.instructions.toggle(false);
 
-                const normalX = clientX / document.documentElement.clientWidth;
-                const normalY = clientY / document.documentElement.clientHeight;
-                const pan = clamp(((normalX * 2) - 1) * 0.8, -1, 1);
-                const rate = clamp(0.8 + (1 - normalY) * 0.4, 0.8, 1.2);
-
-                const gong = WebAudio.clone('gong', guid());
-                gong.gain.set(0.5);
-                gong.stereoPan.set(pan);
-                gong.playbackRate.set(rate);
-                gong.play();
-
-                delayedCall(6000, () => {
-                    gong.destroy();
-                });
+                this.protonradio.play();
             };
+        }
+
+        class PanelController {
+            static init(ui) {
+                this.ui = ui;
+
+                this.initPanel();
+            }
+
+            static initPanel() {
+                const { protonradio } = AudioController;
+
+                const panel = new Panel();
+                panel.animateIn();
+                this.ui.add(panel);
+
+                const items = [
+                    {
+                        label: 'Proton Radio'
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        label: 'Volume',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.gain.value,
+                        callback: value => {
+                            protonradio.gain.value = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        label: 'Pan',
+                        min: -1,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.stereoPan.value,
+                        callback: value => {
+                            protonradio.stereoPan.value = value;
+                        }
+                    }
+                ];
+
+                items.forEach(data => {
+                    panel.add(new PanelItem(data));
+                });
+            }
         }
 
         class App {
             static async init() {
-                this.initLoader();
                 this.initViews();
 
                 this.addListeners();
 
-                await this.bufferLoader.ready();
-
                 this.initAudio();
-            }
-
-            static initLoader() {
-                this.bufferLoader = new BufferLoader();
-                this.bufferLoader.loadAll(['assets/sounds/gong.mp3']);
+                this.initPanel();
             }
 
             static initViews() {
@@ -167,9 +205,15 @@
 
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
-                WebAudio.load(this.bufferLoader.files);
+
+                // Shoutcast streams append a semicolon (;) to the URL
+                WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
 
                 AudioController.init(this.ui.instructions);
+            }
+
+            static initPanel() {
+                PanelController.init(this.ui);
             }
 
             static addListeners() {

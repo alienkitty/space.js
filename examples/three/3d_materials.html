@@ -19,24 +19,39 @@
     </script>
 
     <script type="module">
-        import { BoxGeometry, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer, sRGBEncoding } from 'three';
 
         // init
+
+        const renderer = new WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = sRGBEncoding;
+        document.body.appendChild(renderer.domElement);
+
+        const scene = new Scene();
+        scene.background = new Color(0x0e0e0e);
 
         const camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
         camera.position.z = 1;
 
-        const scene = new Scene();
+        // lights
+
+        scene.add(new AmbientLight(0xffffff, 0.2));
+
+        scene.add(new HemisphereLight(0x606060, 0x404040));
+
+        const light = new DirectionalLight(0xffffff, 0.4);
+        light.position.set(0.6, 0.5, 1);
+        scene.add(light);
+
+        // mesh
 
         const geometry = new BoxGeometry(0.2, 0.2, 0.2);
         const material = new MeshNormalMaterial();
 
         const mesh = new Mesh(geometry, material);
         scene.add(mesh);
-
-        const renderer = new WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
 
         // panel
 
@@ -51,7 +66,7 @@
         const point = new Point3D(mesh);
         scene.add(point);
 
-        MaterialPanelController.init(point, material);
+        MaterialPanelController.init(point, mesh);
 
         // animation
 
@@ -68,6 +83,17 @@
         }
 
         requestAnimationFrame(animate);
+
+        // resize
+
+        window.addEventListener('resize', onWindowResize);
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
     </script>
 </head>
 <body>

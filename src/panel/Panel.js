@@ -51,24 +51,25 @@ export class Panel extends Interface {
 
         if (open) {
             this.items.forEach(item => {
-                item.clearTween();
+                if (item.element.contains(target.element)) {
+                    if (item.view && item.view.group && item.view.container) {
+                        item.disable(item.view.container);
+                    }
 
-                if (item.color && item.color.isOpen) {
-                    item.color.fastClose = true;
                     return;
                 }
 
-                item.css({ pointerEvents: 'none' });
-                item.tween({ opacity: 0.35 }, 500, 'easeInOutSine');
+                item.disable();
             });
 
             this.openColor = target;
         } else {
             this.items.forEach(item => {
-                item.clearTween();
-                item.tween({ opacity: 1 }, 500, 'easeInOutSine', () => {
-                    item.css({ pointerEvents: 'auto' });
-                });
+                if (item.view && item.view.group && item.view.container) {
+                    item.enable(item.view.container);
+                }
+
+                item.enable();
             });
 
             this.openColor = null;

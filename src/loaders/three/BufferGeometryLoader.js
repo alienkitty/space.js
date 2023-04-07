@@ -42,6 +42,8 @@ export class BufferGeometryLoader extends Loader {
                 geometry.setAttribute('uv2', new BufferAttribute(buffers.uv2, 2));
             }
 
+            geometry.computeBoundingSphere();
+
             this.increment();
 
             if (callback) {

@@ -47,8 +47,11 @@ export { List } from './panel/List.js';
 export { ListToggle } from './panel/ListToggle.js';
 export { ListSelect } from './panel/ListSelect.js';
 export { Slider } from './panel/Slider.js';
+export { Content } from './panel/Content.js';
 export { ColorPicker } from './panel/ColorPicker.js';
-export { MaterialPanelController } from './panel/three/MaterialPanelController.js';
+export * from './panel/three/MaterialPanelController.js';
+export * from './panel/three/MaterialPanelOptions.js';
+export * from './panel/three/MaterialPanels.js';
 
 // UI
 export { UI } from './ui/UI.js';

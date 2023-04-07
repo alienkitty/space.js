@@ -40,18 +40,23 @@ export class Slider extends Interface {
         this.lastOrigin = new Vector2();
 
         this.initHTML();
+        this.setValue(this.value, true);
 
         this.addListeners();
-        this.update();
     }
 
     initHTML() {
         this.css({
-            position: 'relative',
+            width: '100%'
+        });
+
+        this.container = new Interface('.container');
+        this.container.css({
             width: '100%',
             height: 28,
             cursor: 'w-resize'
         });
+        this.add(this.container);
 
         this.text = new Interface('.text');
         this.text.css({
@@ -62,7 +67,7 @@ export class Slider extends Interface {
             whiteSpace: 'nowrap'
         });
         this.text.text(this.label);
-        this.add(this.text);
+        this.container.add(this.text);
 
         this.number = new Interface('.number');
         this.number.css({
@@ -72,7 +77,7 @@ export class Slider extends Interface {
             letterSpacing: 'var(--ui-number-letter-spacing)',
             whiteSpace: 'nowrap'
         });
-        this.add(this.number);
+        this.container.add(this.number);
 
         this.line = new Interface('.line');
         this.line.css({
@@ -82,7 +87,7 @@ export class Slider extends Interface {
             backgroundColor: 'var(--ui-color)',
             transformOrigin: 'left center'
         });
-        this.add(this.line);
+        this.container.add(this.line);
     }
 
     addListeners() {
@@ -109,6 +114,8 @@ export class Slider extends Interface {
      */
 
     onPointerDown = e => {
+        e.stopPropagation();
+
         this.firstDown = true;
 
         this.onPointerMove(e);
@@ -155,29 +162,48 @@ export class Slider extends Interface {
      * Public methods
      */
 
-    setValue = value => {
+    setContent = content => {
+        if (!this.group) {
+            this.group = new Interface('.group');
+            this.group.css({
+                position: 'relative',
+                left: -10
+            });
+            this.add(this.group);
+        }
+
+        const oldGroup = this.group;
+
+        const newGroup = this.group.clone();
+        newGroup.add(content);
+
+        this.replace(oldGroup, newGroup);
+        this.group = newGroup;
+
+        oldGroup.destroy();
+    };
+
+    setValue = (value, force) => {
         this.value = typeof value === 'string' ? parseFloat(value) : value;
         this.value = this.getValue(this.value);
         this.lastValue = this.value;
 
-        this.update();
-
-        return this;
+        this.update(force);
     };
 
-    update = () => {
+    update = force => {
         const scaleX = (this.value - this.min) / this.range;
 
         this.line.css({ scaleX });
         this.number.text(this.value);
 
-        if (this.value !== this.lastValue) {
+        if (this.value !== this.lastValue || force) {
             this.lastValue = this.value;
 
-            this.events.emit('update', this.value);
+            this.events.emit('update', this.value, this);
 
             if (this.callback) {
-                this.callback(this.value);
+                this.callback(this.value, this);
             }
         }
     };

@@ -8,27 +8,31 @@
 import { EventEmitter } from '../utils/EventEmitter.js';
 
 export class Loader {
-    constructor(assets = [], callback) {
-        this.assets = assets;
-        this.callback = callback;
+    constructor() {
         this.events = new EventEmitter();
         this.total = 0;
         this.loaded = 0;
         this.progress = 0;
         this.path = '';
-        this.crossOrigin;
+        this.crossOrigin = 'anonymous';
         this.fetchOptions;
         this.cache = false;
         this.files = {};
         this.promise = new Promise(resolve => this.resolve = resolve);
-
-        assets.forEach(path => this.load(path));
     }
 
     load(/* path, callback */) {}
 
     loadAsync(path) {
         return new Promise(resolve => this.load(path, resolve));
+    }
+
+    loadAll(assets) {
+        return assets.map(path => this.load(path));
+    }
+
+    loadAllAsync(assets) {
+        return Promise.all(assets.map(path => this.loadAsync(path)));
     }
 
     increment() {
@@ -45,10 +49,6 @@ export class Loader {
         this.resolve();
 
         this.events.emit('complete');
-
-        if (this.callback) {
-            this.callback();
-        }
     }
 
     add(num = 1) {

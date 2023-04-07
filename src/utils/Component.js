@@ -29,8 +29,6 @@ export class Component {
                 this.group.add(child);
             }
         }
-
-        return child;
     }
 
     remove(child) {

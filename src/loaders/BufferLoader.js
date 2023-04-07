@@ -5,8 +5,8 @@
 import { Loader } from './Loader.js';
 
 export class BufferLoader extends Loader {
-    constructor(assets, callback) {
-        super(assets, callback);
+    constructor() {
+        super();
 
         this.cache = true;
     }

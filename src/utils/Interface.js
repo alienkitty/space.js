@@ -58,8 +58,6 @@ export class Interface {
         } else if (child.nodeName) {
             this.element.appendChild(child);
         }
-
-        return child;
     }
 
     remove(child) {
@@ -67,9 +65,9 @@ export class Interface {
             return;
         }
 
-        if (child.element) {
+        if (child.element && child.element.parentNode) {
             child.element.parentNode.removeChild(child.element);
-        } else if (child.nodeName) {
+        } else if (child.nodeName && child.parentNode) {
             child.parentNode.removeChild(child);
         }
 
@@ -80,12 +78,40 @@ export class Interface {
         }
     }
 
-    clone() {
+    replace(oldChild, newChild) {
+        if (!this.children) {
+            return;
+        }
+
+        const index = this.children.indexOf(oldChild);
+
+        if (~index) {
+            this.children[index] = newChild;
+
+            newChild.parent = this;
+        }
+
+        if (oldChild.element && oldChild.element.parentNode) {
+            if (newChild.element) {
+                oldChild.element.parentNode.replaceChild(newChild.element, oldChild.element);
+            } else if (newChild.nodeName) {
+                oldChild.element.parentNode.replaceChild(newChild, oldChild.element);
+            }
+        } else if (oldChild.nodeName && oldChild.parentNode) {
+            if (newChild.element) {
+                oldChild.parentNode.replaceChild(newChild.element, oldChild);
+            } else if (newChild.nodeName) {
+                oldChild.parentNode.replaceChild(newChild, oldChild);
+            }
+        }
+    }
+
+    clone(deep) {
         if (!this.element) {
             return;
         }
 
-        return new Interface(this.element.cloneNode(true));
+        return new Interface(this.element.cloneNode(deep));
     }
 
     empty() {
@@ -245,6 +271,66 @@ export class Interface {
         return this;
     }
 
+    text(str) {
+        if (!this.element) {
+            return;
+        }
+
+        if (typeof str === 'undefined') {
+            return this.element.textContent;
+        } else {
+            this.element.textContent = str;
+        }
+
+        return this;
+    }
+
+    html(str) {
+        if (!this.element) {
+            return;
+        }
+
+        if (typeof str === 'undefined') {
+            return this.element.innerHTML;
+        } else {
+            this.element.innerHTML = str;
+        }
+
+        return this;
+    }
+
+    hide() {
+        return this.css({ display: 'none' });
+    }
+
+    show() {
+        return this.css({ display: '' });
+    }
+
+    invisible() {
+        return this.css({ visibility: 'hidden' });
+    }
+
+    visible() {
+        return this.css({ visibility: '' });
+    }
+
+    line(progress = this.progress || 0) {
+        const start = this.start || 0;
+        const offset = this.offset || 0;
+
+        const length = this.element.getTotalLength();
+        const dash = length * progress;
+        const gap = length - dash;
+
+        const style = {
+            strokeDasharray: `${dash},${gap}`,
+            strokeDashoffset: -length * (start + offset)
+        };
+
+        return this.css(style);
+    }
+
     tween(props, duration, ease, delay = 0, complete, update) {
         if (!this.element) {
             return;
@@ -333,66 +419,6 @@ export class Interface {
         for (let i = this.timeouts.length - 1; i >= 0; i--) {
             this.clearTimeout(this.timeouts[i]);
         }
-    }
-
-    text(str) {
-        if (!this.element) {
-            return;
-        }
-
-        if (typeof str === 'undefined') {
-            return this.element.textContent;
-        } else {
-            this.element.textContent = str;
-        }
-
-        return this;
-    }
-
-    html(str) {
-        if (!this.element) {
-            return;
-        }
-
-        if (typeof str === 'undefined') {
-            return this.element.innerHTML;
-        } else {
-            this.element.innerHTML = str;
-        }
-
-        return this;
-    }
-
-    hide() {
-        return this.css({ display: 'none' });
-    }
-
-    show() {
-        return this.css({ display: '' });
-    }
-
-    invisible() {
-        return this.css({ visibility: 'hidden' });
-    }
-
-    visible() {
-        return this.css({ visibility: '' });
-    }
-
-    line(progress = this.progress || 0) {
-        const start = this.start || 0;
-        const offset = this.offset || 0;
-
-        const length = this.element.getTotalLength();
-        const dash = length * progress;
-        const gap = length - dash;
-
-        const style = {
-            strokeDasharray: `${dash},${gap}`,
-            strokeDashoffset: -length * (start + offset)
-        };
-
-        return this.css(style);
     }
 
     destroy() {
