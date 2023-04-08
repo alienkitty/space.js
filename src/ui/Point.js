@@ -203,7 +203,7 @@ export class Point extends Interface {
 
     animateIn = () => {
         this.visible();
-        this.css({ opacity: 1 });
+        this.clearTween().css({ opacity: 1 });
         this.text.animateIn();
     };
 
@@ -214,7 +214,7 @@ export class Point extends Interface {
     };
 
     inactive = () => {
-        this.tween({ opacity: 0 }, 300, 'easeOutSine');
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
         this.close();
     };
 

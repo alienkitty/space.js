@@ -65,6 +65,7 @@ export class Point3D extends Group {
         window.addEventListener('pointerdown', this.onPointerDown);
         window.addEventListener('pointermove', this.onPointerMove);
         window.addEventListener('pointerup', this.onPointerUp);
+        window.addEventListener('keyup', this.onKeyUp);
     }
 
     static removeListeners() {
@@ -73,6 +74,7 @@ export class Point3D extends Group {
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('keyup', this.onKeyUp);
     }
 
     /**
@@ -160,10 +162,41 @@ export class Point3D extends Group {
         }
 
         if (this.click === this.hover) {
+            if (!e.altKey) {
+                this.points.forEach(point => {
+                    if (point !== this.click && point.animatedIn) {
+                        point.animateOut(true);
+                        point.inactive();
+                    }
+                });
+            }
+
             this.click.onClick();
         }
 
         this.click = null;
+    };
+
+    static onKeyUp = e => {
+        if (e.keyCode >= 48 && e.keyCode <= 57) { // 0-9
+            const select = this.points[e.keyCode - 49];
+
+            if (select) {
+                if (!e.altKey) {
+                    this.points.forEach(point => {
+                        if (point !== select && point.animatedIn) {
+                            point.animateOut(true);
+                            point.inactive();
+                        }
+                    });
+                }
+
+                select.onHover({ type: 'over' });
+                select.onClick();
+            } else {
+                this.animateOut();
+            }
+        }
     };
 
     /**
@@ -223,8 +256,10 @@ export class Point3D extends Group {
 
     static animateOut = () => {
         this.points.forEach(point => {
-            point.animateOut(true);
-            point.inactive();
+            if (point.animatedIn) {
+                point.animateOut(true);
+                point.inactive();
+            }
         });
 
         if (this.hover) {
