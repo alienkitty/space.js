@@ -4,6 +4,7 @@ import { MaterialOptions, MaterialPanelController, Point3D } from '@alienkitty/s
 
 import { MeshTransmissionMaterial } from '@alienkitty/alien.js/three';
 
+import { CameraController } from '../world/CameraController.js';
 import { TransmissionMaterialPanel } from './TransmissionMaterialPanel.js';
 
 export class ScenePanelController {
@@ -11,6 +12,8 @@ export class ScenePanelController {
         this.view = view;
 
         this.initPanel();
+
+        this.addListeners();
     }
 
     static initPanel() {
@@ -47,4 +50,18 @@ export class ScenePanelController {
         floatingCrystal.point.mesh.scale.multiply(new Vector3(1, 0.9, 1));
         abstractCube.point.mesh.scale.multiplyScalar(0.9);
     }
+
+    static addListeners() {
+        Point3D.events.on('click', this.onClick);
+    }
+
+    /**
+     * Event handlers
+     */
+
+    static onClick = () => {
+        if (CameraController.isAnimatingOut) {
+            CameraController.isAnimatingOut = false;
+        }
+    };
 }

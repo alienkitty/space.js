@@ -1,7 +1,5 @@
 import { ACESFilmicToneMapping, AmbientLight, BasicShadowMap, Color, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 import { BufferGeometryLoader, EnvironmentTextureLoader, Interface, Stage, TextureLoader, getFrustum, getFullscreenTriangle } from '@alienkitty/space.js/three';
 
 export class WorldController {
@@ -10,7 +8,6 @@ export class WorldController {
         this.initLights();
         this.initLoaders();
         this.initEnvironment();
-        this.initControls();
 
         this.addListeners();
     }
@@ -80,13 +77,6 @@ export class WorldController {
         this.scene.environment = await this.loadEnvironmentTexture('assets/textures/env/jewelry_black_contrast.jpg');
     }
 
-    static initControls() {
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        // this.controls.enableZoom = false;
-        // this.controls.enabled = false;
-    }
-
     static addListeners() {
         this.renderer.domElement.addEventListener('touchstart', this.onTouchStart);
     }
@@ -115,10 +105,6 @@ export class WorldController {
     static update = (time, delta, frame) => {
         this.time.value = time;
         this.frame.value = frame;
-
-        if (this.controls && this.controls.enabled) {
-            this.controls.update();
-        }
     };
 
     static animateIn = () => {

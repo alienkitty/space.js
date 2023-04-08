@@ -54,7 +54,7 @@ export class App {
     static initControllers() {
         const { renderer, scene, camera } = WorldController;
 
-        CameraController.init(camera);
+        CameraController.init(renderer, camera);
         SceneController.init(this.view);
         InputManager.init(camera);
         RenderManager.init(renderer, scene, camera);

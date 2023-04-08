@@ -2,6 +2,8 @@ import { Raycaster, Vector2 } from 'three';
 
 import { Stage } from '@alienkitty/space.js/three';
 
+import { CameraController } from './CameraController.js';
+
 export class InputManager {
     static init(camera) {
         this.camera = camera;
@@ -52,7 +54,7 @@ export class InputManager {
     };
 
     static onPointerMove = e => {
-        if (!this.enabled) {
+        if (!this.enabled || CameraController.isDown) {
             return;
         }
 
