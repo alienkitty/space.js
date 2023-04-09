@@ -66,13 +66,11 @@ export class ColorPicker extends Interface {
     initHTML() {
         this.css({
             position: 'relative',
-            width: '100%',
             height: this.height
         });
 
         this.container = new Interface('.container');
         this.container.css({
-            width: '100%',
             height: this.height,
             lineHeight: this.height,
             whiteSpace: 'nowrap',
@@ -331,8 +329,6 @@ export class ColorPicker extends Interface {
     };
 
     onPointerDown = e => {
-        e.stopPropagation();
-
         if (!this.isOpen) {
             return;
         }

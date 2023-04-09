@@ -12,6 +12,7 @@ export class InputManager {
         this.raycaster = new Raycaster();
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
+        this.coords = new Vector2();
         this.hover = null;
         this.click = null;
         this.lastTime = null;
@@ -59,30 +60,38 @@ export class InputManager {
         }
 
         if (e) {
-            this.mouse.x = (e.clientX / document.documentElement.clientWidth) * 2 - 1;
-            this.mouse.y = 1 - (e.clientY / document.documentElement.clientHeight) * 2;
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+            this.coords.x = (this.mouse.x / document.documentElement.clientWidth) * 2 - 1;
+            this.coords.y = 1 - (this.mouse.y / document.documentElement.clientHeight) * 2;
         }
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
+        if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
+            this.raycaster.setFromCamera(this.coords, this.camera);
 
-        const intersection = this.raycaster.intersectObjects(this.objects);
+            const intersection = this.raycaster.intersectObjects(this.objects);
 
-        if (intersection.length) {
-            let object = intersection[0].object;
+            if (intersection.length) {
+                let object = intersection[0].object;
 
-            if (object.parent.isGroup) {
-                object = object.parent;
-            }
+                if (object.parent.isGroup) {
+                    object = object.parent;
+                }
 
-            if (!this.hover) {
-                this.hover = object;
-                this.hover.onHover({ type: 'over' });
-                Stage.css({ cursor: 'pointer' });
-            } else if (this.hover !== object) {
+                if (!this.hover) {
+                    this.hover = object;
+                    this.hover.onHover({ type: 'over' });
+                    Stage.css({ cursor: 'pointer' });
+                } else if (this.hover !== object) {
+                    this.hover.onHover({ type: 'out' });
+                    this.hover = object;
+                    this.hover.onHover({ type: 'over' });
+                    Stage.css({ cursor: 'pointer' });
+                }
+            } else if (this.hover) {
                 this.hover.onHover({ type: 'out' });
-                this.hover = object;
-                this.hover.onHover({ type: 'over' });
-                Stage.css({ cursor: 'pointer' });
+                this.hover = null;
+                Stage.css({ cursor: '' });
             }
         } else if (this.hover) {
             this.hover.onHover({ type: 'out' });

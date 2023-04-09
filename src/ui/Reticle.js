@@ -14,6 +14,11 @@ export class Reticle extends Interface {
 
         this.noText = noText;
 
+        const size = 10;
+
+        this.width = size;
+        this.height = size;
+
         this.position = new Vector2();
         this.target = new Vector2();
         this.lerpSpeed = 1;
@@ -28,15 +33,10 @@ export class Reticle extends Interface {
             position: 'absolute',
             left: '50%',
             top: '50%',
-            width: 12,
-            height: 12,
-            marginLeft: -12 / 2,
-            marginTop: -12 / 2,
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)',
+            width: this.width,
+            height: this.height,
+            marginLeft: -this.width / 2,
+            marginTop: -this.height / 2,
             pointerEvents: 'none',
             webkitUserSelect: 'none',
             userSelect: 'none'
@@ -48,11 +48,11 @@ export class Reticle extends Interface {
             boxSizing: 'border-box',
             left: '50%',
             top: '50%',
-            width: 12,
-            height: 12,
-            marginLeft: -12 / 2,
-            marginTop: -12 / 2,
-            border: '2px solid var(--ui-color)',
+            width: this.width,
+            height: this.height,
+            marginLeft: -this.width / 2,
+            marginTop: -this.height / 2,
+            border: `${window.devicePixelRatio > 1 ? 1.5 : 1}px solid var(--ui-color)`,
             borderRadius: '50%'
         });
         this.add(this.center);
@@ -75,6 +75,7 @@ export class Reticle extends Interface {
 
     update = () => {
         this.position.lerp(this.target, this.lerpSpeed);
+
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     };
 

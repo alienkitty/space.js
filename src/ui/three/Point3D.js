@@ -32,6 +32,7 @@ export class Point3D extends Group {
         this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
+        this.coords = new Vector2();
         this.hover = null;
         this.click = null;
         this.lastTime = null;
@@ -121,26 +122,34 @@ export class Point3D extends Group {
         }
 
         if (e) {
-            this.mouse.x = (e.clientX / this.width) * 2 - 1;
-            this.mouse.y = 1 - (e.clientY / this.height) * 2;
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+            this.coords.x = (this.mouse.x / this.width) * 2 - 1;
+            this.coords.y = 1 - (this.mouse.y / this.height) * 2;
         }
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
+        if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
+            this.raycaster.setFromCamera(this.coords, this.camera);
 
-        const intersection = this.raycaster.intersectObjects(this.objects);
+            const intersection = this.raycaster.intersectObjects(this.objects);
 
-        if (intersection.length) {
-            const point = this.points[this.objects.indexOf(intersection[0].object)];
+            if (intersection.length) {
+                const point = this.points[this.objects.indexOf(intersection[0].object)];
 
-            if (!this.hover) {
-                this.hover = point;
-                this.hover.onHover({ type: 'over' });
-                this.root.css({ cursor: 'pointer' });
-            } else if (this.hover !== point) {
+                if (!this.hover) {
+                    this.hover = point;
+                    this.hover.onHover({ type: 'over' });
+                    this.root.css({ cursor: 'pointer' });
+                } else if (this.hover !== point) {
+                    this.hover.onHover({ type: 'out' });
+                    this.hover = point;
+                    this.hover.onHover({ type: 'over' });
+                    this.root.css({ cursor: 'pointer' });
+                }
+            } else if (this.hover) {
                 this.hover.onHover({ type: 'out' });
-                this.hover = point;
-                this.hover.onHover({ type: 'over' });
-                this.root.css({ cursor: 'pointer' });
+                this.hover = null;
+                this.root.css({ cursor: '' });
             }
         } else if (this.hover) {
             this.hover.onHover({ type: 'out' });
@@ -306,6 +315,7 @@ export class Point3D extends Group {
         this.animatedIn = false;
 
         this.initMesh();
+        this.initHTML();
         this.initViews();
         this.setInitialPosition();
 
@@ -338,22 +348,31 @@ export class Point3D extends Group {
         this.add(this.mesh);
     }
 
+    initHTML() {
+        this.element = new Interface('.target');
+        this.element.css({
+            position: 'static',
+            fontFamily: 'var(--ui-font-family)',
+            fontWeight: 'var(--ui-font-weight)',
+            fontSize: 'var(--ui-font-size)',
+            lineHeight: 'var(--ui-line-height)',
+            letterSpacing: 'var(--ui-letter-spacing)'
+        });
+        Point3D.container.add(this.element);
+    }
+
     initViews() {
         const { context } = Point3D;
 
-        this.target = new Interface('.target');
-        this.target.css({ position: 'static' });
-        Point3D.container.add(this.target);
-
         this.line = new Line(context);
-        this.target.add(this.line);
+        this.element.add(this.line);
 
         this.reticle = new Reticle();
-        this.target.add(this.reticle);
+        this.element.add(this.reticle);
 
         if (!this.noTracker) {
             this.tracker = new Tracker();
-            this.target.add(this.tracker);
+            this.element.add(this.tracker);
         }
 
         this.point = new Point(this, this.tracker);
@@ -361,7 +380,7 @@ export class Point3D extends Group {
             name: this.name,
             type: this.type
         });
-        this.target.add(this.point);
+        this.element.add(this.point);
 
         this.panel = this.point.text.panel;
     }
@@ -451,7 +470,7 @@ export class Point3D extends Group {
     };
 
     update = () => {
-        this.line.startPoint(this.reticle.target);
+        this.line.startPoint(this.reticle.position);
         this.line.endPoint(this.point.originPosition);
         this.line.update();
         this.reticle.update();
@@ -533,6 +552,8 @@ export class Point3D extends Group {
             }
 
             this.point.close();
+
+            Point3D.events.emit('color_picker', { open: false, target: this.panel });
         }
     };
 
@@ -540,11 +561,13 @@ export class Point3D extends Group {
         this.selected = false;
         this.line.inactive();
         this.point.inactive();
+
+        Point3D.events.emit('color_picker', { open: false, target: this.panel });
     };
 
     destroy = () => {
         this.animateOut(false, () => {
-            this.target = this.target.destroy();
+            this.element = this.element.destroy();
         });
     };
 }

@@ -15,18 +15,22 @@ export class PanelItem extends Interface {
 
         this.data = data;
 
-        this.width = 128;
-
         this.initHTML();
     }
 
     initHTML() {
-        const width = this.width;
+        this.css({
+            width: 128
+        });
+
+        this.container = new Interface('.container');
+        this.container.css({
+            boxSizing: 'border-box'
+        });
+        this.add(this.container);
 
         if (!this.data.type) {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 padding: '10px 10px 0',
                 marginBottom: 10
             });
@@ -37,42 +41,33 @@ export class PanelItem extends Interface {
                 whiteSpace: 'nowrap'
             });
             this.text.text(this.data.label);
-            this.add(this.text);
+            this.container.add(this.text);
         } else if (this.data.type === 'spacer') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 height: 7
             });
         } else if (this.data.type === 'divider') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 padding: '0 10px',
                 margin: '7px 0'
             });
 
             this.line = new Interface('.line');
             this.line.css({
-                width: '100%',
                 height: 1,
                 backgroundColor: 'rgba(var(--ui-color-triplet), 0.25)',
                 transformOrigin: 'left center'
             });
-            this.add(this.line);
+            this.container.add(this.line);
         } else if (this.data.type === 'link') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 padding: '2px 10px 0'
             });
 
             this.view = new Link(this.data);
-            this.add(this.view);
+            this.container.add(this.view);
         } else if (this.data.type === 'list') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 padding: '2px 10px 0'
             });
 
@@ -81,35 +76,26 @@ export class PanelItem extends Interface {
             const callback = this.data.callback;
 
             this.view = new List({ list, index, callback });
-            this.add(this.view);
+            this.container.add(this.view);
         } else if (this.data.type === 'slider') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 padding: '0 10px'
             });
 
             this.view = new Slider(this.data);
-            this.add(this.view);
+            this.container.add(this.view);
         } else if (this.data.type === 'content') {
-            this.css({
-                boxSizing: 'border-box',
-                width
-            });
-
             this.view = new Content(this.data);
-            this.add(this.view);
+            this.container.add(this.view);
         } else if (this.data.type === 'color') {
-            this.css({
-                boxSizing: 'border-box',
-                width,
+            this.container.css({
                 height: 19,
                 padding: '0 10px',
                 marginBottom: 7
             });
 
             this.view = new ColorPicker(this.data);
-            this.add(this.view);
+            this.container.add(this.view);
         }
     }
 
@@ -135,14 +121,14 @@ export class PanelItem extends Interface {
         });
     };
 
-    enable = (target = this) => {
+    enable = (target = this.container) => {
         target.clearTween();
         target.tween({ opacity: 1 }, 500, 'easeInOutSine', () => {
             target.css({ pointerEvents: 'auto' });
         });
     };
 
-    disable = (target = this) => {
+    disable = (target = this.container) => {
         target.clearTween();
         target.css({ pointerEvents: 'none' });
         target.tween({ opacity: 0.35 }, 500, 'easeInOutSine');

@@ -41,11 +41,6 @@ export class Point extends Interface {
         this.invisible();
         this.css({
             position: 'absolute',
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'

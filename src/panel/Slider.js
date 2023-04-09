@@ -46,13 +46,8 @@ export class Slider extends Interface {
     }
 
     initHTML() {
-        this.css({
-            width: '100%'
-        });
-
         this.container = new Interface('.container');
         this.container.css({
-            width: '100%',
             height: 28,
             cursor: 'w-resize'
         });
@@ -82,7 +77,6 @@ export class Slider extends Interface {
         this.line = new Interface('.line');
         this.line.css({
             clear: 'both',
-            width: '100%',
             height: 1,
             backgroundColor: 'var(--ui-color)',
             transformOrigin: 'left center'
@@ -114,8 +108,6 @@ export class Slider extends Interface {
      */
 
     onPointerDown = e => {
-        e.stopPropagation();
-
         this.firstDown = true;
 
         this.onPointerMove(e);

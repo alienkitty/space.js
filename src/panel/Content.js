@@ -12,15 +12,7 @@ export class Content extends Interface {
 
         this.callback = callback;
 
-        this.initHTML();
-
         this.update();
-    }
-
-    initHTML() {
-        this.css({
-            width: '100%'
-        });
     }
 
     /**

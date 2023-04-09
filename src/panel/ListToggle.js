@@ -27,6 +27,7 @@ export class ListToggle extends Interface {
             cssFloat: 'left',
             width: 54,
             height: 18,
+            lineHeight: 16,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             overflow: 'hidden',

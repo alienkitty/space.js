@@ -26,13 +26,8 @@ export class List extends Interface {
     }
 
     initHTML() {
-        this.css({
-            width: '100%'
-        });
-
         this.container = new Interface('.container');
         this.container.css({
-            width: '100%',
             height: 18
         });
         this.add(this.container);
