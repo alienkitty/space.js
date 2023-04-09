@@ -9,8 +9,10 @@ export class UI extends Interface {
         this.invertColors = {
             light: Stage.rootStyle.getPropertyValue('--ui-invert-light-color').trim(),
             lightTriplet: Stage.rootStyle.getPropertyValue('--ui-invert-light-color-triplet').trim(),
+            lightLine: Stage.rootStyle.getPropertyValue('--ui-invert-light-color-line').trim(),
             dark: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color').trim(),
-            darkTriplet: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color-triplet').trim()
+            darkTriplet: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color-triplet').trim(),
+            darkLine: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color-line').trim()
         };
 
         this.initHTML();
@@ -44,6 +46,7 @@ export class UI extends Interface {
     invert = isInverted => {
         Stage.root.style.setProperty('--ui-color', isInverted ? this.invertColors.light : this.invertColors.dark);
         Stage.root.style.setProperty('--ui-color-triplet', isInverted ? this.invertColors.lightTriplet : this.invertColors.darkTriplet);
+        Stage.root.style.setProperty('--ui-color-line', isInverted ? this.invertColors.lightLine : this.invertColors.darkLine);
 
         Stage.events.emit('invert', { invert: isInverted });
     };

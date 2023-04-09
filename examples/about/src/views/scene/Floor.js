@@ -26,9 +26,14 @@ export class Floor extends Group {
      * Event handlers
      */
 
-    onInvert = () => {
+    onInvert = ({ invert }) => {
         const colorStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;
-        const color = new Color(colorStyle).offsetHSL(0, 0, -0.35);
+        const color = new Color(colorStyle);
+
+        if (!invert) { // Light colour is muted
+            color.offsetHSL(0, 0, -0.35);
+        }
+
         const array = color.toArray();
 
         const colors = this.gridHelper.geometry.getAttribute('color');
