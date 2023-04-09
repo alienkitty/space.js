@@ -4,7 +4,7 @@
 
 import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
-import { Panel } from '../panel/Panel.js';
+import { Panel } from '../panels/Panel.js';
 
 export class PointText extends Interface {
     constructor() {
@@ -20,14 +20,14 @@ export class PointText extends Interface {
         this.css({
             position: 'absolute',
             left: 10,
-            top: -15,
-            pointerEvents: 'none'
+            top: -15
         });
 
         this.container = new Interface('.container');
         this.container.css({
             position: 'absolute',
-            cursor: 'move'
+            cursor: 'move',
+            zIndex: 1
         });
         this.add(this.container);
 
@@ -40,6 +40,7 @@ export class PointText extends Interface {
 
         this.type = new Interface('.type');
         this.type.css({
+            height: 18,
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
             opacity: 0.7
@@ -109,16 +110,12 @@ export class PointText extends Interface {
             return;
         }
 
-        this.css({ pointerEvents: 'auto' });
-
         this.clearTween().tween({ left: this.number.width + 30, opacity: 1 }, 400, 'easeOutCubic');
 
         this.panel.animateIn();
     };
 
     close = () => {
-        this.css({ pointerEvents: 'none' });
-
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
 
         this.number.animateOut();

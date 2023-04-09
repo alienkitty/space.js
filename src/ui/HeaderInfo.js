@@ -5,7 +5,7 @@
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
-import { Panel } from '../panel/Panel.js';
+import { Panel } from '../panels/Panel.js';
 
 export class HeaderInfo extends Interface {
     constructor() {

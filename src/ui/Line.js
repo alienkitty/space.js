@@ -39,7 +39,7 @@ export class Line extends Component {
     resize = () => {
         // Context properties need to be reassigned after resize
         this.context.lineWidth = 1.5;
-        this.context.strokeStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;
+        this.context.strokeStyle = getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-line').trim();
 
         this.update();
     };
@@ -53,7 +53,7 @@ export class Line extends Component {
             this.props.alpha = 0;
         }
 
-        this.context.globalAlpha = 0.5 * this.props.alpha;
+        this.context.globalAlpha = this.props.alpha;
 
         const length = this.start.distanceTo(this.end);
         const dash = length * this.props.progress;

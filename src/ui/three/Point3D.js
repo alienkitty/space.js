@@ -2,9 +2,14 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Group, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, Vector2 } from 'three';
+import { Group, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';
 
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
+import { VertexTangentsHelper } from 'three/examples/jsm/helpers/VertexTangentsHelper.js';
+
+import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
+import { Stage } from '../../utils/Stage.js';
 import { Line } from '../Line.js';
 import { Reticle } from '../Reticle.js';
 import { Tracker } from '../Tracker.js';
@@ -17,13 +22,19 @@ export class Point3D extends Group {
     static init(scene, camera, {
         root = document.body,
         container = document.body,
+        loader = new TextureLoader(),
+        uvTexturePath = 'assets/textures/uv.jpg',
+        uvHelper = false,
         debug = false
     } = {}) {
+        this.events = new EventEmitter();
         this.scene = scene;
         this.camera = camera;
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
-        this.events = this.root.events;
+        this.loader = loader;
+        this.uvTexturePath = uvTexturePath;
+        this.uvHelper = uvHelper;
         this.debug = debug;
 
         this.objects = [];
@@ -32,6 +43,7 @@ export class Point3D extends Group {
         this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
+        this.coords = new Vector2();
         this.hover = null;
         this.click = null;
         this.lastTime = null;
@@ -42,6 +54,7 @@ export class Point3D extends Group {
         this.enabled = true;
 
         this.initCanvas();
+        this.initLoaders();
 
         this.addListeners();
         this.onResize();
@@ -59,8 +72,14 @@ export class Point3D extends Group {
         this.container.add(this.canvas);
     }
 
+    static initLoaders() {
+        if (this.uvHelper) {
+            this.uvTexture = this.loader.load(this.uvTexturePath);
+        }
+    }
+
     static addListeners() {
-        this.events.on('invert', this.onInvert);
+        Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
         window.addEventListener('pointermove', this.onPointerMove);
@@ -69,7 +88,7 @@ export class Point3D extends Group {
     }
 
     static removeListeners() {
-        this.events.off('invert', this.onInvert);
+        Stage.events.off('invert', this.onInvert);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
@@ -108,10 +127,11 @@ export class Point3D extends Group {
 
         this.onPointerMove(e);
 
+        this.lastTime = performance.now();
+        this.lastMouse.copy(this.mouse);
+
         if (this.hover) {
             this.click = this.hover;
-            this.lastTime = performance.now();
-            this.lastMouse.copy(this.mouse);
         }
     };
 
@@ -121,26 +141,34 @@ export class Point3D extends Group {
         }
 
         if (e) {
-            this.mouse.x = (e.clientX / this.width) * 2 - 1;
-            this.mouse.y = 1 - (e.clientY / this.height) * 2;
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+            this.coords.x = (this.mouse.x / this.width) * 2 - 1;
+            this.coords.y = 1 - (this.mouse.y / this.height) * 2;
         }
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
+        if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
+            this.raycaster.setFromCamera(this.coords, this.camera);
 
-        const intersection = this.raycaster.intersectObjects(this.objects);
+            const intersection = this.raycaster.intersectObjects(this.objects);
 
-        if (intersection.length) {
-            const point = this.points[this.objects.indexOf(intersection[0].object)];
+            if (intersection.length) {
+                const point = this.points[this.objects.indexOf(intersection[0].object)];
 
-            if (!this.hover) {
-                this.hover = point;
-                this.hover.onHover({ type: 'over' });
-                this.root.css({ cursor: 'pointer' });
-            } else if (this.hover !== point) {
+                if (!this.hover) {
+                    this.hover = point;
+                    this.hover.onHover({ type: 'over' });
+                    this.root.css({ cursor: 'pointer' });
+                } else if (this.hover !== point) {
+                    this.hover.onHover({ type: 'out' });
+                    this.hover = point;
+                    this.hover.onHover({ type: 'over' });
+                    this.root.css({ cursor: 'pointer' });
+                }
+            } else if (this.hover) {
                 this.hover.onHover({ type: 'out' });
-                this.hover = point;
-                this.hover.onHover({ type: 'over' });
-                this.root.css({ cursor: 'pointer' });
+                this.hover = null;
+                this.root.css({ cursor: '' });
             }
         } else if (this.hover) {
             this.hover.onHover({ type: 'out' });
@@ -150,7 +178,7 @@ export class Point3D extends Group {
     };
 
     static onPointerUp = e => {
-        if (!this.enabled || !this.click) {
+        if (!this.enabled) {
             return;
         }
 
@@ -161,7 +189,7 @@ export class Point3D extends Group {
             return;
         }
 
-        if (this.click === this.hover) {
+        if (this.click && this.click === this.hover) {
             if (!e.altKey) {
                 this.points.forEach(point => {
                     if (point !== this.click && point.animatedIn) {
@@ -172,6 +200,8 @@ export class Point3D extends Group {
             }
 
             this.click.onClick();
+        } else if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
+            this.animateOut();
         }
 
         this.click = null;
@@ -202,6 +232,10 @@ export class Point3D extends Group {
     /**
      * Public methods
      */
+
+    static getPoint = mesh => {
+        return this.points.find(point => point.object === mesh);
+    };
 
     static getSelected = () => {
         return this.points.filter(point => point.selected).map(point => point.object);
@@ -272,6 +306,10 @@ export class Point3D extends Group {
     static destroy = () => {
         this.removeListeners();
 
+        if (this.uvTexture) {
+            this.uvTexture.dispose();
+        }
+
         for (let i = this.points.length - 1; i >= 0; i--) {
             if (this.points[i] && this.points[i].destroy) {
                 this.points[i].destroy();
@@ -306,29 +344,29 @@ export class Point3D extends Group {
         this.animatedIn = false;
 
         this.initMesh();
+        this.initHTML();
         this.initViews();
-        this.setInitialPosition();
 
         Point3D.add(this);
     }
 
     initMesh() {
         this.object.geometry.computeBoundingSphere();
-        const { center, radius } = this.object.geometry.boundingSphere;
-        const geometry = new SphereGeometry(radius);
 
-        let material;
+        const { center, radius } = this.object.geometry.boundingSphere;
+
+        this.geometry = new SphereGeometry(radius);
 
         if (Point3D.debug) {
-            material = new MeshBasicMaterial({
+            this.material = new MeshBasicMaterial({
                 color: 0xff0000,
                 wireframe: true
             });
         } else {
-            material = new MeshBasicMaterial({ visible: false });
+            this.material = new MeshBasicMaterial({ visible: false });
         }
 
-        this.mesh = new Mesh(geometry, material);
+        this.mesh = new Mesh(this.geometry, this.material);
         this.mesh.position.copy(this.object.position);
         this.mesh.position.x = this.mesh.position.x + center.x;
         this.mesh.position.y = this.mesh.position.y - center.y; // Y flipped
@@ -338,22 +376,31 @@ export class Point3D extends Group {
         this.add(this.mesh);
     }
 
+    initHTML() {
+        this.element = new Interface('.target');
+        this.element.css({
+            position: 'static',
+            fontFamily: 'var(--ui-font-family)',
+            fontWeight: 'var(--ui-font-weight)',
+            fontSize: 'var(--ui-font-size)',
+            lineHeight: 'var(--ui-line-height)',
+            letterSpacing: 'var(--ui-letter-spacing)'
+        });
+        Point3D.container.add(this.element);
+    }
+
     initViews() {
         const { context } = Point3D;
 
-        this.target = new Interface('.target');
-        this.target.css({ position: 'static' });
-        Point3D.container.add(this.target);
-
         this.line = new Line(context);
-        this.target.add(this.line);
+        this.element.add(this.line);
 
         this.reticle = new Reticle();
-        this.target.add(this.reticle);
+        this.element.add(this.reticle);
 
         if (!this.noTracker) {
             this.tracker = new Tracker();
-            this.target.add(this.tracker);
+            this.element.add(this.tracker);
         }
 
         this.point = new Point(this, this.tracker);
@@ -361,7 +408,7 @@ export class Point3D extends Group {
             name: this.name,
             type: this.type
         });
-        this.target.add(this.point);
+        this.element.add(this.point);
 
         this.panel = this.point.text.panel;
     }
@@ -397,6 +444,7 @@ export class Point3D extends Group {
 
         if (type === 'over') {
             if (!this.animatedIn) {
+                this.setInitialPosition();
                 this.resize();
                 this.animateIn();
             }
@@ -446,12 +494,76 @@ export class Point3D extends Group {
         this.panel.add(item);
     };
 
+    toggleNormalsHelper = show => {
+        if (show) {
+            if (!this.normalsHelper) {
+                this.object.geometry.computeBoundingSphere();
+
+                const { radius } = this.object.geometry.boundingSphere;
+
+                this.normalsHelper = new VertexNormalsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.normalsHelper);
+            }
+
+            this.normalsHelper.visible = true;
+        } else if (this.normalsHelper) {
+            this.normalsHelper.visible = false;
+        }
+    };
+
+    toggleTangentsHelper = show => {
+        if (show) {
+            if (!this.tangentsHelper) {
+                this.object.geometry.computeBoundingSphere();
+                this.object.geometry.computeTangents();
+
+                const { radius } = this.object.geometry.boundingSphere;
+
+                this.tangentsHelper = new VertexTangentsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.tangentsHelper);
+            }
+
+            this.tangentsHelper.visible = true;
+        } else if (this.tangentsHelper) {
+            this.tangentsHelper.visible = false;
+        }
+    };
+
+    toggleUVHelper = show => {
+        const material = this.object.material;
+
+        if (show) {
+            if (Point3D.uvTexture && Point3D.uvTexture.image) {
+                if (!this.uvTexture) {
+                    this.uvTexture = Point3D.uvTexture.clone();
+                }
+
+                if (!this.currentMaterialMap && material.map !== this.uvTexture) {
+                    this.currentMaterialMap = material.map;
+
+                    material.map = this.uvTexture;
+                    material.needsUpdate = true;
+                }
+            }
+        } else {
+            material.map = this.currentMaterialMap;
+            material.needsUpdate = true;
+
+            if (this.uvTexture) {
+                this.uvTexture.dispose();
+            }
+
+            delete this.currentMaterialMap;
+            delete this.uvTexture;
+        }
+    };
+
     resize = () => {
         this.line.resize();
     };
 
     update = () => {
-        this.line.startPoint(this.reticle.target);
+        this.line.startPoint(this.reticle.position);
         this.line.endPoint(this.point.originPosition);
         this.line.update();
         this.reticle.update();
@@ -491,6 +603,14 @@ export class Point3D extends Group {
         }
 
         this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+
+        if (this.normalsHelper) {
+            this.normalsHelper.update();
+        }
+
+        if (this.tangentsHelper) {
+            this.tangentsHelper.update();
+        }
     };
 
     animateIn = (reverse = false) => {
@@ -533,6 +653,8 @@ export class Point3D extends Group {
             }
 
             this.point.close();
+
+            Stage.events.emit('color_picker', { open: false, target: this.panel });
         }
     };
 
@@ -540,11 +662,32 @@ export class Point3D extends Group {
         this.selected = false;
         this.line.inactive();
         this.point.inactive();
+
+        Stage.events.emit('color_picker', { open: false, target: this.panel });
     };
 
     destroy = () => {
+        if (this.normalsHelper) {
+            this.toggleNormalsHelper(false);
+            Point3D.scene.remove(this.normalsHelper);
+            this.normalsHelper.dispose();
+        }
+
+        if (this.tangentsHelper) {
+            this.toggleTangentsHelper(false);
+            Point3D.scene.remove(this.tangentsHelper);
+            this.tangentsHelper.dispose();
+        }
+
+        if (this.currentMaterialMap) {
+            this.toggleUVHelper(false);
+        }
+
+        this.material.dispose();
+        this.geometry.dispose();
+
         this.animateOut(false, () => {
-            this.target = this.target.destroy();
+            this.element = this.element.destroy();
         });
     };
 }

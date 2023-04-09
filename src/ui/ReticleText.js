@@ -29,6 +29,7 @@ export class ReticleText extends Interface {
 
         this.secondary = new Interface('.secondary');
         this.secondary.css({
+            height: 18,
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
             opacity: 0.7
