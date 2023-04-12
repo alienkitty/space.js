@@ -5,7 +5,7 @@
 import { Point3D } from '../../ui/three/Point3D.js';
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from './MeshPanelOptions.js';
+import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from './Options.js';
 
 import { getKeyByValue } from '../../utils/Utils.js';
 

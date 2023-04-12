@@ -4,7 +4,7 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { CombineOptions } from './MaterialPanelOptions.js';
+import { CombineOptions } from './Options.js';
 
 import { getKeyByValue } from '../../utils/Utils.js';
 

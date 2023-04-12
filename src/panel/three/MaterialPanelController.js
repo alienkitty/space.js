@@ -7,7 +7,7 @@ import { MeshBasicMaterial, MeshLambertMaterial, MeshMatcapMaterial, MeshNormalM
 import { Point3D } from '../../ui/three/Point3D.js';
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { SideOptions, VisibleOptions } from './MaterialPanelOptions.js';
+import { SideOptions, VisibleOptions } from './Options.js';
 
 import { getKeyByValue } from '../../utils/Utils.js';
 

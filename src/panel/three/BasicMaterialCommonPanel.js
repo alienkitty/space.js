@@ -4,7 +4,7 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { WireframeOptions } from './MaterialPanelOptions.js';
+import { WireframeOptions } from './Options.js';
 
 import { getKeyByValue } from '../../utils/Utils.js';
 

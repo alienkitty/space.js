@@ -22,3 +22,4 @@ export { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissio
 export { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 export { NormalMaterialPanel } from './NormalMaterialPanel.js';
 export { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
+export { MeshHelperPanel } from './MeshHelperPanel.js';

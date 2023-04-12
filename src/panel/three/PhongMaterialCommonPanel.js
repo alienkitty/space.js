@@ -4,7 +4,7 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js';
+import { FlatShadingOptions, WireframeOptions } from './Options.js';
 
 import { getKeyByValue } from '../../utils/Utils.js';
 
