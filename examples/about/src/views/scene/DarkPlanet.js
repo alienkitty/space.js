@@ -1,4 +1,6 @@
-import { Color, IcosahedronGeometry, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+
+import { getSphericalCube } from '@alienkitty/space.js/three';
 
 import { RenderGroup } from '../../objects/RenderGroup.js';
 
@@ -13,7 +15,7 @@ export class DarkPlanet extends RenderGroup {
     }
 
     async initMesh() {
-        const geometry = new IcosahedronGeometry(0.6, 12);
+        const geometry = getSphericalCube(0.6, 10);
 
         const material = new MeshStandardMaterial({
             name: 'Dark Planet',
