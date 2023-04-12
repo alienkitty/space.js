@@ -9,16 +9,16 @@ import { CombineOptions } from './MaterialPanelOptions.js';
 import { getKeyByValue } from '../../utils/Utils.js';
 
 export class BasicMaterialEnvPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -27,10 +27,10 @@ export class BasicMaterialEnvPanel extends Panel {
             {
                 type: 'list',
                 list: CombineOptions,
-                value: getKeyByValue(CombineOptions, material.combine),
+                value: getKeyByValue(CombineOptions, mesh.material.combine),
                 callback: value => {
-                    material.combine = CombineOptions[value];
-                    material.needsUpdate = true;
+                    mesh.material.combine = CombineOptions[value];
+                    mesh.material.needsUpdate = true;
                 }
             },
             {
@@ -39,9 +39,9 @@ export class BasicMaterialEnvPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.reflectivity,
+                value: mesh.material.reflectivity,
                 callback: value => {
-                    material.reflectivity = value;
+                    mesh.material.reflectivity = value;
                 }
             },
             {
@@ -50,9 +50,9 @@ export class BasicMaterialEnvPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.refractionRatio,
+                value: mesh.material.refractionRatio,
                 callback: value => {
-                    material.refractionRatio = value;
+                    mesh.material.refractionRatio = value;
                 }
             }
             // TODO: Texture thumbnails

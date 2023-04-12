@@ -1,4 +1,4 @@
-import { Panel, PanelItem, PhysicalMaterialClearcoatPanel, PhysicalMaterialCommonPanel, PhysicalMaterialEnvPanel, PhysicalMaterialSheenPanel } from '@alienkitty/space.js/three';
+import { MeshHelperPanel, Panel, PanelItem, PhysicalMaterialClearcoatPanel, PhysicalMaterialCommonPanel, PhysicalMaterialEnvPanel, PhysicalMaterialSheenPanel } from '@alienkitty/space.js/three';
 
 import { TransmissionMaterialTransmissionPanel } from './TransmissionMaterialTransmissionPanel.js';
 
@@ -42,26 +42,27 @@ export class TransmissionMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         // Override defaults
-        material._transmission = 1;
+        mesh.material._transmission = 1;
 
         const materialOptions = {
             Common: PhysicalMaterialCommonPanel,
             Clearcoat: PhysicalMaterialClearcoatPanel,
             Sheen: PhysicalMaterialSheenPanel,
             Transmission: TransmissionMaterialTransmissionPanel,
-            Env: PhysicalMaterialEnvPanel
+            Env: PhysicalMaterialEnvPanel,
+            Helper: MeshHelperPanel
         };
 
         const items = [
@@ -75,7 +76,7 @@ export class TransmissionMaterialPanel extends Panel {
                 callback: (value, panel) => {
                     const MaterialPanel = materialOptions[value];
 
-                    const materialPanel = new MaterialPanel(material);
+                    const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
                     panel.setContent(materialPanel);

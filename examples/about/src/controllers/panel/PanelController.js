@@ -2,6 +2,7 @@ import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapp
 
 import { Panel, PanelItem, Point3D, Stage, brightness, getKeyByValue } from '@alienkitty/space.js/three';
 
+import { WorldController } from '../world/WorldController.js';
 import { RenderManager } from '../world/RenderManager.js';
 import { ScenePanelController } from './ScenePanelController.js';
 
@@ -21,9 +22,13 @@ export class PanelController {
     }
 
     static initControllers() {
+        const { textureLoader } = WorldController;
+
         Point3D.init(this.scene, this.camera, {
             root: Stage,
-            container: this.ui
+            container: this.ui,
+            loader: textureLoader,
+            uvHelper: true
         });
 
         ScenePanelController.init(this.view);

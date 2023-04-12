@@ -6,16 +6,16 @@ import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 
 export class PhysicalMaterialTransmissionPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -27,9 +27,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.transmission,
+                value: mesh.material.transmission,
                 callback: value => {
-                    material.transmission = value;
+                    mesh.material.transmission = value;
                 }
             },
             {
@@ -38,16 +38,16 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 5,
                 step: 0.01,
-                value: material.thickness,
+                value: mesh.material.thickness,
                 callback: value => {
-                    material.thickness = value;
+                    mesh.material.thickness = value;
                 }
             },
             {
                 type: 'color',
-                value: material.attenuationColor,
+                value: mesh.material.attenuationColor,
                 callback: value => {
-                    material.attenuationColor.copy(value);
+                    mesh.material.attenuationColor.copy(value);
                 }
             },
             {
@@ -56,9 +56,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 5,
                 step: 0.01,
-                value: material.attenuationDistance,
+                value: mesh.material.attenuationDistance,
                 callback: value => {
-                    material.attenuationDistance = value;
+                    mesh.material.attenuationDistance = value;
                 }
             },
             {
@@ -67,9 +67,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: material.ior,
+                value: mesh.material.ior,
                 callback: value => {
-                    material.ior = value;
+                    mesh.material.ior = value;
                 }
             },
             {
@@ -78,9 +78,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.reflectivity,
+                value: mesh.material.reflectivity,
                 callback: value => {
-                    material.reflectivity = value;
+                    mesh.material.reflectivity = value;
                 }
             }
             // TODO: Texture thumbnails

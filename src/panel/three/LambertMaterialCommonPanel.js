@@ -9,16 +9,16 @@ import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js'
 import { getKeyByValue } from '../../utils/Utils.js';
 
 export class LambertMaterialCommonPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -26,33 +26,33 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                value: material.color,
+                value: mesh.material.color,
                 callback: value => {
-                    material.color.copy(value);
+                    mesh.material.color.copy(value);
                 }
             },
             {
                 type: 'color',
-                value: material.emissive,
+                value: mesh.material.emissive,
                 callback: value => {
-                    material.emissive.copy(value);
+                    mesh.material.emissive.copy(value);
                 }
             },
             {
                 type: 'list',
                 list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, material.flatShading),
+                value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
-                    material.flatShading = FlatShadingOptions[value];
-                    material.needsUpdate = true;
+                    mesh.material.flatShading = FlatShadingOptions[value];
+                    mesh.material.needsUpdate = true;
                 }
             },
             {
                 type: 'list',
                 list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, material.wireframe),
+                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
-                    material.wireframe = WireframeOptions[value];
+                    mesh.material.wireframe = WireframeOptions[value];
                 }
             }
             // TODO: Texture thumbnails

@@ -5,7 +5,7 @@
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 
-export class StandardMaterialEnvPanel extends Panel {
+export class ToonMaterialCommonPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -21,18 +21,14 @@ export class StandardMaterialEnvPanel extends Panel {
             {
                 type: 'divider'
             },
-            // TODO: Texture thumbnails
             {
-                type: 'slider',
-                label: 'Intensity',
-                min: 0,
-                max: 10,
-                step: 0.1,
-                value: mesh.material.envMapIntensity,
+                type: 'color',
+                value: mesh.material.color,
                 callback: value => {
-                    mesh.material.envMapIntensity = value;
+                    mesh.material.color.copy(value);
                 }
             }
+            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

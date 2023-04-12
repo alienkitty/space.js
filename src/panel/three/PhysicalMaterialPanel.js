@@ -10,6 +10,7 @@ import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
 
 export class PhysicalMaterialPanel extends Panel {
     static type = [
@@ -47,23 +48,24 @@ export class PhysicalMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const materialOptions = {
             Common: PhysicalMaterialCommonPanel,
             Clearcoat: PhysicalMaterialClearcoatPanel,
             Sheen: PhysicalMaterialSheenPanel,
             Transmission: PhysicalMaterialTransmissionPanel,
-            Env: PhysicalMaterialEnvPanel
+            Env: PhysicalMaterialEnvPanel,
+            Helper: MeshHelperPanel
         };
 
         const items = [
@@ -77,7 +79,7 @@ export class PhysicalMaterialPanel extends Panel {
                 callback: (value, panel) => {
                     const MaterialPanel = materialOptions[value];
 
-                    const materialPanel = new MaterialPanel(material);
+                    const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
                     panel.setContent(materialPanel);

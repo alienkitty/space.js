@@ -7,6 +7,7 @@ import { PanelItem } from '../PanelItem.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
 import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
 
 export class BasicMaterialPanel extends Panel {
     static type = [
@@ -23,20 +24,21 @@ export class BasicMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const materialOptions = {
             Common: BasicMaterialCommonPanel,
-            Env: BasicMaterialEnvPanel
+            Env: BasicMaterialEnvPanel,
+            Helper: MeshHelperPanel
         };
 
         const items = [
@@ -50,7 +52,7 @@ export class BasicMaterialPanel extends Panel {
                 callback: (value, panel) => {
                     const MaterialPanel = materialOptions[value];
 
-                    const materialPanel = new MaterialPanel(material);
+                    const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
                     panel.setContent(materialPanel);

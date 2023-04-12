@@ -6,16 +6,16 @@ import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 
 export class PhysicalMaterialEnvPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -27,9 +27,9 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: material.ior,
+                value: mesh.material.ior,
                 callback: value => {
-                    material.ior = value;
+                    mesh.material.ior = value;
                 }
             },
             {
@@ -38,9 +38,9 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.reflectivity,
+                value: mesh.material.reflectivity,
                 callback: value => {
-                    material.reflectivity = value;
+                    mesh.material.reflectivity = value;
                 }
             },
             // TODO: Texture thumbnails
@@ -50,9 +50,9 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 min: 0,
                 max: 10,
                 step: 0.1,
-                value: material.envMapIntensity,
+                value: mesh.material.envMapIntensity,
                 callback: value => {
-                    material.envMapIntensity = value;
+                    mesh.material.envMapIntensity = value;
                 }
             }
         ];

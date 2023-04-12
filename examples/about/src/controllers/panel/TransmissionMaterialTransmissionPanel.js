@@ -1,16 +1,16 @@
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 export class TransmissionMaterialTransmissionPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -22,9 +22,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material._transmission,
+                value: mesh.material._transmission,
                 callback: value => {
-                    material._transmission = value;
+                    mesh.material._transmission = value;
                 }
             },
             {
@@ -33,9 +33,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: material.roughness,
+                value: mesh.material.roughness,
                 callback: value => {
-                    material.roughness = value;
+                    mesh.material.roughness = value;
                 }
             },
             {
@@ -44,16 +44,16 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 10,
                 step: 0.01,
-                value: material.thickness,
+                value: mesh.material.thickness,
                 callback: value => {
-                    material.thickness = value;
+                    mesh.material.thickness = value;
                 }
             },
             {
                 type: 'color',
-                value: material.attenuationColor,
+                value: mesh.material.attenuationColor,
                 callback: value => {
-                    material.attenuationColor.copy(value);
+                    mesh.material.attenuationColor.copy(value);
                 }
             },
             {
@@ -62,9 +62,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 10,
                 step: 0.01,
-                value: material.attenuationDistance,
+                value: mesh.material.attenuationDistance,
                 callback: value => {
-                    material.attenuationDistance = value;
+                    mesh.material.attenuationDistance = value;
                 }
             },
             {
@@ -73,9 +73,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: material.ior,
+                value: mesh.material.ior,
                 callback: value => {
-                    material.ior = value;
+                    mesh.material.ior = value;
                 }
             },
             {
@@ -84,9 +84,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.reflectivity,
+                value: mesh.material.reflectivity,
                 callback: value => {
-                    material.reflectivity = value;
+                    mesh.material.reflectivity = value;
                 }
             },
             {
@@ -95,9 +95,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.chromaticAberration,
+                value: mesh.material.chromaticAberration,
                 callback: value => {
-                    material.chromaticAberration = value;
+                    mesh.material.chromaticAberration = value;
                 }
             },
             {
@@ -106,9 +106,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.anisotropy,
+                value: mesh.material.anisotropy,
                 callback: value => {
-                    material.anisotropy = value;
+                    mesh.material.anisotropy = value;
                 }
             }
             // TODO: Texture thumbnails

@@ -4,9 +4,9 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions } from './MaterialPanelOptions.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
 
 export class MatcapMaterialPanel extends Panel {
     static type = [
@@ -20,38 +20,39 @@ export class MatcapMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
+
+        const materialOptions = {
+            Common: MatcapMaterialCommonPanel,
+            Helper: MeshHelperPanel
+        };
 
         const items = [
             {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: material.color,
-                callback: value => {
-                    material.color.copy(value);
-                }
-            },
-            {
                 type: 'list',
-                list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, material.flatShading),
-                callback: value => {
-                    material.flatShading = FlatShadingOptions[value];
-                    material.needsUpdate = true;
+                list: materialOptions,
+                value: 'Common',
+                callback: (value, panel) => {
+                    const MaterialPanel = materialOptions[value];
+
+                    const materialPanel = new MaterialPanel(mesh);
+                    materialPanel.animateIn(true);
+
+                    panel.setContent(materialPanel);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

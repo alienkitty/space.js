@@ -9,16 +9,16 @@ import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js'
 import { getKeyByValue } from '../../utils/Utils.js';
 
 export class PhysicalMaterialCommonPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -26,23 +26,23 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                value: material.color,
+                value: mesh.material.color,
                 callback: value => {
-                    material.color.copy(value);
+                    mesh.material.color.copy(value);
                 }
             },
             {
                 type: 'color',
-                value: material.emissive,
+                value: mesh.material.emissive,
                 callback: value => {
-                    material.emissive.copy(value);
+                    mesh.material.emissive.copy(value);
                 }
             },
             {
                 type: 'color',
-                value: material.specularColor,
+                value: mesh.material.specularColor,
                 callback: value => {
-                    material.specularColor.copy(value);
+                    mesh.material.specularColor.copy(value);
                 }
             },
             {
@@ -51,9 +51,9 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.specularIntensity,
+                value: mesh.material.specularIntensity,
                 callback: value => {
-                    material.specularIntensity = value;
+                    mesh.material.specularIntensity = value;
                 }
             },
             {
@@ -62,9 +62,9 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: material.roughness,
+                value: mesh.material.roughness,
                 callback: value => {
-                    material.roughness = value;
+                    mesh.material.roughness = value;
                 }
             },
             {
@@ -73,26 +73,26 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: material.metalness,
+                value: mesh.material.metalness,
                 callback: value => {
-                    material.metalness = value;
+                    mesh.material.metalness = value;
                 }
             },
             {
                 type: 'list',
                 list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, material.flatShading),
+                value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
-                    material.flatShading = FlatShadingOptions[value];
-                    material.needsUpdate = true;
+                    mesh.material.flatShading = FlatShadingOptions[value];
+                    mesh.material.needsUpdate = true;
                 }
             },
             {
                 type: 'list',
                 list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, material.wireframe),
+                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
-                    material.wireframe = WireframeOptions[value];
+                    mesh.material.wireframe = WireframeOptions[value];
                 }
             }
             // TODO: Texture thumbnails

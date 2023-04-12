@@ -2,7 +2,10 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Group, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, Vector2 } from 'three';
+import { Group, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';
+
+import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
+import { VertexTangentsHelper } from 'three/examples/jsm/helpers/VertexTangentsHelper.js';
 
 import { Interface } from '../../utils/Interface.js';
 import { Line } from '../Line.js';
@@ -17,6 +20,9 @@ export class Point3D extends Group {
     static init(scene, camera, {
         root = document.body,
         container = document.body,
+        loader = new TextureLoader(),
+        uvTexturePath = 'assets/textures/uv.jpg',
+        uvHelper = false,
         debug = false
     } = {}) {
         this.scene = scene;
@@ -24,6 +30,9 @@ export class Point3D extends Group {
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
         this.events = this.root.events;
+        this.loader = loader;
+        this.uvTexturePath = uvTexturePath;
+        this.uvHelper = uvHelper;
         this.debug = debug;
 
         this.objects = [];
@@ -212,6 +221,10 @@ export class Point3D extends Group {
      * Public methods
      */
 
+    static getPoint = mesh => {
+        return this.points.find(point => point.object === mesh);
+    };
+
     static getSelected = () => {
         return this.points.filter(point => point.selected).map(point => point.object);
     };
@@ -281,6 +294,10 @@ export class Point3D extends Group {
     static destroy = () => {
         this.removeListeners();
 
+        if (this.uvTexture) {
+            this.uvTexture.dispose();
+        }
+
         for (let i = this.points.length - 1; i >= 0; i--) {
             if (this.points[i] && this.points[i].destroy) {
                 this.points[i].destroy();
@@ -324,21 +341,21 @@ export class Point3D extends Group {
 
     initMesh() {
         this.object.geometry.computeBoundingSphere();
-        const { center, radius } = this.object.geometry.boundingSphere;
-        const geometry = new SphereGeometry(radius);
 
-        let material;
+        const { center, radius } = this.object.geometry.boundingSphere;
+
+        this.geometry = new SphereGeometry(radius);
 
         if (Point3D.debug) {
-            material = new MeshBasicMaterial({
+            this.material = new MeshBasicMaterial({
                 color: 0xff0000,
                 wireframe: true
             });
         } else {
-            material = new MeshBasicMaterial({ visible: false });
+            this.material = new MeshBasicMaterial({ visible: false });
         }
 
-        this.mesh = new Mesh(geometry, material);
+        this.mesh = new Mesh(this.geometry, this.material);
         this.mesh.position.copy(this.object.position);
         this.mesh.position.x = this.mesh.position.x + center.x;
         this.mesh.position.y = this.mesh.position.y - center.y; // Y flipped
@@ -465,6 +482,63 @@ export class Point3D extends Group {
         this.panel.add(item);
     };
 
+    toggleNormalsHelper = show => {
+        if (show) {
+            if (!this.vnh) {
+                this.object.geometry.computeBoundingSphere();
+
+                const { radius } = this.object.geometry.boundingSphere;
+
+                this.vnh = new VertexNormalsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.vnh);
+            }
+
+            this.vnh.visible = true;
+        } else if (this.vnh) {
+            this.vnh.visible = false;
+        }
+    };
+
+    toggleTangentsHelper = show => {
+        if (show) {
+            if (!this.vth) {
+                this.object.geometry.computeBoundingSphere();
+                this.object.geometry.computeTangents();
+
+                const { radius } = this.object.geometry.boundingSphere;
+
+                this.vth = new VertexTangentsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.vth);
+            }
+
+            this.vth.visible = true;
+        } else if (this.vth) {
+            this.vth.visible = false;
+        }
+    };
+
+    toggleUVHelper = show => {
+        const material = this.object.material;
+
+        if (show) {
+            if (!Point3D.uvTexture) {
+                Point3D.uvTexture = Point3D.loader.load(Point3D.uvTexturePath);
+            }
+
+            if (!this.currentMaterialMap && material.map !== Point3D.uvTexture) {
+                this.currentMaterialMap = material.map;
+
+                material.map = Point3D.uvTexture;
+                material.needsUpdate = true;
+            }
+        } else {
+            material.map = this.currentMaterialMap;
+            material.needsUpdate = true;
+
+            delete this.currentMaterialMap;
+        }
+    };
+
     resize = () => {
         this.line.resize();
     };
@@ -510,6 +584,14 @@ export class Point3D extends Group {
         }
 
         this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+
+        if (this.vnh) {
+            this.vnh.update();
+        }
+
+        if (this.vth) {
+            this.vth.update();
+        }
     };
 
     animateIn = (reverse = false) => {
@@ -566,6 +648,25 @@ export class Point3D extends Group {
     };
 
     destroy = () => {
+        if (this.vnh) {
+            this.toggleNormalsHelper(false);
+            Point3D.scene.remove(this.vnh);
+            this.vnh.dispose();
+        }
+
+        if (this.vth) {
+            this.toggleTangentsHelper(false);
+            Point3D.scene.remove(this.vth);
+            this.vth.dispose();
+        }
+
+        if (this.currentMaterialMap) {
+            this.toggleUVHelper(false);
+        }
+
+        this.material.dispose();
+        this.geometry.dispose();
+
         this.animateOut(false, () => {
             this.element = this.element.destroy();
         });

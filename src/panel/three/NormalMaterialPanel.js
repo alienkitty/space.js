@@ -4,9 +4,9 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
 
 export class NormalMaterialPanel extends Panel {
     static type = [
@@ -20,16 +20,21 @@ export class NormalMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
+
+        const materialOptions = {
+            Common: NormalMaterialCommonPanel,
+            Helper: MeshHelperPanel
+        };
 
         const items = [
             {
@@ -37,19 +42,15 @@ export class NormalMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, material.flatShading),
-                callback: value => {
-                    material.flatShading = FlatShadingOptions[value];
-                    material.needsUpdate = true;
-                }
-            },
-            {
-                type: 'list',
-                list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, material.wireframe),
-                callback: value => {
-                    material.wireframe = WireframeOptions[value];
+                list: materialOptions,
+                value: 'Common',
+                callback: (value, panel) => {
+                    const MaterialPanel = materialOptions[value];
+
+                    const materialPanel = new MaterialPanel(mesh);
+                    materialPanel.animateIn(true);
+
+                    panel.setContent(materialPanel);
                 }
             }
         ];

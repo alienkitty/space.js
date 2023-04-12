@@ -7,6 +7,7 @@ import { PanelItem } from '../PanelItem.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
 
 export class PhongMaterialPanel extends Panel {
     static type = [
@@ -30,20 +31,21 @@ export class PhongMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const materialOptions = {
             Common: PhongMaterialCommonPanel,
-            Env: PhongMaterialEnvPanel
+            Env: PhongMaterialEnvPanel,
+            Helper: MeshHelperPanel
         };
 
         const items = [
@@ -57,7 +59,7 @@ export class PhongMaterialPanel extends Panel {
                 callback: (value, panel) => {
                     const MaterialPanel = materialOptions[value];
 
-                    const materialPanel = new MaterialPanel(material);
+                    const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
                     panel.setContent(materialPanel);

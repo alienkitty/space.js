@@ -4,6 +4,7 @@
 
 import { MeshBasicMaterial, MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MeshToonMaterial } from 'three';
 
+import { Point3D } from '../../ui/three/Point3D.js';
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 import { SideOptions, VisibleOptions } from './MaterialPanelOptions.js';
@@ -117,6 +118,8 @@ export class MaterialPanelController {
                         });
                     });
 
+                    materialProperties.map = mesh.material.map;
+
                     mesh.material = new Material();
 
                     mesh.material.transparent = materialProperties.transparent;
@@ -141,6 +144,12 @@ export class MaterialPanelController {
                         });
                     });
 
+                    if (Point3D.currentMaterialMap !== undefined) {
+                        mesh.material.map = Point3D.uvTexture;
+                    } else {
+                        mesh.material.map = materialProperties.map;
+                    }
+
                     mesh.material.needsUpdate = true;
 
                     if (ui.point && ui.isDefault) {
@@ -150,7 +159,7 @@ export class MaterialPanelController {
                         });
                     }
 
-                    const materialPanel = new MaterialPanel(mesh.material);
+                    const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
                     panel.setContent(materialPanel);

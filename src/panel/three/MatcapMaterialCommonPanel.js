@@ -4,8 +4,11 @@
 
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
+import { FlatShadingOptions } from './MaterialPanelOptions.js';
 
-export class PhysicalMaterialClearcoatPanel extends Panel {
+import { getKeyByValue } from '../../utils/Utils.js';
+
+export class MatcapMaterialCommonPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -22,25 +25,19 @@ export class PhysicalMaterialClearcoatPanel extends Panel {
                 type: 'divider'
             },
             {
-                type: 'slider',
-                label: 'Intensity',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: mesh.material.clearcoat,
+                type: 'color',
+                value: mesh.material.color,
                 callback: value => {
-                    mesh.material.clearcoat = value;
+                    mesh.material.color.copy(value);
                 }
             },
             {
-                type: 'slider',
-                label: 'Rough',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: mesh.material.clearcoatRoughness,
+                type: 'list',
+                list: FlatShadingOptions,
+                value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
-                    mesh.material.clearcoatRoughness = value;
+                    mesh.material.flatShading = FlatShadingOptions[value];
+                    mesh.material.needsUpdate = true;
                 }
             }
             // TODO: Texture thumbnails

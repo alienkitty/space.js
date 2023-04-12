@@ -6,16 +6,16 @@ import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 
 export class PhysicalMaterialSheenPanel extends Panel {
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
 
         const items = [
             {
@@ -27,9 +27,9 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: material.sheen,
+                value: mesh.material.sheen,
                 callback: value => {
-                    material.sheen = value;
+                    mesh.material.sheen = value;
                 }
             },
             {
@@ -38,16 +38,16 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: material.sheenRoughness,
+                value: mesh.material.sheenRoughness,
                 callback: value => {
-                    material.sheenRoughness = value;
+                    mesh.material.sheenRoughness = value;
                 }
             },
             {
                 type: 'color',
-                value: material.sheenColor,
+                value: mesh.material.sheenColor,
                 callback: value => {
-                    material.sheenColor.copy(value);
+                    mesh.material.sheenColor.copy(value);
                 }
             }
             // TODO: Texture thumbnails

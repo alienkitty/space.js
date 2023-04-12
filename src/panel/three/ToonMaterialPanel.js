@@ -5,6 +5,9 @@
 import { Panel } from '../Panel.js';
 import { PanelItem } from '../PanelItem.js';
 
+import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
+import { MeshHelperPanel } from './MeshHelperPanel.js';
+
 export class ToonMaterialPanel extends Panel {
     static type = [
         'common'
@@ -16,29 +19,39 @@ export class ToonMaterialPanel extends Panel {
         ]
     };
 
-    constructor(material) {
+    constructor(mesh) {
         super();
 
-        this.material = material;
+        this.mesh = mesh;
 
         this.initPanel();
     }
 
     initPanel() {
-        const material = this.material;
+        const mesh = this.mesh;
+
+        const materialOptions = {
+            Common: ToonMaterialCommonPanel,
+            Helper: MeshHelperPanel
+        };
 
         const items = [
             {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: material.color,
-                callback: value => {
-                    material.color.copy(value);
+                type: 'list',
+                list: materialOptions,
+                value: 'Common',
+                callback: (value, panel) => {
+                    const MaterialPanel = materialOptions[value];
+
+                    const materialPanel = new MaterialPanel(mesh);
+                    materialPanel.animateIn(true);
+
+                    panel.setContent(materialPanel);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

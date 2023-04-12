@@ -8,7 +8,7 @@ import { FlatShadingOptions, WireframeOptions } from './MaterialPanelOptions.js'
 
 import { getKeyByValue } from '../../utils/Utils.js';
 
-export class PhongMaterialCommonPanel extends Panel {
+export class NormalMaterialCommonPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -23,38 +23,6 @@ export class PhongMaterialCommonPanel extends Panel {
         const items = [
             {
                 type: 'divider'
-            },
-            {
-                type: 'color',
-                value: mesh.material.color,
-                callback: value => {
-                    mesh.material.color.copy(value);
-                }
-            },
-            {
-                type: 'color',
-                value: mesh.material.emissive,
-                callback: value => {
-                    mesh.material.emissive.copy(value);
-                }
-            },
-            {
-                type: 'color',
-                value: mesh.material.specular,
-                callback: value => {
-                    mesh.material.specular.copy(value);
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Shiny',
-                min: 0,
-                max: 100,
-                step: 1,
-                value: mesh.material.shininess,
-                callback: value => {
-                    mesh.material.shininess = value;
-                }
             },
             {
                 type: 'list',
@@ -73,7 +41,6 @@ export class PhongMaterialCommonPanel extends Panel {
                     mesh.material.wireframe = WireframeOptions[value];
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {
