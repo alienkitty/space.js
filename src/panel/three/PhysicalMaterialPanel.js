@@ -11,6 +11,7 @@ import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from './MeshHelperPanel.js';
+import { MapPanel } from './MapPanel.js';
 
 export class PhysicalMaterialPanel extends Panel {
     static type = [
@@ -61,6 +62,7 @@ export class PhysicalMaterialPanel extends Panel {
 
         const materialOptions = {
             Common: PhysicalMaterialCommonPanel,
+            Map: MapPanel,
             Clearcoat: PhysicalMaterialClearcoatPanel,
             Sheen: PhysicalMaterialSheenPanel,
             Transmission: PhysicalMaterialTransmissionPanel,

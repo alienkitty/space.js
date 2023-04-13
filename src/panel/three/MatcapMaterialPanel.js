@@ -7,6 +7,7 @@ import { PanelItem } from '../PanelItem.js';
 
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
 import { MeshHelperPanel } from './MeshHelperPanel.js';
+import { MapPanel } from './MapPanel.js';
 
 export class MatcapMaterialPanel extends Panel {
     static type = [
@@ -33,6 +34,7 @@ export class MatcapMaterialPanel extends Panel {
 
         const materialOptions = {
             Common: MatcapMaterialCommonPanel,
+            Map: MapPanel,
             Helper: MeshHelperPanel
         };
 

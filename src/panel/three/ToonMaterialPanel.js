@@ -7,6 +7,7 @@ import { PanelItem } from '../PanelItem.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { MeshHelperPanel } from './MeshHelperPanel.js';
+import { MapPanel } from './MapPanel.js';
 
 export class ToonMaterialPanel extends Panel {
     static type = [
@@ -32,6 +33,7 @@ export class ToonMaterialPanel extends Panel {
 
         const materialOptions = {
             Common: ToonMaterialCommonPanel,
+            Map: MapPanel,
             Helper: MeshHelperPanel
         };
 

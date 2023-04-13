@@ -69,6 +69,11 @@ export class WorldController {
 
     static initLoaders() {
         this.textureLoader = new TextureLoader();
+        /* this.textureLoader.setOptions({
+            preserveData: true
+        });
+        this.textureLoader.cache = true; */
+
         this.environmentLoader = new EnvironmentTextureLoader(this.renderer);
         this.bufferGeometryLoader = new BufferGeometryLoader();
     }

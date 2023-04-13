@@ -52,6 +52,7 @@ export class Point3D extends Group {
         this.enabled = true;
 
         this.initCanvas();
+        this.initLoaders();
 
         this.addListeners();
         this.onResize();
@@ -67,6 +68,12 @@ export class Point3D extends Group {
         });
         this.context = this.canvas.element.getContext('2d');
         this.container.add(this.canvas);
+    }
+
+    static initLoaders() {
+        if (this.uvHelper) {
+            this.uvTexture = this.loader.load(this.uvTexturePath);
+        }
     }
 
     static addListeners() {
@@ -521,21 +528,28 @@ export class Point3D extends Group {
         const material = this.object.material;
 
         if (show) {
-            if (!Point3D.uvTexture) {
-                Point3D.uvTexture = Point3D.loader.load(Point3D.uvTexturePath);
-            }
+            if (Point3D.uvTexture && Point3D.uvTexture.image) {
+                if (!this.uvTexture) {
+                    this.uvTexture = Point3D.uvTexture.clone();
+                }
 
-            if (!this.currentMaterialMap && material.map !== Point3D.uvTexture) {
-                this.currentMaterialMap = material.map;
+                if (!this.currentMaterialMap && material.map !== this.uvTexture) {
+                    this.currentMaterialMap = material.map;
 
-                material.map = Point3D.uvTexture;
-                material.needsUpdate = true;
+                    material.map = this.uvTexture;
+                    material.needsUpdate = true;
+                }
             }
         } else {
             material.map = this.currentMaterialMap;
             material.needsUpdate = true;
 
+            if (this.uvTexture) {
+                this.uvTexture.dispose();
+            }
+
             delete this.currentMaterialMap;
+            delete this.uvTexture;
         }
     };
 

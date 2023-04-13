@@ -2,7 +2,17 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { AddOperation, BackSide, DoubleSide, FrontSide, MixOperation, MultiplyOperation } from 'three';
+import {
+    AddOperation,
+    BackSide,
+    ClampToEdgeWrapping,
+    DoubleSide,
+    FrontSide,
+    MirroredRepeatWrapping,
+    MixOperation,
+    MultiplyOperation,
+    RepeatWrapping
+} from 'three';
 
 export const VisibleOptions = {
     Off: false,
@@ -29,6 +39,12 @@ export const CombineOptions = {
     Multiply: MultiplyOperation,
     Mix: MixOperation,
     Add: AddOperation
+};
+
+export const WrapOptions = {
+    Repeat: RepeatWrapping,
+    Clamp: ClampToEdgeWrapping,
+    Mirror: MirroredRepeatWrapping
 };
 
 export const NormalsHelperOptions = {

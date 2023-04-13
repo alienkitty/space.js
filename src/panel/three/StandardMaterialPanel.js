@@ -8,6 +8,7 @@ import { PanelItem } from '../PanelItem.js';
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 import { MeshHelperPanel } from './MeshHelperPanel.js';
+import { MapPanel } from './MapPanel.js';
 
 export class StandardMaterialPanel extends Panel {
     static type = [
@@ -42,6 +43,7 @@ export class StandardMaterialPanel extends Panel {
 
         const materialOptions = {
             Common: StandardMaterialCommonPanel,
+            Map: MapPanel,
             Env: StandardMaterialEnvPanel,
             Helper: MeshHelperPanel
         };

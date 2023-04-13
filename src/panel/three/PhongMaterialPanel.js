@@ -8,6 +8,7 @@ import { PanelItem } from '../PanelItem.js';
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
 import { MeshHelperPanel } from './MeshHelperPanel.js';
+import { MapPanel } from './MapPanel.js';
 
 export class PhongMaterialPanel extends Panel {
     static type = [
@@ -44,6 +45,7 @@ export class PhongMaterialPanel extends Panel {
 
         const materialOptions = {
             Common: PhongMaterialCommonPanel,
+            Map: MapPanel,
             Env: PhongMaterialEnvPanel,
             Helper: MeshHelperPanel
         };
