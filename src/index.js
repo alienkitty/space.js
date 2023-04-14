@@ -32,16 +32,16 @@ export { WebAudio } from './audio/WebAudio.js';
 export { WebAudioParam } from './audio/WebAudioParam.js';
 export { Sound } from './audio/Sound.js';
 
-// Panel
-export { Panel } from './panel/Panel.js';
-export { PanelItem } from './panel/PanelItem.js';
-export { Link } from './panel/Link.js';
-export { List } from './panel/List.js';
-export { ListToggle } from './panel/ListToggle.js';
-export { ListSelect } from './panel/ListSelect.js';
-export { Slider } from './panel/Slider.js';
-export { Content } from './panel/Content.js';
-export { ColorPicker } from './panel/ColorPicker.js';
+// Panels
+export { Panel } from './panels/Panel.js';
+export { PanelItem } from './panels/PanelItem.js';
+export { Link } from './panels/Link.js';
+export { List } from './panels/List.js';
+export { ListToggle } from './panels/ListToggle.js';
+export { ListSelect } from './panels/ListSelect.js';
+export { Slider } from './panels/Slider.js';
+export { Content } from './panels/Content.js';
+export { ColorPicker } from './panels/ColorPicker.js';
 
 // UI
 export { UI } from './ui/UI.js';
