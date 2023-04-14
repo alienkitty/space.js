@@ -2,13 +2,13 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
 import { LambertMaterialEnvPanel } from './LambertMaterialEnvPanel.js';
-import { MeshHelperPanel } from './MeshHelperPanel.js';
-import { MapPanel } from './MapPanel.js';
+import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
 export class LambertMaterialPanel extends Panel {
     static type = [

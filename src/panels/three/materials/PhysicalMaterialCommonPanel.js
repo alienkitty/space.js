@@ -2,13 +2,13 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions, WireframeOptions } from './Options.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { FlatShadingOptions, WireframeOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
-export class PhongMaterialCommonPanel extends Panel {
+export class PhysicalMaterialCommonPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -40,20 +40,42 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                value: mesh.material.specular,
+                value: mesh.material.specularColor,
                 callback: value => {
-                    mesh.material.specular.copy(value);
+                    mesh.material.specularColor.copy(value);
                 }
             },
             {
                 type: 'slider',
-                label: 'Shiny',
+                label: 'Specular',
                 min: 0,
-                max: 100,
-                step: 1,
-                value: mesh.material.shininess,
+                max: 1,
+                step: 0.01,
+                value: mesh.material.specularIntensity,
                 callback: value => {
-                    mesh.material.shininess = value;
+                    mesh.material.specularIntensity = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Rough',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: mesh.material.roughness,
+                callback: value => {
+                    mesh.material.roughness = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Metal',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: mesh.material.metalness,
+                callback: value => {
+                    mesh.material.metalness = value;
                 }
             },
             {

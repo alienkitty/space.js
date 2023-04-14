@@ -2,11 +2,11 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { WrapOptions } from './Options.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { WrapOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MapPanel extends Panel {
     constructor(mesh) {
@@ -24,6 +24,7 @@ export class MapPanel extends Panel {
             {
                 type: 'divider'
             }
+            // TODO: Texture thumbnails
         ];
 
         if (mesh.material.map) {

@@ -2,8 +2,8 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
 export class PhysicalMaterialSheenPanel extends Panel {
     constructor(mesh) {

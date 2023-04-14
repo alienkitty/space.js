@@ -4,11 +4,11 @@
 
 import { MeshBasicMaterial, MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MeshToonMaterial } from 'three';
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { SideOptions, VisibleOptions } from './Options.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { SideOptions, VisibleOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
 import { BasicMaterialPanel } from './BasicMaterialPanel.js';
 import { LambertMaterialPanel } from './LambertMaterialPanel.js';

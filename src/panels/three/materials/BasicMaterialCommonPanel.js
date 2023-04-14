@@ -2,11 +2,11 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { WireframeOptions } from './Options.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { WireframeOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class BasicMaterialCommonPanel extends Panel {
     constructor(mesh) {

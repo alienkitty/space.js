@@ -2,12 +2,12 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/three/Point3D.js';
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from './Options.js';
+import { Point3D } from '../../../ui/three/Point3D.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MeshHelperPanel extends Panel {
     constructor(mesh) {

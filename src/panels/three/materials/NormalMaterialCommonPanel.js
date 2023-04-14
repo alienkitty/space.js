@@ -2,13 +2,13 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
-import { FlatShadingOptions } from './Options.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
+import { FlatShadingOptions, WireframeOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../utils/Utils.js';
+import { getKeyByValue } from '../../../utils/Utils.js';
 
-export class MatcapMaterialCommonPanel extends Panel {
+export class NormalMaterialCommonPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -25,13 +25,6 @@ export class MatcapMaterialCommonPanel extends Panel {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: mesh.material.color,
-                callback: value => {
-                    mesh.material.color.copy(value);
-                }
-            },
-            {
                 type: 'list',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
@@ -39,8 +32,15 @@ export class MatcapMaterialCommonPanel extends Panel {
                     mesh.material.flatShading = FlatShadingOptions[value];
                     mesh.material.needsUpdate = true;
                 }
+            },
+            {
+                type: 'list',
+                list: WireframeOptions,
+                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
+                callback: value => {
+                    mesh.material.wireframe = WireframeOptions[value];
+                }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

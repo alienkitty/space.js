@@ -2,33 +2,26 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
-import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
-import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
-import { MeshHelperPanel } from './MeshHelperPanel.js';
-import { MapPanel } from './MapPanel.js';
+import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
+import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
+import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
-export class PhongMaterialPanel extends Panel {
+export class BasicMaterialPanel extends Panel {
     static type = [
-        'common',
-        'phong'
+        'common'
     ];
 
     static properties = {
         common: [
             'color',
-            'emissive',
-            'flatShading',
             'wireframe',
             'combine',
             'reflectivity',
             'refractionRatio'
-        ],
-        phong: [
-            'specular',
-            'shininess'
         ]
     };
 
@@ -44,9 +37,9 @@ export class PhongMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         const materialOptions = {
-            Common: PhongMaterialCommonPanel,
+            Common: BasicMaterialCommonPanel,
             Map: MapPanel,
-            Env: PhongMaterialEnvPanel,
+            Env: BasicMaterialEnvPanel,
             Helper: MeshHelperPanel
         };
 

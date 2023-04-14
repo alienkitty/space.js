@@ -2,16 +2,16 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
-import { MeshHelperPanel } from './MeshHelperPanel.js';
-import { MapPanel } from './MapPanel.js';
+import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
 export class PhysicalMaterialPanel extends Panel {
     static type = [

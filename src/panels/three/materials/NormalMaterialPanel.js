@@ -2,21 +2,21 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
-import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
-import { MeshHelperPanel } from './MeshHelperPanel.js';
-import { MapPanel } from './MapPanel.js';
+import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
+import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 
-export class ToonMaterialPanel extends Panel {
+export class NormalMaterialPanel extends Panel {
     static type = [
         'common'
     ];
 
     static properties = {
         common: [
-            'color'
+            'flatShading',
+            'wireframe'
         ]
     };
 
@@ -32,8 +32,7 @@ export class ToonMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         const materialOptions = {
-            Common: ToonMaterialCommonPanel,
-            Map: MapPanel,
+            Common: NormalMaterialCommonPanel,
             Helper: MeshHelperPanel
         };
 

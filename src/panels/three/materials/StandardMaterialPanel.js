@@ -2,22 +2,31 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
-import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
-import { MeshHelperPanel } from './MeshHelperPanel.js';
-import { MapPanel } from './MapPanel.js';
+import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
+import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
+import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
-export class MatcapMaterialPanel extends Panel {
+export class StandardMaterialPanel extends Panel {
     static type = [
-        'common'
+        'common',
+        'standard'
     ];
 
     static properties = {
         common: [
             'color',
-            'flatShading'
+            'emissive',
+            'flatShading',
+            'wireframe'
+        ],
+        standard: [
+            'roughness',
+            'metalness',
+            'envMapIntensity'
         ]
     };
 
@@ -33,8 +42,9 @@ export class MatcapMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         const materialOptions = {
-            Common: MatcapMaterialCommonPanel,
+            Common: StandardMaterialCommonPanel,
             Map: MapPanel,
+            Env: StandardMaterialEnvPanel,
             Helper: MeshHelperPanel
         };
 

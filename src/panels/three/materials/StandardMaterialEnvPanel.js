@@ -2,10 +2,10 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Panel } from '../Panel.js';
-import { PanelItem } from '../PanelItem.js';
+import { Panel } from '../../Panel.js';
+import { PanelItem } from '../../PanelItem.js';
 
-export class ToonMaterialCommonPanel extends Panel {
+export class StandardMaterialEnvPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -21,14 +21,18 @@ export class ToonMaterialCommonPanel extends Panel {
             {
                 type: 'divider'
             },
+            // TODO: Texture thumbnails
             {
-                type: 'color',
-                value: mesh.material.color,
+                type: 'slider',
+                label: 'Intensity',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: mesh.material.envMapIntensity,
                 callback: value => {
-                    mesh.material.color.copy(value);
+                    mesh.material.envMapIntensity = value;
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {
