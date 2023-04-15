@@ -2,7 +2,16 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { MeshBasicMaterial, MeshLambertMaterial, MeshMatcapMaterial, MeshNormalMaterial, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, MeshToonMaterial } from 'three';
+import {
+    MeshBasicMaterial,
+    MeshLambertMaterial,
+    MeshMatcapMaterial,
+    MeshNormalMaterial,
+    MeshPhongMaterial,
+    MeshPhysicalMaterial,
+    MeshStandardMaterial,
+    MeshToonMaterial
+} from 'three';
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
@@ -36,9 +45,9 @@ export function getKeyByMaterial(materialOptions, material) {
 }
 
 export class MaterialPanelController {
-    static init(ui, mesh, materialOptions = MaterialOptions) {
-        this.ui = ui;
+    static init(mesh, ui, materialOptions = MaterialOptions) {
         this.mesh = mesh;
+        this.ui = ui;
         this.materialOptions = materialOptions;
 
         this.lastMaterialPanel = null;
@@ -47,13 +56,16 @@ export class MaterialPanelController {
     }
 
     static initPanel() {
-        const ui = this.ui;
         const mesh = this.mesh;
+        const ui = this.ui;
         const materialOptions = this.materialOptions;
 
         const materialProperties = {};
 
         const materialItems = [
+            {
+                type: 'divider'
+            },
             {
                 type: 'slider',
                 label: 'Opacity',

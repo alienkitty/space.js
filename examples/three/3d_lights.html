@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Materials — Space.js</title>
+    <title>Lights — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
@@ -20,7 +20,7 @@
     </script>
 
     <script type="module">
-        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer, sRGBEncoding } from 'three';
+        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshPhongMaterial, PerspectiveCamera, PointLight, Scene, SpotLight, WebGLRenderer, sRGBEncoding } from 'three';
         import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
         // init
@@ -46,32 +46,47 @@
 
         scene.add(new HemisphereLight(0x606060, 0x404040));
 
-        const light = new DirectionalLight(0xffffff, 0.4);
+        let light = new DirectionalLight(0xffffff, 0.4);
         light.position.set(5, 5, 5);
+        scene.add(light);
+
+        light = new SpotLight();
+        light.angle = 0.3;
+        light.penumbra = 0.2;
+        light.decay = 2;
+        light.position.set(-5, 5, 5);
+        scene.add(light);
+
+        light = new PointLight();
         scene.add(light);
 
         // mesh
 
         const geometry = new BoxGeometry();
-        const material = new MeshNormalMaterial();
+        const material = new MeshPhongMaterial({ color: 0x595959 });
 
         const mesh = new Mesh(geometry, material);
         scene.add(mesh);
 
         // panel
 
-        import { MaterialPanelController, Point3D, UI } from '../../src/three.js';
+        import { LightPanelController, PanelItem, UI } from '../../src/three.js';
 
         const ui = new UI({ fps: true });
         ui.animateIn();
         document.body.appendChild(ui.element);
 
-        Point3D.init(scene, camera);
+        const items = [
+            {
+                label: 'FPS'
+            }
+        ];
 
-        const point = new Point3D(mesh);
-        scene.add(point);
+        items.forEach(data => {
+            ui.addPanel(new PanelItem(data));
+        });
 
-        MaterialPanelController.init(mesh, point);
+        LightPanelController.init(scene, ui);
 
         // animation
 
@@ -83,11 +98,15 @@
             mesh.rotation.x = time / 2;
             mesh.rotation.y = time;
 
+            light.position.x = Math.sin(time * 1.7) * 2;
+            light.position.y = Math.cos(time * 1.5) * 2;
+            light.position.z = Math.cos(time * 1.3) * 2;
+
             controls.update();
 
             renderer.render(scene, camera);
 
-            Point3D.update(time);
+            LightPanelController.update();
             ui.update();
         }
 

@@ -113,6 +113,7 @@ import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/
 #### 3d
 
 [materials](https://space.js.org/examples/three/3d_materials.html)  
+[lights](https://space.js.org/examples/three/3d_lights.html)  
 
 #### audio
 
@@ -152,7 +153,8 @@ npx eslint examples/*.html
 
 #### v1.1
 
-* [ ] Three.js material UI
+* [x] Three.js material UI
+* [x] Three.js light UI
 
 #### v1.2
 

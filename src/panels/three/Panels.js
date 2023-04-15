@@ -1,3 +1,10 @@
+export * from './lights/LightPanelController.js';
+export { AmbientLightPanel } from './lights/AmbientLightPanel.js';
+export { HemisphereLightPanel } from './lights/HemisphereLightPanel.js';
+export { DirectionalLightPanel } from './lights/DirectionalLightPanel.js';
+export { PointLightPanel } from './lights/PointLightPanel.js';
+export { SpotLightPanel } from './lights/SpotLightPanel.js';
+export { RectAreaLightPanel } from './lights/RectAreaLightPanel.js';
 export * from './materials/MaterialPanelController.js';
 export { BasicMaterialPanel } from './materials/BasicMaterialPanel.js';
 export { BasicMaterialCommonPanel } from './materials/BasicMaterialCommonPanel.js';

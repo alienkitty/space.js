@@ -43,7 +43,7 @@ export class ScenePanelController {
             });
             object.add(object.point);
 
-            MaterialPanelController.init(object.point, object.mesh, materialOptions);
+            MaterialPanelController.init(object.mesh, object.point, materialOptions);
         });
 
         // Shrink tracker meshes a little bit

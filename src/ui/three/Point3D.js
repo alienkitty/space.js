@@ -491,36 +491,36 @@ export class Point3D extends Group {
 
     toggleNormalsHelper = show => {
         if (show) {
-            if (!this.vnh) {
+            if (!this.normalsHelper) {
                 this.object.geometry.computeBoundingSphere();
 
                 const { radius } = this.object.geometry.boundingSphere;
 
-                this.vnh = new VertexNormalsHelper(this.object, radius / 5);
-                Point3D.scene.add(this.vnh);
+                this.normalsHelper = new VertexNormalsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.normalsHelper);
             }
 
-            this.vnh.visible = true;
-        } else if (this.vnh) {
-            this.vnh.visible = false;
+            this.normalsHelper.visible = true;
+        } else if (this.normalsHelper) {
+            this.normalsHelper.visible = false;
         }
     };
 
     toggleTangentsHelper = show => {
         if (show) {
-            if (!this.vth) {
+            if (!this.tangentsHelper) {
                 this.object.geometry.computeBoundingSphere();
                 this.object.geometry.computeTangents();
 
                 const { radius } = this.object.geometry.boundingSphere;
 
-                this.vth = new VertexTangentsHelper(this.object, radius / 5);
-                Point3D.scene.add(this.vth);
+                this.tangentsHelper = new VertexTangentsHelper(this.object, radius / 5);
+                Point3D.scene.add(this.tangentsHelper);
             }
 
-            this.vth.visible = true;
-        } else if (this.vth) {
-            this.vth.visible = false;
+            this.tangentsHelper.visible = true;
+        } else if (this.tangentsHelper) {
+            this.tangentsHelper.visible = false;
         }
     };
 
@@ -599,12 +599,12 @@ export class Point3D extends Group {
 
         this.point.target.set(centerX + halfWidth, centerY - halfHeight);
 
-        if (this.vnh) {
-            this.vnh.update();
+        if (this.normalsHelper) {
+            this.normalsHelper.update();
         }
 
-        if (this.vth) {
-            this.vth.update();
+        if (this.tangentsHelper) {
+            this.tangentsHelper.update();
         }
     };
 
@@ -662,16 +662,16 @@ export class Point3D extends Group {
     };
 
     destroy = () => {
-        if (this.vnh) {
+        if (this.normalsHelper) {
             this.toggleNormalsHelper(false);
-            Point3D.scene.remove(this.vnh);
-            this.vnh.dispose();
+            Point3D.scene.remove(this.normalsHelper);
+            this.normalsHelper.dispose();
         }
 
-        if (this.vth) {
+        if (this.tangentsHelper) {
             this.toggleTangentsHelper(false);
-            Point3D.scene.remove(this.vth);
-            this.vth.dispose();
+            Point3D.scene.remove(this.tangentsHelper);
+            this.tangentsHelper.dispose();
         }
 
         if (this.currentMaterialMap) {

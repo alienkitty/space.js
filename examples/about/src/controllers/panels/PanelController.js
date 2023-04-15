@@ -1,10 +1,11 @@
 import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapping, ReinhardToneMapping } from 'three';
 
-import { Panel, PanelItem, Point3D, Stage, brightness, getKeyByValue } from '@alienkitty/space.js/three';
+import { LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
-import { RenderManager } from '../world/RenderManager.js';
 import { ScenePanelController } from './ScenePanelController.js';
+import { PostPanel } from './PostPanel.js';
+import { EnvPanel } from './EnvPanel.js';
 
 export class PanelController {
     static init(renderer, scene, camera, view, ui) {
@@ -15,6 +16,7 @@ export class PanelController {
         this.ui = ui;
 
         this.lastInvert = null;
+        this.lights = [];
 
         this.initControllers();
         this.initPanel();
@@ -32,10 +34,11 @@ export class PanelController {
         });
 
         ScenePanelController.init(this.view);
+        LightPanelController.init(this.scene);
     }
 
     static initPanel() {
-        const { luminosityMaterial, bloomCompositeMaterial } = RenderManager;
+        const scene = this.scene;
 
         // https://threejs.org/examples/#webgl_tonemapping
         const toneMappingOptions = {
@@ -46,62 +49,20 @@ export class PanelController {
             ACESFilmic: ACESFilmicToneMapping
         };
 
-        const postOptions = {
-            Off: false,
-            Post: true
+        const sceneOptions = {
+            Post: PostPanel,
+            Env: EnvPanel
         };
 
-        const postItems = [
-            {
-                type: 'divider'
-            },
-            {
-                type: 'slider',
-                label: 'Thresh',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: luminosityMaterial.uniforms.uThreshold.value,
-                callback: value => {
-                    luminosityMaterial.uniforms.uThreshold.value = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Smooth',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: luminosityMaterial.uniforms.uSmoothing.value,
-                callback: value => {
-                    luminosityMaterial.uniforms.uSmoothing.value = value;
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Strength',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: RenderManager.bloomStrength,
-                callback: value => {
-                    RenderManager.bloomStrength = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Radius',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: RenderManager.bloomRadius,
-                callback: value => {
-                    RenderManager.bloomRadius = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
-                }
+        scene.traverse(object => {
+            if (object.isLight) {
+                const key = getKeyByLight(LightOptions, object);
+
+                sceneOptions[key] = [object, LightOptions[key][1]];
+
+                this.lights.push(object);
             }
-        ];
+        });
 
         const items = [
             {
@@ -112,9 +73,9 @@ export class PanelController {
             },
             {
                 type: 'color',
-                value: this.scene.background,
+                value: scene.background,
                 callback: value => {
-                    this.scene.background.copy(value);
+                    scene.background.copy(value);
 
                     this.setInvert(value);
                 }
@@ -129,7 +90,7 @@ export class PanelController {
                 callback: value => {
                     this.renderer.toneMapping = toneMappingOptions[value];
 
-                    this.scene.traverse(object => {
+                    scene.traverse(object => {
                         if (object.isMesh) {
                             object.material.needsUpdate = true;
                         }
@@ -152,26 +113,23 @@ export class PanelController {
             },
             {
                 type: 'list',
-                list: postOptions,
-                value: getKeyByValue(postOptions, RenderManager.enabled),
+                list: sceneOptions,
+                value: 'Post',
                 callback: (value, panel) => {
-                    if (!panel.group) {
-                        const postPanel = new Panel();
-                        postPanel.animateIn(true);
+                    if (value === 'Post' || value === 'Env') {
+                        const ScenePanel = sceneOptions[value];
 
-                        postItems.forEach(data => {
-                            postPanel.add(new PanelItem(data));
-                        });
+                        const scenePanel = new ScenePanel(scene);
+                        scenePanel.animateIn(true);
 
-                        panel.setContent(postPanel);
-                    }
-
-                    RenderManager.enabled = postOptions[value];
-
-                    if (RenderManager.enabled) {
-                        panel.group.show();
+                        panel.setContent(scenePanel);
                     } else {
-                        panel.group.hide();
+                        const [light, LightPanel] = sceneOptions[value];
+
+                        const lightPanel = new LightPanel(LightPanelController, light);
+                        lightPanel.animateIn(true);
+
+                        panel.setContent(lightPanel);
                     }
                 }
             }
@@ -202,6 +160,13 @@ export class PanelController {
         }
 
         Point3D.update(time);
+
+        this.lights.forEach(light => {
+            if (light.helper) {
+                light.helper.update();
+            }
+        });
+
         this.ui.update();
     };
 }

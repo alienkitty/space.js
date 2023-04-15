@@ -47,6 +47,11 @@ export const WrapOptions = {
     Mirror: MirroredRepeatWrapping
 };
 
+export const HelperOptions = {
+    Off: false,
+    Helper: true
+};
+
 export const NormalsHelperOptions = {
     Off: false,
     Normals: true
