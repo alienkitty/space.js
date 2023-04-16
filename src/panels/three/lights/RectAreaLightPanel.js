@@ -4,7 +4,7 @@
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
-import { VisibleOptions } from '../Options.js';
+import { HelperOptions, VisibleOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -21,7 +21,22 @@ export class RectAreaLightPanel extends Panel {
     initPanel() {
         const light = this.light;
 
+        // Defaults
+        if (!light.userData.helper) {
+            light.userData.helper = false;
+        }
+
         const lightItems = [
+            {
+                type: 'list',
+                list: HelperOptions,
+                value: getKeyByValue(HelperOptions, light.userData.helper),
+                callback: value => {
+                    light.userData.helper = HelperOptions[value];
+
+                    this.panel.toggleRectAreaLightHelper(light, light.userData.helper);
+                }
+            },
             {
                 type: 'divider'
             },
@@ -71,6 +86,10 @@ export class RectAreaLightPanel extends Panel {
                         panel.group.show();
                     } else {
                         panel.group.hide();
+                    }
+
+                    if (light.helper) {
+                        light.helper.visible = light.visible;
                     }
                 }
             }

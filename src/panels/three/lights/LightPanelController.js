@@ -15,6 +15,8 @@ import {
     SpotLightHelper
 } from 'three';
 
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+
 import { PanelItem } from '../../PanelItem.js';
 
 import { AmbientLightPanel } from './AmbientLightPanel.js';
@@ -145,9 +147,22 @@ export class LightPanelController {
         }
     };
 
+    static toggleRectAreaLightHelper = (light, show) => {
+        if (show) {
+            if (!light.helper) {
+                light.helper = new RectAreaLightHelper(light);
+                this.scene.add(light.helper);
+            }
+
+            light.helper.visible = true;
+        } else if (light.helper) {
+            light.helper.visible = false;
+        }
+    };
+
     static update = () => {
         this.lights.forEach(light => {
-            if (light.helper) {
+            if (light.helper && !light.isRectAreaLight) {
                 light.helper.update();
             }
         });
@@ -170,6 +185,10 @@ export class LightPanelController {
 
                 if (light.isSpotLight) {
                     this.toggleSpotLightHelper(light, false);
+                }
+
+                if (light.isRectAreaLight) {
+                    this.toggleRectAreaLightHelper(light, false);
                 }
 
                 this.scene.remove(light.helper);
