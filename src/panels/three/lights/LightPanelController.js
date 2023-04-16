@@ -59,12 +59,28 @@ export class LightPanelController {
 
         scene.traverse(object => {
             if (object.isLight) {
-                const key = getKeyByLight(LightOptions, object);
-
-                lightOptions[key] = [object, LightOptions[key][1]];
-
                 this.lights.push(object);
             }
+        });
+
+        const keys = this.lights.map(light => getKeyByLight(LightOptions, light));
+        const counts = {};
+
+        keys.forEach(key => {
+            counts[key] = counts[key] ? counts[key] + 1 : 1;
+        });
+
+        this.lights.forEach(light => {
+            const key = getKeyByLight(LightOptions, light);
+
+            let count = 1;
+            let lightKey = `${key}${counts[key] > 1 ? count++ : ''}`;
+
+            while (Object.keys(lightOptions).includes(lightKey)) {
+                lightKey = `${key}${count++}`;
+            }
+
+            lightOptions[lightKey] = [light, LightOptions[key][1]];
         });
 
         const items = [
