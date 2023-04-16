@@ -90,7 +90,13 @@ npm i three @alienkitty/space.js
 ```
 
 ```js
-import { MaterialPanelController, Point3D, Sound3D } from '@alienkitty/space.js/three';
+import { EnvironmentTextureLoader } from '@alienkitty/space.js/three';
+
+// ...
+const environmentLoader = new EnvironmentTextureLoader(renderer);
+environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture => {
+    scene.environment = texture;
+});
 ```
 
 ### Examples
