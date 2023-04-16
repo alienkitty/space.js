@@ -125,10 +125,11 @@ export class Point3D extends Group {
 
         this.onPointerMove(e);
 
+        this.lastTime = performance.now();
+        this.lastMouse.copy(this.mouse);
+
         if (this.hover) {
             this.click = this.hover;
-            this.lastTime = performance.now();
-            this.lastMouse.copy(this.mouse);
         }
     };
 
@@ -175,7 +176,7 @@ export class Point3D extends Group {
     };
 
     static onPointerUp = e => {
-        if (!this.enabled || !this.click) {
+        if (!this.enabled) {
             return;
         }
 
@@ -186,7 +187,7 @@ export class Point3D extends Group {
             return;
         }
 
-        if (this.click === this.hover) {
+        if (this.click && this.click === this.hover) {
             if (!e.altKey) {
                 this.points.forEach(point => {
                     if (point !== this.click && point.animatedIn) {
@@ -197,6 +198,8 @@ export class Point3D extends Group {
             }
 
             this.click.onClick();
+        } else if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
+            this.animateOut();
         }
 
         this.click = null;
