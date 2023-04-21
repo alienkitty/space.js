@@ -53,7 +53,7 @@ export class DirectionalLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Intensity',
+                label: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,

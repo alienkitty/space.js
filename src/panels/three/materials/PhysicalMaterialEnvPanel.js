@@ -46,7 +46,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             // TODO: Texture thumbnails
             {
                 type: 'slider',
-                label: 'Intensity',
+                label: 'Int',
                 min: 0,
                 max: 10,
                 step: 0.1,
