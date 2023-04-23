@@ -1,6 +1,6 @@
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
-export class TransmissionMaterialTransmissionPanel extends Panel {
+export class TransmissionMaterialFrontPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -33,9 +33,9 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: mesh.material.roughness,
+                value: mesh.userData.roughness,
                 callback: value => {
-                    mesh.material.roughness = value;
+                    mesh.userData.roughness = value;
                 }
             },
             {
@@ -43,10 +43,10 @@ export class TransmissionMaterialTransmissionPanel extends Panel {
                 label: 'Thick',
                 min: 0,
                 max: 10,
-                step: 0.01,
-                value: mesh.material.thickness,
+                step: 0.1,
+                value: mesh.userData.thickness,
                 callback: value => {
-                    mesh.material.thickness = value;
+                    mesh.userData.thickness = value;
                 }
             },
             {

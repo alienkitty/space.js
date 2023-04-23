@@ -1,6 +1,7 @@
 import { MapPanel, MeshHelperPanel, Panel, PanelItem, PhysicalMaterialClearcoatPanel, PhysicalMaterialCommonPanel, PhysicalMaterialEnvPanel, PhysicalMaterialSheenPanel } from '@alienkitty/space.js/three';
 
-import { TransmissionMaterialTransmissionPanel } from './TransmissionMaterialTransmissionPanel.js';
+import { TransmissionMaterialFrontPanel } from './TransmissionMaterialFrontPanel.js';
+import { TransmissionMaterialBackPanel } from './TransmissionMaterialBackPanel.js';
 
 export class TransmissionMaterialPanel extends Panel {
     static type = [
@@ -61,7 +62,8 @@ export class TransmissionMaterialPanel extends Panel {
             Map: MapPanel,
             Clearcoat: PhysicalMaterialClearcoatPanel,
             Sheen: PhysicalMaterialSheenPanel,
-            Transmission: TransmissionMaterialTransmissionPanel,
+            Front: TransmissionMaterialFrontPanel,
+            Back: TransmissionMaterialBackPanel,
             Env: PhysicalMaterialEnvPanel,
             Helper: MeshHelperPanel
         };

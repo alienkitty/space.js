@@ -43,6 +43,13 @@ export class ScenePanelController {
             object.add(object.point);
 
             MaterialPanelController.init(object.mesh, object.point, materialOptions);
+
+            // Transmission defaults
+            object.mesh.userData.roughness = 0;
+            object.mesh.userData.thickness = 0.1;
+            object.mesh.userData.backside = true;
+            object.mesh.userData.backsideRoughness = 0;
+            object.mesh.userData.backsideThickness = 3;
         });
 
         // Shrink tracker meshes a little bit

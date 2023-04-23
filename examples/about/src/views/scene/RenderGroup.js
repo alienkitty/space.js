@@ -18,12 +18,6 @@ export class RenderGroup extends Group {
         this.scene = scene;
         this.camera = camera;
 
-        this.backside = true;
-        this.thickness = 0.1;
-        this.backsideThickness = 3;
-        this.specularIntensity = 1;
-        this.backsideSpecularIntensity = 0.05;
-
         // Render targets
         this.renderTargetBack = new WebGLRenderTarget(1, 1);
         this.renderTargetFront = this.renderTargetBack.clone();
@@ -57,14 +51,14 @@ export class RenderGroup extends Group {
         // Occlusion pass
         this.mesh.material = this.discardMaterial;
 
-        if (this.backside) {
+        if (this.mesh.userData.backside) {
             this.renderer.setRenderTarget(this.renderTargetBack);
             this.renderer.render(this.scene, this.camera);
 
             this.mesh.material = currentMaterial;
             this.mesh.material.buffer = this.renderTargetBack.texture;
-            this.mesh.material.thickness = this.backsideThickness;
-            this.mesh.material.specularIntensity = this.backsideSpecularIntensity;
+            this.mesh.material.roughness = this.mesh.userData.backsideRoughness;
+            this.mesh.material.thickness = this.mesh.userData.backsideThickness;
             this.mesh.material.side = BackSide;
         }
 
@@ -74,8 +68,8 @@ export class RenderGroup extends Group {
         // Restore settings
         this.mesh.material = currentMaterial;
         this.mesh.material.buffer = this.renderTargetFront.texture;
-        this.mesh.material.thickness = this.thickness;
-        this.mesh.material.specularIntensity = this.specularIntensity;
+        this.mesh.material.roughness = this.mesh.userData.roughness;
+        this.mesh.material.thickness = this.mesh.userData.thickness;
         this.mesh.material.side = currentSide;
 
         this.renderer.toneMapping = currentToneMapping;
