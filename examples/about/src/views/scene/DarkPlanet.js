@@ -15,7 +15,7 @@ export class DarkPlanet extends RenderGroup {
     }
 
     async initMesh() {
-        const geometry = getSphericalCube(0.6, 10);
+        const geometry = getSphericalCube(0.6, 20);
 
         const material = new MeshStandardMaterial({
             name: 'Dark Planet',
