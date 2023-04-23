@@ -86,6 +86,23 @@ export class Panel extends Interface {
         this.items.push(child);
     };
 
+    setPanelValue = (label, value) => {
+        this.items.forEach(item => {
+            if (!item.view) {
+                return;
+            }
+
+            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
+                item.view.group.children[0].setPanelValue(label, value);
+                return;
+            }
+
+            if (item.data.label === label && item.view.setValue) {
+                item.view.setValue(value, true);
+            }
+        });
+    };
+
     animateIn = fast => {
         this.show();
 

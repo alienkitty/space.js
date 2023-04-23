@@ -9,20 +9,23 @@ import { ListSelect } from './ListSelect.js';
 export class List extends Interface {
     constructor({
         list,
-        index,
+        value,
         callback
     }) {
         super('.list');
 
         this.list = list;
-        this.index = index;
+        this.keys = Object.keys(this.list);
+        this.values = Object.values(this.list);
+        this.index = this.keys.indexOf(value);
         this.callback = callback;
 
         this.items = [];
 
         this.initHTML();
         this.initViews();
-        this.setIndex(this.index);
+
+        this.update();
     }
 
     initHTML() {
@@ -34,13 +37,13 @@ export class List extends Interface {
     }
 
     initViews() {
-        if (this.list.length > 2) {
-            const item = new ListSelect({ list: this.list, index: this.index });
+        if (this.keys.length > 2) {
+            const item = new ListSelect({ list: this.keys, index: this.index });
             item.events.on('click', this.onClick);
             this.container.add(item);
             this.items.push(item);
         } else {
-            this.list.forEach((label, index) => {
+            this.keys.forEach((label, index) => {
                 const item = new ListToggle({ label, index });
                 item.events.on('click', this.onClick);
                 this.container.add(item);
@@ -90,14 +93,14 @@ export class List extends Interface {
         oldGroup.destroy();
     };
 
-    setIndex = index => {
-        this.index = index;
+    setValue = value => {
+        this.index = this.values.indexOf(value);
 
         this.update();
     };
 
     update = () => {
-        const value = this.list[this.index];
+        const value = this.keys[this.index];
 
         this.events.emit('update', value, this);
 
@@ -105,7 +108,7 @@ export class List extends Interface {
             this.callback(value, this);
         }
 
-        if (this.list.length > 2) {
+        if (this.keys.length > 2) {
             return;
         }
 

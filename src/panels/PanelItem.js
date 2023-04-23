@@ -71,11 +71,7 @@ export class PanelItem extends Interface {
                 padding: '2px 10px 0'
             });
 
-            const list = Object.keys(this.data.list);
-            const index = list.indexOf(this.data.value);
-            const callback = this.data.callback;
-
-            this.view = new List({ list, index, callback });
+            this.view = new List(this.data);
             this.container.add(this.view);
         } else if (this.data.type === 'slider') {
             this.container.css({
