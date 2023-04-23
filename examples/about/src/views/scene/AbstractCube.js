@@ -1,6 +1,6 @@
 import { BoxGeometry, Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 
-import { RenderGroup } from '../../objects/RenderGroup.js';
+import { RenderGroup } from './RenderGroup.js';
 
 export class AbstractCube extends RenderGroup {
     constructor() {

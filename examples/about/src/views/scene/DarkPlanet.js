@@ -2,7 +2,7 @@ import { Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
-import { RenderGroup } from '../../objects/RenderGroup.js';
+import { RenderGroup } from './RenderGroup.js';
 
 export class DarkPlanet extends RenderGroup {
     constructor() {

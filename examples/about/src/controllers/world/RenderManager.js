@@ -1,17 +1,19 @@
 import { MathUtils, Mesh, OrthographicCamera, Vector2, WebGLRenderTarget } from 'three';
 
-import { BloomCompositeMaterial, LuminosityMaterial, SceneCompositeMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
+import { BloomCompositeMaterial, LuminosityMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
 
 import { WorldController } from './WorldController.js';
+import { CompositeMaterial } from '../../materials/CompositeMaterial.js';
 
 const BlurDirectionX = new Vector2(1, 0);
 const BlurDirectionY = new Vector2(0, 1);
 
 export class RenderManager {
-    static init(renderer, scene, camera) {
+    static init(renderer, scene, camera, ui) {
         this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
+        this.ui = ui;
 
         this.luminosityThreshold = 0.1;
         this.luminositySmoothing = 1;
@@ -73,7 +75,8 @@ export class RenderManager {
         this.bloomCompositeMaterial.uniforms.uBloomFactors.value = this.bloomFactors();
 
         // Composite material
-        this.compositeMaterial = new SceneCompositeMaterial();
+        this.compositeMaterial = new CompositeMaterial();
+        this.compositeMaterial.uniforms.uBloomDistortion.value = this.bloomDistortion;
     }
 
     static bloomFactors() {
@@ -90,6 +93,19 @@ export class RenderManager {
     /**
      * Public methods
      */
+
+    static invert = isInverted => {
+        if (isInverted) { // Light colour is inverted
+            this.luminosityMaterial.uniforms.uThreshold.value = 0.75;
+            this.compositeMaterial.uniforms.uGamma.value = true;
+        } else {
+            this.luminosityMaterial.uniforms.uThreshold.value = this.luminosityThreshold;
+            this.compositeMaterial.uniforms.uGamma.value = false;
+        }
+
+        this.ui.setPanelValue('Thresh', this.luminosityMaterial.uniforms.uThreshold.value);
+        this.ui.setPanelValue('Gamma', this.compositeMaterial.uniforms.uGamma.value);
+    };
 
     static resize = (width, height, dpr) => {
         this.renderer.setPixelRatio(dpr);

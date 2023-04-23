@@ -1,6 +1,6 @@
 import { Color, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
 
-import { RenderGroup } from '../../objects/RenderGroup.js';
+import { RenderGroup } from './RenderGroup.js';
 
 export class FloatingCrystal extends RenderGroup {
     constructor() {

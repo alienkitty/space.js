@@ -57,7 +57,7 @@ export class App {
         CameraController.init(renderer, camera);
         SceneController.init(this.view);
         InputManager.init(camera);
-        RenderManager.init(renderer, scene, camera);
+        RenderManager.init(renderer, scene, camera, this.ui);
     }
 
     static initPanel() {
@@ -67,6 +67,7 @@ export class App {
     }
 
     static addListeners() {
+        Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
     }
@@ -74,6 +75,11 @@ export class App {
     /**
      * Event handlers
      */
+
+    static onInvert = ({ invert }) => {
+        this.view.invert(invert);
+        RenderManager.invert(invert);
+    };
 
     static onResize = () => {
         const width = document.documentElement.clientWidth;

@@ -1,7 +1,5 @@
 import { Color, GridHelper, Group } from 'three';
 
-import { Stage } from '@alienkitty/space.js/three';
-
 export class Floor extends Group {
     constructor() {
         super();
@@ -9,8 +7,6 @@ export class Floor extends Group {
         this.position.y = -0.86;
 
         this.initGrid();
-
-        this.addListeners();
     }
 
     initGrid() {
@@ -18,19 +14,15 @@ export class Floor extends Group {
         this.add(this.gridHelper);
     }
 
-    addListeners() {
-        Stage.events.on('invert', this.onInvert);
-    }
-
     /**
-     * Event handlers
+     * Public methods
      */
 
-    onInvert = ({ invert }) => {
+    invert = isInverted => {
         const colorStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;
         const color = new Color(colorStyle);
 
-        if (!invert) { // Light colour is muted
+        if (!isInverted) { // Dark colour is muted
             color.offsetHSL(0, 0, -0.35);
         }
 

@@ -2,7 +2,7 @@ import { BackSide, Group, NoToneMapping, WebGLRenderTarget } from 'three';
 
 import { DiscardMaterial } from '@alienkitty/alien.js/three';
 
-import { WorldController } from '../controllers/world/WorldController.js';
+import { WorldController } from '../../controllers/world/WorldController.js';
 
 export class RenderGroup extends Group {
     constructor() {

@@ -10,11 +10,16 @@ export class PostPanel extends Panel {
     }
 
     initPanel() {
-        const { luminosityMaterial, bloomCompositeMaterial } = RenderManager;
+        const { luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
 
         const postOptions = {
             Off: false,
             On: true
+        };
+
+        const gammaOptions = {
+            Off: false,
+            Gamma: true
         };
 
         const postItems = [
@@ -65,6 +70,40 @@ export class PostPanel extends Panel {
                 callback: value => {
                     RenderManager.bloomRadius = value;
                     bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Chroma',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: compositeMaterial.uniforms.uBloomDistortion.value,
+                callback: value => {
+                    compositeMaterial.uniforms.uBloomDistortion.value = value;
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'list',
+                label: 'Gamma',
+                list: gammaOptions,
+                value: getKeyByValue(gammaOptions, compositeMaterial.uniforms.uGamma.value),
+                callback: value => {
+                    compositeMaterial.uniforms.uGamma.value = gammaOptions[value];
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Exp',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: compositeMaterial.uniforms.uExposure.value,
+                callback: value => {
+                    compositeMaterial.uniforms.uExposure.value = value;
                 }
             }
         ];

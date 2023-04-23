@@ -1,7 +1,6 @@
 import { Vector3 } from 'three';
 
 import { MaterialOptions, MaterialPanelController, Point3D } from '@alienkitty/space.js/three';
-
 import { MeshTransmissionMaterial } from '@alienkitty/alien.js/three';
 
 import { CameraController } from '../world/CameraController.js';

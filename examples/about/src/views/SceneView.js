@@ -41,6 +41,10 @@ export class SceneView extends Group {
      * Public methods
      */
 
+    invert = isInverted => {
+        this.floor.invert(isInverted);
+    };
+
     resize = (width, height) => {
         this.darkPlanet.resize(width, height);
         this.floatingCrystal.resize(width, height);
