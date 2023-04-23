@@ -35,9 +35,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             {
                 type: 'slider',
                 label: 'Thick',
-                min: 0,
-                max: 5,
-                step: 0.01,
+                min: -10,
+                max: 10,
+                step: 0.1,
                 value: mesh.material.thickness,
                 callback: value => {
                     mesh.material.thickness = value;
@@ -53,9 +53,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             {
                 type: 'slider',
                 label: 'Distance',
-                min: 0,
-                max: 5,
-                step: 0.01,
+                min: -10,
+                max: 10,
+                step: 0.1,
                 value: mesh.material.attenuationDistance,
                 callback: value => {
                     mesh.material.attenuationDistance = value;

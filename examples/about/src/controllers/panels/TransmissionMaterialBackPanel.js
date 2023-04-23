@@ -35,9 +35,9 @@ export class TransmissionMaterialBackPanel extends Panel {
             {
                 type: 'slider',
                 label: 'Thick',
-                min: 0,
+                min: -10,
                 max: 10,
-                step: 0.01,
+                step: 0.1,
                 value: mesh.userData.backsideThickness,
                 callback: value => {
                     mesh.userData.backsideThickness = value;

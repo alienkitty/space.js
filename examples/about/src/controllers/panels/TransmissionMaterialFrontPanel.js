@@ -41,7 +41,7 @@ export class TransmissionMaterialFrontPanel extends Panel {
             {
                 type: 'slider',
                 label: 'Thick',
-                min: 0,
+                min: -10,
                 max: 10,
                 step: 0.1,
                 value: mesh.userData.thickness,
@@ -59,9 +59,9 @@ export class TransmissionMaterialFrontPanel extends Panel {
             {
                 type: 'slider',
                 label: 'Distance',
-                min: 0,
+                min: -10,
                 max: 10,
-                step: 0.01,
+                step: 0.1,
                 value: mesh.material.attenuationDistance,
                 callback: value => {
                     mesh.material.attenuationDistance = value;
