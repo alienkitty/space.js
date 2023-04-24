@@ -23,17 +23,6 @@ export class TransmissionMaterialBackPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rough',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: mesh.userData.backsideRoughness,
-                callback: value => {
-                    mesh.userData.backsideRoughness = value;
-                }
-            },
-            {
-                type: 'slider',
                 label: 'Thick',
                 min: -10,
                 max: 10,

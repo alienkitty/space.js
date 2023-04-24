@@ -49,7 +49,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 type: 'slider',
                 label: 'Specular',
                 min: 0,
-                max: 100,
+                max: 32,
                 step: 1,
                 value: mesh.material.specularIntensity,
                 callback: value => {

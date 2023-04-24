@@ -57,7 +57,6 @@ export class RenderGroup extends Group {
 
             this.mesh.material = currentMaterial;
             this.mesh.material.buffer = this.renderTargetBack.texture;
-            this.mesh.material.roughness = this.mesh.userData.backsideRoughness;
             this.mesh.material.thickness = this.mesh.userData.backsideThickness;
             this.mesh.material.side = BackSide;
         }
@@ -68,7 +67,6 @@ export class RenderGroup extends Group {
         // Restore settings
         this.mesh.material = currentMaterial;
         this.mesh.material.buffer = this.renderTargetFront.texture;
-        this.mesh.material.roughness = this.mesh.userData.roughness;
         this.mesh.material.thickness = this.mesh.userData.thickness;
         this.mesh.material.side = currentSide;
 

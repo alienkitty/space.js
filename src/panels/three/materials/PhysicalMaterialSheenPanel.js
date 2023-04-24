@@ -36,7 +36,7 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 type: 'slider',
                 label: 'Rough',
                 min: 0,
-                max: 2,
+                max: 1,
                 step: 0.01,
                 value: mesh.material.sheenRoughness,
                 callback: value => {
