@@ -498,7 +498,7 @@ export class ColorPicker extends Interface {
             this.lastValue = value;
 
             if (this.isDown) {
-                this.events.emit('update', this.value, this);
+                this.events.emit('update', { value: this.value, target: this });
 
                 if (this.callback) {
                     this.callback(this.value, this);

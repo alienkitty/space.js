@@ -192,7 +192,7 @@ export class Slider extends Interface {
         if (this.value !== this.lastValue || force) {
             this.lastValue = this.value;
 
-            this.events.emit('update', this.value, this);
+            this.events.emit('update', { value: this.value, target: this });
 
             if (this.callback) {
                 this.callback(this.value, this);

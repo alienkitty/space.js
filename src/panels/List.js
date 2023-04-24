@@ -102,7 +102,7 @@ export class List extends Interface {
     update = () => {
         const value = this.keys[this.index];
 
-        this.events.emit('update', value, this);
+        this.events.emit('update', { value, target: this });
 
         if (this.callback) {
             this.callback(value, this);

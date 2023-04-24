@@ -90,7 +90,7 @@ export class Link extends Interface {
     };
 
     update = () => {
-        this.events.emit('update', this.value, this);
+        this.events.emit('update', { value: this.value, target: this });
 
         if (this.callback) {
             this.callback(this.value, this);

@@ -37,7 +37,7 @@ export class Content extends Interface {
     };
 
     update = () => {
-        this.events.emit('update', undefined, this);
+        this.events.emit('update', { target: this });
 
         if (this.callback) {
             this.callback(undefined, this);
