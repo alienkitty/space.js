@@ -9,6 +9,12 @@ import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const MatcapMaterialOptions = {
+    Common: MatcapMaterialCommonPanel,
+    Map: MapPanel,
+    Helper: MeshHelperPanel
+};
+
 export class MatcapMaterialPanel extends Panel {
     static type = [
         'common'
@@ -32,22 +38,16 @@ export class MatcapMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: MatcapMaterialCommonPanel,
-            Map: MapPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: MatcapMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = MatcapMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

@@ -13,6 +13,16 @@ import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const PhysicalMaterialOptions = {
+    Common: PhysicalMaterialCommonPanel,
+    Map: MapPanel,
+    Clearcoat: PhysicalMaterialClearcoatPanel,
+    Sheen: PhysicalMaterialSheenPanel,
+    Transmission: PhysicalMaterialTransmissionPanel,
+    Env: PhysicalMaterialEnvPanel,
+    Helper: MeshHelperPanel
+};
+
 export class PhysicalMaterialPanel extends Panel {
     static type = [
         'common',
@@ -60,26 +70,16 @@ export class PhysicalMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: PhysicalMaterialCommonPanel,
-            Map: MapPanel,
-            Clearcoat: PhysicalMaterialClearcoatPanel,
-            Sheen: PhysicalMaterialSheenPanel,
-            Transmission: PhysicalMaterialTransmissionPanel,
-            Env: PhysicalMaterialEnvPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: PhysicalMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = PhysicalMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

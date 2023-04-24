@@ -9,6 +9,12 @@ import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const ToonMaterialOptions = {
+    Common: ToonMaterialCommonPanel,
+    Map: MapPanel,
+    Helper: MeshHelperPanel
+};
+
 export class ToonMaterialPanel extends Panel {
     static type = [
         'common'
@@ -31,22 +37,16 @@ export class ToonMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: ToonMaterialCommonPanel,
-            Map: MapPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: ToonMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = ToonMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

@@ -10,6 +10,13 @@ import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const PhongMaterialOptions = {
+    Common: PhongMaterialCommonPanel,
+    Map: MapPanel,
+    Env: PhongMaterialEnvPanel,
+    Helper: MeshHelperPanel
+};
+
 export class PhongMaterialPanel extends Panel {
     static type = [
         'common',
@@ -43,23 +50,16 @@ export class PhongMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: PhongMaterialCommonPanel,
-            Map: MapPanel,
-            Env: PhongMaterialEnvPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: PhongMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = PhongMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

@@ -10,6 +10,13 @@ import { LambertMaterialEnvPanel } from './LambertMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const LambertMaterialOptions = {
+    Common: LambertMaterialCommonPanel,
+    Map: MapPanel,
+    Env: LambertMaterialEnvPanel,
+    Helper: MeshHelperPanel
+};
+
 export class LambertMaterialPanel extends Panel {
     static type = [
         'common'
@@ -38,23 +45,16 @@ export class LambertMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: LambertMaterialCommonPanel,
-            Map: MapPanel,
-            Env: LambertMaterialEnvPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: LambertMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = LambertMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

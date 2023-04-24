@@ -10,6 +10,13 @@ import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
+export const BasicMaterialOptions = {
+    Common: BasicMaterialCommonPanel,
+    Map: MapPanel,
+    Env: BasicMaterialEnvPanel,
+    Helper: MeshHelperPanel
+};
+
 export class BasicMaterialPanel extends Panel {
     static type = [
         'common'
@@ -36,23 +43,16 @@ export class BasicMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: BasicMaterialCommonPanel,
-            Map: MapPanel,
-            Env: BasicMaterialEnvPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: BasicMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = BasicMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

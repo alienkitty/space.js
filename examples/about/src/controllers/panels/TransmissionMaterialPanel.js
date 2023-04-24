@@ -1,4 +1,4 @@
-import { MapPanel, MeshHelperPanel, Panel, PanelItem, PhysicalMaterialClearcoatPanel, PhysicalMaterialCommonPanel, PhysicalMaterialEnvPanel, PhysicalMaterialSheenPanel } from '@alienkitty/space.js/three';
+import { Panel, PanelItem, PhysicalMaterialOptions } from '@alienkitty/space.js/three';
 
 import { TransmissionMaterialFrontPanel } from './TransmissionMaterialFrontPanel.js';
 import { TransmissionMaterialBackPanel } from './TransmissionMaterialBackPanel.js';
@@ -58,14 +58,14 @@ export class TransmissionMaterialPanel extends Panel {
         mesh.material._transmission = 1;
 
         const materialOptions = {
-            Common: PhysicalMaterialCommonPanel,
-            Map: MapPanel,
-            Clearcoat: PhysicalMaterialClearcoatPanel,
-            Sheen: PhysicalMaterialSheenPanel,
+            Common: PhysicalMaterialOptions.Common,
+            Map: PhysicalMaterialOptions.Map,
+            Clearcoat: PhysicalMaterialOptions.Clearcoat,
+            Sheen: PhysicalMaterialOptions.Sheen,
             Front: TransmissionMaterialFrontPanel,
             Back: TransmissionMaterialBackPanel,
-            Env: PhysicalMaterialEnvPanel,
-            Helper: MeshHelperPanel
+            Env: PhysicalMaterialOptions.Env,
+            Helper: PhysicalMaterialOptions.Helper
         };
 
         const items = [

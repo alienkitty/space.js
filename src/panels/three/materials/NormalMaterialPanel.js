@@ -8,6 +8,11 @@ import { PanelItem } from '../../PanelItem.js';
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 
+export const NormalMaterialOptions = {
+    Common: NormalMaterialCommonPanel,
+    Helper: MeshHelperPanel
+};
+
 export class NormalMaterialPanel extends Panel {
     static type = [
         'common'
@@ -31,21 +36,16 @@ export class NormalMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
 
-        const materialOptions = {
-            Common: NormalMaterialCommonPanel,
-            Helper: MeshHelperPanel
-        };
-
         const items = [
             {
                 type: 'divider'
             },
             {
                 type: 'list',
-                list: materialOptions,
+                list: NormalMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
-                    const MaterialPanel = materialOptions[value];
+                    const MaterialPanel = NormalMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
