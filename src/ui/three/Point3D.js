@@ -344,7 +344,6 @@ export class Point3D extends Group {
         this.initMesh();
         this.initHTML();
         this.initViews();
-        this.setInitialPosition();
 
         Point3D.add(this);
     }
@@ -443,6 +442,7 @@ export class Point3D extends Group {
 
         if (type === 'over') {
             if (!this.animatedIn) {
+                this.setInitialPosition();
                 this.resize();
                 this.animateIn();
             }
