@@ -7,7 +7,9 @@ import { Group, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoade
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 import { VertexTangentsHelper } from 'three/examples/jsm/helpers/VertexTangentsHelper.js';
 
+import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
+import { Stage } from '../../utils/Stage.js';
 import { Line } from '../Line.js';
 import { Reticle } from '../Reticle.js';
 import { Tracker } from '../Tracker.js';
@@ -25,11 +27,11 @@ export class Point3D extends Group {
         uvHelper = false,
         debug = false
     } = {}) {
+        this.events = new EventEmitter();
         this.scene = scene;
         this.camera = camera;
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
-        this.events = this.root.events;
         this.loader = loader;
         this.uvTexturePath = uvTexturePath;
         this.uvHelper = uvHelper;
@@ -77,7 +79,7 @@ export class Point3D extends Group {
     }
 
     static addListeners() {
-        this.events.on('invert', this.onInvert);
+        Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
         window.addEventListener('pointermove', this.onPointerMove);
@@ -86,7 +88,7 @@ export class Point3D extends Group {
     }
 
     static removeListeners() {
-        this.events.off('invert', this.onInvert);
+        Stage.events.off('invert', this.onInvert);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
@@ -652,7 +654,7 @@ export class Point3D extends Group {
 
             this.point.close();
 
-            Point3D.events.emit('color_picker', { open: false, target: this.panel });
+            Stage.events.emit('color_picker', { open: false, target: this.panel });
         }
     };
 
@@ -661,7 +663,7 @@ export class Point3D extends Group {
         this.line.inactive();
         this.point.inactive();
 
-        Point3D.events.emit('color_picker', { open: false, target: this.panel });
+        Stage.events.emit('color_picker', { open: false, target: this.panel });
     };
 
     destroy = () => {
