@@ -38,8 +38,20 @@ export class BufferGeometryLoader extends Loader {
             geometry.setAttribute('normal', new BufferAttribute(buffers.normal, 3));
             geometry.setAttribute('uv', new BufferAttribute(buffers.uv, 2));
 
+            if (buffers.uv1) {
+                geometry.setAttribute('uv1', new BufferAttribute(buffers.uv1, 2));
+            }
+
             if (buffers.uv2) {
                 geometry.setAttribute('uv2', new BufferAttribute(buffers.uv2, 2));
+            }
+
+            if (buffers.uv3) {
+                geometry.setAttribute('uv3', new BufferAttribute(buffers.uv3, 2));
+            }
+
+            if (buffers.uv4) {
+                geometry.setAttribute('uv4', new BufferAttribute(buffers.uv4, 2));
             }
 
             geometry.computeBoundingSphere();

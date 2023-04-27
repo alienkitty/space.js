@@ -1,4 +1,6 @@
-import { ACESFilmicToneMapping, AmbientLight, BasicShadowMap, Color, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping, AmbientLight, BasicShadowMap, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+
+ColorManagement.enabled = false; // Disable color management
 
 import { BufferGeometryLoader, EnvironmentTextureLoader, Interface, Stage, TextureLoader, getFrustum, getFullscreenTriangle } from '@alienkitty/space.js/three';
 
@@ -27,9 +29,10 @@ export class WorldController {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = BasicShadowMap;
 
-        // Tone mapping
+        // Tone mapping and output color space encoding
         this.renderer.toneMapping = ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1;
+        this.renderer.outputColorSpace = LinearSRGBColorSpace;
 
         // 3D scene
         this.scene = new Scene();

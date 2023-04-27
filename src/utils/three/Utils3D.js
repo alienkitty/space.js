@@ -6,8 +6,8 @@ import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, V
 
 export function getFullscreenTriangle() {
     const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new Float32BufferAttribute([-1, -1, 3, -1, -1, 3], 2));
-    geometry.setAttribute('uv', new Float32BufferAttribute([0, 0, 2, 0, 0, 2], 2));
+    geometry.setAttribute('position', new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
+    geometry.setAttribute('uv', new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
 
     return geometry;
 }
