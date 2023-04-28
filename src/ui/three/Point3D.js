@@ -362,6 +362,7 @@ export class Point3D extends Group {
                 color: 0xff0000,
                 wireframe: true
             });
+            this.camera.layers.enable(31); // Last layer
         } else {
             this.material = new MeshBasicMaterial({ visible: false });
         }
