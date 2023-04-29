@@ -20,7 +20,7 @@
     </script>
 
     <script type="module">
-        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer, sRGBEncoding } from 'three';
+        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
         // init
@@ -28,7 +28,6 @@
         const renderer = new WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.outputEncoding = sRGBEncoding;
         document.body.appendChild(renderer.domElement);
 
         const scene = new Scene();

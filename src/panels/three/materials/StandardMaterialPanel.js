@@ -2,6 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 
@@ -47,6 +48,10 @@ export class StandardMaterialPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
+
+        if (!Point3D.points) {
+            delete StandardMaterialOptions.Helper;
+        }
 
         const items = [
             {
