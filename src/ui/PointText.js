@@ -26,7 +26,6 @@ export class PointText extends Interface {
         this.container = new Interface('.container');
         this.container.css({
             position: 'absolute',
-            cursor: 'move',
             zIndex: 1
         });
         this.add(this.container);
@@ -113,6 +112,8 @@ export class PointText extends Interface {
         this.clearTween().tween({ left: this.number.width + 30, opacity: 1 }, 400, 'easeOutCubic');
 
         this.panel.animateIn();
+
+        this.container.css({ cursor: 'move' });
     };
 
     close = () => {
@@ -120,6 +121,8 @@ export class PointText extends Interface {
 
         this.number.animateOut();
         this.panel.animateOut();
+
+        this.container.css({ cursor: '' });
     };
 
     animateIn = () => {
