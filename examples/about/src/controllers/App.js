@@ -112,5 +112,6 @@ export class App {
         await wait(1000);
 
         this.ui.animateIn();
+        PanelController.animateIn();
     };
 }

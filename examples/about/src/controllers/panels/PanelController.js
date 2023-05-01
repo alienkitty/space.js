@@ -32,6 +32,7 @@ export class PanelController {
             loader: textureLoader,
             uvHelper: true
         });
+        Point3D.enabled = false;
 
         ScenePanelController.init(this.view);
         LightPanelController.init(this.scene);
@@ -168,5 +169,9 @@ export class PanelController {
         });
 
         this.ui.update();
+    };
+
+    static animateIn = () => {
+        Point3D.enabled = true;
     };
 }
