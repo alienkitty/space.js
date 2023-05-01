@@ -101,6 +101,10 @@ export class Tracker extends Interface {
      * Public methods
      */
 
+    setData = data => {
+        this.number.setData(data);
+    };
+
     update = () => {
         this.position.lerp(this.target, this.lerpSpeed);
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });

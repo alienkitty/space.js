@@ -29,9 +29,9 @@ export class ReticleText extends Interface {
 
         this.secondary = new Interface('.secondary');
         this.secondary.css({
-            height: 18,
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
+            paddingBottom: 3,
             opacity: 0.7
         });
         this.add(this.secondary);
@@ -47,11 +47,11 @@ export class ReticleText extends Interface {
         }
 
         if (data.primary) {
-            this.primary.text(data.primary);
+            this.primary.html(data.primary);
         }
 
         if (data.secondary) {
-            this.secondary.text(data.secondary);
+            this.secondary.html(data.secondary);
         }
     };
 }

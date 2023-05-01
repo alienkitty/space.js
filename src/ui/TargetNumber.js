@@ -19,7 +19,7 @@ export class TargetNumber extends Interface {
     initHTML() {
         this.invisible();
         this.css({
-            position: 'absolute',
+            position: 'relative',
             boxSizing: 'border-box',
             width: this.width,
             height: this.height,
@@ -52,8 +52,8 @@ export class TargetNumber extends Interface {
         }
     };
 
-    animateIn = () => {
-        this.clearTween().visible().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic');
+    animateIn = delay => {
+        this.clearTween().visible().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
     };
 
     animateOut = () => {
