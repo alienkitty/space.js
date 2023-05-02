@@ -81,6 +81,7 @@ export class PhysicalMaterialPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Panel',
                 list: PhysicalMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

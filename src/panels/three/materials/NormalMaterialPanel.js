@@ -47,6 +47,7 @@ export class NormalMaterialPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Panel',
                 list: NormalMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

@@ -23,6 +23,7 @@ export class ToonMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);

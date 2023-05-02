@@ -38,6 +38,10 @@ export class Panel extends Interface {
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
+
+        this.items.forEach(item => {
+            item.events.off('update', this.onUpdate);
+        });
     }
 
     /**
@@ -76,14 +80,20 @@ export class Panel extends Interface {
         }
     };
 
+    onUpdate = e => {
+        this.events.emit('update', e);
+    };
+
     /**
      * Public methods
      */
 
-    add = child => {
-        super.add(child);
+    add = item => {
+        item.events.on('update', this.onUpdate);
 
-        this.items.push(child);
+        super.add(item);
+
+        this.items.push(item);
     };
 
     setPanelValue = (label, value) => {
@@ -92,13 +102,30 @@ export class Panel extends Interface {
                 return;
             }
 
-            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
-                item.view.group.children[0].setPanelValue(label, value);
+            if (item.data.label === label && item.view.setValue) {
+                item.view.setValue(value, true);
                 return;
             }
 
-            if (item.data.label === label && item.view.setValue) {
-                item.view.setValue(value, true);
+            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
+                item.view.group.children[0].setPanelValue(label, value);
+            }
+        });
+    };
+
+    setPanelIndex = (label, index) => {
+        this.items.forEach(item => {
+            if (!item.view) {
+                return;
+            }
+
+            if (item.data.label === label && item.view.setIndex) {
+                item.view.setIndex(index);
+                return;
+            }
+
+            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelIndex) {
+                item.view.group.children[0].setPanelIndex(label, index);
             }
         });
     };

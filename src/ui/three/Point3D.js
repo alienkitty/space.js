@@ -370,6 +370,8 @@ export class Point3D extends Group {
         this.initHTML();
         this.initViews();
 
+        this.addListeners();
+
         Point3D.add(this);
     }
 
@@ -449,6 +451,14 @@ export class Point3D extends Group {
         this.point.position.copy(this.point.target);
     }
 
+    addListeners() {
+        this.panel.events.on('update', this.onUpdate);
+    }
+
+    removeListeners() {
+        this.panel.events.off('update', this.onUpdate);
+    }
+
     /**
      * Event handlers
      */
@@ -498,12 +508,30 @@ export class Point3D extends Group {
             if (this.selected) {
                 this.toggle(true, multiple);
             } else {
-                this.toggle(false);
+                this.toggle(false, false);
             }
 
             Point3D.events.emit('click', { selected: Point3D.getSelected(), target: this });
         } else {
             Point3D.events.emit('click', { target: this });
+        }
+    };
+
+    onUpdate = ({ path, value, index, target }) => {
+        if (this.isMultiple) {
+            Point3D.multiple.forEach(point => {
+                if (point !== this) {
+                    path.forEach(([label, index]) => {
+                        point.setPanelIndex(label, index);
+                    });
+
+                    if (typeof index !== 'undefined') {
+                        point.setPanelIndex(target.label, index);
+                    } else if (typeof value !== 'undefined') {
+                        point.setPanelValue(target.label, value);
+                    }
+                }
+            });
         }
     };
 
@@ -524,6 +552,14 @@ export class Point3D extends Group {
 
     addPanel = item => {
         this.panel.add(item);
+    };
+
+    setPanelValue = (label, value) => {
+        this.panel.setPanelValue(label, value);
+    };
+
+    setPanelIndex = (label, index) => {
+        this.panel.setPanelIndex(label, index);
     };
 
     toggleNormalsHelper = show => {
@@ -760,13 +796,6 @@ export class Point3D extends Group {
             }
 
             if (this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.animateOut(true);
-                        point.inactive();
-                    }
-                });
-
                 Point3D.multiple.length = 0;
 
                 this.point.setData({
@@ -779,19 +808,16 @@ export class Point3D extends Group {
                 }
 
                 this.isMultiple = false;
-
-                this.point.close();
             } else if (Point3D.multiple.length) {
                 const index = Point3D.multiple.indexOf(this);
 
                 if (~index) {
                     Point3D.multiple.splice(index, 1);
                 }
-
-                this.point.active();
-            } else {
-                this.point.close();
             }
+
+            this.point.active();
+            this.point.close();
 
             Stage.events.emit('color_picker', { open: false, target: this.panel });
         }
@@ -829,12 +855,6 @@ export class Point3D extends Group {
 
     inactive = () => {
         if (this.isMultiple) {
-            Point3D.multiple.forEach(point => {
-                if (point !== this) {
-                    point.inactive();
-                }
-            });
-
             Point3D.multiple.length = 0;
 
             this.point.setData({
@@ -857,6 +877,8 @@ export class Point3D extends Group {
     };
 
     destroy = () => {
+        this.removeListeners();
+
         if (this.normalsHelper) {
             this.toggleNormalsHelper(false);
             Point3D.scene.remove(this.normalsHelper);

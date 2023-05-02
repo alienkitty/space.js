@@ -40,6 +40,7 @@ export class TransmissionMaterialBackPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Panel',
                 list: backsideOptions,
                 value: getKeyByValue(backsideOptions, mesh.userData.backside),
                 callback: (value, panel) => {

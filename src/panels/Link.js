@@ -8,11 +8,13 @@ import { Interface } from '../utils/Interface.js';
 
 export class Link extends Interface {
     constructor({
-        value = '',
+        label,
+        value,
         callback
     }) {
         super('.link');
 
+        this.label = label;
         this.value = value;
         this.callback = callback;
 
@@ -90,7 +92,7 @@ export class Link extends Interface {
     };
 
     update = () => {
-        this.events.emit('update', { value: this.value, target: this });
+        this.events.emit('update', { path: [], value: this.value, target: this });
 
         if (this.callback) {
             this.callback(this.value, this);

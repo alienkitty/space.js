@@ -71,6 +71,12 @@ export class UI extends Interface {
         }
     };
 
+    setPanelIndex = (label, index) => {
+        if (this.header) {
+            this.header.info.panel.setPanelIndex(label, index);
+        }
+    };
+
     invert = isInverted => {
         Stage.root.style.setProperty('--ui-color', isInverted ? this.invertColors.light : this.invertColors.dark);
         Stage.root.style.setProperty('--ui-color-triplet', isInverted ? this.invertColors.lightTriplet : this.invertColors.darkTriplet);

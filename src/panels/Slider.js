@@ -11,7 +11,7 @@ import { clamp } from '../utils/Utils.js';
 
 export class Slider extends Interface {
     constructor({
-        label = '',
+        label,
         min = 0,
         max = 1,
         step = 0.01,
@@ -192,7 +192,7 @@ export class Slider extends Interface {
         if (this.value !== this.lastValue || force) {
             this.lastValue = this.value;
 
-            this.events.emit('update', { value: this.value, target: this });
+            this.events.emit('update', { path: [], value: this.value, target: this });
 
             if (this.callback) {
                 this.callback(this.value, this);

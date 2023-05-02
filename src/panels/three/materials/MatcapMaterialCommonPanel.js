@@ -26,6 +26,7 @@ export class MatcapMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
@@ -33,6 +34,7 @@ export class MatcapMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
