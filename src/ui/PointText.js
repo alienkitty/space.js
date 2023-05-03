@@ -123,20 +123,17 @@ export class PointText extends Interface {
         this.locked = false;
     };
 
-    open = moved => {
-        if (moved) {
-            return;
-        }
-
+    open = () => {
         this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
             this.numbers.forEach(number => {
-                number.animateIn(200);
+                number.animateIn(100);
             });
         }
 
         this.panel.animateIn();
+        this.panel.active();
 
         this.container.css({ cursor: 'move' });
     };
@@ -149,12 +146,13 @@ export class PointText extends Interface {
         });
 
         this.panel.animateOut();
+        this.panel.inactive();
 
         this.container.css({ cursor: '' });
     };
 
     animateIn = () => {
-        this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
+        this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
     };
 
     animateOut = callback => {

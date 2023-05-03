@@ -741,7 +741,7 @@ export class Point3D extends Group {
         }
     };
 
-    animateIn = (reverse = false) => {
+    animateIn = reverse => {
         this.line.animateIn(reverse);
         this.reticle.animateIn();
         this.point.animateIn();
@@ -749,7 +749,7 @@ export class Point3D extends Group {
         this.animatedIn = true;
     };
 
-    animateOut = (fast = false, callback) => {
+    animateOut = (fast, callback) => {
         this.line.animateOut(fast, callback);
         this.reticle.animateOut();
 

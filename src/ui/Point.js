@@ -29,7 +29,6 @@ export class Point extends Interface {
         this.openColor = null;
         this.isOpen = false;
         this.isDown = false;
-        this.isMove = false;
 
         this.initHTML();
         this.initViews();
@@ -125,8 +124,6 @@ export class Point extends Interface {
         if (this.isDown) {
             this.delta.subVectors(this.mouse, this.lastMouse);
             this.origin.addVectors(this.lastOrigin, this.delta);
-
-            this.isMove = true;
         }
     };
 
@@ -192,7 +189,9 @@ export class Point extends Interface {
     };
 
     open = () => {
-        this.text.open(this.isMove);
+        this.origin.set(0, 0);
+
+        this.text.open();
 
         this.isOpen = true;
     };
@@ -204,7 +203,6 @@ export class Point extends Interface {
 
         this.isOpen = false;
         this.isDown = false;
-        this.isMove = false;
     };
 
     animateIn = () => {

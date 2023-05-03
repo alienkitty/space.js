@@ -129,7 +129,7 @@ export class Tracker extends Interface {
         this.animatedIn = true;
     };
 
-    hide = (fast = false) => {
+    hide = fast => {
         if (this.locked) {
             return;
         }

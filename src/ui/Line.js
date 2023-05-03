@@ -69,7 +69,7 @@ export class Line extends Component {
         this.context.stroke();
     };
 
-    animateIn = (reverse = false) => {
+    animateIn = reverse => {
         clearTween(this.props);
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
@@ -89,7 +89,7 @@ export class Line extends Component {
         }
     };
 
-    animateOut = (fast = false, callback) => {
+    animateOut = (fast, callback) => {
         let time;
         let ease;
 
@@ -116,6 +116,7 @@ export class Line extends Component {
     };
 
     inactive = () => {
+        clearTween(this.props);
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
     };
 }

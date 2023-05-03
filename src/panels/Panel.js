@@ -156,6 +156,14 @@ export class Panel extends Interface {
         });
     };
 
+    active = () => {
+        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
+    };
+
+    inactive = () => {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
+    };
+
     destroy = () => {
         this.removeListeners();
 
