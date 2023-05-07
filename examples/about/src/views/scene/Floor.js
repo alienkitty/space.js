@@ -1,4 +1,6 @@
-import { Color, GridHelper, Group } from 'three';
+import { Color, Group } from 'three';
+
+import { GridHelper } from './GridHelper.js';
 
 export class Floor extends Group {
     constructor() {
@@ -10,7 +12,7 @@ export class Floor extends Group {
     }
 
     initGrid() {
-        this.gridHelper = new GridHelper(10, 1);
+        this.gridHelper = new GridHelper();
         this.add(this.gridHelper);
     }
 
@@ -23,7 +25,7 @@ export class Floor extends Group {
         const color = new Color(colorStyle);
 
         if (!isInverted) { // Dark colour is muted
-            color.offsetHSL(0, 0, -0.35);
+            color.offsetHSL(0, 0, -0.65);
         }
 
         const array = color.toArray();
