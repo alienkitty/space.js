@@ -1,3 +1,7 @@
+import { wait } from '@alienkitty/space.js/three';
+
+import { RenderManager } from './RenderManager.js';
+
 export class SceneController {
     static init(view) {
         this.view = view;
@@ -25,5 +29,21 @@ export class SceneController {
         this.view.visible = true;
     };
 
-    static ready = () => this.view.ready();
+    static ready = async () => {
+        await this.view.ready();
+
+        // Centre objects for prerender
+        const currentPositions = this.view.children.map(object => object.position.clone());
+
+        this.view.children.forEach(object => object.position.set(0, 0, 0));
+        this.view.visible = true;
+
+        RenderManager.update();
+
+        await wait(1000);
+
+        // Restore positions
+        this.view.visible = false;
+        this.view.children.forEach((object, i) => object.position.copy(currentPositions[i]));
+    };
 }
