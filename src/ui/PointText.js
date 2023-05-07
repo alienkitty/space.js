@@ -21,12 +21,14 @@ export class PointText extends Interface {
         this.css({
             position: 'absolute',
             left: 10,
-            top: -15
+            top: -15,
+            pointerEvents: 'none'
         });
 
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
+            cursor: 'move',
             zIndex: 1
         });
         this.add(this.container);
@@ -124,6 +126,8 @@ export class PointText extends Interface {
     };
 
     open = () => {
+        this.css({ pointerEvents: 'auto' });
+
         this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
@@ -134,11 +138,11 @@ export class PointText extends Interface {
 
         this.panel.animateIn();
         this.panel.active();
-
-        this.container.css({ cursor: 'move' });
     };
 
     close = () => {
+        this.css({ pointerEvents: 'none' });
+
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
 
         this.numbers.forEach(number => {
@@ -147,8 +151,6 @@ export class PointText extends Interface {
 
         this.panel.animateOut();
         this.panel.inactive();
-
-        this.container.css({ cursor: '' });
     };
 
     animateIn = () => {
