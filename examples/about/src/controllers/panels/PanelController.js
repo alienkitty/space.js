@@ -6,6 +6,7 @@ import { WorldController } from '../world/WorldController.js';
 import { ScenePanelController } from './ScenePanelController.js';
 import { PostPanel } from './PostPanel.js';
 import { EnvPanel } from './EnvPanel.js';
+import { GridPanel } from './GridPanel.js';
 
 export class PanelController {
     static init(renderer, scene, camera, view, ui) {
@@ -65,6 +66,8 @@ export class PanelController {
             }
         });
 
+        sceneOptions.Grid = GridPanel;
+
         const items = [
             {
                 label: 'FPS'
@@ -117,20 +120,35 @@ export class PanelController {
                 list: sceneOptions,
                 value: 'Post',
                 callback: (value, panel) => {
-                    if (value === 'Post' || value === 'Env') {
-                        const ScenePanel = sceneOptions[value];
+                    switch (value) {
+                        case 'Post':
+                        case 'Env': {
+                            const ScenePanel = sceneOptions[value];
 
-                        const scenePanel = new ScenePanel(scene);
-                        scenePanel.animateIn(true);
+                            const scenePanel = new ScenePanel(scene);
+                            scenePanel.animateIn(true);
 
-                        panel.setContent(scenePanel);
-                    } else {
-                        const [light, LightPanel] = sceneOptions[value];
+                            panel.setContent(scenePanel);
+                            break;
+                        }
+                        case 'Grid': {
+                            const ScenePanel = sceneOptions[value];
 
-                        const lightPanel = new LightPanel(LightPanelController, light);
-                        lightPanel.animateIn(true);
+                            const scenePanel = new ScenePanel(this.view.floor.gridHelper);
+                            scenePanel.animateIn(true);
 
-                        panel.setContent(lightPanel);
+                            panel.setContent(scenePanel);
+                            break;
+                        }
+                        default: {
+                            const [light, LightPanel] = sceneOptions[value];
+
+                            const lightPanel = new LightPanel(LightPanelController, light);
+                            lightPanel.animateIn(true);
+
+                            panel.setContent(lightPanel);
+                            break;
+                        }
                     }
                 }
             }
