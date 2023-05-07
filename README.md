@@ -161,9 +161,11 @@ npx eslint examples/*.html
 
 * [x] Three.js material UI
 * [x] Three.js light UI
+* [x] Three.js UI keyboard support
 
 #### v1.2
 
+* [x] Three.js UI multiple select
 * [ ] Material texture drag and drop
 * [ ] Material texture thumbnails
 
