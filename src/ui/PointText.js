@@ -10,6 +10,7 @@ export class PointText extends Interface {
     constructor() {
         super('.text');
 
+        this.numbers = [];
         this.locked = false;
 
         this.initHTML();
@@ -20,12 +21,13 @@ export class PointText extends Interface {
         this.css({
             position: 'absolute',
             left: 10,
-            top: -15
+            top: -15,
+            pointerEvents: 'none'
         });
 
         this.container = new Interface('.container');
         this.container.css({
-            position: 'absolute',
+            position: 'relative',
             cursor: 'move',
             zIndex: 1
         });
@@ -40,29 +42,33 @@ export class PointText extends Interface {
 
         this.type = new Interface('.type');
         this.type.css({
-            height: 18,
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
+            paddingBottom: 3,
             opacity: 0.7
         });
         this.container.add(this.type);
+
+        this.targetNumbers = new Interface('.numbers');
+        this.targetNumbers.css({
+            position: 'absolute',
+            left: -28,
+            top: 0,
+            minHeight: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: 4,
+            paddingTop: 3
+        });
+        this.container.add(this.targetNumbers);
     }
 
     initViews() {
-        this.number = new TargetNumber();
-        this.number.css({
-            position: 'absolute',
-            left: -(this.number.width + 10),
-            top: '50%',
-            marginTop: -Math.round(this.number.height / 2)
-        });
-        this.container.add(this.number);
-
         this.panel = new Panel();
         this.panel.css({
-            position: 'absolute',
-            left: -10,
-            top: 36
+            position: 'relative',
+            left: -10
         });
         this.add(this.panel);
     }
@@ -76,54 +82,79 @@ export class PointText extends Interface {
             return;
         }
 
-        let height = 0;
-
         if (data.name) {
-            this.name.text(data.name);
-
-            height += 18;
+            this.name.html(data.name);
         }
 
         if (data.type) {
-            this.type.text(data.type);
-
-            height += 15;
+            this.type.html(data.type);
         }
+    };
 
-        this.panel.css({ top: height + 3 });
+    setTargetNumbers = targetNumbers => {
+        this.targetNumbers.empty();
+        this.numbers.length = 0;
+
+        targetNumbers.forEach(targetNumber => {
+            const number = new TargetNumber();
+            number.setData({ targetNumber });
+            this.targetNumbers.add(number);
+            this.numbers.push(number);
+        });
+
+        if (this.locked) {
+            this.numbers.forEach(number => {
+                number.visible();
+            });
+        }
     };
 
     lock = () => {
-        this.number.animateIn();
+        this.numbers.forEach(number => {
+            number.animateIn();
+        });
 
         this.locked = true;
     };
 
     unlock = () => {
-        this.number.animateOut();
+        this.numbers.forEach(number => {
+            number.animateOut();
+        });
 
         this.locked = false;
     };
 
-    open = moved => {
-        if (moved) {
-            return;
+    open = () => {
+        this.css({ pointerEvents: 'auto' });
+
+        this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
+
+        if (this.locked) {
+            this.numbers.forEach(number => {
+                number.animateIn(100);
+            });
         }
 
-        this.clearTween().tween({ left: this.number.width + 30, opacity: 1 }, 400, 'easeOutCubic');
-
         this.panel.animateIn();
+        this.panel.active();
     };
 
     close = () => {
+        this.css({ pointerEvents: 'none' });
+
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
 
-        this.number.animateOut();
+        this.numbers.forEach(number => {
+            number.animateOut();
+        });
+
         this.panel.animateOut();
+        this.panel.inactive();
     };
 
     animateIn = () => {
-        this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
+        this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
     };
 
     animateOut = callback => {

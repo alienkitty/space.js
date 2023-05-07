@@ -16,10 +16,20 @@ export class Content extends Interface {
     }
 
     /**
+     * Event handlers
+     */
+
+    onUpdate = e => {
+        this.events.emit('update', e);
+    };
+
+    /**
      * Public methods
      */
 
     setContent = content => {
+        content.events.on('update', this.onUpdate);
+
         if (!this.group) {
             this.group = new Interface('.group');
             this.add(this.group);

@@ -56,6 +56,7 @@ export class LambertMaterialPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Panel',
                 list: LambertMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

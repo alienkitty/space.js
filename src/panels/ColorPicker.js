@@ -22,12 +22,14 @@ const Third = Math.PI * 2 / 3;
 
 export class ColorPicker extends Interface {
     constructor({
+        label,
         value,
         noText,
         callback
     }) {
         super('.color-picker');
 
+        this.label = label;
         this.value = new Color(value);
         this.noText = noText;
         this.callback = callback;
@@ -497,8 +499,8 @@ export class ColorPicker extends Interface {
         if (value !== this.lastValue || force) {
             this.lastValue = value;
 
-            if (this.isDown) {
-                this.events.emit('update', { value: this.value, target: this });
+            if (this.isDown || force) {
+                this.events.emit('update', { path: [], value: this.value, target: this });
 
                 if (this.callback) {
                     this.callback(this.value, this);

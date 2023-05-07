@@ -65,6 +65,7 @@ export class PanelItem extends Interface {
             });
 
             this.view = new Link(this.data);
+            this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'list') {
             this.container.css({
@@ -72,6 +73,7 @@ export class PanelItem extends Interface {
             });
 
             this.view = new List(this.data);
+            this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'slider') {
             this.container.css({
@@ -79,9 +81,11 @@ export class PanelItem extends Interface {
             });
 
             this.view = new Slider(this.data);
+            this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'content') {
             this.view = new Content(this.data);
+            this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'color') {
             this.container.css({
@@ -91,9 +95,24 @@ export class PanelItem extends Interface {
             });
 
             this.view = new ColorPicker(this.data);
+            this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         }
     }
+
+    removeListeners() {
+        if (this.view) {
+            this.view.events.off('update', this.onUpdate);
+        }
+    }
+
+    /**
+     * Event handlers
+     */
+
+    onUpdate = e => {
+        this.events.emit('update', e);
+    };
 
     /**
      * Public methods
@@ -128,5 +147,11 @@ export class PanelItem extends Interface {
         target.clearTween();
         target.css({ pointerEvents: 'none' });
         target.tween({ opacity: 0.35 }, 500, 'easeInOutSine');
+    };
+
+    destroy = () => {
+        this.removeListeners();
+
+        return super.destroy();
     };
 }

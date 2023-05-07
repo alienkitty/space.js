@@ -26,6 +26,7 @@ export class NormalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
@@ -35,6 +36,7 @@ export class NormalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Wire',
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {

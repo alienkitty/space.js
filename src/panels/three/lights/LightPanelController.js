@@ -89,6 +89,7 @@ export class LightPanelController {
             },
             {
                 type: 'list',
+                label: 'Light',
                 list: lightOptions,
                 value: Object.keys(lightOptions)[0],
                 callback: (value, panel) => {

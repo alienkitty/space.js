@@ -45,6 +45,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Attenuation Color',
                 value: mesh.material.attenuationColor,
                 callback: value => {
                     mesh.material.attenuationColor.copy(value);

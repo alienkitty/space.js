@@ -26,6 +26,7 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
@@ -33,6 +34,7 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Emissive',
                 value: mesh.material.emissive,
                 callback: value => {
                     mesh.material.emissive.copy(value);
@@ -40,6 +42,7 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Specular',
                 value: mesh.material.specular,
                 callback: value => {
                     mesh.material.specular.copy(value);
@@ -58,6 +61,7 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
@@ -67,6 +71,7 @@ export class PhongMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Wire',
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {

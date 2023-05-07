@@ -26,6 +26,7 @@ export class BasicMaterialEnvPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Combine',
                 list: CombineOptions,
                 value: getKeyByValue(CombineOptions, mesh.material.combine),
                 callback: value => {

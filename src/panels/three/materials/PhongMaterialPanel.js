@@ -61,6 +61,7 @@ export class PhongMaterialPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Panel',
                 list: PhongMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

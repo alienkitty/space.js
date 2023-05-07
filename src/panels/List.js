@@ -8,12 +8,14 @@ import { ListSelect } from './ListSelect.js';
 
 export class List extends Interface {
     constructor({
+        label,
         list,
         value,
         callback
     }) {
         super('.list');
 
+        this.label = label;
         this.list = list;
         this.keys = Object.keys(this.list);
         this.values = Object.values(this.list);
@@ -68,11 +70,19 @@ export class List extends Interface {
         this.update();
     };
 
+    onUpdate = e => {
+        e.path.unshift([this.label, this.index]);
+
+        this.events.emit('update', e);
+    };
+
     /**
      * Public methods
      */
 
     setContent = content => {
+        content.events.on('update', this.onUpdate);
+
         if (!this.group) {
             this.group = new Interface('.group');
             this.group.css({
@@ -99,10 +109,16 @@ export class List extends Interface {
         this.update();
     };
 
+    setIndex = index => {
+        this.index = index;
+
+        this.update();
+    };
+
     update = () => {
         const value = this.keys[this.index];
 
-        this.events.emit('update', { value, target: this });
+        this.events.emit('update', { path: [], index: this.index, target: this });
 
         if (this.callback) {
             this.callback(value, this);

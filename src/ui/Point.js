@@ -29,7 +29,6 @@ export class Point extends Interface {
         this.openColor = null;
         this.isOpen = false;
         this.isDown = false;
-        this.isMove = false;
 
         this.initHTML();
         this.initViews();
@@ -88,9 +87,9 @@ export class Point extends Interface {
 
     onHover = ({ type }) => {
         if (type === 'mouseenter') {
-            this.panel.onHover({ type: 'over' });
+            this.panel.onHover({ type: 'over', isPoint: true });
         } else {
-            this.panel.onHover({ type: 'out' });
+            this.panel.onHover({ type: 'out', isPoint: true });
         }
     };
 
@@ -125,8 +124,6 @@ export class Point extends Interface {
         if (this.isDown) {
             this.delta.subVectors(this.mouse, this.lastMouse);
             this.origin.addVectors(this.lastOrigin, this.delta);
-
-            this.isMove = true;
         }
     };
 
@@ -152,14 +149,12 @@ export class Point extends Interface {
 
         if (this.tracker && this.tracker.isVisible && this.text.container.element.contains(e.target)) {
             if (!this.tracker.animatedIn) {
-                this.tracker.show();
+                this.panel.show();
             } else if (!this.tracker.locked) {
-                this.text.lock();
-                this.tracker.lock();
+                this.panel.lock();
             } else {
-                this.text.unlock();
-                this.tracker.unlock();
-                this.tracker.hide(true);
+                this.panel.unlock();
+                this.panel.hide();
             }
         }
 
@@ -174,6 +169,10 @@ export class Point extends Interface {
         this.text.setData(data);
     };
 
+    setTargetNumbers = targetNumbers => {
+        this.text.setTargetNumbers(targetNumbers);
+    };
+
     update = () => {
         this.position.lerp(this.target, this.lerpSpeed);
         this.originPosition.addVectors(this.origin, this.position);
@@ -181,8 +180,18 @@ export class Point extends Interface {
         this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
     };
 
+    lock = () => {
+        this.text.lock();
+    };
+
+    unlock = () => {
+        this.text.unlock();
+    };
+
     open = () => {
-        this.text.open(this.isMove);
+        this.origin.set(0, 0);
+
+        this.text.open();
 
         this.isOpen = true;
     };
@@ -193,7 +202,7 @@ export class Point extends Interface {
         this.text.close();
 
         this.isOpen = false;
-        this.isMove = false;
+        this.isDown = false;
     };
 
     animateIn = () => {
@@ -206,6 +215,10 @@ export class Point extends Interface {
         this.text.animateOut(() => {
             this.invisible();
         });
+    };
+
+    active = () => {
+        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
     };
 
     inactive = () => {

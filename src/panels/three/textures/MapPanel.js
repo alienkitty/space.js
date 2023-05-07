@@ -56,6 +56,7 @@ export class MapPanel extends Panel {
             items.push(
                 {
                     type: 'list',
+                    label: 'Wrap',
                     list: WrapOptions,
                     value: getKeyByValue(WrapOptions, mesh.material.map.wrapS),
                     callback: (value, panel) => {

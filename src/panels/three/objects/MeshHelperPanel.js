@@ -41,6 +41,7 @@ export class MeshHelperPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Normals',
                 list: NormalsHelperOptions,
                 value: getKeyByValue(NormalsHelperOptions, mesh.userData.normals),
                 callback: value => {
@@ -54,6 +55,7 @@ export class MeshHelperPanel extends Panel {
             items.push(
                 {
                     type: 'list',
+                    label: 'Tangents',
                     list: TangentsHelperOptions,
                     value: getKeyByValue(TangentsHelperOptions, mesh.userData.tangents),
                     callback: value => {
@@ -68,6 +70,7 @@ export class MeshHelperPanel extends Panel {
             items.push(
                 {
                     type: 'list',
+                    label: 'UV',
                     list: UVHelperOptions,
                     value: getKeyByValue(UVHelperOptions, mesh.userData.uv),
                     callback: value => {

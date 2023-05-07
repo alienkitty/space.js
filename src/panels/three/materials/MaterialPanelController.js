@@ -87,6 +87,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
+                label: 'Side',
                 list: SideOptions,
                 value: getKeyByValue(SideOptions, mesh.material.side),
                 callback: value => {
@@ -96,6 +97,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
+                label: 'Material',
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, mesh.material),
                 callback: (value, panel) => {
@@ -186,6 +188,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
+                label: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, mesh.visible),
                 callback: (value, panel) => {
@@ -215,4 +218,16 @@ export class MaterialPanelController {
             ui.addPanel(new PanelItem(data));
         });
     }
+
+    /**
+     * Public methods
+     */
+
+    static destroy = () => {
+        for (const prop in this) {
+            this[prop] = null;
+        }
+
+        return null;
+    };
 }

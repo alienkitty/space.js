@@ -45,6 +45,7 @@ export class PhysicalMaterialSheenPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Sheen Color',
                 value: mesh.material.sheenColor,
                 callback: value => {
                     mesh.material.sheenColor.copy(value);

@@ -29,6 +29,7 @@ export class HemisphereLightPanel extends Panel {
         const lightItems = [
             {
                 type: 'list',
+                label: 'Helper',
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
@@ -42,6 +43,7 @@ export class HemisphereLightPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Color',
                 value: light.color,
                 callback: value => {
                     light.color.copy(value);
@@ -53,6 +55,7 @@ export class HemisphereLightPanel extends Panel {
             },
             {
                 type: 'color',
+                label: 'Ground Color',
                 value: light.groundColor,
                 callback: value => {
                     light.groundColor.copy(value);
@@ -81,6 +84,7 @@ export class HemisphereLightPanel extends Panel {
             },
             {
                 type: 'list',
+                label: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
                 callback: (value, panel) => {
