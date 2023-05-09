@@ -118,7 +118,14 @@ export class MaterialPanelController {
                             if (key in mesh.material) {
                                 const value = mesh.material[key];
 
-                                if (value && value.isColor) {
+                                if (value && (
+                                    value.isVector2 ||
+                                    value.isVector3 ||
+                                    value.isVector4 ||
+                                    value.isMatrix3 ||
+                                    value.isMatrix4 ||
+                                    value.isColor
+                                )) {
                                     if (!materialProperties[type][key]) {
                                         materialProperties[type][key] = value.clone();
                                     } else {
@@ -148,7 +155,14 @@ export class MaterialPanelController {
                             if (key in mesh.material && key in materialProperties[type]) {
                                 const value = materialProperties[type][key];
 
-                                if (value && value.isColor) {
+                                if (value && (
+                                    value.isVector2 ||
+                                    value.isVector3 ||
+                                    value.isVector4 ||
+                                    value.isMatrix3 ||
+                                    value.isMatrix4 ||
+                                    value.isColor
+                                )) {
                                     mesh.material[key].copy(value);
                                 } else {
                                     mesh.material[key] = value;
