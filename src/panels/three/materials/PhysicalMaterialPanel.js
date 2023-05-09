@@ -38,7 +38,8 @@ export class PhysicalMaterialPanel extends Panel {
             'color',
             'emissive',
             'flatShading',
-            'wireframe'
+            'wireframe',
+            'toneMapped'
         ],
         standard: [
             'roughness',

@@ -30,6 +30,7 @@ export class PhongMaterialPanel extends Panel {
             'emissive',
             'flatShading',
             'wireframe',
+            'toneMapped',
             'combine',
             'reflectivity',
             'refractionRatio'

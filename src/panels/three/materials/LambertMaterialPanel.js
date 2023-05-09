@@ -29,6 +29,7 @@ export class LambertMaterialPanel extends Panel {
             'emissive',
             'flatShading',
             'wireframe',
+            'toneMapped',
             'combine',
             'reflectivity',
             'refractionRatio'

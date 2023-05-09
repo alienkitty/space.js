@@ -4,6 +4,9 @@
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { ToneMappedOptions } from '../Options.js';
+
+import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class ToonMaterialCommonPanel extends Panel {
     constructor(mesh) {
@@ -27,6 +30,15 @@ export class ToonMaterialCommonPanel extends Panel {
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
+                }
+            },
+            {
+                type: 'list',
+                label: 'Tone',
+                list: ToneMappedOptions,
+                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                callback: value => {
+                    mesh.material.toneMapped = ToneMappedOptions[value];
                 }
             }
             // TODO: Texture thumbnails

@@ -24,7 +24,8 @@ export class MatcapMaterialPanel extends Panel {
     static properties = {
         common: [
             'color',
-            'flatShading'
+            'flatShading',
+            'toneMapped'
         ]
     };
 

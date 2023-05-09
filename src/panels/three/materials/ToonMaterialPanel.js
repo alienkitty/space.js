@@ -23,7 +23,8 @@ export class ToonMaterialPanel extends Panel {
 
     static properties = {
         common: [
-            'color'
+            'color',
+            'toneMapped'
         ]
     };
 

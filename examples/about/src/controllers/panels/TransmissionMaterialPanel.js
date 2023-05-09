@@ -14,7 +14,8 @@ export class TransmissionMaterialPanel extends Panel {
         common: [
             'emissive',
             'flatShading',
-            'wireframe'
+            'wireframe',
+            'toneMapped'
         ],
         standard: [
             'envMapIntensity'
