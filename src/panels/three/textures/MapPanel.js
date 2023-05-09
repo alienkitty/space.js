@@ -55,6 +55,17 @@ export class MapPanel extends Panel {
 
             items.push(
                 {
+                    type: 'slider',
+                    label: 'Anisotropy',
+                    min: 1,
+                    max: 16,
+                    step: 1,
+                    value: mesh.material.map.anisotropy,
+                    callback: value => {
+                        mesh.material.map.anisotropy = value;
+                    }
+                },
+                {
                     type: 'list',
                     label: 'Wrap',
                     list: WrapOptions,
