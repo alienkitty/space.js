@@ -131,6 +131,8 @@ export class MaterialPanelController {
                                     } else {
                                         materialProperties[type][key].copy(value);
                                     }
+                                } else if (Array.isArray(value)) {
+                                    materialProperties[type][key] = value.slice();
                                 } else {
                                     materialProperties[type][key] = value;
                                 }
