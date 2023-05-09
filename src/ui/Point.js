@@ -7,7 +7,7 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 import { PointText } from './PointText.js';
 
-import { tween } from '../tween/Tween.js';
+import { defer, tween } from '../tween/Tween.js';
 
 export class Point extends Interface {
     constructor(panel, tracker) {
@@ -85,7 +85,9 @@ export class Point extends Interface {
         }
     };
 
-    onHover = ({ type }) => {
+    onHover = async ({ type }) => {
+        await defer();
+
         if (type === 'mouseenter') {
             this.panel.onHover({ type: 'over', isPoint: true });
         } else {
