@@ -140,7 +140,7 @@ export class HeaderInfo extends Interface {
 
         this.onPointerMove(e);
 
-        if (performance.now() - this.lastTime > 750 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
+        if (performance.now() - this.lastTime > 250 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
             this.lastTime = null;
             return;
         }

@@ -107,7 +107,7 @@ export class InputManager {
 
         this.onPointerMove(e);
 
-        if (performance.now() - this.lastTime > 750 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
+        if (performance.now() - this.lastTime > 250 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
             this.click = null;
             return;
         }
