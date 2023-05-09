@@ -29,6 +29,9 @@ export class TransmissionMaterialPanel extends Panel {
             'attenuationDistance',
             'clearcoat',
             'clearcoatRoughness',
+            'iridescence',
+            'iridescenceIOR',
+            'iridescenceThicknessRange',
             'sheen',
             'sheenRoughness',
             'sheenColor'
@@ -61,6 +64,7 @@ export class TransmissionMaterialPanel extends Panel {
             Common: PhysicalMaterialOptions.Common,
             Map: PhysicalMaterialOptions.Map,
             Clearcoat: PhysicalMaterialOptions.Clearcoat,
+            Iridescence: PhysicalMaterialOptions.Iridescence,
             Sheen: PhysicalMaterialOptions.Sheen,
             Front: TransmissionMaterialFrontPanel,
             Back: TransmissionMaterialBackPanel,

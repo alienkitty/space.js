@@ -8,6 +8,7 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
+import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
@@ -18,6 +19,7 @@ export const PhysicalMaterialOptions = {
     Common: PhysicalMaterialCommonPanel,
     Map: MapPanel,
     Clearcoat: PhysicalMaterialClearcoatPanel,
+    Iridescence: PhysicalMaterialIridescencePanel,
     Sheen: PhysicalMaterialSheenPanel,
     Transmission: PhysicalMaterialTransmissionPanel,
     Env: PhysicalMaterialEnvPanel,
@@ -54,6 +56,9 @@ export class PhysicalMaterialPanel extends Panel {
             'attenuationDistance',
             'clearcoat',
             'clearcoatRoughness',
+            'iridescence',
+            'iridescenceIOR',
+            'iridescenceThicknessRange',
             'sheen',
             'sheenRoughness',
             'sheenColor'
