@@ -86,8 +86,7 @@ export class List extends Interface {
         if (!this.group) {
             this.group = new Interface('.group');
             this.group.css({
-                position: 'relative',
-                left: -10
+                position: 'relative'
             });
             this.add(this.group);
         }

@@ -66,10 +66,6 @@ export class PointText extends Interface {
 
     initViews() {
         this.panel = new Panel();
-        this.panel.css({
-            position: 'relative',
-            left: -10
-        });
         this.add(this.panel);
     }
 
