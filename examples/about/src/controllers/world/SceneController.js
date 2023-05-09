@@ -40,7 +40,7 @@ export class SceneController {
 
         RenderManager.update();
 
-        await wait(1000);
+        await wait(500);
 
         // Restore positions
         this.view.visible = false;
