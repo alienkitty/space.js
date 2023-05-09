@@ -57,11 +57,55 @@ export class SpotLightPanel extends Panel {
                 type: 'slider',
                 label: 'Int',
                 min: 0,
-                max: 1,
-                step: 0.01,
+                max: 5,
+                step: 0.05,
                 value: light.intensity,
                 callback: value => {
                     light.intensity = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Distance',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.distance,
+                callback: value => {
+                    light.distance = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Angle',
+                min: 0,
+                max: Math.PI / 2,
+                step: 0.01,
+                value: light.angle,
+                callback: value => {
+                    light.angle = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Penumbra',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: light.penumbra,
+                callback: value => {
+                    light.penumbra = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Decay',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.decay,
+                callback: value => {
+                    light.decay = value;
                 }
             }
         ];

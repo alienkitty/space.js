@@ -4,7 +4,7 @@
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
-import { WireframeOptions } from '../Options.js';
+import { ToneMappedOptions, WireframeOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -39,6 +39,15 @@ export class BasicMaterialCommonPanel extends Panel {
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
                     mesh.material.wireframe = WireframeOptions[value];
+                }
+            },
+            {
+                type: 'list',
+                label: 'Tone',
+                list: ToneMappedOptions,
+                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                callback: value => {
+                    mesh.material.toneMapped = ToneMappedOptions[value];
                 }
             }
             // TODO: Texture thumbnails

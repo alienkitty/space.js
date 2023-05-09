@@ -8,7 +8,9 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
+import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
+import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
@@ -18,7 +20,9 @@ export const PhysicalMaterialOptions = {
     Common: PhysicalMaterialCommonPanel,
     Map: MapPanel,
     Clearcoat: PhysicalMaterialClearcoatPanel,
+    Iridescence: PhysicalMaterialIridescencePanel,
     Sheen: PhysicalMaterialSheenPanel,
+    Subsurface: PhysicalMaterialSubsurfacePanel,
     Transmission: PhysicalMaterialTransmissionPanel,
     Env: PhysicalMaterialEnvPanel,
     Helper: MeshHelperPanel
@@ -36,7 +40,8 @@ export class PhysicalMaterialPanel extends Panel {
             'color',
             'emissive',
             'flatShading',
-            'wireframe'
+            'wireframe',
+            'toneMapped'
         ],
         standard: [
             'roughness',
@@ -54,6 +59,9 @@ export class PhysicalMaterialPanel extends Panel {
             'attenuationDistance',
             'clearcoat',
             'clearcoatRoughness',
+            'iridescence',
+            'iridescenceIOR',
+            'iridescenceThicknessRange',
             'sheen',
             'sheenRoughness',
             'sheenColor'
@@ -81,7 +89,7 @@ export class PhysicalMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Physical',
                 list: PhysicalMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

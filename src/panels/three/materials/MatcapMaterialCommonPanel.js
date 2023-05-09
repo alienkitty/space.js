@@ -4,7 +4,7 @@
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
-import { FlatShadingOptions } from '../Options.js';
+import { FlatShadingOptions, ToneMappedOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -40,6 +40,15 @@ export class MatcapMaterialCommonPanel extends Panel {
                 callback: value => {
                     mesh.material.flatShading = FlatShadingOptions[value];
                     mesh.material.needsUpdate = true;
+                }
+            },
+            {
+                type: 'list',
+                label: 'Tone',
+                list: ToneMappedOptions,
+                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                callback: value => {
+                    mesh.material.toneMapped = ToneMappedOptions[value];
                 }
             }
             // TODO: Texture thumbnails

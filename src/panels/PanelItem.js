@@ -20,7 +20,7 @@ export class PanelItem extends Interface {
 
     initHTML() {
         this.css({
-            width: 128
+            width: 108
         });
 
         this.container = new Interface('.container');
@@ -31,8 +31,7 @@ export class PanelItem extends Interface {
 
         if (!this.data.type) {
             this.container.css({
-                padding: '10px 10px 0',
-                marginBottom: 10
+                margin: '10px 0'
             });
 
             this.text = new Interface('.text');
@@ -48,7 +47,6 @@ export class PanelItem extends Interface {
             });
         } else if (this.data.type === 'divider') {
             this.container.css({
-                padding: '0 10px',
                 margin: '7px 0'
             });
 
@@ -61,7 +59,7 @@ export class PanelItem extends Interface {
             this.container.add(this.line);
         } else if (this.data.type === 'link') {
             this.container.css({
-                padding: '2px 10px 0'
+                margin: '2px 0 0'
             });
 
             this.view = new Link(this.data);
@@ -69,17 +67,13 @@ export class PanelItem extends Interface {
             this.container.add(this.view);
         } else if (this.data.type === 'list') {
             this.container.css({
-                padding: '2px 10px 0'
+                margin: '2px 0 0'
             });
 
             this.view = new List(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'slider') {
-            this.container.css({
-                padding: '0 10px'
-            });
-
             this.view = new Slider(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
@@ -90,8 +84,7 @@ export class PanelItem extends Interface {
         } else if (this.data.type === 'color') {
             this.container.css({
                 height: 19,
-                padding: '0 10px',
-                marginBottom: 7
+                margin: '0 0 7px'
             });
 
             this.view = new ColorPicker(this.data);

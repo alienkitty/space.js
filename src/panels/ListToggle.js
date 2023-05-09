@@ -27,7 +27,7 @@ export class ListToggle extends Interface {
             cssFloat: 'left',
             width: 54,
             height: 18,
-            lineHeight: 16,
+            lineHeight: 18,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -98,12 +98,14 @@ export class ListToggle extends Interface {
 
     active = () => {
         this.clicked = true;
+
         this.text.css({ y: -8, opacity: 0 });
         this.over.css({ y: 0, opacity: 1 });
     };
 
     inactive = () => {
         this.clicked = false;
+
         this.onHover({ type: 'mouseleave' });
     };
 

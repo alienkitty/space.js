@@ -86,8 +86,7 @@ export class List extends Interface {
         if (!this.group) {
             this.group = new Interface('.group');
             this.group.css({
-                position: 'relative',
-                left: -10
+                position: 'relative'
             });
             this.add(this.group);
         }
@@ -106,11 +105,19 @@ export class List extends Interface {
     setValue = value => {
         this.index = this.values.indexOf(value);
 
+        if (this.keys.length > 2) {
+            this.items[0].setIndex(this.index);
+        }
+
         this.update();
     };
 
     setIndex = index => {
         this.index = index;
+
+        if (this.keys.length > 2) {
+            this.items[0].setIndex(this.index);
+        }
 
         this.update();
     };

@@ -4,7 +4,7 @@
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
-import { FlatShadingOptions, WireframeOptions } from '../Options.js';
+import { FlatShadingOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -53,7 +53,7 @@ export class PhongMaterialCommonPanel extends Panel {
                 label: 'Shiny',
                 min: 0,
                 max: 100,
-                step: 1,
+                step: 0.1,
                 value: mesh.material.shininess,
                 callback: value => {
                     mesh.material.shininess = value;
@@ -76,6 +76,15 @@ export class PhongMaterialCommonPanel extends Panel {
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
                     mesh.material.wireframe = WireframeOptions[value];
+                }
+            },
+            {
+                type: 'list',
+                label: 'Tone',
+                list: ToneMappedOptions,
+                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                callback: value => {
+                    mesh.material.toneMapped = ToneMappedOptions[value];
                 }
             }
             // TODO: Texture thumbnails

@@ -35,6 +35,11 @@ export const WireframeOptions = {
     Wire: true
 };
 
+export const ToneMappedOptions = {
+    Off: false,
+    Tone: true
+};
+
 export const CombineOptions = {
     Multiply: MultiplyOperation,
     Mix: MixOperation,

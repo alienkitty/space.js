@@ -37,8 +37,8 @@ export class AmbientLightPanel extends Panel {
                 type: 'slider',
                 label: 'Int',
                 min: 0,
-                max: 1,
-                step: 0.01,
+                max: 5,
+                step: 0.05,
                 value: light.intensity,
                 callback: value => {
                     light.intensity = value;

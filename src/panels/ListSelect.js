@@ -25,7 +25,7 @@ export class ListSelect extends Interface {
         this.css({
             position: 'relative',
             height: 18,
-            lineHeight: 16,
+            lineHeight: 18,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -52,7 +52,7 @@ export class ListSelect extends Interface {
         this.add(this.over);
     }
 
-    getNextIndex = () => {
+    getNextIndex() {
         this.next = this.index + 1;
 
         if (this.next >= this.list.length) {
@@ -60,7 +60,7 @@ export class ListSelect extends Interface {
         }
 
         return this.next;
-    };
+    }
 
     addListeners() {
         this.element.addEventListener('click', this.onClick);
@@ -99,6 +99,13 @@ export class ListSelect extends Interface {
     /**
      * Public methods
      */
+
+    setIndex = index => {
+        this.index = index;
+
+        this.text.text(this.list[this.index]);
+        this.over.text(this.list[this.getNextIndex()]);
+    };
 
     destroy = () => {
         this.removeListeners();

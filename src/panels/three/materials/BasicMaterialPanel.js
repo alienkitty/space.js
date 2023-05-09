@@ -27,6 +27,7 @@ export class BasicMaterialPanel extends Panel {
         common: [
             'color',
             'wireframe',
+            'toneMapped',
             'combine',
             'reflectivity',
             'refractionRatio'
@@ -54,7 +55,7 @@ export class BasicMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Basic',
                 list: BasicMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

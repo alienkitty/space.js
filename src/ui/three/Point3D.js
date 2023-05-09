@@ -176,6 +176,8 @@ export class Point3D extends Group {
             this.hover = null;
             this.root.css({ cursor: '' });
         }
+
+        this.delta.subVectors(this.mouse, this.lastMouse);
     };
 
     static onPointerUp = e => {
@@ -185,7 +187,7 @@ export class Point3D extends Group {
 
         this.onPointerMove(e);
 
-        if (performance.now() - this.lastTime > 750 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             this.click = null;
             return;
         }
