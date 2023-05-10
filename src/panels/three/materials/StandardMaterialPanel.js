@@ -7,6 +7,7 @@ import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
+import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
 import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -14,6 +15,7 @@ import { MapPanel } from '../textures/MapPanel.js';
 export const StandardMaterialOptions = {
     Common: StandardMaterialCommonPanel,
     Map: MapPanel,
+    Subsurface: StandardMaterialSubsurfacePanel,
     Env: StandardMaterialEnvPanel,
     Helper: MeshHelperPanel
 };

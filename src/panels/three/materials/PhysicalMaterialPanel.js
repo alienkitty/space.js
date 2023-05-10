@@ -10,6 +10,7 @@ import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
 import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
+import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
@@ -21,6 +22,7 @@ export const PhysicalMaterialOptions = {
     Clearcoat: PhysicalMaterialClearcoatPanel,
     Iridescence: PhysicalMaterialIridescencePanel,
     Sheen: PhysicalMaterialSheenPanel,
+    Subsurface: PhysicalMaterialSubsurfacePanel,
     Transmission: PhysicalMaterialTransmissionPanel,
     Env: PhysicalMaterialEnvPanel,
     Helper: MeshHelperPanel

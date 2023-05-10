@@ -7,6 +7,7 @@ import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
+import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
 import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -14,6 +15,7 @@ import { MapPanel } from '../textures/MapPanel.js';
 export const PhongMaterialOptions = {
     Common: PhongMaterialCommonPanel,
     Map: MapPanel,
+    Subsurface: PhongMaterialSubsurfacePanel,
     Env: PhongMaterialEnvPanel,
     Helper: MeshHelperPanel
 };
