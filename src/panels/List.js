@@ -105,11 +105,19 @@ export class List extends Interface {
     setValue = value => {
         this.index = this.values.indexOf(value);
 
+        if (this.keys.length > 2) {
+            this.items[0].setIndex(this.index);
+        }
+
         this.update();
     };
 
     setIndex = index => {
         this.index = index;
+
+        if (this.keys.length > 2) {
+            this.items[0].setIndex(this.index);
+        }
 
         this.update();
     };
