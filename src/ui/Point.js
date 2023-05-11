@@ -28,7 +28,6 @@ export class Point extends Interface {
         this.lerpSpeed = 0.07;
         this.openColor = null;
         this.isOpen = false;
-        this.isDown = false;
 
         this.initHTML();
         this.initViews();
@@ -101,12 +100,10 @@ export class Point extends Interface {
         }
 
         if (this.text.container.element.contains(e.target)) {
-            this.isDown = true;
+            this.onPointerMove(e);
+
+            window.addEventListener('pointermove', this.onPointerMove);
         }
-
-        this.onPointerMove(e);
-
-        window.addEventListener('pointermove', this.onPointerMove);
     };
 
     onPointerMove = ({ clientX, clientY }) => {
@@ -123,24 +120,20 @@ export class Point extends Interface {
             this.lastOrigin.copy(this.origin);
         }
 
-        if (this.isDown) {
-            this.delta.subVectors(this.mouse, this.lastMouse);
-            this.origin.addVectors(this.lastOrigin, this.delta);
-        }
+        this.delta.subVectors(this.mouse, this.lastMouse);
+        this.origin.addVectors(this.lastOrigin, this.delta);
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointermove', this.onPointerMove);
+
         if (!this.isOpen || !this.lastTime) {
             return;
         }
 
-        window.removeEventListener('pointermove', this.onPointerMove);
-
-        this.isDown = false;
-
         this.onPointerMove(e);
 
-        if (performance.now() - this.lastTime > 250 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             this.lastTime = null;
             return;
         }
@@ -204,7 +197,6 @@ export class Point extends Interface {
         this.text.close();
 
         this.isOpen = false;
-        this.isDown = false;
     };
 
     animateIn = () => {

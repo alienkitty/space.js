@@ -129,18 +129,20 @@ export class HeaderInfo extends Interface {
             this.lastTime = performance.now();
             this.lastMouse.copy(event);
         }
+
+        this.delta.subVectors(this.mouse, this.lastMouse);
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointermove', this.onPointerMove);
+
         if (!this.isOpen || !this.lastTime) {
             return;
         }
 
-        window.removeEventListener('pointermove', this.onPointerMove);
-
         this.onPointerMove(e);
 
-        if (performance.now() - this.lastTime > 250 || this.delta.subVectors(this.mouse, this.lastMouse).length() > 50) {
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             this.lastTime = null;
             return;
         }
