@@ -59,6 +59,28 @@ export class RectAreaLightPanel extends Panel {
                 callback: value => {
                     light.intensity = value;
                 }
+            },
+            {
+                type: 'slider',
+                label: 'Width',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.width,
+                callback: value => {
+                    light.width = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Height',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.height,
+                callback: value => {
+                    light.height = value;
+                }
             }
         ];
 
