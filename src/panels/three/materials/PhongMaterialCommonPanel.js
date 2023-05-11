@@ -53,7 +53,7 @@ export class PhongMaterialCommonPanel extends Panel {
                 label: 'Shiny',
                 min: 0,
                 max: 100,
-                step: 1,
+                step: 0.1,
                 value: mesh.material.shininess,
                 callback: value => {
                     mesh.material.shininess = value;
