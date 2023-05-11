@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping, AmbientLight, BasicShadowMap, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping, AmbientLight/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
 
 ColorManagement.enabled = false; // Disable color management
 
@@ -26,8 +26,8 @@ export class WorldController {
         this.element.css({ opacity: 0 });
 
         // Shadows
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = BasicShadowMap;
+        // this.renderer.shadowMap.enabled = true;
+        // this.renderer.shadowMap.type = BasicShadowMap;
 
         // Tone mapping and output color space encoding
         this.renderer.toneMapping = ACESFilmicToneMapping;
@@ -64,9 +64,9 @@ export class WorldController {
 
         const light = new DirectionalLight(0xffffff, 0.4);
         light.position.set(5, 5, 5);
-        light.castShadow = true;
-        light.shadow.mapSize.width = 2048;
-        light.shadow.mapSize.height = 2048;
+        // light.castShadow = true;
+        // light.shadow.mapSize.width = 2048;
+        // light.shadow.mapSize.height = 2048;
         this.scene.add(light);
     }
 

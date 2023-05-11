@@ -26,8 +26,8 @@ export class DarkPlanet extends RenderGroup {
         });
 
         const mesh = new Mesh(geometry, material);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        // mesh.castShadow = true;
+        // mesh.receiveShadow = true;
         this.add(mesh);
 
         this.mesh = mesh;

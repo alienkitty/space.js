@@ -23,8 +23,8 @@ export class FloatingCrystal extends RenderGroup {
 
         const mesh = new Mesh(geometry, material);
         mesh.scale.set(0.5, 1, 0.5);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        // mesh.castShadow = true;
+        // mesh.receiveShadow = true;
         this.add(mesh);
 
         this.mesh = mesh;

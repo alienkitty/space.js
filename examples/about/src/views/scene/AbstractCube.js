@@ -24,8 +24,8 @@ export class AbstractCube extends RenderGroup {
         const mesh = new Mesh(geometry, material);
         mesh.rotation.x = MathUtils.degToRad(-45);
         mesh.rotation.z = MathUtils.degToRad(-45);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        // mesh.castShadow = true;
+        // mesh.receiveShadow = true;
         this.add(mesh);
 
         this.mesh = mesh;
