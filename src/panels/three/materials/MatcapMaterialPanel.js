@@ -50,7 +50,7 @@ export class MatcapMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Matcap',
                 list: MatcapMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

@@ -109,7 +109,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Subsurface Scattering',
                 list: subsurfaceOptions,
                 value: getKeyByValue(subsurfaceOptions, mesh.userData.subsurface),
                 callback: (value, panel) => {

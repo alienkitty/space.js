@@ -49,7 +49,7 @@ export class ToonMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Toon',
                 list: ToonMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

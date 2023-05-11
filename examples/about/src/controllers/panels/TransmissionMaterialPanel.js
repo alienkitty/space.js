@@ -79,7 +79,7 @@ export class TransmissionMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Panel',
+                label: 'Transmission',
                 list: materialOptions,
                 value: 'Common',
                 callback: (value, panel) => {
