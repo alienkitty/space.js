@@ -50,15 +50,15 @@
         directionalLight.position.set(5, 5, 5);
         scene.add(directionalLight);
 
+        const pointLight = new PointLight();
+        scene.add(pointLight);
+
         const spotLight = new SpotLight();
         spotLight.angle = 0.3;
         spotLight.penumbra = 0.2;
         spotLight.decay = 2;
         spotLight.position.set(-5, 5, 5);
         scene.add(spotLight);
-
-        const pointLight = new PointLight();
-        scene.add(pointLight);
 
         RectAreaLightUniformsLib.init();
 
