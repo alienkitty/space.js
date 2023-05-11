@@ -81,7 +81,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
             {
                 type: 'slider',
                 label: 'Power',
-                min: 0,
+                min: 1,
                 max: 32,
                 step: 0.1,
                 value: mesh.userData.subsurfaceUniforms.thicknessPower.value,
