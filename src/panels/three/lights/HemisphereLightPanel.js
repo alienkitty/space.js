@@ -43,7 +43,7 @@ export class HemisphereLightPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                label: 'Sky Color',
                 value: light.color,
                 callback: value => {
                     light.color.copy(value);
