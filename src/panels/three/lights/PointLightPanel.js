@@ -63,6 +63,28 @@ export class PointLightPanel extends Panel {
                 callback: value => {
                     light.intensity = value;
                 }
+            },
+            {
+                type: 'slider',
+                label: 'Distance',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.distance,
+                callback: value => {
+                    light.distance = value;
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Decay',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: light.decay,
+                callback: value => {
+                    light.decay = value;
+                }
             }
         ];
 
