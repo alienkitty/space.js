@@ -40,6 +40,8 @@ export class RenderGroup extends Group {
             return;
         }
 
+        this.mesh.material.time = WorldController.time.value;
+
         const currentRenderTarget = this.renderer.getRenderTarget();
 
         const currentToneMapping = this.renderer.toneMapping;

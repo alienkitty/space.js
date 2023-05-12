@@ -1,10 +1,11 @@
 import { Vector3 } from 'three';
 
 import { MaterialOptions, MaterialPanelController, Point3D } from '@alienkitty/space.js/three';
-import { MeshTransmissionMaterial } from '@alienkitty/alien.js/three';
+import { MeshTransmissionDistortionMaterial, MeshTransmissionMaterial } from '@alienkitty/alien.js/three';
 
 import { CameraController } from '../world/CameraController.js';
 import { TransmissionMaterialPanel } from './TransmissionMaterialPanel.js';
+import { TransmissionDistortionMaterialPanel } from './TransmissionDistortionMaterialPanel.js';
 
 export class ScenePanelController {
     static init(view) {
@@ -26,6 +27,7 @@ export class ScenePanelController {
             Standard: MaterialOptions.Standard,
             Physical: MaterialOptions.Physical,
             Transmission: [MeshTransmissionMaterial, TransmissionMaterialPanel],
+            Distortion: [MeshTransmissionDistortionMaterial, TransmissionDistortionMaterialPanel],
             Normal: MaterialOptions.Normal
         };
 
