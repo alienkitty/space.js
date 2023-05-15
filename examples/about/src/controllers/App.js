@@ -3,6 +3,7 @@ import { ImageBitmapLoaderThread, Stage, Thread, ticker, wait } from '@alienkitt
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
 import { SceneController } from './world/SceneController.js';
+import { PhysicsController } from './world/PhysicsController.js';
 import { InputManager } from './world/InputManager.js';
 import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
@@ -52,11 +53,12 @@ export class App {
     }
 
     static initControllers() {
-        const { renderer, scene, camera } = WorldController;
+        const { renderer, scene, camera, controls, physics } = WorldController;
 
-        CameraController.init(renderer, camera);
+        CameraController.init(camera, controls);
         SceneController.init(this.view);
-        InputManager.init(camera);
+        PhysicsController.init(physics);
+        InputManager.init(scene, camera, controls);
         RenderManager.init(renderer, scene, camera, this.ui);
     }
 
@@ -96,6 +98,7 @@ export class App {
         WorldController.update(time, delta, frame);
         CameraController.update();
         SceneController.update(time);
+        PhysicsController.update();
         InputManager.update(time);
         RenderManager.update(time, delta, frame);
         PanelController.update(time);

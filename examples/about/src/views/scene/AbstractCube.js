@@ -1,5 +1,7 @@
-import { BoxGeometry, Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, Color, MathUtils, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 
+import { WorldController } from '../../controllers/world/WorldController.js';
+import { PhysicsController } from '../../controllers/world/PhysicsController.js';
 import { RenderGroup } from './RenderGroup.js';
 
 export class AbstractCube extends RenderGroup {
@@ -7,9 +9,16 @@ export class AbstractCube extends RenderGroup {
         super();
 
         this.position.x = 2.5;
+        this.rotation.x = MathUtils.degToRad(-45);
+        this.rotation.z = MathUtils.degToRad(-45);
+
+        this.force = new Vector3();
+        this.contact = false;
     }
 
     async initMesh() {
+        const { physics } = WorldController;
+
         const geometry = new BoxGeometry();
 
         const material = new MeshStandardMaterial({
@@ -22,11 +31,11 @@ export class AbstractCube extends RenderGroup {
         });
 
         const mesh = new Mesh(geometry, material);
-        mesh.rotation.x = MathUtils.degToRad(-45);
-        mesh.rotation.z = MathUtils.degToRad(-45);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
         this.add(mesh);
+
+        physics.add(mesh, { autoSleep: false });
 
         this.mesh = mesh;
     }
@@ -52,7 +61,11 @@ export class AbstractCube extends RenderGroup {
      */
 
     update = () => {
-        this.mesh.rotation.y -= 0.005;
+        if (PhysicsController.enabled) {
+            return;
+        }
+
+        this.rotation.y -= 0.005;
 
         super.update();
     };

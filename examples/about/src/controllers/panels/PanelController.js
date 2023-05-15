@@ -1,8 +1,9 @@
-import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapping, ReinhardToneMapping } from 'three';
+import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapping, ReinhardToneMapping, Vector3 } from 'three';
 
 import { LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
+import { PhysicsController } from '../world/PhysicsController.js';
 import { ScenePanelController } from './ScenePanelController.js';
 import { PostPanel } from './PostPanel.js';
 import { EnvPanel } from './EnvPanel.js';
@@ -42,6 +43,16 @@ export class PanelController {
     static initPanel() {
         const scene = this.scene;
 
+        const { physics } = PhysicsController;
+
+        const physicsOptions = {
+            Off: false,
+            Physics: true
+        };
+
+        const vector3 = new Vector3();
+        const gravity = physics.world.getGravity();
+
         // https://threejs.org/examples/#webgl_tonemapping
         const toneMappingOptions = {
             None: NoToneMapping,
@@ -71,6 +82,41 @@ export class PanelController {
         const items = [
             {
                 label: 'FPS'
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'list',
+                list: physicsOptions,
+                value: getKeyByValue(physicsOptions, PhysicsController.enabled),
+                callback: value => {
+                    PhysicsController.enabled = physicsOptions[value];
+
+                    // Reset
+                    vector3.set(0, 0, 0);
+
+                    physics.objects.forEach(object => {
+                        const { position, quaternion } = object;
+
+                        physics.setPosition(object, position);
+                        physics.setOrientation(object, quaternion);
+                        physics.setLinearVelocity(object, vector3);
+                        physics.setAngularVelocity(object, vector3);
+                    });
+                }
+            },
+            {
+                type: 'slider',
+                label: 'Gravity',
+                min: -10,
+                max: 10,
+                step: 0.1,
+                value: -gravity.y,
+                callback: value => {
+                    gravity.y = -value;
+                    physics.world.setGravity(gravity);
+                }
             },
             {
                 type: 'divider'

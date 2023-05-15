@@ -1,14 +1,10 @@
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 import { Point3D, clearTween, delayedCall } from '@alienkitty/space.js/three';
 
 export class CameraController {
-    static init(renderer, camera) {
-        this.renderer = renderer;
+    static init(camera, controls) {
         this.camera = camera;
+        this.controls = controls;
 
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
         this.isDown = false;
         this.isTransforming = false;
         this.isAnimatingOut = false;

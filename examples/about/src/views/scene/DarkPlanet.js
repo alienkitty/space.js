@@ -2,6 +2,8 @@ import { Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
+import { WorldController } from '../../controllers/world/WorldController.js';
+import { PhysicsController } from '../../controllers/world/PhysicsController.js';
 import { RenderGroup } from './RenderGroup.js';
 
 export class DarkPlanet extends RenderGroup {
@@ -15,7 +17,13 @@ export class DarkPlanet extends RenderGroup {
     }
 
     async initMesh() {
+        const { physics } = WorldController;
+
         const geometry = getSphericalCube(0.6, 20);
+
+        // For sphere geometry physics
+        geometry.type = 'SphereGeometry';
+        geometry.parameters.radius = geometry.parameters.width;
 
         const material = new MeshStandardMaterial({
             name: 'Dark Planet',
@@ -29,6 +37,8 @@ export class DarkPlanet extends RenderGroup {
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
         this.add(mesh);
+
+        physics.add(mesh, { autoSleep: false });
 
         this.mesh = mesh;
     }
@@ -54,6 +64,10 @@ export class DarkPlanet extends RenderGroup {
      */
 
     update = () => {
+        if (PhysicsController.enabled) {
+            return;
+        }
+
         // Counter clockwise rotation
         this.mesh.rotation.y += 0.005;
 

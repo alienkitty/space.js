@@ -1,8 +1,11 @@
-import { ACESFilmicToneMapping, AmbientLight/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping, AmbientLight/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
+
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 ColorManagement.enabled = false; // Disable color management
 
 import { BufferGeometryLoader, EnvironmentTextureLoader, Interface, Stage, TextureLoader, getFrustum, getFullscreenTriangle } from '@alienkitty/space.js/three';
+import { OimoPhysics } from '@alienkitty/alien.js/three/oimophysics';
 
 export class WorldController {
     static init() {
@@ -10,6 +13,8 @@ export class WorldController {
         this.initLights();
         this.initLoaders();
         this.initEnvironment();
+        this.initControls();
+        this.initPhysics();
 
         this.addListeners();
     }
@@ -44,6 +49,7 @@ export class WorldController {
         this.camera.lookAt(this.scene.position);
 
         // Global geometries
+        this.quad = new PlaneGeometry(1, 1);
         this.screenTriangle = getFullscreenTriangle();
 
         // Global uniforms
@@ -83,6 +89,15 @@ export class WorldController {
 
     static async initEnvironment() {
         this.scene.environment = await this.loadEnvironmentTexture('assets/textures/env/jewelry_black_contrast.jpg');
+    }
+
+    static initControls() {
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+    }
+
+    static initPhysics() {
+        this.physics = new OimoPhysics();
     }
 
     static addListeners() {
