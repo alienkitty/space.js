@@ -9,13 +9,15 @@ import { PanelItem } from '../../PanelItem.js';
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
 import { LambertMaterialEnvPanel } from './LambertMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const LambertMaterialOptions = {
     Common: LambertMaterialCommonPanel,
     Map: MapPanel,
     Env: LambertMaterialEnvPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class LambertMaterialPanel extends Panel {
@@ -49,6 +51,10 @@ export class LambertMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete LambertMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete LambertMaterialOptions.Physics;
         }
 
         const items = [

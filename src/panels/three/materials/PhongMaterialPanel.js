@@ -10,6 +10,7 @@ import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
 import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const PhongMaterialOptions = {
@@ -17,7 +18,8 @@ export const PhongMaterialOptions = {
     Map: MapPanel,
     Subsurface: PhongMaterialSubsurfacePanel,
     Env: PhongMaterialEnvPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class PhongMaterialPanel extends Panel {
@@ -56,6 +58,10 @@ export class PhongMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete PhongMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete PhongMaterialOptions.Physics;
         }
 
         const items = [

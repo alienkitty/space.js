@@ -8,12 +8,14 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const ToonMaterialOptions = {
     Common: ToonMaterialCommonPanel,
     Map: MapPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class ToonMaterialPanel extends Panel {
@@ -41,6 +43,10 @@ export class ToonMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete ToonMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete ToonMaterialOptions.Physics;
         }
 
         const items = [

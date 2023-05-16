@@ -22,6 +22,7 @@ export class Point3D extends Group {
     static init(scene, camera, {
         root = document.body,
         container = document.body,
+        physics = null,
         loader = new TextureLoader(),
         uvTexturePath = 'assets/textures/uv.jpg',
         uvHelper = false,
@@ -30,6 +31,7 @@ export class Point3D extends Group {
         this.events = new EventEmitter();
         this.scene = scene;
         this.camera = camera;
+        this.physics = physics;
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
         this.loader = loader;

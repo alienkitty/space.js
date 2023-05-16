@@ -31,4 +31,5 @@ export { PhysicalMaterialEnvPanel } from './materials/PhysicalMaterialEnvPanel.j
 export { NormalMaterialOptions, NormalMaterialPanel } from './materials/NormalMaterialPanel.js';
 export { NormalMaterialCommonPanel } from './materials/NormalMaterialCommonPanel.js';
 export { MeshHelperPanel } from './objects/MeshHelperPanel.js';
+export { OimoPhysicsPanel } from './physics/OimoPhysicsPanel.js';
 export { MapPanel } from './textures/MapPanel.js';

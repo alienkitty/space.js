@@ -8,10 +8,12 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 
 export const NormalMaterialOptions = {
     Common: NormalMaterialCommonPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class NormalMaterialPanel extends Panel {
@@ -39,6 +41,10 @@ export class NormalMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete NormalMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete NormalMaterialOptions.Physics;
         }
 
         const items = [
