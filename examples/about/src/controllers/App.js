@@ -63,9 +63,9 @@ export class App {
     }
 
     static initPanel() {
-        const { renderer, scene, camera } = WorldController;
+        const { renderer, scene, camera, physics } = WorldController;
 
-        PanelController.init(renderer, scene, camera, this.view, this.ui);
+        PanelController.init(renderer, scene, camera, physics, this.view, this.ui);
     }
 
     static addListeners() {

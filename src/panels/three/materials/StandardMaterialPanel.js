@@ -10,6 +10,7 @@ import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
 import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const StandardMaterialOptions = {
@@ -17,7 +18,8 @@ export const StandardMaterialOptions = {
     Map: MapPanel,
     Subsurface: StandardMaterialSubsurfacePanel,
     Env: StandardMaterialEnvPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class StandardMaterialPanel extends Panel {
@@ -54,6 +56,10 @@ export class StandardMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete StandardMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete StandardMaterialOptions.Physics;
         }
 
         const items = [

@@ -9,13 +9,15 @@ import { PanelItem } from '../../PanelItem.js';
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
 import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const BasicMaterialOptions = {
     Common: BasicMaterialCommonPanel,
     Map: MapPanel,
     Env: BasicMaterialEnvPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class BasicMaterialPanel extends Panel {
@@ -47,6 +49,10 @@ export class BasicMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete BasicMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete BasicMaterialOptions.Physics;
         }
 
         const items = [

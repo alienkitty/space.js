@@ -10,10 +10,11 @@ import { EnvPanel } from './EnvPanel.js';
 import { GridPanel } from './GridPanel.js';
 
 export class PanelController {
-    static init(renderer, scene, camera, view, ui) {
+    static init(renderer, scene, camera, physics, view, ui) {
         this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
+        this.physics = physics;
         this.view = view;
         this.ui = ui;
 
@@ -31,6 +32,7 @@ export class PanelController {
         Point3D.init(this.scene, this.camera, {
             root: Stage,
             container: this.ui,
+            physics: this.physics,
             loader: textureLoader,
             uvHelper: true
         });
@@ -42,8 +44,7 @@ export class PanelController {
 
     static initPanel() {
         const scene = this.scene;
-
-        const { physics } = PhysicsController;
+        const physics = this.physics;
 
         const physicsOptions = {
             Off: false,

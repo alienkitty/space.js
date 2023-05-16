@@ -70,7 +70,8 @@ export class TransmissionDistortionMaterialPanel extends Panel {
             Front: TransmissionDistortionMaterialFrontPanel,
             Back: TransmissionDistortionMaterialBackPanel,
             Env: PhysicalMaterialOptions.Env,
-            Helper: PhysicalMaterialOptions.Helper
+            Helper: PhysicalMaterialOptions.Helper,
+            Physics: PhysicalMaterialOptions.Physics
         };
 
         const items = [

@@ -70,7 +70,8 @@ export class TransmissionMaterialPanel extends Panel {
             Front: TransmissionMaterialFrontPanel,
             Back: TransmissionMaterialBackPanel,
             Env: PhysicalMaterialOptions.Env,
-            Helper: PhysicalMaterialOptions.Helper
+            Helper: PhysicalMaterialOptions.Helper,
+            Physics: PhysicalMaterialOptions.Physics
         };
 
         const items = [

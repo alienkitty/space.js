@@ -8,12 +8,14 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const MatcapMaterialOptions = {
     Common: MatcapMaterialCommonPanel,
     Map: MapPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class MatcapMaterialPanel extends Panel {
@@ -42,6 +44,10 @@ export class MatcapMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete MatcapMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete MatcapMaterialOptions.Physics;
         }
 
         const items = [

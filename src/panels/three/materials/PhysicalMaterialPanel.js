@@ -14,6 +14,7 @@ import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePan
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
+import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export const PhysicalMaterialOptions = {
@@ -25,7 +26,8 @@ export const PhysicalMaterialOptions = {
     Subsurface: PhysicalMaterialSubsurfacePanel,
     Transmission: PhysicalMaterialTransmissionPanel,
     Env: PhysicalMaterialEnvPanel,
-    Helper: MeshHelperPanel
+    Helper: MeshHelperPanel,
+    Physics: OimoPhysicsPanel
 };
 
 export class PhysicalMaterialPanel extends Panel {
@@ -81,6 +83,10 @@ export class PhysicalMaterialPanel extends Panel {
 
         if (!Point3D.points) {
             delete PhysicalMaterialOptions.Helper;
+        }
+
+        if (!Point3D.physics) {
+            delete PhysicalMaterialOptions.Physics;
         }
 
         const items = [
