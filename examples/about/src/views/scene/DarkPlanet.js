@@ -38,7 +38,7 @@ export class DarkPlanet extends RenderGroup {
         // mesh.receiveShadow = true;
         this.add(mesh);
 
-        physics.add(mesh, { autoSleep: false });
+        physics.add(mesh, { density: 2, autoSleep: false });
 
         this.mesh = mesh;
     }

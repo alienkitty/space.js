@@ -24,7 +24,7 @@ export class Floor extends Group {
         floor.geometry.setDrawRange(0, 0); // Avoid rendering geometry
         this.add(floor);
 
-        physics.add(floor, { density: 0 });
+        physics.add(floor, { density: 0, autoSleep: false });
     }
 
     /**
