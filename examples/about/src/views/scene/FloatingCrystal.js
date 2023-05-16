@@ -1,5 +1,7 @@
 import { Color, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
 
+import { WorldController } from '../../controllers/world/WorldController.js';
+import { PhysicsController } from '../../controllers/world/PhysicsController.js';
 import { RenderGroup } from './RenderGroup.js';
 
 export class FloatingCrystal extends RenderGroup {
@@ -7,9 +9,12 @@ export class FloatingCrystal extends RenderGroup {
         super();
 
         this.position.y = 0.7;
+        this.scale.set(0.5, 1, 0.5);
     }
 
     async initMesh() {
+        const { physics } = WorldController;
+
         const geometry = new OctahedronGeometry();
 
         const material = new MeshStandardMaterial({
@@ -22,10 +27,11 @@ export class FloatingCrystal extends RenderGroup {
         });
 
         const mesh = new Mesh(geometry, material);
-        mesh.scale.set(0.5, 1, 0.5);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
         this.add(mesh);
+
+        physics.add(mesh, { autoSleep: false });
 
         this.mesh = mesh;
     }
@@ -51,8 +57,12 @@ export class FloatingCrystal extends RenderGroup {
      */
 
     update = time => {
-        this.mesh.position.y = Math.sin(time) * 0.1;
-        this.mesh.rotation.y += 0.01;
+        if (PhysicsController.enabled) {
+            return;
+        }
+
+        this.position.y = 0.7 + Math.sin(time) * 0.1;
+        this.rotation.y += 0.01;
 
         super.update();
     };
