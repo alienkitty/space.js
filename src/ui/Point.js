@@ -28,6 +28,7 @@ export class Point extends Interface {
         this.lerpSpeed = 0.07;
         this.openColor = null;
         this.isOpen = false;
+        this.isMove = false;
 
         this.initHTML();
         this.initViews();
@@ -122,6 +123,8 @@ export class Point extends Interface {
 
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
+
+        this.isMove = true;
     };
 
     onPointerUp = e => {
@@ -169,7 +172,10 @@ export class Point extends Interface {
     };
 
     update = () => {
-        this.position.lerp(this.target, this.lerpSpeed);
+        if (!this.isMove) {
+            this.position.lerp(this.target, this.lerpSpeed);
+        }
+
         this.originPosition.addVectors(this.origin, this.position);
 
         this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
@@ -184,19 +190,28 @@ export class Point extends Interface {
     };
 
     open = () => {
-        this.origin.set(0, 0);
-
         this.text.open();
 
         this.isOpen = true;
     };
 
-    close = () => {
-        tween(this.origin, { x: 0, y: 0 }, 400, 'easeOutCubic');
+    close = fast => {
+        if (fast) {
+            this.clearTimeout(this.timeout);
+            this.timeout = this.delayedCall(300, () => {
+                this.origin.set(0, 0);
+
+                this.isOpen = false;
+                this.isMove = false;
+            });
+        } else {
+            tween(this.origin, { x: 0, y: 0 }, 400, 'easeOutCubic');
+
+            this.isOpen = false;
+            this.isMove = false;
+        }
 
         this.text.close();
-
-        this.isOpen = false;
     };
 
     animateIn = () => {
@@ -217,7 +232,7 @@ export class Point extends Interface {
 
     inactive = () => {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
-        this.close();
+        this.close(true);
     };
 
     destroy = () => {
