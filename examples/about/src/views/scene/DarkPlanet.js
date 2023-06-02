@@ -29,7 +29,7 @@ export class DarkPlanet extends RenderGroup {
             name: 'Dark Planet',
             color: new Color().offsetHSL(0, 0, -0.65),
             metalness: 0.6,
-            roughness: 2,
+            roughness: 1,
             envMapIntensity: 1
         });
 
