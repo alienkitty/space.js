@@ -33,6 +33,8 @@ export class TransmissionMaterialPanel extends Panel {
             'iridescence',
             'iridescenceIOR',
             'iridescenceThicknessRange',
+            'anisotropy',
+            'anisotropyRotation',
             'sheen',
             'sheenRoughness',
             'sheenColor'
@@ -66,6 +68,7 @@ export class TransmissionMaterialPanel extends Panel {
             Map: PhysicalMaterialOptions.Map,
             Clearcoat: PhysicalMaterialOptions.Clearcoat,
             Iridescence: PhysicalMaterialOptions.Iridescence,
+            Anisotropy: PhysicalMaterialOptions.Anisotropy,
             Sheen: PhysicalMaterialOptions.Sheen,
             Front: TransmissionMaterialFrontPanel,
             Back: TransmissionMaterialBackPanel,

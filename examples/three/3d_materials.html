@@ -52,6 +52,8 @@
         // mesh
 
         const geometry = new BoxGeometry();
+        geometry.computeTangents();
+
         const material = new MeshNormalMaterial();
 
         const mesh = new Mesh(geometry, material);

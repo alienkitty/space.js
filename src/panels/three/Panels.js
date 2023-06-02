@@ -26,6 +26,7 @@ export { PhysicalMaterialOptions, PhysicalMaterialPanel } from './materials/Phys
 export { PhysicalMaterialCommonPanel } from './materials/PhysicalMaterialCommonPanel.js';
 export { PhysicalMaterialClearcoatPanel } from './materials/PhysicalMaterialClearcoatPanel.js';
 export { PhysicalMaterialIridescencePanel } from './materials/PhysicalMaterialIridescencePanel.js';
+export { PhysicalMaterialAnisotropyPanel } from './materials/PhysicalMaterialAnisotropyPanel.js';
 export { PhysicalMaterialSheenPanel } from './materials/PhysicalMaterialSheenPanel.js';
 export { PhysicalMaterialTransmissionPanel } from './materials/PhysicalMaterialTransmissionPanel.js';
 export { PhysicalMaterialEnvPanel } from './materials/PhysicalMaterialEnvPanel.js';
