@@ -96,9 +96,9 @@ export class TransmissionMaterialFrontPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.anisotropy,
+                value: mesh.material.anisotropicBlur,
                 callback: value => {
-                    mesh.material.anisotropy = value;
+                    mesh.material.anisotropicBlur = value;
                 }
             }
             // TODO: Texture thumbnails

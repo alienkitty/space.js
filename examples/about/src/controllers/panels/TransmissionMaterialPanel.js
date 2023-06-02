@@ -45,7 +45,7 @@ export class TransmissionMaterialPanel extends Panel {
             'metalness',
             '_transmission',
             'chromaticAberration',
-            'anisotropy'
+            'anisotropicBlur'
         ]
     };
 
