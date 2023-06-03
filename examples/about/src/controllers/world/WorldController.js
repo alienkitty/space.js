@@ -1,6 +1,6 @@
 import { ACESFilmicToneMapping, AmbientLight/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 ColorManagement.enabled = false; // Disable color management
 
