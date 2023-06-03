@@ -1,5 +1,7 @@
 import { Color, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
 
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
 import { RenderGroup } from './RenderGroup.js';
@@ -9,13 +11,20 @@ export class FloatingCrystal extends RenderGroup {
         super();
 
         this.position.y = 0.7;
+
+        // Resize to rhombus shape
         this.scale.set(0.5, 1, 0.5);
     }
 
     async initMesh() {
         const { physics } = WorldController;
 
-        const geometry = new OctahedronGeometry();
+        let geometry = new OctahedronGeometry();
+
+        // Convert to indexed geometry
+        geometry = mergeVertices(geometry);
+
+        geometry.computeTangents();
 
         const material = new MeshStandardMaterial({
             name: 'Floating Crystal',
@@ -23,7 +32,7 @@ export class FloatingCrystal extends RenderGroup {
             metalness: 0.6,
             roughness: 0.7,
             envMapIntensity: 1,
-            flatShading: true
+            // flatShading: true
         });
 
         const mesh = new Mesh(geometry, material);

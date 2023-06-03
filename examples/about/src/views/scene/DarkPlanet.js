@@ -20,6 +20,7 @@ export class DarkPlanet extends RenderGroup {
         const { physics } = WorldController;
 
         const geometry = getSphericalCube(0.6, 20);
+        geometry.computeTangents();
 
         // For sphere geometry physics
         geometry.type = 'SphereGeometry';

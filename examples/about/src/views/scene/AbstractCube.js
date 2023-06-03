@@ -20,6 +20,7 @@ export class AbstractCube extends RenderGroup {
         const { physics } = WorldController;
 
         const geometry = new BoxGeometry();
+        geometry.computeTangents();
 
         const material = new MeshStandardMaterial({
             name: 'Abstract Cube',
@@ -27,7 +28,7 @@ export class AbstractCube extends RenderGroup {
             metalness: 0.6,
             roughness: 0.7,
             envMapIntensity: 1,
-            flatShading: true
+            // flatShading: true
         });
 
         const mesh = new Mesh(geometry, material);
