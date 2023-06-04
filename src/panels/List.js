@@ -33,7 +33,7 @@ export class List extends Interface {
     initHTML() {
         this.container = new Interface('.container');
         this.container.css({
-            height: 18
+            height: 20
         });
         this.add(this.container);
     }
