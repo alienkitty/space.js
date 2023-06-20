@@ -163,15 +163,14 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                             );
                         };
 
-                        mesh.material.needsUpdate = true;
-
                         panel.group.show();
                     } else {
                         mesh.material.onBeforeCompile = () => {};
-                        mesh.material.needsUpdate = true;
 
                         panel.group.hide();
                     }
+
+                    mesh.material.needsUpdate = true;
                 }
             }
         ];

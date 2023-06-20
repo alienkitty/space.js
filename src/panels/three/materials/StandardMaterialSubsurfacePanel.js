@@ -139,12 +139,12 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                                 uniform float thicknessPower;
                                 uniform float thicknessScale;
 
-                                void RE_Direct_Scattering(IncidentLight directLight, GeometricContext geometry, inout ReflectedLight reflectedLight) {
+                                void RE_Direct_Scattering(IncidentLight directLight, GeometricContext geometry, PhysicalMaterial material, inout ReflectedLight reflectedLight) {
                                     vec3 thickness = directLight.color * 0.8;
                                     vec3 scatteringHalf = normalize(directLight.direction + (geometry.normal * thicknessDistortion));
                                     float scatteringDot = pow(saturate(dot(geometry.viewDir, -scatteringHalf)), thicknessPower) * thicknessScale;
                                     vec3 scatteringIllu = (scatteringDot + thicknessAmbient) * thickness;
-                                    reflectedLight.directDiffuse += scatteringIllu * thicknessAttenuation * directLight.color;
+                                    reflectedLight.directDiffuse += material.diffuseColor * directLight.color * scatteringIllu * thicknessAttenuation;
                                 }
 
                                 void main() {
@@ -157,21 +157,20 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                                     'RE_Direct( directLight, geometry, material, reflectedLight );',
                                     /* glsl */ `
                                     RE_Direct( directLight, geometry, material, reflectedLight );
-                                    RE_Direct_Scattering(directLight, geometry, reflectedLight);
+                                    RE_Direct_Scattering(directLight, geometry, material, reflectedLight);
                                     `
                                 )
                             );
                         };
 
-                        mesh.material.needsUpdate = true;
-
                         panel.group.show();
                     } else {
                         mesh.material.onBeforeCompile = () => {};
-                        mesh.material.needsUpdate = true;
 
                         panel.group.hide();
                     }
+
+                    mesh.material.needsUpdate = true;
                 }
             }
         ];
