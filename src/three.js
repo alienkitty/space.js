@@ -51,6 +51,7 @@ export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
 export * from './panels/three/Options.js';
 export * from './panels/three/Panels.js';
+export * from './panels/three/Patches.js';
 
 // UI
 export { UI } from './ui/UI.js';
