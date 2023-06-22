@@ -81,3 +81,6 @@ export const StandardMaterialPatches = {
         );
     }
 };
+
+// User-defined
+export const MaterialPatches = {};

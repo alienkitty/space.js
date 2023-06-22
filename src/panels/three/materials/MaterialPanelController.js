@@ -16,6 +16,7 @@ import {
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 import { SideOptions, VisibleOptions } from '../Options.js';
+import { MaterialPatches } from '../Patches.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -177,6 +178,12 @@ export class MaterialPanelController {
                                 }
                             }
                         });
+
+                        if (type in MaterialPatches) {
+                            for (const key in MaterialPatches[type]) {
+                                mesh.material.userData.onBeforeCompile[key] = MaterialPatches[type][key];
+                            }
+                        }
                     });
 
                     if (ui.uvTexture) {
@@ -185,6 +192,7 @@ export class MaterialPanelController {
                         mesh.material.map = materialProperties.map;
                     }
 
+                    mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
                     mesh.material.needsUpdate = true;
 
                     if (ui.point && ui.isDefault) {
