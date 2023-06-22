@@ -5,6 +5,7 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { PhongMaterialPatches } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
@@ -62,6 +63,13 @@ export class PhongMaterialPanel extends Panel {
 
         if (!Point3D.physics) {
             delete PhongMaterialOptions.Physics;
+        }
+
+        if (mesh.userData.subsurface) {
+            mesh.material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
+
+            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
+            mesh.material.needsUpdate = true;
         }
 
         const items = [

@@ -5,6 +5,7 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { StandardMaterialPatches } from '../Patches.js';
 
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
@@ -60,6 +61,13 @@ export class StandardMaterialPanel extends Panel {
 
         if (!Point3D.physics) {
             delete StandardMaterialOptions.Physics;
+        }
+
+        if (mesh.userData.subsurface) {
+            mesh.material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
+
+            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
+            mesh.material.needsUpdate = true;
         }
 
         const items = [
