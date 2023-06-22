@@ -127,7 +127,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                     mesh.userData.subsurface = subsurfaceOptions[value];
 
                     if (mesh.userData.subsurface) {
-                        mesh.material.onBeforeCompile = shader => {
+                        mesh.material.userData.onBeforeCompile.subsurface = shader => {
                             shader.uniforms = Object.assign(shader.uniforms, mesh.userData.subsurfaceUniforms);
 
                             shader.fragmentShader = shader.fragmentShader.replace(
@@ -165,11 +165,12 @@ export class PhongMaterialSubsurfacePanel extends Panel {
 
                         panel.group.show();
                     } else {
-                        mesh.material.onBeforeCompile = () => {};
+                        delete mesh.material.userData.onBeforeCompile.subsurface;
 
                         panel.group.hide();
                     }
 
+                    mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
                     mesh.material.needsUpdate = true;
                 }
             }

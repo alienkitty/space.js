@@ -142,6 +142,13 @@ export class MaterialPanelController {
                     materialProperties.map = mesh.material.map;
 
                     mesh.material = new Material();
+                    mesh.material.userData.onBeforeCompile = {};
+
+                    mesh.material.onBeforeCompile = shader => {
+                        for (const key in mesh.material.userData.onBeforeCompile) {
+                            mesh.material.userData.onBeforeCompile[key](shader);
+                        }
+                    };
 
                     mesh.material.transparent = materialProperties.transparent;
                     mesh.material.opacity = materialProperties.opacity;
