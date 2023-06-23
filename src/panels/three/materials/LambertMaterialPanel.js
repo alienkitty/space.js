@@ -8,6 +8,7 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
 import { LambertMaterialEnvPanel } from './LambertMaterialEnvPanel.js';
+import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -57,7 +58,7 @@ export class LambertMaterialPanel extends Panel {
             delete LambertMaterialOptions.Physics;
         }
 
-        const items = [
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -76,6 +77,24 @@ export class LambertMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));

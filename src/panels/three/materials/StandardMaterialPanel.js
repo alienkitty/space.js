@@ -10,6 +10,7 @@ import { StandardMaterialPatches } from '../Patches.js';
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
 import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
+import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -70,7 +71,7 @@ export class StandardMaterialPanel extends Panel {
             mesh.material.needsUpdate = true;
         }
 
-        const items = [
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -89,6 +90,24 @@ export class StandardMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));

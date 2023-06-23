@@ -7,6 +7,7 @@ import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
+import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 
@@ -47,7 +48,7 @@ export class NormalMaterialPanel extends Panel {
             delete NormalMaterialOptions.Physics;
         }
 
-        const items = [
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -66,6 +67,24 @@ export class NormalMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));

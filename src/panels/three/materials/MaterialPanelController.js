@@ -77,12 +77,10 @@ export class MaterialPanelController {
                 callback: value => {
                     if (value < 1) {
                         mesh.material.transparent = true;
-                    } else {
-                        mesh.material.transparent = false;
+                        mesh.material.needsUpdate = true;
                     }
 
                     mesh.material.opacity = value;
-                    mesh.material.needsUpdate = true;
                 }
             },
             {

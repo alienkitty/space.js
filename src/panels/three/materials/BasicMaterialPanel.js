@@ -8,6 +8,7 @@ import { PanelItem } from '../../PanelItem.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
 import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
+import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -55,7 +56,7 @@ export class BasicMaterialPanel extends Panel {
             delete BasicMaterialOptions.Physics;
         }
 
-        const items = [
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -74,6 +75,24 @@ export class BasicMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));
