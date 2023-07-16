@@ -48,7 +48,7 @@ export class Slider extends Interface {
     initHTML() {
         this.container = new Interface('.container');
         this.container.css({
-            height: 28,
+            height: 27,
             cursor: 'w-resize'
         });
         this.add(this.container);
