@@ -116,7 +116,7 @@ export class WebAudio {
 
         if (sound) {
             sound.gain.set(volume);
-            sound.loop = !!loop;
+            sound.loop = loop;
 
             this.trigger(id);
         }
@@ -135,7 +135,7 @@ export class WebAudio {
 
         if (sound) {
             sound.gain.set(0);
-            sound.loop = !!loop;
+            sound.loop = loop;
 
             this.trigger(id);
 
