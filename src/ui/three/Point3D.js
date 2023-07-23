@@ -244,6 +244,8 @@ export class Point3D extends Group {
             } else {
                 this.animateOut();
             }
+        } else if (e.keyCode === 27) { // Esc
+            this.animateOut();
         }
     };
 
