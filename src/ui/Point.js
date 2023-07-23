@@ -56,7 +56,6 @@ export class Point extends Interface {
         this.text.container.element.addEventListener('mouseenter', this.onHover);
         this.text.container.element.addEventListener('mouseleave', this.onHover);
         window.addEventListener('pointerdown', this.onPointerDown);
-        window.addEventListener('pointerup', this.onPointerUp);
     }
 
     removeListeners() {
@@ -64,7 +63,6 @@ export class Point extends Interface {
         this.text.container.element.removeEventListener('mouseenter', this.onHover);
         this.text.container.element.removeEventListener('mouseleave', this.onHover);
         window.removeEventListener('pointerdown', this.onPointerDown);
-        window.removeEventListener('pointerup', this.onPointerUp);
     }
 
     /**
@@ -101,9 +99,14 @@ export class Point extends Interface {
         }
 
         if (this.text.container.element.contains(e.target)) {
+            this.lastTime = performance.now();
+            this.lastMouse.set(e.clientX, e.clientY);
+            this.lastOrigin.copy(this.origin);
+
             this.onPointerMove(e);
 
             window.addEventListener('pointermove', this.onPointerMove);
+            window.addEventListener('pointerup', this.onPointerUp);
         }
     };
 
@@ -114,13 +117,6 @@ export class Point extends Interface {
         };
 
         this.mouse.copy(event);
-
-        if (!this.lastTime) {
-            this.lastTime = performance.now();
-            this.lastMouse.copy(event);
-            this.lastOrigin.copy(this.origin);
-        }
-
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
 
@@ -128,16 +124,16 @@ export class Point extends Interface {
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
 
-        if (!this.isOpen || !this.lastTime) {
+        if (!this.isOpen) {
             return;
         }
 
         this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
-            this.lastTime = null;
             return;
         }
 
@@ -155,8 +151,6 @@ export class Point extends Interface {
                 this.panel.hide();
             }
         }
-
-        this.lastTime = null;
     };
 
     /**

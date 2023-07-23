@@ -78,10 +78,10 @@ export class InputManager {
             return;
         }
 
-        this.onPointerMove(e);
-
         this.lastTime = performance.now();
-        this.lastMouse.copy(this.mouse);
+        this.lastMouse.set(e.clientX, e.clientY);
+
+        this.onPointerMove(e);
 
         if (this.hover) {
             this.click = this.hover;

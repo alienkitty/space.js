@@ -66,7 +66,6 @@ export class HeaderInfo extends Interface {
         this.element.addEventListener('mouseenter', this.onHover);
         this.element.addEventListener('mouseleave', this.onHover);
         window.addEventListener('pointerdown', this.onPointerDown);
-        window.addEventListener('pointerup', this.onPointerUp);
     }
 
     removeListeners() {
@@ -74,7 +73,6 @@ export class HeaderInfo extends Interface {
         this.element.removeEventListener('mouseenter', this.onHover);
         this.element.removeEventListener('mouseleave', this.onHover);
         window.removeEventListener('pointerdown', this.onPointerDown);
-        window.removeEventListener('pointerup', this.onPointerUp);
     }
 
     /**
@@ -112,9 +110,13 @@ export class HeaderInfo extends Interface {
             return;
         }
 
+        this.lastTime = performance.now();
+        this.lastMouse.set(e.clientX, e.clientY);
+
         this.onPointerMove(e);
 
         window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
     };
 
     onPointerMove = ({ clientX, clientY }) => {
@@ -124,26 +126,20 @@ export class HeaderInfo extends Interface {
         };
 
         this.mouse.copy(event);
-
-        if (!this.lastTime) {
-            this.lastTime = performance.now();
-            this.lastMouse.copy(event);
-        }
-
         this.delta.subVectors(this.mouse, this.lastMouse);
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
 
-        if (!this.isOpen || !this.lastTime) {
+        if (!this.isOpen) {
             return;
         }
 
         this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
-            this.lastTime = null;
             return;
         }
 
@@ -155,8 +151,6 @@ export class HeaderInfo extends Interface {
                 this.css({ pointerEvents: 'auto' });
             });
         }
-
-        this.lastTime = null;
     };
 
     /**

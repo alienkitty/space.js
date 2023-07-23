@@ -35,7 +35,7 @@ export class Slider extends Interface {
         this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.firstDown = false;
+        this.bounds = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
 
@@ -108,7 +108,10 @@ export class Slider extends Interface {
      */
 
     onPointerDown = e => {
-        this.firstDown = true;
+        this.bounds = this.element.getBoundingClientRect();
+        this.lastMouse.set(e.clientX, e.clientY);
+        this.lastOrigin.subVectors(this.lastMouse, this.bounds);
+        this.lastValue = this.value;
 
         this.onPointerMove(e);
 
@@ -117,26 +120,16 @@ export class Slider extends Interface {
     };
 
     onPointerMove = ({ clientX, clientY }) => {
-        const bounds = this.element.getBoundingClientRect();
-
         const event = {
             x: clientX,
             y: clientY
         };
 
         this.mouse.copy(event);
-
-        if (this.firstDown) {
-            this.firstDown = false;
-            this.lastMouse.copy(event);
-            this.lastOrigin.subVectors(event, bounds);
-            this.lastValue = this.value;
-        }
-
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
 
-        let value = ((this.origin.x / bounds.width) * this.range + this.min) - this.lastValue;
+        let value = ((this.origin.x / this.bounds.width) * this.range + this.min) - this.lastValue;
         value = Math.floor(value / this.step);
         this.value = this.getValue(this.lastValue + value * this.step);
 
