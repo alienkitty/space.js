@@ -70,15 +70,17 @@ export class Point extends Interface {
      */
 
     onColorPicker = ({ open, target }) => {
-        if (!this.element.contains(target.element)) {
+        if (!this.openColor && !this.element.contains(target.element)) {
             return;
         }
 
         if (open) {
-            this.text.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
+            this.disable();
+
             this.openColor = target;
         } else {
-            this.text.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
+            this.enable();
+
             this.openColor = null;
         }
     };
@@ -218,6 +220,14 @@ export class Point extends Interface {
         this.text.animateOut(() => {
             this.invisible();
         });
+    };
+
+    enable = () => {
+        this.text.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
+    };
+
+    disable = () => {
+        this.text.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     };
 
     active = () => {

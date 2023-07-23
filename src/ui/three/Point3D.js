@@ -54,6 +54,7 @@ export class Point3D extends Group {
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
+        this.openColor = null;
         this.enabled = true;
 
         this.initCanvas();
@@ -82,6 +83,7 @@ export class Point3D extends Group {
     }
 
     static addListeners() {
+        Stage.events.on('color_picker', this.onColorPicker);
         Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
@@ -91,6 +93,7 @@ export class Point3D extends Group {
     }
 
     static removeListeners() {
+        Stage.events.off('color_picker', this.onColorPicker);
         Stage.events.off('invert', this.onInvert);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
@@ -102,6 +105,14 @@ export class Point3D extends Group {
     /**
      * Event handlers
      */
+
+    static onColorPicker = ({ open, target }) => {
+        if (open) {
+            this.openColor = target;
+        } else {
+            this.openColor = null;
+        }
+    };
 
     static onInvert = () => {
         this.invert();
@@ -205,6 +216,8 @@ export class Point3D extends Group {
             }
 
             this.click.onClick(e.shiftKey);
+        } else if (this.openColor && !this.openColor.element.contains(e.target)) {
+            Stage.events.emit('color_picker', { open: false, target: this });
         } else if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
             this.animateOut();
         }
@@ -790,6 +803,8 @@ export class Point3D extends Group {
                 this.point.inactive();
             } else {
                 this.point.open();
+
+                Stage.events.emit('color_picker', { open: false, target: this.panel });
             }
         } else {
             this.line.animateIn(true);
@@ -820,10 +835,8 @@ export class Point3D extends Group {
                 }
             }
 
-            this.point.active();
+            this.point.enable();
             this.point.close();
-
-            Stage.events.emit('color_picker', { open: false, target: this.panel });
         }
 
         if (Point3D.multiple.length > 1) {
@@ -876,8 +889,6 @@ export class Point3D extends Group {
         this.selected = false;
         this.line.inactive();
         this.point.inactive();
-
-        Stage.events.emit('color_picker', { open: false, target: this.panel });
     };
 
     destroy = () => {

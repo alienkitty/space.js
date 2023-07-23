@@ -80,15 +80,17 @@ export class HeaderInfo extends Interface {
      */
 
     onColorPicker = ({ open, target }) => {
-        if (!this.element.contains(target.element)) {
+        if (!this.openColor && !this.element.contains(target.element)) {
             return;
         }
 
         if (open) {
-            this.number.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
+            this.disable();
+
             this.openColor = target;
         } else {
-            this.number.tween({ opacity: 1 }, 400, 'easeInOutSine');
+            this.enable();
+
             this.openColor = null;
         }
     };
@@ -169,6 +171,14 @@ export class HeaderInfo extends Interface {
         this.count++;
 
         this.number.text(this.fps);
+    };
+
+    enable = () => {
+        this.number.tween({ opacity: 1 }, 400, 'easeInOutSine');
+    };
+
+    disable = () => {
+        this.number.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     };
 
     destroy = () => {
