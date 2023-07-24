@@ -44,7 +44,9 @@ export class ScenePanelController {
             });
             object.add(object.point);
 
-            MaterialPanelController.init(object.mesh, object.point, materialOptions);
+            MaterialPanelController.init(object.mesh, object.point, {
+                materialOptions
+            });
 
             // Transmission defaults
             object.mesh.userData.thickness = 0.1;

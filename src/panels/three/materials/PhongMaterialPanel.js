@@ -5,12 +5,12 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPanels } from '../Panels.js';
 import { PhongMaterialPatches } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
 import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
-import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -100,6 +100,8 @@ export class PhongMaterialPanel extends Panel {
                 {
                     type: 'content',
                     callback: (value, panel) => {
+                        const { InstancedMeshPanel } = MaterialPanels;
+
                         const materialPanel = new InstancedMeshPanel(mesh, materialItems);
                         materialPanel.animateIn(true);
 

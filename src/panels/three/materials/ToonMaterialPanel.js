@@ -5,9 +5,9 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPanels } from '../Panels.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
-import { InstancedMeshPanel } from '../objects/InstancedMeshPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
@@ -77,6 +77,8 @@ export class ToonMaterialPanel extends Panel {
                 {
                     type: 'content',
                     callback: (value, panel) => {
+                        const { InstancedMeshPanel } = MaterialPanels;
+
                         const materialPanel = new InstancedMeshPanel(mesh, materialItems);
                         materialPanel.animateIn(true);
 

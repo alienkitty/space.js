@@ -46,7 +46,9 @@ export function getKeyByMaterial(materialOptions, material) {
 }
 
 export class MaterialPanelController {
-    static init(mesh, ui, materialOptions = MaterialOptions) {
+    static init(mesh, ui, {
+        materialOptions = MaterialOptions
+    } = {}) {
         this.mesh = mesh;
         this.ui = ui;
         this.materialOptions = materialOptions;
