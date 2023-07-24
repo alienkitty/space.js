@@ -119,6 +119,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 #### 3d
 
 [materials](https://space.js.org/examples/three/3d_materials.html)  
+[materials instancing](https://space.js.org/examples/three/3d_materials_instancing.html) ([debug](https://space.js.org/examples/three/3d_materials_instancing.html?3&debug))  
 [lights](https://space.js.org/examples/three/3d_lights.html)  
 
 #### audio
