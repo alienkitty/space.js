@@ -1,12 +1,11 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/mrdoob/three.js/blob/dev/examples/jsm/shaders/SubsurfaceScatteringShader.js by daoshengmu
  */
 
 import { ShaderChunk } from 'three';
 
 export const PhongMaterialPatches = {
+    // Based on https://github.com/mrdoob/three.js/blob/dev/examples/jsm/shaders/SubsurfaceScatteringShader.js by daoshengmu
     subsurface(shader, mesh) {
         shader.uniforms = Object.assign(shader.uniforms, mesh.userData.subsurfaceUniforms);
 
@@ -45,6 +44,8 @@ export const PhongMaterialPatches = {
 };
 
 export const StandardMaterialPatches = {
+    // Based on https://github.com/mrdoob/three.js/blob/dev/examples/jsm/shaders/SubsurfaceScatteringShader.js by daoshengmu
+    // Based on https://gist.github.com/mattdesl/2ee82157a86962347dedb6572142df7c
     subsurface(shader, mesh) {
         shader.uniforms = Object.assign(shader.uniforms, mesh.userData.subsurfaceUniforms);
 
