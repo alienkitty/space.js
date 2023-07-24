@@ -49,6 +49,7 @@ export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
+export * from './panels/three/Custom.js';
 export * from './panels/three/Options.js';
 export * from './panels/three/Panels.js';
 export * from './panels/three/Patches.js';

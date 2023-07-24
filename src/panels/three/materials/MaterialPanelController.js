@@ -15,8 +15,8 @@ import {
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPatches } from '../Custom.js';
 import { SideOptions, VisibleOptions } from '../Options.js';
-import { MaterialPatches } from '../Patches.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 

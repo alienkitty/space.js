@@ -5,7 +5,7 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
-import { MaterialPanels } from '../Panels.js';
+import { MaterialPanels } from '../Custom.js';
 
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';

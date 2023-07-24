@@ -1,9 +1,3 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
-import { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
-
 export * from './lights/LightPanelController.js';
 export { AmbientLightPanel } from './lights/AmbientLightPanel.js';
 export { HemisphereLightPanel } from './lights/HemisphereLightPanel.js';
@@ -42,8 +36,3 @@ export { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
 export { MeshHelperPanel } from './objects/MeshHelperPanel.js';
 export { OimoPhysicsPanel } from './physics/OimoPhysicsPanel.js';
 export { MapPanel } from './textures/MapPanel.js';
-
-// User-defined
-export const MaterialPanels = {
-    InstancedMeshPanel
-};
