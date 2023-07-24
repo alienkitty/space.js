@@ -4,6 +4,7 @@
 
 import { Color } from 'three';
 
+import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
 import { InstanceOptions } from '../Options.js';
@@ -20,6 +21,7 @@ export class InstancedMeshPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
+        const point = Point3D.getPoint(mesh);
         const materialItems = this.materialItems;
 
         const color = new Color();
@@ -29,10 +31,10 @@ export class InstancedMeshPanel extends Panel {
                 type: 'list',
                 label: 'Instance',
                 list: InstanceOptions,
-                value: 'Instance',
+                value: 'Mesh',
                 callback: (value, panel) => {
                     if (InstanceOptions[value]) {
-                        mesh.getColorAt(0, color);
+                        mesh.getColorAt(point.instances[0].index, color);
 
                         const instanceItems = [
                             {
@@ -44,7 +46,11 @@ export class InstancedMeshPanel extends Panel {
                                 value: color,
                                 callback: value => {
                                     color.copy(value);
-                                    mesh.setColorAt(0, color);
+
+                                    point.instances.forEach(instance => {
+                                        mesh.setColorAt(instance.index, color);
+                                    });
+
                                     mesh.instanceColor.needsUpdate = true;
                                 }
                             }
