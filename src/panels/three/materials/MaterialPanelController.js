@@ -15,6 +15,7 @@ import {
 
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPatches } from '../Custom.js';
 import { SideOptions, VisibleOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
@@ -45,7 +46,9 @@ export function getKeyByMaterial(materialOptions, material) {
 }
 
 export class MaterialPanelController {
-    static init(mesh, ui, materialOptions = MaterialOptions) {
+    static init(mesh, ui, {
+        materialOptions = MaterialOptions
+    } = {}) {
         this.mesh = mesh;
         this.ui = ui;
         this.materialOptions = materialOptions;
@@ -76,9 +79,6 @@ export class MaterialPanelController {
                 callback: value => {
                     if (value < 1) {
                         mesh.material.transparent = true;
-                        mesh.material.needsUpdate = true;
-                    } else {
-                        mesh.material.transparent = false;
                         mesh.material.needsUpdate = true;
                     }
 
@@ -143,6 +143,13 @@ export class MaterialPanelController {
                     materialProperties.map = mesh.material.map;
 
                     mesh.material = new Material();
+                    mesh.material.userData.onBeforeCompile = {};
+
+                    mesh.material.onBeforeCompile = shader => {
+                        for (const key in mesh.material.userData.onBeforeCompile) {
+                            mesh.material.userData.onBeforeCompile[key](shader, mesh);
+                        }
+                    };
 
                     mesh.material.transparent = materialProperties.transparent;
                     mesh.material.opacity = materialProperties.opacity;
@@ -171,6 +178,12 @@ export class MaterialPanelController {
                                 }
                             }
                         });
+
+                        if (type in MaterialPatches) {
+                            for (const key in MaterialPatches[type]) {
+                                mesh.material.userData.onBeforeCompile[key] = MaterialPatches[type][key];
+                            }
+                        }
                     });
 
                     if (ui.uvTexture) {
@@ -179,6 +192,7 @@ export class MaterialPanelController {
                         mesh.material.map = materialProperties.map;
                     }
 
+                    mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
                     mesh.material.needsUpdate = true;
 
                     if (ui.point && ui.isDefault) {

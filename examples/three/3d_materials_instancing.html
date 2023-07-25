@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Materials — Space.js</title>
+    <title>Materials Instancing — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
@@ -20,8 +20,16 @@
     </script>
 
     <script type="module">
-        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+        import { AmbientLight, Color, DirectionalLight, HemisphereLight, IcosahedronGeometry, InstancedMesh, Matrix4, MeshPhongMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+
+        const DEBUG = /[?&]debug/.test(location.search);
+
+        const amount = parseInt(location.search.slice(1), 10) || 3;
+        const count = Math.pow(amount, 3);
+
+        const color = new Color();
 
         // init
 
@@ -33,11 +41,14 @@
         const scene = new Scene();
         scene.background = new Color(0x0e0e0e);
 
-        const camera = new PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 2000);
-        camera.position.z = 10;
+        const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+        camera.position.set(amount, amount, amount);
+        camera.lookAt(scene.position);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
+        controls.enableZoom = false;
+        controls.enablePan = false;
 
         // lights
 
@@ -51,12 +62,35 @@
 
         // mesh
 
-        const geometry = new BoxGeometry();
+        let geometry = new IcosahedronGeometry(0.5, 12);
+
+        // Convert to indexed geometry
+        geometry = mergeVertices(geometry);
+
         geometry.computeTangents();
 
-        const material = new MeshNormalMaterial();
+        const material = new MeshPhongMaterial();
 
-        const mesh = new Mesh(geometry, material);
+        const mesh = new InstancedMesh(geometry, material, count);
+
+        let i = 0;
+        const offset = (amount - 1) / 2;
+
+        const matrix = new Matrix4();
+
+        for (let x = 0; x < amount; x++) {
+            for (let y = 0; y < amount; y++) {
+                for (let z = 0; z < amount; z++) {
+                    matrix.setPosition(offset - x, offset - y, offset - z);
+
+                    mesh.setMatrixAt(i, matrix);
+                    mesh.setColorAt(i, color);
+
+                    i++;
+                }
+            }
+        }
+
         scene.add(mesh);
 
         // panel
@@ -67,7 +101,9 @@
         ui.animateIn();
         document.body.appendChild(ui.element);
 
-        Point3D.init(scene, camera);
+        Point3D.init(scene, camera, {
+            debug: DEBUG
+        });
 
         const point = new Point3D(mesh);
         scene.add(point);
@@ -80,9 +116,6 @@
             requestAnimationFrame(animate);
 
             time = time * 0.001; // seconds
-
-            mesh.rotation.x = time / 2;
-            mesh.rotation.y = time;
 
             controls.update();
 

@@ -24,8 +24,8 @@ export class ListSelect extends Interface {
     initHTML() {
         this.css({
             position: 'relative',
-            height: 18,
-            lineHeight: 18,
+            height: 20,
+            lineHeight: 20,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             overflow: 'hidden',

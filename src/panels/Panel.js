@@ -54,27 +54,11 @@ export class Panel extends Interface {
         }
 
         if (open) {
-            this.items.forEach(item => {
-                if (item.element.contains(target.element)) {
-                    if (item.view && item.view.group && item.view.container) {
-                        item.disable(item.view.container);
-                    }
-
-                    return;
-                }
-
-                item.disable();
-            });
+            this.disable(target);
 
             this.openColor = target;
         } else {
-            this.items.forEach(item => {
-                if (item.view && item.view.group && item.view.container) {
-                    item.enable(item.view.container);
-                }
-
-                item.enable();
-            });
+            this.enable();
 
             this.openColor = null;
         }
@@ -153,6 +137,30 @@ export class Panel extends Interface {
                     callback();
                 }
             });
+        });
+    };
+
+    enable = () => {
+        this.items.forEach(item => {
+            if (item.view && item.view.group && item.view.container) {
+                item.enable(item.view.container);
+            }
+
+            item.enable();
+        });
+    };
+
+    disable = target => {
+        this.items.forEach(item => {
+            if (item.view && item.view.group && item.view.container) {
+                item.disable(item.view.container);
+            }
+
+            if (target && item.element.contains(target.element)) {
+                return;
+            }
+
+            item.disable();
         });
     };
 

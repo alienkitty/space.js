@@ -15,7 +15,7 @@ import {
     SpotLightHelper
 } from 'three';
 
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 
 import { PanelItem } from '../../PanelItem.js';
 

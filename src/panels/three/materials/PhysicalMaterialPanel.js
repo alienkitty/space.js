@@ -5,10 +5,13 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPanels } from '../Custom.js';
+import { StandardMaterialPatches } from '../Patches.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
 import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
+import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
 import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
@@ -22,6 +25,7 @@ export const PhysicalMaterialOptions = {
     Map: MapPanel,
     Clearcoat: PhysicalMaterialClearcoatPanel,
     Iridescence: PhysicalMaterialIridescencePanel,
+    Anisotropy: PhysicalMaterialAnisotropyPanel,
     Sheen: PhysicalMaterialSheenPanel,
     Subsurface: PhysicalMaterialSubsurfacePanel,
     Transmission: PhysicalMaterialTransmissionPanel,
@@ -64,6 +68,8 @@ export class PhysicalMaterialPanel extends Panel {
             'iridescence',
             'iridescenceIOR',
             'iridescenceThicknessRange',
+            'anisotropy',
+            'anisotropyRotation',
             'sheen',
             'sheenRoughness',
             'sheenColor'
@@ -89,7 +95,14 @@ export class PhysicalMaterialPanel extends Panel {
             delete PhysicalMaterialOptions.Physics;
         }
 
-        const items = [
+        if (mesh.userData.subsurface) {
+            mesh.material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
+
+            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
+            mesh.material.needsUpdate = true;
+        }
+
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -108,6 +121,26 @@ export class PhysicalMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const { InstancedMeshPanel } = MaterialPanels;
+
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));

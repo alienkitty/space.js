@@ -47,7 +47,7 @@ export class PanelItem extends Interface {
             });
         } else if (this.data.type === 'divider') {
             this.container.css({
-                margin: '7px 0'
+                margin: '6px 0'
             });
 
             this.line = new Interface('.line');

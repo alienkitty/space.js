@@ -150,13 +150,17 @@ export class Tracker extends Interface {
         this.isVisible = true;
     };
 
-    animateOut = () => {
+    animateOut = callback => {
         this.clearTimeout(this.timeout);
         this.corners.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.corners.invisible();
 
             this.animatedIn = false;
             this.isVisible = false;
+
+            if (callback) {
+                callback();
+            }
         });
     };
 }

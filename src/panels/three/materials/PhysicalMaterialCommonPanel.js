@@ -63,7 +63,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 type: 'slider',
                 label: 'Rough',
                 min: 0,
-                max: 2,
+                max: 1,
                 step: 0.01,
                 value: mesh.material.roughness,
                 callback: value => {
@@ -74,7 +74,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 type: 'slider',
                 label: 'Metal',
                 min: 0,
-                max: 2,
+                max: 1,
                 step: 0.01,
                 value: mesh.material.metalness,
                 callback: value => {

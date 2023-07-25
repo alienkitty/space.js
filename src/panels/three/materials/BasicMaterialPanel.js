@@ -5,6 +5,7 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPanels } from '../Custom.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
 import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
@@ -55,7 +56,7 @@ export class BasicMaterialPanel extends Panel {
             delete BasicMaterialOptions.Physics;
         }
 
-        const items = [
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -74,6 +75,26 @@ export class BasicMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const { InstancedMeshPanel } = MaterialPanels;
+
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));

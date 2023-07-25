@@ -25,11 +25,14 @@ export { StandardMaterialEnvPanel } from './materials/StandardMaterialEnvPanel.j
 export { PhysicalMaterialOptions, PhysicalMaterialPanel } from './materials/PhysicalMaterialPanel.js';
 export { PhysicalMaterialCommonPanel } from './materials/PhysicalMaterialCommonPanel.js';
 export { PhysicalMaterialClearcoatPanel } from './materials/PhysicalMaterialClearcoatPanel.js';
+export { PhysicalMaterialIridescencePanel } from './materials/PhysicalMaterialIridescencePanel.js';
+export { PhysicalMaterialAnisotropyPanel } from './materials/PhysicalMaterialAnisotropyPanel.js';
 export { PhysicalMaterialSheenPanel } from './materials/PhysicalMaterialSheenPanel.js';
 export { PhysicalMaterialTransmissionPanel } from './materials/PhysicalMaterialTransmissionPanel.js';
 export { PhysicalMaterialEnvPanel } from './materials/PhysicalMaterialEnvPanel.js';
 export { NormalMaterialOptions, NormalMaterialPanel } from './materials/NormalMaterialPanel.js';
 export { NormalMaterialCommonPanel } from './materials/NormalMaterialCommonPanel.js';
+export { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
 export { MeshHelperPanel } from './objects/MeshHelperPanel.js';
 export { OimoPhysicsPanel } from './physics/OimoPhysicsPanel.js';
 export { MapPanel } from './textures/MapPanel.js';

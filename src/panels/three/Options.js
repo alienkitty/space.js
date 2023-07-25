@@ -25,6 +25,11 @@ export const SideOptions = {
     Double: DoubleSide
 };
 
+export const InstanceOptions = {
+    Mesh: false,
+    Instance: true
+};
+
 export const FlatShadingOptions = {
     Off: false,
     Flat: true

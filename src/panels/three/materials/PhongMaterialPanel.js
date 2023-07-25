@@ -5,6 +5,8 @@
 import { Point3D } from '../../../ui/three/Point3D.js';
 import { Panel } from '../../Panel.js';
 import { PanelItem } from '../../PanelItem.js';
+import { MaterialPanels } from '../Custom.js';
+import { PhongMaterialPatches } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
@@ -64,7 +66,14 @@ export class PhongMaterialPanel extends Panel {
             delete PhongMaterialOptions.Physics;
         }
 
-        const items = [
+        if (mesh.userData.subsurface) {
+            mesh.material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
+
+            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
+            mesh.material.needsUpdate = true;
+        }
+
+        const materialItems = [
             {
                 type: 'divider'
             },
@@ -83,6 +92,26 @@ export class PhongMaterialPanel extends Panel {
                 }
             }
         ];
+
+        const items = [];
+
+        if (mesh.isInstancedMesh) {
+            items.push(
+                {
+                    type: 'content',
+                    callback: (value, panel) => {
+                        const { InstancedMeshPanel } = MaterialPanels;
+
+                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        materialPanel.animateIn(true);
+
+                        panel.setContent(materialPanel);
+                    }
+                }
+            );
+        } else {
+            items.push(...materialItems);
+        }
 
         items.forEach(data => {
             this.add(new PanelItem(data));
