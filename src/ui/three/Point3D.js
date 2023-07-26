@@ -877,7 +877,7 @@ export class Point3D extends Group {
                 mesh.index = instanceId;
                 this.instances.push(mesh);
 
-                mesh.tracker = new Tracker();
+                mesh.tracker = new Tracker({ noTargetNumber: true });
                 this.element.add(mesh.tracker);
 
                 this.updateMatrixWorld();
