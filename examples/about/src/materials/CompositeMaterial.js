@@ -10,8 +10,9 @@ export class CompositeMaterial extends RawShaderMaterial {
                 tScene: { value: null },
                 tBloom: { value: null },
                 uBloomDistortion: { value: 1.45 },
-                uGamma: { value: false },
-                uExposure: { value: 1 }
+                uToneMapping: { value: false },
+                uExposure: { value: 1 },
+                uGamma: { value: false }
             },
             vertexShader,
             fragmentShader,

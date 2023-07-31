@@ -17,6 +17,11 @@ export class PostPanel extends Panel {
             On: true
         };
 
+        const toneMappingOptions = {
+            Off: false,
+            Tone: true
+        };
+
         const gammaOptions = {
             Off: false,
             Gamma: true
@@ -88,11 +93,11 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Gamma',
-                list: gammaOptions,
-                value: getKeyByValue(gammaOptions, compositeMaterial.uniforms.uGamma.value),
+                label: 'Tone',
+                list: toneMappingOptions,
+                value: getKeyByValue(toneMappingOptions, compositeMaterial.uniforms.uToneMapping.value),
                 callback: value => {
-                    compositeMaterial.uniforms.uGamma.value = gammaOptions[value];
+                    compositeMaterial.uniforms.uToneMapping.value = toneMappingOptions[value];
                 }
             },
             {
@@ -104,6 +109,18 @@ export class PostPanel extends Panel {
                 value: compositeMaterial.uniforms.uExposure.value,
                 callback: value => {
                     compositeMaterial.uniforms.uExposure.value = value;
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'list',
+                label: 'Gamma',
+                list: gammaOptions,
+                value: getKeyByValue(gammaOptions, compositeMaterial.uniforms.uGamma.value),
+                callback: value => {
+                    compositeMaterial.uniforms.uGamma.value = gammaOptions[value];
                 }
             }
         ];
