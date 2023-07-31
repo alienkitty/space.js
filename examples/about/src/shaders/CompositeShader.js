@@ -43,7 +43,7 @@ export const fragmentShader = /* glsl */ `
         if (uGamma) {
             FragColor.rgb *= uExposure;
 
-            FragColor = linearToSRGB(FragColor);
+            FragColor = LinearToSRGB(FragColor);
         }
     }
 `;
