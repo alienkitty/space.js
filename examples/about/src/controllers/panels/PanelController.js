@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping, CineonToneMapping, LinearToneMapping, NoToneMapping, ReinhardToneMapping, Vector3 } from 'three';
+import { Vector3 } from 'three';
 
 import { LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
@@ -53,15 +53,6 @@ export class PanelController {
 
         const vector3 = new Vector3();
         const gravity = physics.world.getGravity();
-
-        // https://threejs.org/examples/#webgl_tonemapping
-        const toneMappingOptions = {
-            None: NoToneMapping,
-            Linear: LinearToneMapping,
-            Reinhard: ReinhardToneMapping,
-            Cineon: CineonToneMapping,
-            ACESFilmic: ACESFilmicToneMapping
-        };
 
         const sceneOptions = {
             Post: PostPanel,
@@ -129,34 +120,6 @@ export class PanelController {
                     scene.background.copy(value);
 
                     this.setInvert(value);
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
-                type: 'list',
-                list: toneMappingOptions,
-                value: getKeyByValue(toneMappingOptions, this.renderer.toneMapping),
-                callback: value => {
-                    this.renderer.toneMapping = toneMappingOptions[value];
-
-                    scene.traverse(object => {
-                        if (object.isMesh) {
-                            object.material.needsUpdate = true;
-                        }
-                    });
-                }
-            },
-            {
-                type: 'slider',
-                label: 'Exp',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: this.renderer.toneMappingExposure,
-                callback: value => {
-                    this.renderer.toneMappingExposure = value;
                 }
             },
             {

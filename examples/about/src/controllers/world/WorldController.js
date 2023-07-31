@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
+import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, HemisphereLight, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -33,11 +33,6 @@ export class WorldController {
         // Shadows
         // this.renderer.shadowMap.enabled = true;
         // this.renderer.shadowMap.type = BasicShadowMap;
-
-        // Tone mapping and output color space encoding
-        this.renderer.toneMapping = ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1;
-        this.renderer.outputColorSpace = LinearSRGBColorSpace;
 
         // 3D scene
         this.scene = new Scene();

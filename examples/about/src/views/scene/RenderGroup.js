@@ -1,4 +1,4 @@
-import { BackSide, Group, NoToneMapping, WebGLRenderTarget } from 'three';
+import { BackSide, Group, WebGLRenderTarget } from 'three';
 
 import { DiscardMaterial } from '@alienkitty/alien.js/three';
 
@@ -44,9 +44,6 @@ export class RenderGroup extends Group {
 
         const currentRenderTarget = this.renderer.getRenderTarget();
 
-        const currentToneMapping = this.renderer.toneMapping;
-        this.renderer.toneMapping = NoToneMapping;
-
         const currentMaterial = this.mesh.material;
         const currentSide = this.mesh.material.side;
 
@@ -72,7 +69,6 @@ export class RenderGroup extends Group {
         this.mesh.material.thickness = this.mesh.userData.thickness;
         this.mesh.material.side = currentSide;
 
-        this.renderer.toneMapping = currentToneMapping;
         this.renderer.setRenderTarget(currentRenderTarget);
     }
 }
