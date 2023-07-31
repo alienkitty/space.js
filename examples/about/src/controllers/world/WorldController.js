@@ -1,4 +1,4 @@
-import { ACESFilmicToneMapping, AmbientLight/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping/* , BasicShadowMap */, Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -64,11 +64,9 @@ export class WorldController {
     }
 
     static initLights() {
-        this.scene.add(new AmbientLight(0xffffff, 0.2));
+        this.scene.add(new HemisphereLight(0x808080, 0x606060, 3));
 
-        this.scene.add(new HemisphereLight(0x606060, 0x404040));
-
-        const light = new DirectionalLight(0xffffff, 0.4);
+        const light = new DirectionalLight(0xffffff, 3);
         light.position.set(5, 5, 5);
         // light.castShadow = true;
         // light.shadow.mapSize.width = 2048;

@@ -44,9 +44,9 @@
 
         scene.add(new AmbientLight(0xffffff, 0.2));
 
-        scene.add(new HemisphereLight(0x606060, 0x404040));
+        scene.add(new HemisphereLight(0x808080, 0x606060, 2.2));
 
-        const directionalLight = new DirectionalLight(0xffffff, 0.4);
+        const directionalLight = new DirectionalLight(0xffffff, 2);
         directionalLight.position.set(5, 5, 5);
         scene.add(directionalLight);
 
@@ -80,7 +80,7 @@
         // mesh
 
         const geometry = new BoxGeometry();
-        const material = new MeshStandardMaterial({ color: 0x595959, metalness: 0.6, roughness: 0.7 });
+        const material = new MeshStandardMaterial({ color: 0x595959, metalness: 0.7, roughness: 0.7 });
 
         const mesh = new Mesh(geometry, material);
         scene.add(mesh);

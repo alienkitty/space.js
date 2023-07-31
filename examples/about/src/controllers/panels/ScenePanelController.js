@@ -49,8 +49,10 @@ export class ScenePanelController {
             });
 
             // Transmission defaults
-            object.mesh.userData.thickness = 0.1;
-            object.mesh.userData.backside = true;
+            // object.mesh.userData.thickness = 0.1;
+            // object.mesh.userData.backside = true;
+            object.mesh.userData.thickness = 1;
+            object.mesh.userData.backside = false;
             object.mesh.userData.backsideThickness = 3;
         });
 

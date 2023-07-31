@@ -29,10 +29,10 @@ export class FloatingCrystal extends RenderGroup {
         const material = new MeshStandardMaterial({
             name: 'Floating Crystal',
             color: new Color().offsetHSL(0, 0, -0.65),
-            metalness: 0.6,
+            metalness: 0.7,
             roughness: 0.7,
-            envMapIntensity: 1,
-            // flatShading: true
+            envMapIntensity: 1.2,
+            flatShading: true
         });
 
         const mesh = new Mesh(geometry, material);
