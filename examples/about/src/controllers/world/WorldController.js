@@ -59,9 +59,9 @@ export class WorldController {
     }
 
     static initLights() {
-        this.scene.add(new HemisphereLight(0x808080, 0x606060, 3));
+        this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
 
-        const light = new DirectionalLight(0xffffff, 3);
+        const light = new DirectionalLight(0xffffff, 2);
         light.position.set(5, 5, 5);
         // light.castShadow = true;
         // light.shadow.mapSize.width = 2048;

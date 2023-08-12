@@ -42,9 +42,9 @@
 
         // lights
 
-        scene.add(new AmbientLight(0xffffff, 0.2));
+        scene.add(new AmbientLight(0xffffff, 3));
 
-        scene.add(new HemisphereLight(0x808080, 0x606060, 2.2));
+        scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
 
         const directionalLight = new DirectionalLight(0xffffff, 2);
         directionalLight.position.set(5, 5, 5);
