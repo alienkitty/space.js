@@ -95,7 +95,7 @@
 
         import { InstanceOptions, MaterialPanelController, MaterialPanels, MaterialPatches, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
 
-        // Add custom attributes
+        // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
 
         MaterialPatches.phong = {
