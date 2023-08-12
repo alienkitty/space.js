@@ -249,9 +249,7 @@ export class MaterialPanelController {
         });
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static destroy = () => {
         for (const prop in this) {

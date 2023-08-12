@@ -65,9 +65,7 @@
                 ticker.remove(this.onUpdate);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onPointerDown = () => {
                 clearTween(this);
@@ -105,9 +103,7 @@
                 });
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             update = () => {
                 this.circle.attr({ r: this.radius });

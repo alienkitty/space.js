@@ -69,9 +69,7 @@ export class InputManager {
         window.removeEventListener('pointerup', this.onPointerUp);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onPointerDown = e => {
         if (!this.enabled) {
@@ -213,9 +211,7 @@ export class InputManager {
         this.click = null;
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static update = time => {
         if (!navigator.maxTouchPoints && time - this.lastRaycast > this.raycastInterval) {

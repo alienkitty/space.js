@@ -90,9 +90,7 @@ export class RenderManager {
         return bloomFactors;
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static invert = isInverted => {
         if (isInverted) { // Light colour is inverted

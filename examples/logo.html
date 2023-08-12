@@ -57,9 +57,7 @@
                 this.element.removeEventListener('click', this.onClick);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onResize = () => {
                 const width = document.documentElement.clientWidth;
@@ -96,9 +94,7 @@
                 open('https://alien.js.org/');
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             animateIn = () => {
                 this.tween({ opacity: 1 }, 600, 'easeInOutSine');
@@ -128,9 +124,7 @@
                 ticker.start();
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onLoad = () => {
                 this.logo.animateIn();

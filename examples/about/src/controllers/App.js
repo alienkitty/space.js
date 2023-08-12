@@ -74,9 +74,7 @@ export class App {
         ticker.add(this.onUpdate);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onInvert = ({ invert }) => {
         this.view.invert(invert);
@@ -104,9 +102,7 @@ export class App {
         PanelController.update(time);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static start = async () => {
         WorldController.animateIn();

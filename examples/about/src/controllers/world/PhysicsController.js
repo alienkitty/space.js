@@ -5,9 +5,7 @@ export class PhysicsController {
         this.enabled = false;
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static update = () => {
         if (!this.enabled) {

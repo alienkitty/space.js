@@ -47,9 +47,7 @@ export class Header extends Interface {
         window.removeEventListener('resize', this.onResize);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onResize = () => {
         if (document.documentElement.clientWidth < Config.BREAKPOINT) {
@@ -67,9 +65,7 @@ export class Header extends Interface {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     animateIn = () => {
         this.about.tween({ x: 0, opacity: 1 }, 1000, 'easeOutQuart');

@@ -65,9 +65,7 @@ export class ScenePanelController {
         Point3D.events.on('click', this.onClick);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onClick = () => {
         if (CameraController.isAnimatingOut) {

@@ -41,9 +41,7 @@ export class AbstractCube extends RenderGroup {
         this.mesh = mesh;
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onHover = ({ type }) => {
         console.log('AbstractCube', type);
@@ -57,9 +55,7 @@ export class AbstractCube extends RenderGroup {
         // open('https://alien.js.org/');
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     update = () => {
         if (PhysicsController.enabled) {

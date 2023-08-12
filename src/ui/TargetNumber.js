@@ -38,9 +38,7 @@ export class TargetNumber extends Interface {
         this.add(this.number);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
         if (!data) {

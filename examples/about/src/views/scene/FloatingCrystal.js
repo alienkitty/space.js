@@ -45,9 +45,7 @@ export class FloatingCrystal extends RenderGroup {
         this.mesh = mesh;
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onHover = ({ type }) => {
         console.log('FloatingCrystal', type);
@@ -61,9 +59,7 @@ export class FloatingCrystal extends RenderGroup {
         // open('https://alien.js.org/');
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     update = time => {
         if (PhysicsController.enabled) {

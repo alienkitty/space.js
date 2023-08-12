@@ -103,9 +103,7 @@ export class Tracker extends Interface {
         }
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
         if (this.number) {

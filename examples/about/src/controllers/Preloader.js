@@ -45,9 +45,7 @@ export class Preloader {
         this.view.events.off('complete', this.onComplete);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onComplete = async () => {
         this.removeListeners();

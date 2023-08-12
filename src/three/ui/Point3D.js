@@ -104,9 +104,7 @@ export class Point3D extends Group {
         window.removeEventListener('keyup', this.onKeyUp);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onColorPicker = ({ open, target }) => {
         if (open) {
@@ -254,9 +252,7 @@ export class Point3D extends Group {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static getPoint = mesh => {
         return this.points.find(point => point.object === mesh);
@@ -506,9 +502,7 @@ export class Point3D extends Group {
         this.panel.events.off('update', this.onUpdate);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onHover = ({ type, isPoint }) => {
         clearTween(this.timeout);
@@ -603,9 +597,7 @@ export class Point3D extends Group {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setIndex = index => {
         this.index = index;

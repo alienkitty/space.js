@@ -35,9 +35,7 @@ export class UI extends Interface {
         this.add(this.header);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     addPanel = item => {
         this.header.info.panel.add(item);

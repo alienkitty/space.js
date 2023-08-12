@@ -103,9 +103,7 @@ export class Slider extends Interface {
         return parseFloat(clamp(value, this.min, this.max).toFixed(this.precision));
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onPointerDown = e => {
         this.bounds = this.element.getBoundingClientRect();
@@ -143,9 +141,7 @@ export class Slider extends Interface {
         this.onPointerMove(e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setContent = content => {
         if (!this.group) {

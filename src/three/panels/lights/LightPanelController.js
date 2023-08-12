@@ -108,9 +108,7 @@ export class LightPanelController {
         });
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static toggleHemisphereLightHelper = (light, show) => {
         if (show) {

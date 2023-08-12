@@ -97,17 +97,13 @@ export class WorldController {
         this.renderer.domElement.addEventListener('touchstart', this.onTouchStart);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onTouchStart = e => {
         e.preventDefault();
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static resize = (width, height, dpr) => {
         width = Math.round(width * dpr);

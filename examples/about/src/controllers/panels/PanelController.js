@@ -169,9 +169,7 @@ export class PanelController {
         });
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static setInvert = value => {
         const invert = brightness(value) > 0.6; // Light colour is inverted

@@ -18,9 +18,7 @@ export class CameraController {
         this.controls.addEventListener('end', this.onInteraction);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     static onChange = () => {
         if (this.isDown) {
@@ -56,9 +54,7 @@ export class CameraController {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static resize = (width, height) => {
         this.camera.aspect = width / height;

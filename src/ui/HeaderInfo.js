@@ -75,9 +75,7 @@ export class HeaderInfo extends Interface {
         window.removeEventListener('pointerdown', this.onPointerDown);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onColorPicker = ({ open, target }) => {
         if (!this.openColor && !this.element.contains(target.element)) {
@@ -155,9 +153,7 @@ export class HeaderInfo extends Interface {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     update = () => {
         this.time = performance.now();

@@ -7,9 +7,7 @@ export class SceneController {
         this.view = view;
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     static resize = (width, height) => {
         this.view.resize(width, height);

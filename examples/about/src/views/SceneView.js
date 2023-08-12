@@ -37,9 +37,7 @@ export class SceneView extends Group {
         InputManager.remove(this.darkPlanet, this.floatingCrystal, this.abstractCube);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     invert = isInverted => {
         this.floor.invert(isInverted);

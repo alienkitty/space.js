@@ -26,9 +26,7 @@ export class RenderGroup extends Group {
         this.discardMaterial = new DiscardMaterial();
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     resize(width, height) {
         this.renderTargetBack.setSize(width, height);

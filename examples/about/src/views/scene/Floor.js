@@ -27,9 +27,7 @@ export class Floor extends Group {
         physics.add(floor, { density: 0, autoSleep: false });
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     invert = isInverted => {
         const colorStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;

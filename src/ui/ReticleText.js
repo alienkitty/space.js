@@ -37,9 +37,7 @@ export class ReticleText extends Interface {
         this.add(this.secondary);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
         if (!data) {
