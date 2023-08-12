@@ -12,12 +12,15 @@ export class TransmissionDistortionMaterialPanel extends Panel {
 
     static properties = {
         common: [
+            'color',
             'emissive',
             'flatShading',
             'wireframe',
             'toneMapped'
         ],
         standard: [
+            'roughness',
+            'metalness',
             'envMapIntensity'
         ],
         physical: [
@@ -40,12 +43,12 @@ export class TransmissionDistortionMaterialPanel extends Panel {
             'sheenColor'
         ],
         transmission: [
-            'color',
-            'roughness',
-            'metalness',
             '_transmission',
             'chromaticAberration',
-            'anisotropicBlur'
+            'anisotropicBlur',
+            'distortion',
+            'distortionScale',
+            'temporalDistortion'
         ]
     };
 
