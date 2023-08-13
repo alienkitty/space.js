@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { LinearFilter, MathUtils, Texture } from 'three';
+import { Texture } from 'three';
 
 import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
@@ -63,12 +63,6 @@ export class TextureLoader extends Loader {
                 }
 
                 texture.image = image;
-
-                if (!MathUtils.isPowerOfTwo(image.width) || !MathUtils.isPowerOfTwo(image.height)) {
-                    texture.minFilter = LinearFilter;
-                    texture.generateMipmaps = false;
-                }
-
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
