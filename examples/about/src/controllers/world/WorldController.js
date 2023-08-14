@@ -1,4 +1,4 @@
-import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, HemisphereLight, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
+import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -26,6 +26,8 @@ export class WorldController {
             antialias: true,
             // alpha: true
         });
+        this.renderer.outputColorSpace = LinearSRGBColorSpace;
+
         // this.element = this.renderer.domElement;
         this.element = new Interface(this.renderer.domElement);
         this.element.css({ opacity: 0 });
