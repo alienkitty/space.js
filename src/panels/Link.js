@@ -61,9 +61,7 @@ export class Link extends Interface {
         this.element.removeEventListener('click', this.onClick);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onHover = ({ type }) => {
         this.line.clearTween();
@@ -79,9 +77,7 @@ export class Link extends Interface {
         this.update();
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setValue = value => {
         this.value = value;

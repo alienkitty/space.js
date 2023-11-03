@@ -24,9 +24,7 @@ export class Line extends Component {
         };
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     startPoint = ({ x, y }) => {
         this.start.set(x + 3, y - 3);

@@ -7,8 +7,12 @@ import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 
 export class Tracker extends Interface {
-    constructor() {
+    constructor({
+        noTargetNumber
+    } = {}) {
         super('.tracker');
+
+        this.noTargetNumber = noTargetNumber;
 
         this.position = new Vector2();
         this.target = new Vector2();
@@ -88,21 +92,23 @@ export class Tracker extends Interface {
     }
 
     initViews() {
-        this.number = new TargetNumber();
-        this.number.css({
-            left: -(this.number.width + 15),
-            top: '50%',
-            marginTop: -Math.round(this.number.height / 2)
-        });
-        this.add(this.number);
+        if (!this.noTargetNumber) {
+            this.number = new TargetNumber();
+            this.number.css({
+                left: -(this.number.width + 15),
+                top: '50%',
+                marginTop: -Math.round(this.number.height / 2)
+            });
+            this.add(this.number);
+        }
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
-        this.number.setData(data);
+        if (this.number) {
+            this.number.setData(data);
+        }
     };
 
     update = () => {
@@ -111,13 +117,17 @@ export class Tracker extends Interface {
     };
 
     lock = () => {
-        this.number.animateIn();
+        if (this.number) {
+            this.number.animateIn();
+        }
 
         this.locked = true;
     };
 
     unlock = () => {
-        this.number.animateOut();
+        if (this.number) {
+            this.number.animateOut();
+        }
 
         this.locked = false;
     };

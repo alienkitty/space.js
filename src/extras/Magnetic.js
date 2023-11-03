@@ -37,9 +37,7 @@ export class Magnetic extends Component {
         window.removeEventListener('pointerup', this.onPointerUp);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onPointerDown = e => {
         this.onPointerMove(e);
@@ -95,9 +93,7 @@ export class Magnetic extends Component {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     enable = () => {
         this.addListeners();

@@ -20,7 +20,7 @@
     </script>
 
     <script type="module">
-        import { AmbientLight, BoxGeometry, Color, DirectionalLight, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+        import { BoxGeometry, Color, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
         // init
@@ -41,13 +41,7 @@
 
         // lights
 
-        scene.add(new AmbientLight(0xffffff, 0.2));
-
-        scene.add(new HemisphereLight(0x606060, 0x404040));
-
-        const light = new DirectionalLight(0xffffff, 0.4);
-        light.position.set(5, 5, 5);
-        scene.add(light);
+        scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
 
         // mesh
 

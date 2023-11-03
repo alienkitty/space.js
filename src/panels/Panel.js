@@ -44,9 +44,7 @@ export class Panel extends Interface {
         });
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onColorPicker = ({ open, target }) => {
         if (!this.openColor && !this.element.contains(target.element)) {
@@ -68,9 +66,7 @@ export class Panel extends Interface {
         this.events.emit('update', e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     add = item => {
         item.events.on('update', this.onUpdate);

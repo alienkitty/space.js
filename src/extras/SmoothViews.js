@@ -64,9 +64,7 @@ export class SmoothViews extends Component {
         ticker.remove(this.onUpdate);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onResize = async () => {
         await defer();
@@ -130,9 +128,7 @@ export class SmoothViews extends Component {
         this.total = clamp(this.position / (this.height - document.documentElement.clientHeight), 0, 1);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setScroll = index => {
         document.scrollingElement.scrollTop = this.views[index].top;

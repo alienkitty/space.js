@@ -65,9 +65,7 @@ export class Point extends Interface {
         window.removeEventListener('pointerdown', this.onPointerDown);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onColorPicker = ({ open, target }) => {
         if (!this.openColor && !this.element.contains(target.element)) {
@@ -155,9 +153,7 @@ export class Point extends Interface {
         }
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
         this.text.setData(data);

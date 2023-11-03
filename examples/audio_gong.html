@@ -54,9 +54,7 @@
                 this.container.add(this.text);
             }
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             toggle = (show, delay = 0) => {
                 if (show) {
@@ -87,7 +85,9 @@
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     padding: '55px 0 125px',
-                    pointerEvents: 'none'
+                    pointerEvents: 'none',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
                 });
             }
 
@@ -111,9 +111,7 @@
                 this.instructions.toggle(true);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onVisibility = () => {
                 if (document.hidden) {

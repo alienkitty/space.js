@@ -60,9 +60,7 @@ export class List extends Interface {
         });
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onClick = ({ target }) => {
         this.index = target.index;
@@ -76,9 +74,7 @@ export class List extends Interface {
         this.events.emit('update', e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setContent = content => {
         content.events.on('update', this.onUpdate);

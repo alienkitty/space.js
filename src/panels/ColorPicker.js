@@ -306,9 +306,7 @@ export class ColorPicker extends Interface {
         window.removeEventListener('pointerup', this.onPointerUp);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onColorPicker = ({ open }) => {
         if (this.isOpen && !open) {
@@ -445,9 +443,7 @@ export class ColorPicker extends Interface {
         this.onPointerMove(e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setHeight = () => {
         const height = this.isOpen ? this.width + this.height + 10 : this.height;

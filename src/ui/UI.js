@@ -55,9 +55,7 @@ export class UI extends Interface {
         }
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     addPanel = item => {
         if (this.header) {

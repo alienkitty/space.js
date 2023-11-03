@@ -15,17 +15,13 @@ export class Content extends Interface {
         this.update();
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onUpdate = e => {
         this.events.emit('update', e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setContent = content => {
         content.events.on('update', this.onUpdate);

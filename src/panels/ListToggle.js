@@ -67,9 +67,7 @@ export class ListToggle extends Interface {
         this.element.removeEventListener('click', this.onClick);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onHover = ({ type }) => {
         if (this.clicked) {
@@ -92,9 +90,7 @@ export class ListToggle extends Interface {
         this.events.emit('click', { target: this });
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     active = () => {
         this.clicked = true;

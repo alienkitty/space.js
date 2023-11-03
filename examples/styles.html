@@ -85,9 +85,7 @@
                 this.element.addEventListener('mouseleave', this.onHover);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onHover = ({ type }) => {
                 this.line.tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
@@ -128,9 +126,7 @@
                 });
             }
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             animateIn = () => {
                 shuffle(this.letters);
@@ -223,9 +219,7 @@
                 window.addEventListener('resize', this.onResize);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onResize = () => {
                 if (document.documentElement.clientWidth < Config.BREAKPOINT) {
@@ -245,9 +239,7 @@
                 }
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             animateIn = () => {
                 this.visible();
@@ -298,13 +290,9 @@
             addListeners() {
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             animateIn = () => {
                 this.details.animateIn();
@@ -328,9 +316,7 @@
                 ticker.start();
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onLoad = () => {
                 this.ui.animateIn();

@@ -22,9 +22,7 @@ export class MultiLoader extends Loader {
         this.total += weight;
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onProgress = () => {
         let loaded = this.loaded;
@@ -44,9 +42,7 @@ export class MultiLoader extends Loader {
         this.increment();
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     destroy = () => {
         for (let i = this.loaders.length - 1; i >= 0; i--) {

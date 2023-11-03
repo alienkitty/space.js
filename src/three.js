@@ -5,10 +5,10 @@ export { BufferLoader } from './loaders/BufferLoader.js';
 export { MultiLoader } from './loaders/MultiLoader.js';
 export { ImageBitmapLoader } from './loaders/ImageBitmapLoader.js';
 export { ImageBitmapLoaderThread } from './loaders/ImageBitmapLoaderThread.js';
-export { TextureLoader } from './loaders/three/TextureLoader.js';
-export { EnvironmentTextureLoader } from './loaders/three/EnvironmentTextureLoader.js';
-export { BufferGeometryLoader } from './loaders/three/BufferGeometryLoader.js';
-export { BufferGeometryLoaderThread } from './loaders/three/BufferGeometryLoaderThread.js';
+export { TextureLoader } from './three/loaders/TextureLoader.js';
+export { EnvironmentTextureLoader } from './three/loaders/EnvironmentTextureLoader.js';
+export { BufferGeometryLoader } from './three/loaders/BufferGeometryLoader.js';
+export { BufferGeometryLoaderThread } from './three/loaders/BufferGeometryLoaderThread.js';
 
 // Math
 export { Color } from './math/Color.js';
@@ -30,14 +30,14 @@ export { LinkedList } from './utils/LinkedList.js';
 export { ObjectPool } from './utils/ObjectPool.js';
 export { Cluster } from './utils/Cluster.js';
 export { Thread } from './utils/Thread.js';
-export * from './utils/three/Utils3D.js';
+export * from './three/utils/Utils3D.js';
 
 // Audio
 export { WebAudio } from './audio/WebAudio.js';
 export { WebAudioParam } from './audio/WebAudioParam.js';
 export { Sound } from './audio/Sound.js';
-export { WebAudio3D } from './audio/three/WebAudio3D.js';
-export { Sound3D } from './audio/three/Sound3D.js';
+export { WebAudio3D } from './three/audio/WebAudio3D.js';
+export { Sound3D } from './three/audio/Sound3D.js';
 
 // Panels
 export { Panel } from './panels/Panel.js';
@@ -49,10 +49,10 @@ export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
-export * from './panels/three/Custom.js';
-export * from './panels/three/Options.js';
-export * from './panels/three/Panels.js';
-export * from './panels/three/Patches.js';
+export * from './three/panels/Custom.js';
+export * from './three/panels/Options.js';
+export * from './three/panels/Panels.js';
+export * from './three/panels/Patches.js';
 
 // UI
 export { UI } from './ui/UI.js';
@@ -65,7 +65,7 @@ export { Tracker } from './ui/Tracker.js';
 export { Point } from './ui/Point.js';
 export { PointText } from './ui/PointText.js';
 export { TargetNumber } from './ui/TargetNumber.js';
-export { Point3D } from './ui/three/Point3D.js';
+export { Point3D } from './three/ui/Point3D.js';
 
 // Extras
 export { Smooth } from './extras/Smooth.js';

@@ -46,9 +46,7 @@
                 this.tileContext = this.tile.getContext('2d');
             }
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             resize = (width, height, dpr) => {
                 this.canvas.width = Math.round(width * dpr);
@@ -96,9 +94,7 @@
                 ticker.start();
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onMessage = ({ data }) => {
                 this[data.message.fn].call(this, data.message);
@@ -108,9 +104,7 @@
                 this.noise.update();
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             init = ({ params }) => {
                 this.noise = new CanvasNoise(params);
@@ -157,17 +151,13 @@
                 }
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onUpdate = () => {
                 this.noise.update();
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             static resize = (width, height, dpr) => {
                 if (this.thread) {
@@ -217,9 +207,7 @@
                 window.addEventListener('load', this.onLoad);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onResize = () => {
                 const width = document.documentElement.clientWidth;

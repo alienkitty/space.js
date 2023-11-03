@@ -59,9 +59,7 @@ export class Smooth extends Component {
         ticker.remove(this.onUpdate);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onResize = async () => {
         await defer();
@@ -96,9 +94,7 @@ export class Smooth extends Component {
         this.progress = clamp(this.position / (this.height - document.documentElement.clientHeight), 0, 1);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setScroll = top => {
         document.scrollingElement.scrollTop = top;

@@ -70,9 +70,7 @@ export class ListSelect extends Interface {
         this.element.removeEventListener('click', this.onClick);
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onClick = () => {
         if (this.clicked) {
@@ -96,9 +94,7 @@ export class ListSelect extends Interface {
         this.events.emit('click', { target: this });
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setIndex = index => {
         this.index = index;

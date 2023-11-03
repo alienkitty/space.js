@@ -99,17 +99,13 @@ export class PanelItem extends Interface {
         }
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     onUpdate = e => {
         this.events.emit('update', e);
     };
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     animateIn = (delay, fast) => {
         this.clearTween();

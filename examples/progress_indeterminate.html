@@ -61,9 +61,7 @@
                 ticker.remove(this.onUpdate);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onUpdate = () => {
                 if (this.needsUpdate) {
@@ -71,9 +69,7 @@
                 }
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             update = () => {
                 this.circle.line();
@@ -146,9 +142,7 @@
                 ticker.start();
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onClick = () => {
                 if (this.view.needsUpdate) {

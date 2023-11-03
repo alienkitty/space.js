@@ -69,9 +69,7 @@ export class PointText extends Interface {
         this.add(this.panel);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     setData = data => {
         if (!data) {

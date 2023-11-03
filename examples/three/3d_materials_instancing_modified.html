@@ -20,7 +20,7 @@
     </script>
 
     <script type="module">
-        import { AmbientLight, Color, DirectionalLight, HemisphereLight, IcosahedronGeometry, InstancedBufferAttribute, InstancedMesh, Matrix4, MeshPhongMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+        import { Color, HemisphereLight, IcosahedronGeometry, InstancedBufferAttribute, InstancedMesh, Matrix4, MeshPhongMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -52,13 +52,7 @@
 
         // lights
 
-        scene.add(new AmbientLight(0xffffff, 0.2));
-
-        scene.add(new HemisphereLight(0x606060, 0x404040));
-
-        const light = new DirectionalLight(0xffffff, 0.4);
-        light.position.set(5, 5, 5);
-        scene.add(light);
+        scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
 
         // mesh
 
@@ -97,7 +91,7 @@
 
         import { InstanceOptions, MaterialPanelController, MaterialPanels, MaterialPatches, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
 
-        // Add custom attributes
+        // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
 
         MaterialPatches.phong = {

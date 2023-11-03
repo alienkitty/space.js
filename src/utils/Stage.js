@@ -17,9 +17,7 @@ if (typeof window !== 'undefined') {
         ticker.start();
     }
 
-    /**
-     * Event handlers
-     */
+    // Event handlers
 
     function onPopState(e) {
         Stage.path = location.pathname;
@@ -27,9 +25,7 @@ if (typeof window !== 'undefined') {
         Stage.events.emit('state_change', e);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     Stage.init = (element = document.body) => {
         Stage.element = element;

@@ -31,9 +31,7 @@ export class Header extends Interface {
         this.add(this.info);
     }
 
-    /**
-     * Public methods
-     */
+    // Public methods
 
     animateIn = () => {
         this.info.tween({ x: 0, opacity: 1 }, 1000, 'easeOutQuart', 200);

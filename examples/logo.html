@@ -31,6 +31,8 @@
                     width: 64,
                     height: 64,
                     cursor: 'pointer',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none',
                     opacity: 0
                 });
 
@@ -57,9 +59,7 @@
                 this.element.removeEventListener('click', this.onClick);
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             onResize = () => {
                 const width = document.documentElement.clientWidth;
@@ -96,9 +96,7 @@
                 open('https://alien.js.org/');
             };
 
-            /**
-             * Public methods
-             */
+            // Public methods
 
             animateIn = () => {
                 this.tween({ opacity: 1 }, 600, 'easeInOutSine');
@@ -128,9 +126,7 @@
                 ticker.start();
             }
 
-            /**
-             * Event handlers
-             */
+            // Event handlers
 
             static onLoad = () => {
                 this.logo.animateIn();
