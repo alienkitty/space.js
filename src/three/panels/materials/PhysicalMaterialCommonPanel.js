@@ -63,7 +63,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
                 type: 'slider',
                 label: 'Rough',
                 min: 0,
-                max: 1,
+                max: 2,
                 step: 0.01,
                 value: mesh.material.roughness,
                 callback: value => {
