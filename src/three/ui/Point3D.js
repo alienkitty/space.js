@@ -573,10 +573,12 @@ export class Point3D extends Group {
                 }
             }
 
-            Point3D.events.emit('click', { selected: Point3D.getSelected(), target: this });
-        } else {
-            Point3D.events.emit('click', { target: this });
+            const selected = Point3D.getSelected();
+
+            Point3D.events.emit('change', { selected, target: this });
         }
+
+        Point3D.events.emit('click', { target: this });
     };
 
     onUpdate = ({ path, value, index, target }) => {
@@ -1033,6 +1035,10 @@ export class Point3D extends Group {
         this.selected = false;
         this.line.inactive();
         this.point.inactive();
+
+        const selected = Point3D.getSelected();
+
+        Point3D.events.emit('change', { selected, target: this });
     };
 
     destroy = () => {
