@@ -111,6 +111,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [tween](https://space.js.org/examples/tween.html) (svg)  
 [magnetic](https://space.js.org/examples/magnetic.html) (component, svg)  
 [styles](https://space.js.org/examples/styles.html)  
+[info](https://space.js.org/examples/styles_info.html)  
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
 [panel](https://space.js.org/examples/panel.html) (standalone)  
