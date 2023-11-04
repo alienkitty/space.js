@@ -9,10 +9,6 @@ export class SceneController {
 
     // Public methods
 
-    static resize = (width, height) => {
-        this.view.resize(width, height);
-    };
-
     static update = time => {
         if (!this.view.visible) {
             return;

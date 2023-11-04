@@ -1,12 +1,11 @@
-import { Color, MathUtils, Mesh, MeshStandardMaterial } from 'three';
+import { Color, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
-import { RenderGroup } from './RenderGroup.js';
 
-export class DarkPlanet extends RenderGroup {
+export class DarkPlanet extends Group {
     constructor() {
         super();
 
@@ -67,7 +66,5 @@ export class DarkPlanet extends RenderGroup {
 
         // Counter clockwise rotation
         this.mesh.rotation.y += 0.005;
-
-        super.update();
     };
 }

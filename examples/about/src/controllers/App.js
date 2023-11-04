@@ -88,7 +88,6 @@ export class App {
 
         WorldController.resize(width, height, dpr);
         CameraController.resize(width, height);
-        SceneController.resize(width, height);
         RenderManager.resize(width, height, dpr);
     };
 

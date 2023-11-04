@@ -1,12 +1,11 @@
-import { Color, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
+import { Color, Group, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
 
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
-import { RenderGroup } from './RenderGroup.js';
 
-export class FloatingCrystal extends RenderGroup {
+export class FloatingCrystal extends Group {
     constructor() {
         super();
 
@@ -68,7 +67,5 @@ export class FloatingCrystal extends RenderGroup {
 
         this.position.y = 0.7 + Math.sin(time) * 0.1;
         this.rotation.y += 0.01;
-
-        super.update();
     };
 }

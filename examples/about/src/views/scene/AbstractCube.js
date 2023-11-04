@@ -1,10 +1,9 @@
-import { BoxGeometry, Color, MathUtils, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { BoxGeometry, Color, Group, MathUtils, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
-import { RenderGroup } from './RenderGroup.js';
 
-export class AbstractCube extends RenderGroup {
+export class AbstractCube extends Group {
     constructor() {
         super();
 
@@ -63,7 +62,5 @@ export class AbstractCube extends RenderGroup {
         }
 
         this.rotation.y -= 0.005;
-
-        super.update();
     };
 }
