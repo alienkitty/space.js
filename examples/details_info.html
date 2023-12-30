@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Styles — Space.js</title>
+    <title>Details — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@100">
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
@@ -19,21 +19,22 @@
 
         class Styles {
             static body = {
-                fontFamily: 'Gothic A1, sans-serif',
+                fontFamily: 'Roboto Mono, monospace',
                 fontWeight: '400',
-                fontSize: 13,
-                lineHeight: '1.5',
-                letterSpacing: 'normal'
+                fontSize: 11,
+                lineHeight: 15,
+                letterSpacing: 'normal',
+                textTransform: 'uppercase'
             };
 
             static h1 = {
                 width: 'fit-content',
-                margin: '0 0 6px -1px',
+                margin: '0 0 6px -3px',
                 fontFamily: 'Roboto, sans-serif',
-                fontWeight: '300',
-                fontSize: 23,
+                fontWeight: '100',
+                fontSize: 46,
                 lineHeight: '1.3',
-                letterSpacing: 'normal',
+                letterSpacing: '0.02em',
                 textTransform: 'uppercase'
             };
 
@@ -41,54 +42,6 @@
                 width: 'fit-content',
                 margin: '6px 0',
                 ...this.body
-            };
-        }
-
-        class DetailsLink extends Interface {
-            constructor(title, link) {
-                super('.link', 'a');
-
-                this.title = title;
-                this.link = link;
-
-                this.initHTML();
-
-                this.addListeners();
-            }
-
-            initHTML() {
-                this.css({
-                    ...Styles.body,
-                    lineHeight: 22
-                });
-                this.attr({ href: this.link });
-
-                this.text = new Interface('.text');
-                this.text.css({
-                    display: 'inline-block'
-                });
-                this.text.text(this.title);
-                this.add(this.text);
-
-                this.line = new Interface('.line');
-                this.line.css({
-                    display: 'inline-block',
-                    fontWeight: '700',
-                    verticalAlign: 'middle'
-                });
-                this.line.html('&nbsp;&nbsp;―');
-                this.add(this.line);
-            }
-
-            addListeners() {
-                this.element.addEventListener('mouseenter', this.onHover);
-                this.element.addEventListener('mouseleave', this.onHover);
-            }
-
-            // Event handlers
-
-            onHover = ({ type }) => {
-                this.line.tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
             };
         }
 
@@ -131,16 +84,8 @@
             animateIn = () => {
                 shuffle(this.letters);
 
-                const underscores = this.letters.filter(letter => letter === '_');
-
-                underscores.forEach((letter, i) => {
-                    letter.css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', i * 15);
-                });
-
-                const letters = this.letters.filter(letter => letter !== '_').slice(0, 2);
-
-                letters.forEach((letter, i) => {
-                    letter.css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 15);
+                this.letters.forEach((letter, i) => {
+                    letter.css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 50);
                 });
             };
         }
@@ -167,7 +112,7 @@
                     width: '100%',
                     height: '100%',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                     pointerEvents: 'none',
                     opacity: 0
                 });
@@ -175,13 +120,13 @@
                 this.container = new Interface('.container');
                 this.container.css({
                     width: 400,
-                    margin: '10% 10% 13%'
+                    margin: '10% 10% 6%'
                 });
                 this.add(this.container);
             }
 
             initViews() {
-                this.title = new DetailsTitle('Lorem ipsum'.replace(/[\s.]+/g, '_'));
+                this.title = new DetailsTitle('Mars');
                 this.title.css({
                     width: 'fit-content'
                 });
@@ -193,26 +138,9 @@
                     width: 'fit-content',
                     ...Styles.content
                 });
-                this.text.html('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.');
+                this.text.html('Distance from Sun: 230 million km<br>Mass: 0.11 Earths<br>Surface gravity: 0.38 Earths');
                 this.container.add(this.text);
                 this.texts.push(this.text);
-
-                const items = [
-                    {
-                        title: 'Lorem ipsum',
-                        link: 'https://en.wikipedia.org/wiki/Lorem_ipsum'
-                    }
-                ];
-
-                items.forEach(data => {
-                    const link = new DetailsLink(data.title, data.link);
-                    link.css({
-                        display: 'block',
-                        width: 'fit-content'
-                    });
-                    this.container.add(link);
-                    this.texts.push(link);
-                });
             }
 
             addListeners() {
@@ -234,7 +162,7 @@
 
                     this.container.css({
                         width: 400,
-                        margin: '10% 10% 13%'
+                        margin: '10% 10% 6%'
                     });
                 }
             };
