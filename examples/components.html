@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Components — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="module">
+        import { Interface, Reticle, TargetNumber, Tracker, ticker } from '../src/index.js';
+
+        class ComponentItem extends Interface {
+            constructor(view, index) {
+                super('.component-item');
+
+                this.view = view;
+                this.index = index;
+
+                const size = 90;
+
+                this.width = size;
+                this.height = size;
+
+                this.initHTML();
+                this.initViews();
+            }
+
+            initHTML() {
+                this.css({
+                    position: 'relative',
+                    width: this.width,
+                    height: this.height,
+                    marginTop: 20,
+                    marginRight: 67,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    pointerEvents: 'auto',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
+                });
+
+                this.number = new Interface('.number');
+                this.number.css({
+                    position: 'absolute',
+                    left: 0,
+                    top: -20,
+                    letterSpacing: 1
+                });
+                this.number.text(this.index + 1);
+                this.add(this.number);
+            }
+
+            initViews() {
+                this.add(this.view);
+            }
+
+            // Public methods
+
+            animateIn = (delay = 0) => {
+                this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
+
+                this.view.animateIn();
+            };
+        }
+
+        class Components extends Interface {
+            constructor() {
+                super('.components');
+
+                this.items = [];
+
+                this.initHTML();
+                this.initViews();
+            }
+
+            initHTML() {
+                this.css({
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexWrap: 'wrap'
+                });
+            }
+
+            initViews() {
+                const width = 90;
+                const height = 90;
+                const halfWidth = Math.round(width / 2);
+                const halfHeight = Math.round(height / 2);
+
+                // Reticle
+                const reticle = new Reticle();
+
+                // Reticle with text
+                const reticle2 = new Reticle();
+                reticle2.setData({
+                    primary: '127.0.0.1',
+                    secondary: 'localhost'
+                });
+
+                // Tracker
+                const tracker = new Tracker();
+                tracker.target.set(halfWidth, halfHeight);
+                tracker.update();
+                tracker.css({
+                    width,
+                    height,
+                    marginLeft: -halfWidth,
+                    marginTop: -halfHeight
+                });
+
+                // Tracker with target number
+                const tracker2 = new Tracker();
+                tracker2.setData({ targetNumber: 1 });
+                tracker2.target.set(halfWidth, halfHeight);
+                tracker2.update();
+                tracker2.css({
+                    width,
+                    height,
+                    marginLeft: -halfWidth,
+                    marginTop: -halfHeight
+                });
+                tracker2.lock();
+
+                // Target number
+                const number = new TargetNumber();
+                number.setData({ targetNumber: 1 });
+
+                // Create components
+                [reticle, reticle2, tracker, tracker2, number].forEach((view, i) => {
+                    const item = new ComponentItem(view, i);
+                    this.add(item);
+                    this.items.push(item);
+                });
+            }
+
+            // Public methods
+
+            animateIn = () => {
+                this.items.forEach((item, i) => item.animateIn(i * 50));
+            };
+        }
+
+        class UI extends Interface {
+            constructor() {
+                super('.ui');
+
+                this.initHTML();
+                this.initViews();
+            }
+
+            initHTML() {
+                this.css({
+                    minHeight: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '55px 0 125px',
+                    pointerEvents: 'none',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
+                });
+            }
+
+            initViews() {
+                this.components = new Components();
+                this.add(this.components);
+            }
+
+            // Public methods
+
+            animateIn = () => {
+                this.components.animateIn();
+            };
+        }
+
+        class App {
+            static async init() {
+                this.initViews();
+
+                this.addListeners();
+            }
+
+            static initViews() {
+                this.ui = new UI();
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                window.addEventListener('load', this.onLoad);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static onLoad = () => {
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

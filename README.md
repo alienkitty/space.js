@@ -106,6 +106,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 #### ui
 
 [logo](https://space.js.org/examples/logo.html) (interface)  
+[components](https://space.js.org/examples/components.html) (ui)  
 [progress](https://space.js.org/examples/progress_canvas.html) (canvas)  
 [progress](https://space.js.org/examples/progress.html) (svg)  
 [progress indeterminate](https://space.js.org/examples/progress_indeterminate.html) (svg)  
