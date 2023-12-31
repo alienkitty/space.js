@@ -34,13 +34,13 @@ export class PanelItem extends Interface {
                 margin: '10px 0'
             });
 
-            this.text = new Interface('.text');
-            this.text.css({
+            this.content = new Interface('.content');
+            this.content.css({
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap'
             });
-            this.text.text(this.data.name);
-            this.container.add(this.text);
+            this.content.text(this.data.name);
+            this.container.add(this.content);
         } else if (this.data.type === 'spacer') {
             this.container.css({
                 height: 7

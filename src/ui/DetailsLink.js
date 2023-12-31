@@ -19,12 +19,12 @@ export class DetailsLink extends Interface {
     initHTML() {
         this.attr({ href: this.link });
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             display: 'inline-block'
         });
-        this.text.text(this.title);
-        this.add(this.text);
+        this.content.text(this.title);
+        this.add(this.content);
 
         this.line = new Interface('.line');
         this.line.css({

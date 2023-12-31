@@ -32,8 +32,8 @@ export class Instructions extends Interface {
         });
         this.add(this.container);
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             fontWeight: '700',
             fontSize: 10,
             lineHeight: 20,
@@ -42,8 +42,8 @@ export class Instructions extends Interface {
             textTransform: 'uppercase',
             opacity: 0.7
         });
-        this.text.text(this.title);
-        this.container.add(this.text);
+        this.content.text(this.title);
+        this.container.add(this.content);
     }
 
     // Public methods
@@ -52,7 +52,7 @@ export class Instructions extends Interface {
         if (show) {
             this.visible();
             this.tween({ opacity: 1 }, 800, 'easeInOutSine', delay);
-            this.text.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);
+            this.content.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);
         } else {
             this.tween({ opacity: 0 }, 300, 'easeOutSine', () => {
                 this.invisible();

@@ -34,15 +34,15 @@ export class ListToggle extends Interface {
             cursor: 'pointer'
         });
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             position: 'absolute',
             width: '100%',
             height: '100%',
             opacity: 0.35
         });
-        this.text.text(this.name);
-        this.add(this.text);
+        this.content.text(this.name);
+        this.add(this.content);
 
         this.over = new Interface('.over');
         this.over.css({
@@ -74,14 +74,14 @@ export class ListToggle extends Interface {
             return;
         }
 
-        this.text.clearTween();
+        this.content.clearTween();
         this.over.clearTween();
 
         if (type === 'mouseenter') {
-            this.text.tween({ y: -8, opacity: 0 }, 100, 'easeOutCubic');
+            this.content.tween({ y: -8, opacity: 0 }, 100, 'easeOutCubic');
             this.over.css({ y: 8, opacity: 0 }).tween({ y: 0, opacity: 1 }, 175, 'easeOutCubic', 50);
         } else {
-            this.text.tween({ y: 0, opacity: 0.35 }, 300, 'easeOutCubic', 50);
+            this.content.tween({ y: 0, opacity: 0.35 }, 300, 'easeOutCubic', 50);
             this.over.tween({ y: 8, opacity: 0 }, 175, 'easeOutCubic');
         }
     };
@@ -95,7 +95,7 @@ export class ListToggle extends Interface {
     active = () => {
         this.clicked = true;
 
-        this.text.css({ y: -8, opacity: 0 });
+        this.content.css({ y: -8, opacity: 0 });
         this.over.css({ y: 0, opacity: 1 });
     };
 

@@ -15,8 +15,6 @@ export class Details extends Interface {
         this.data = data;
         this.breakpoint = breakpoint;
 
-        this.texts = [];
-
         this.initHTML();
         this.initViews();
 
@@ -60,12 +58,10 @@ export class Details extends Interface {
     initViews() {
         this.title = new DetailsTitle(this.data.title);
         this.container.add(this.title);
-        this.texts.push(this.title);
 
-        this.text = new Interface('.text', 'p');
-        this.text.html(this.data.content);
-        this.container.add(this.text);
-        this.texts.push(this.text);
+        this.content = new Interface('.content', 'p');
+        this.content.html(this.data.content);
+        this.container.add(this.content);
 
         this.data.links.forEach(data => {
             const link = new DetailsLink(data.title, data.link);
@@ -74,7 +70,6 @@ export class Details extends Interface {
                 width: 'fit-content'
             });
             this.container.add(link);
-            this.texts.push(link);
         });
     }
 
@@ -127,10 +122,10 @@ export class Details extends Interface {
 
         this.bg.clearTween().tween({ opacity: 0.35 }, duration, 'easeOutSine');
 
-        this.texts.forEach((text, i) => {
+        this.container.children.forEach((child, i) => {
             const delay = i === 0 ? 0 : duration;
 
-            text.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
+            child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
 
         this.title.animateIn();

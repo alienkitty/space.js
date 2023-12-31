@@ -94,8 +94,6 @@
             constructor() {
                 super('.details');
 
-                this.texts = [];
-
                 this.initHTML();
                 this.initViews();
 
@@ -131,16 +129,14 @@
                     width: 'fit-content'
                 });
                 this.container.add(this.title);
-                this.texts.push(this.title);
 
-                this.text = new Interface('.text', 'p');
-                this.text.css({
+                this.content = new Interface('.content', 'p');
+                this.content.css({
                     width: 'fit-content',
                     ...Styles.content
                 });
-                this.text.html('Distance from Sun: 230 million km<br>Mass: 0.11 Earths<br>Surface gravity: 0.38 Earths');
-                this.container.add(this.text);
-                this.texts.push(this.text);
+                this.content.html('Distance from Sun: 230 million km<br>Mass: 0.11 Earths<br>Surface gravity: 0.38 Earths');
+                this.container.add(this.content);
             }
 
             addListeners() {
@@ -179,10 +175,10 @@
                 const duration = 2000;
                 const stagger = 175;
 
-                this.texts.forEach((text, i) => {
+                this.container.children.forEach((child, i) => {
                     const delay = i === 0 ? 0 : duration;
 
-                    text.css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
+                    child.css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
                 });
 
                 this.title.animateIn();

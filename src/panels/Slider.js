@@ -53,16 +53,16 @@ export class Slider extends Interface {
         });
         this.add(this.container);
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             cssFloat: 'left',
             marginRight: 10,
             textTransform: 'uppercase',
             lineHeight: 20,
             whiteSpace: 'nowrap'
         });
-        this.text.text(this.name);
-        this.container.add(this.text);
+        this.content.text(this.name);
+        this.container.add(this.content);
 
         this.number = new Interface('.number');
         this.number.css({
