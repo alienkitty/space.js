@@ -7,12 +7,8 @@ import { Interface } from '../utils/Interface.js';
 import { ReticleInfo } from './ReticleInfo.js';
 
 export class Reticle extends Interface {
-    constructor({
-        noText = true
-    } = {}) {
+    constructor() {
         super('.reticle');
-
-        this.noText = noText;
 
         const size = 10;
 
@@ -24,7 +20,6 @@ export class Reticle extends Interface {
         this.lerpSpeed = 1;
 
         this.initHTML();
-        this.initViews();
     }
 
     initHTML() {
@@ -58,16 +53,14 @@ export class Reticle extends Interface {
         this.add(this.center);
     }
 
-    initViews() {
-        if (!this.noText) {
-            this.info = new ReticleInfo();
-            this.add(this.info);
-        }
-    }
-
     // Public methods
 
     setData = data => {
+        if (!this.info) {
+            this.info = new ReticleInfo();
+            this.add(this.info);
+        }
+
         this.info.setData(data);
     };
 
