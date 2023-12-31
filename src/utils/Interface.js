@@ -315,7 +315,7 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
-    line(progress = this.progress || 0) {
+    drawLine(progress = this.progress || 0) {
         const start = this.start || 0;
         const offset = this.offset || 0;
 
