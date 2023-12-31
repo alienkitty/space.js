@@ -169,25 +169,29 @@ npx eslint examples/*.html
 #### v1.2
 
 * [x] Three.js UI multiple select
-* [ ] Material texture drag and drop
-* [ ] Material texture thumbnails
+* [x] Export About example UI components
 
 #### v1.3
+
+* [ ] Material texture thumbnails
+* [ ] Material texture drag and drop
+
+#### v1.4
 
 * [ ] GLTF drag and drop
 * [ ] Load/save scene
 
-#### v1.4
+#### v1.5
 
 * [ ] Move objects
 * [ ] Change camera perspective
 
-#### v1.5
+#### v1.6
 
 * [ ] OGL version
 * [ ] Documentation
 
-#### v1.6
+#### v1.7
 
 * [ ] WebXR version
 

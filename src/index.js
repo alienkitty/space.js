@@ -47,6 +47,13 @@ export { ColorPicker } from './panels/ColorPicker.js';
 export { UI } from './ui/UI.js';
 export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
+export { NavLink } from './ui/NavLink.js';
+export { Details } from './ui/Details.js';
+export { DetailsTitle } from './ui/DetailsTitle.js';
+export { DetailsLink } from './ui/DetailsLink.js';
+export { DetailsButton } from './ui/DetailsButton.js';
+export { MuteButton } from './ui/MuteButton.js';
+export { Instructions } from './ui/Instructions.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';
@@ -54,6 +61,7 @@ export { Tracker } from './ui/Tracker.js';
 export { Point } from './ui/Point.js';
 export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
+export { ProgressCanvas } from './ui/ProgressCanvas.js';
 
 // Extras
 export { Smooth } from './extras/Smooth.js';
