@@ -26,7 +26,7 @@ export class PhongMaterialEnvPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Combine',
+                name: 'Combine',
                 list: CombineOptions,
                 value: getKeyByValue(CombineOptions, mesh.material.combine),
                 callback: value => {
@@ -36,7 +36,7 @@ export class PhongMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Reflect',
+                name: 'Reflect',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -47,7 +47,7 @@ export class PhongMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Refract',
+                name: 'Refract',
                 min: 0,
                 max: 1,
                 step: 0.01,

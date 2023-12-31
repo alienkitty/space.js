@@ -39,7 +39,7 @@ export class PanelItem extends Interface {
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap'
             });
-            this.text.text(this.data.label);
+            this.text.text(this.data.name);
             this.container.add(this.text);
         } else if (this.data.type === 'spacer') {
             this.container.css({

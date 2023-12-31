@@ -26,7 +26,7 @@ export class BasicMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
@@ -34,7 +34,7 @@ export class BasicMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Wire',
+                name: 'Wire',
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
@@ -43,7 +43,7 @@ export class BasicMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Tone',
+                name: 'Tone',
                 list: ToneMappedOptions,
                 value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
                 callback: value => {

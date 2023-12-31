@@ -11,7 +11,7 @@ import { clamp } from '../utils/Utils.js';
 
 export class Slider extends Interface {
     constructor({
-        label,
+        name,
         min = 0,
         max = 1,
         step = 0.01,
@@ -20,7 +20,7 @@ export class Slider extends Interface {
     }) {
         super('.slider');
 
-        this.label = label;
+        this.name = name;
         this.min = min;
         this.max = max;
         this.step = step;
@@ -61,7 +61,7 @@ export class Slider extends Interface {
             lineHeight: 20,
             whiteSpace: 'nowrap'
         });
-        this.text.text(this.label);
+        this.text.text(this.name);
         this.container.add(this.text);
 
         this.number = new Interface('.number');

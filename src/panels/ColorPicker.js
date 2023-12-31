@@ -22,14 +22,14 @@ const Third = Math.PI * 2 / 3;
 
 export class ColorPicker extends Interface {
     constructor({
-        label,
+        name,
         value,
         noText,
         callback
     }) {
         super('.color-picker');
 
-        this.label = label;
+        this.name = name;
         this.value = new Color(value);
         this.noText = noText;
         this.callback = callback;

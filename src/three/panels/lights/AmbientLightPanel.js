@@ -27,7 +27,7 @@ export class AmbientLightPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: light.color,
                 callback: value => {
                     light.color.copy(value);
@@ -35,7 +35,7 @@ export class AmbientLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 5,
                 step: 0.05,
@@ -52,7 +52,7 @@ export class AmbientLightPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Visible',
+                name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
                 callback: (value, panel) => {

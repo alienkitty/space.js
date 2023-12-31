@@ -73,7 +73,7 @@ export class PanelController {
 
         const items = [
             {
-                label: 'FPS'
+                name: 'FPS'
             },
             {
                 type: 'divider'
@@ -100,7 +100,7 @@ export class PanelController {
             },
             {
                 type: 'slider',
-                label: 'Gravity',
+                name: 'Gravity',
                 min: -10,
                 max: 10,
                 step: 0.1,

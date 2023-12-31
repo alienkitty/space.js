@@ -6,12 +6,12 @@ import { Interface } from '../utils/Interface.js';
 
 export class ListToggle extends Interface {
     constructor({
-        label,
+        name,
         index
     }) {
         super('.list-toggle');
 
-        this.label = label;
+        this.name = name;
         this.index = index;
 
         this.clicked = false;
@@ -41,7 +41,7 @@ export class ListToggle extends Interface {
             height: '100%',
             opacity: 0.35
         });
-        this.text.text(this.label);
+        this.text.text(this.name);
         this.add(this.text);
 
         this.over = new Interface('.over');
@@ -51,7 +51,7 @@ export class ListToggle extends Interface {
             height: '100%',
             opacity: 0
         });
-        this.over.text(this.label);
+        this.over.text(this.name);
         this.add(this.over);
     }
 

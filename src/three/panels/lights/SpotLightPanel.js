@@ -29,7 +29,7 @@ export class SpotLightPanel extends Panel {
         const lightItems = [
             {
                 type: 'list',
-                label: 'Helper',
+                name: 'Helper',
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
@@ -43,7 +43,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: light.color,
                 callback: value => {
                     light.color.copy(value);
@@ -55,7 +55,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 5,
                 step: 0.05,
@@ -66,7 +66,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Distance',
+                name: 'Distance',
                 min: 0,
                 max: 10,
                 step: 0.1,
@@ -77,7 +77,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Angle',
+                name: 'Angle',
                 min: 0,
                 max: Math.PI / 2,
                 step: 0.01,
@@ -88,7 +88,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Penumbra',
+                name: 'Penumbra',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -99,7 +99,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Decay',
+                name: 'Decay',
                 min: 0,
                 max: 10,
                 step: 0.1,
@@ -116,7 +116,7 @@ export class SpotLightPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Visible',
+                name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
                 callback: (value, panel) => {

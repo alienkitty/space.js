@@ -23,7 +23,7 @@ export class PhysicalMaterialIridescencePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialIridescencePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'IOR',
+                name: 'IOR',
                 min: 1,
                 max: 2.333,
                 step: 0.01,
@@ -45,7 +45,7 @@ export class PhysicalMaterialIridescencePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Thick Min',
+                name: 'Thick Min',
                 min: 0,
                 max: 1400,
                 step: 100,
@@ -56,7 +56,7 @@ export class PhysicalMaterialIridescencePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Thick Max',
+                name: 'Thick Max',
                 min: 0,
                 max: 1400,
                 step: 100,

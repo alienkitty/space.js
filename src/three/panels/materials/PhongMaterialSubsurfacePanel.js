@@ -44,7 +44,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Distort',
+                name: 'Distort',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -55,7 +55,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Ambient',
+                name: 'Ambient',
                 min: 0,
                 max: 5,
                 step: 0.05,
@@ -66,7 +66,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Atten',
+                name: 'Atten',
                 min: 0,
                 max: 5,
                 step: 0.05,
@@ -77,7 +77,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Power',
+                name: 'Power',
                 min: 1,
                 max: 32,
                 step: 0.1,
@@ -88,7 +88,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Scale',
+                name: 'Scale',
                 min: 0,
                 max: 64,
                 step: 0.1,
@@ -106,7 +106,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Subsurface Scattering',
+                name: 'Subsurface Scattering',
                 list: subsurfaceOptions,
                 value: getKeyByValue(subsurfaceOptions, mesh.userData.subsurface),
                 callback: (value, panel) => {

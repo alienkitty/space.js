@@ -33,7 +33,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Thresh',
+                name: 'Thresh',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -44,7 +44,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Smooth',
+                name: 'Smooth',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -55,7 +55,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Strength',
+                name: 'Strength',
                 min: 0,
                 max: 2,
                 step: 0.01,
@@ -67,7 +67,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Radius',
+                name: 'Radius',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -79,7 +79,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Chroma',
+                name: 'Chroma',
                 min: 0,
                 max: 2,
                 step: 0.01,
@@ -93,7 +93,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Tone',
+                name: 'Tone',
                 list: toneMappingOptions,
                 value: getKeyByValue(toneMappingOptions, compositeMaterial.uniforms.uToneMapping.value),
                 callback: value => {
@@ -102,7 +102,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Exp',
+                name: 'Exp',
                 min: 0,
                 max: 2,
                 step: 0.01,
@@ -116,7 +116,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Gamma',
+                name: 'Gamma',
                 list: gammaOptions,
                 value: getKeyByValue(gammaOptions, compositeMaterial.uniforms.uGamma.value),
                 callback: value => {

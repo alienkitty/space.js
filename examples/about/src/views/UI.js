@@ -41,12 +41,12 @@ export class UI extends Interface {
         this.header.info.panel.add(item);
     };
 
-    setPanelValue = (label, value) => {
-        this.header.info.panel.setPanelValue(label, value);
+    setPanelValue = (name, value) => {
+        this.header.info.panel.setPanelValue(name, value);
     };
 
-    setPanelIndex = (label, index) => {
-        this.header.info.panel.setPanelIndex(label, index);
+    setPanelIndex = (name, index) => {
+        this.header.info.panel.setPanelIndex(name, index);
     };
 
     invert = isInverted => {

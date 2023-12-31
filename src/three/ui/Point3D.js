@@ -585,14 +585,14 @@ export class Point3D extends Group {
         if (this.isMultiple) {
             Point3D.multiple.forEach(point => {
                 if (point !== this) {
-                    path.forEach(([label, index]) => {
-                        point.setPanelIndex(label, index);
+                    path.forEach(([name, index]) => {
+                        point.setPanelIndex(name, index);
                     });
 
                     if (typeof index !== 'undefined') {
-                        point.setPanelIndex(target.label, index);
+                        point.setPanelIndex(target.name, index);
                     } else if (typeof value !== 'undefined') {
-                        point.setPanelValue(target.label, value);
+                        point.setPanelValue(target.name, value);
                     }
                 }
             });
@@ -616,12 +616,12 @@ export class Point3D extends Group {
         this.panel.add(item);
     };
 
-    setPanelValue = (label, value) => {
-        this.panel.setPanelValue(label, value);
+    setPanelValue = (name, value) => {
+        this.panel.setPanelValue(name, value);
     };
 
-    setPanelIndex = (label, index) => {
-        this.panel.setPanelIndex(label, index);
+    setPanelIndex = (name, index) => {
+        this.panel.setPanelIndex(name, index);
     };
 
     toggleNormalsHelper = show => {

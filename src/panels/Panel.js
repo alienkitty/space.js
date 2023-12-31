@@ -76,36 +76,36 @@ export class Panel extends Interface {
         this.items.push(item);
     };
 
-    setPanelValue = (label, value) => {
+    setPanelValue = (name, value) => {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
             }
 
-            if (item.data.label === label && item.view.setValue) {
+            if (item.data.name === name && item.view.setValue) {
                 item.view.setValue(value, true);
                 return;
             }
 
             if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
-                item.view.group.children[0].setPanelValue(label, value);
+                item.view.group.children[0].setPanelValue(name, value);
             }
         });
     };
 
-    setPanelIndex = (label, index) => {
+    setPanelIndex = (name, index) => {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
             }
 
-            if (item.data.label === label && item.view.setIndex) {
+            if (item.data.name === name && item.view.setIndex) {
                 item.view.setIndex(index);
                 return;
             }
 
             if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelIndex) {
-                item.view.group.children[0].setPanelIndex(label, index);
+                item.view.group.children[0].setPanelIndex(name, index);
             }
         });
     };

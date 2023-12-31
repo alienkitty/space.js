@@ -23,7 +23,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Thick',
+                name: 'Thick',
                 min: -10,
                 max: 10,
                 step: 0.1,
@@ -45,7 +45,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Attenuation Color',
+                name: 'Attenuation Color',
                 value: mesh.material.attenuationColor,
                 callback: value => {
                     mesh.material.attenuationColor.copy(value);
@@ -53,7 +53,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Distance',
+                name: 'Distance',
                 min: -10,
                 max: 10,
                 step: 0.1,
@@ -64,7 +64,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'IOR',
+                name: 'IOR',
                 min: 1,
                 max: 2.333,
                 step: 0.01,
@@ -75,7 +75,7 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Reflect',
+                name: 'Reflect',
                 min: 0,
                 max: 1,
                 step: 0.01,

@@ -29,7 +29,7 @@ export class InstancedMeshPanel extends Panel {
         const items = [
             {
                 type: 'list',
-                label: 'Instance',
+                name: 'Instance',
                 list: InstanceOptions,
                 value: 'Mesh',
                 callback: (value, panel) => {
@@ -42,7 +42,7 @@ export class InstancedMeshPanel extends Panel {
                             },
                             {
                                 type: 'color',
-                                label: 'Color',
+                                name: 'Color',
                                 value: color,
                                 callback: value => {
                                     color.copy(value);

@@ -23,7 +23,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'IOR',
+                name: 'IOR',
                 min: 1,
                 max: 2.333,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Reflect',
+                name: 'Reflect',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -46,7 +46,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             // TODO: Texture thumbnails
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 10,
                 step: 0.1,

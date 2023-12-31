@@ -8,13 +8,13 @@ import { Interface } from '../utils/Interface.js';
 
 export class Link extends Interface {
     constructor({
-        label,
+        name,
         value,
         callback
     }) {
         super('.link');
 
-        this.label = label;
+        this.name = name;
         this.value = value;
         this.callback = callback;
 

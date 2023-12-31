@@ -8,14 +8,14 @@ import { ListSelect } from './ListSelect.js';
 
 export class List extends Interface {
     constructor({
-        label,
+        name,
         list,
         value,
         callback
     }) {
         super('.list');
 
-        this.label = label;
+        this.name = name;
         this.list = list;
         this.keys = Object.keys(this.list);
         this.values = Object.values(this.list);
@@ -45,8 +45,8 @@ export class List extends Interface {
             this.container.add(item);
             this.items.push(item);
         } else {
-            this.keys.forEach((label, index) => {
-                const item = new ListToggle({ label, index });
+            this.keys.forEach((name, index) => {
+                const item = new ListToggle({ name, index });
                 item.events.on('click', this.onClick);
                 this.container.add(item);
                 this.items.push(item);
@@ -69,7 +69,7 @@ export class List extends Interface {
     };
 
     onUpdate = e => {
-        e.path.unshift([this.label, this.index]);
+        e.path.unshift([this.name, this.index]);
 
         this.events.emit('update', e);
     };
