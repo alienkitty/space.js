@@ -60,10 +60,10 @@ export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
-export { ReticleText } from './ui/ReticleText.js';
+export { ReticleInfo } from './ui/ReticleInfo.js';
 export { Tracker } from './ui/Tracker.js';
 export { Point } from './ui/Point.js';
-export { PointText } from './ui/PointText.js';
+export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
 export { Point3D } from './three/ui/Point3D.js';
 

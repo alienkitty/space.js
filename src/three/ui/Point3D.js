@@ -452,7 +452,7 @@ export class Point3D extends Group {
         });
         this.element.add(this.point);
 
-        this.panel = this.point.text.panel;
+        this.panel = this.point.info.panel;
     }
 
     createMesh() {

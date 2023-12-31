@@ -4,9 +4,9 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class ReticleText extends Interface {
+export class ReticleInfo extends Interface {
     constructor() {
-        super('.text');
+        super('.info');
 
         this.initHTML();
     }

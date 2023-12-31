@@ -4,7 +4,7 @@
 
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
-import { ReticleText } from './ReticleText.js';
+import { ReticleInfo } from './ReticleInfo.js';
 
 export class Reticle extends Interface {
     constructor({
@@ -60,15 +60,15 @@ export class Reticle extends Interface {
 
     initViews() {
         if (!this.noText) {
-            this.text = new ReticleText();
-            this.add(this.text);
+            this.info = new ReticleInfo();
+            this.add(this.info);
         }
     }
 
     // Public methods
 
     setData = data => {
-        this.text.setData(data);
+        this.info.setData(data);
     };
 
     update = () => {

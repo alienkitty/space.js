@@ -6,9 +6,9 @@ import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 import { Panel } from '../panels/Panel.js';
 
-export class PointText extends Interface {
+export class PointInfo extends Interface {
     constructor() {
-        super('.text');
+        super('.info');
 
         this.numbers = [];
         this.locked = false;
