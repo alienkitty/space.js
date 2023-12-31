@@ -15,7 +15,7 @@ export class ReticleInfo extends Interface {
         this.css({
             position: 'absolute',
             left: 20,
-            top: -3
+            top: -4
         });
 
         this.primary = new Interface('.primary');
