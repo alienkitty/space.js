@@ -21,11 +21,13 @@ The main entry point without any dependencies is for the UI components, loaders 
 npm i @alienkitty/space.js
 ```
 
+Math classes:
+
 ```js
-import { ... } from '@alienkitty/space.js';
+import { Color, Vector2 } from '@alienkitty/space.js';
 ```
 
-For example the UI and Panel components:
+UI and Panel components:
 
 ```js
 import { Panel, PanelItem, UI } from '@alienkitty/space.js';
