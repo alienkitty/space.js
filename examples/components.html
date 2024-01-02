@@ -34,9 +34,12 @@
 
                 this.width = size;
                 this.height = size;
+                this.animatedIn = false;
 
                 this.initHTML();
                 this.initViews();
+
+                this.addListeners();
             }
 
             initHTML() {
@@ -72,12 +75,29 @@
                 this.add(this.view);
             }
 
+            addListeners() {
+                this.element.addEventListener('click', this.onClick);
+            }
+
+            // Event handlers
+
+            onClick = () => {
+                if (this.animatedIn) {
+                    this.view.animateOut();
+                    this.animatedIn = false;
+                } else {
+                    this.view.animateIn();
+                    this.animatedIn = true;
+                }
+            };
+
             // Public methods
 
             animateIn = (delay = 0) => {
                 this.tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
 
                 this.view.animateIn();
+                this.animatedIn = true;
             };
         }
 
