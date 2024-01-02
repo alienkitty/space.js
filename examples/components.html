@@ -10,8 +10,18 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
+        body {
+            position: unset;
+        }
+    </style>
+
     <script type="module">
-        import { Interface, Reticle, TargetNumber, Tracker, ticker } from '../src/index.js';
+        import { Interface, Point, Reticle, TargetNumber, Tracker, ticker } from '../src/index.js';
 
         class ComponentItem extends Interface {
             constructor(view, index) {
@@ -20,7 +30,7 @@
                 this.view = view;
                 this.index = index;
 
-                const size = 90;
+                const size = 92;
 
                 this.width = size;
                 this.height = size;
@@ -32,16 +42,19 @@
             initHTML() {
                 this.css({
                     position: 'relative',
+                    boxSizing: 'border-box',
                     width: this.width,
                     height: this.height,
                     marginTop: 20,
-                    marginRight: 67,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    border: '1px solid rgba(var(--ui-color-triplet), 0.25)',
+                    cursor: 'pointer',
                     pointerEvents: 'auto',
                     webkitUserSelect: 'none',
-                    userSelect: 'none'
+                    userSelect: 'none',
+                    opacity: 0
                 });
 
                 this.number = new Interface('.number');
@@ -62,7 +75,7 @@
             // Public methods
 
             animateIn = (delay = 0) => {
-                this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
+                this.tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
 
                 this.view.animateIn();
             };
@@ -83,7 +96,8 @@
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    flexWrap: 'wrap'
+                    flexWrap: 'wrap',
+                    gap: 67
                 });
             }
 
@@ -131,8 +145,24 @@
                 const number = new TargetNumber();
                 number.setData({ targetNumber: 1 });
 
+                // Point
+                const point = new Point();
+                point.setData({
+                    name: '127.0.0.1',
+                    type: 'localhost'
+                });
+
+                // Point with multiple target numbers
+                const point2 = new Point();
+                point2.setData({
+                    name: '127.0.0.1',
+                    type: 'localhost'
+                });
+                point2.setTargetNumbers([1, 2, 3]);
+                point2.lock();
+
                 // Create components
-                [reticle, reticle2, tracker, tracker2, number].forEach((view, i) => {
+                [reticle, reticle2, tracker, tracker2, number, point, point2].forEach((view, i) => {
                     const item = new ComponentItem(view, i);
                     this.add(item);
                     this.items.push(item);
