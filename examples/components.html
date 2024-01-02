@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { Interface, Point, Reticle, TargetNumber, Tracker, ticker } from '../src/index.js';
+        import { Interface, Line, Point, Reticle, TargetNumber, Tracker, Vector2, defer, ticker } from '../src/index.js';
 
         class ComponentItem extends Interface {
             constructor(view, index) {
@@ -102,8 +102,10 @@
         }
 
         class Components extends Interface {
-            constructor() {
+            constructor(context) {
                 super('.components');
+
+                this.context = context;
 
                 this.items = [];
 
@@ -165,6 +167,9 @@
                 const number = new TargetNumber();
                 number.setData({ targetNumber: 1 });
 
+                // Line (canvas)
+                const line = new Line(this.context);
+
                 // Point
                 const point = new Point();
                 point.setData({
@@ -182,14 +187,34 @@
                 point2.lock();
 
                 // Create components
-                [reticle, reticle2, tracker, tracker2, number, point, point2].forEach((view, i) => {
+                [reticle, reticle2, tracker, tracker2, number, line, point, point2].forEach((view, i) => {
                     const item = new ComponentItem(view, i);
                     this.add(item);
                     this.items.push(item);
                 });
+
+                // Public properties
+                this.line = line;
             }
 
             // Public methods
+
+            resize = async () => {
+                await defer();
+
+                // Line (canvas)
+                const bounds = this.items[5].element.getBoundingClientRect();
+                const left = Math.round(bounds.left);
+                const top = Math.round(bounds.top);
+
+                this.line.setStartPoint(new Vector2(left - 2, top + 93));
+                this.line.setEndPoint(new Vector2(left + 90, top + 1));
+                this.line.resize();
+            };
+
+            update = () => {
+                this.line.update();
+            };
 
             animateIn = () => {
                 this.items.forEach((item, i) => item.animateIn(i * 50));
@@ -201,7 +226,11 @@
                 super('.ui');
 
                 this.initHTML();
+                this.initCanvas();
                 this.initViews();
+
+                this.addListeners();
+                this.onResize();
             }
 
             initHTML() {
@@ -217,10 +246,49 @@
                 });
             }
 
+            initCanvas() {
+                this.canvas = new Interface(null, 'canvas');
+                this.canvas.css({
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    pointerEvents: 'none'
+                });
+                this.context = this.canvas.element.getContext('2d');
+                this.add(this.canvas);
+            }
+
             initViews() {
-                this.components = new Components();
+                this.components = new Components(this.context);
                 this.add(this.components);
             }
+
+            addListeners() {
+                window.addEventListener('resize', this.onResize);
+                ticker.add(this.onUpdate);
+            }
+
+            // Event handlers
+
+            onResize = () => {
+                const width = document.documentElement.clientWidth;
+                const height = document.documentElement.clientHeight;
+                const dpr = window.devicePixelRatio;
+
+                this.canvas.element.width = Math.round(width * dpr);
+                this.canvas.element.height = Math.round(height * dpr);
+                this.canvas.element.style.width = width + 'px';
+                this.canvas.element.style.height = height + 'px';
+                this.context.scale(dpr, dpr);
+
+                this.components.resize(width, height, dpr);
+            };
+
+            onUpdate = (time, delta, frame) => {
+                this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
+
+                this.components.update(time, delta, frame);
+            };
 
             // Public methods
 
