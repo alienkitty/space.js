@@ -693,8 +693,8 @@ export class Point3D extends Group {
     };
 
     update = () => {
-        this.line.startPoint(this.reticle.position);
-        this.line.endPoint(this.point.originPosition);
+        this.line.setStartPoint(this.reticle.position);
+        this.line.setEndPoint(this.point.originPosition);
         this.line.update();
         this.reticle.update();
         this.point.update();

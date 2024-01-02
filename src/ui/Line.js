@@ -26,11 +26,11 @@ export class Line extends Component {
 
     // Public methods
 
-    startPoint = ({ x, y }) => {
+    setStartPoint = ({ x, y }) => {
         this.start.set(x + 3, y - 3);
     };
 
-    endPoint = position => {
+    setEndPoint = position => {
         this.end.copy(position);
     };
 
