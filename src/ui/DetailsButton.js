@@ -8,12 +8,8 @@ import { Stage } from '../utils/Stage.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 export class DetailsButton extends Interface {
-    constructor({
-        breakpoint = 1000
-    } = {}) {
+    constructor() {
         super('.button');
-
-        this.breakpoint = breakpoint;
 
         const size = 20;
 
@@ -31,23 +27,23 @@ export class DetailsButton extends Interface {
         this.hoveredIn = false;
         this.needsUpdate = false;
 
+        this.props = {
+            radius: this.radius
+        };
+
         this.initHTML();
         this.initCanvas();
-        this.initCircle();
 
         this.addListeners();
-        this.onResize();
     }
 
     initHTML() {
         this.css({
-            position: 'absolute',
-            left: 19,
-            bottom: 18,
+            position: 'relative',
             width: this.width + 40,
             height: this.height + 20,
             cursor: 'pointer',
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none',
             opacity: 0
@@ -62,44 +58,16 @@ export class DetailsButton extends Interface {
             top: 10
         });
         this.context = this.canvas.element.getContext('2d');
-
-        const dpr = 2;
-
-        this.canvas.element.width = Math.round(this.width * dpr);
-        this.canvas.element.height = Math.round(this.height * dpr);
-        this.canvas.element.style.width = this.width + 'px';
-        this.canvas.element.style.height = this.height + 'px';
-        this.context.scale(dpr, dpr);
-
         this.add(this.canvas);
     }
 
-    initCircle() {
-        this.circle = {};
-        this.circle.x = this.x;
-        this.circle.y = this.y;
-        this.circle.radius = this.radius;
-        this.circle.lineWidth = 1.5;
-        this.circle.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
-    }
-
-    drawCircle() {
-        this.context.lineWidth = this.circle.lineWidth;
-        this.context.strokeStyle = this.circle.strokeStyle;
-        this.context.beginPath();
-        this.context.arc(this.circle.x, this.circle.y, this.circle.radius, this.startAngle, this.endAngle);
-        this.context.stroke();
-    }
-
     addListeners() {
-        window.addEventListener('resize', this.onResize);
         this.element.addEventListener('mouseenter', this.onHover);
         this.element.addEventListener('mouseleave', this.onHover);
         this.element.addEventListener('click', this.onClick);
     }
 
     removeListeners() {
-        window.removeEventListener('resize', this.onResize);
         this.element.removeEventListener('mouseenter', this.onHover);
         this.element.removeEventListener('mouseleave', this.onHover);
         this.element.removeEventListener('click', this.onClick);
@@ -107,26 +75,12 @@ export class DetailsButton extends Interface {
 
     // Event handlers
 
-    onResize = () => {
-        if (document.documentElement.clientWidth < this.breakpoint) {
-            this.css({
-                left: 9,
-                bottom: 8
-            });
-        } else {
-            this.css({
-                left: 19,
-                bottom: 18
-            });
-        }
-    };
-
     onHover = ({ type }) => {
         if (!this.animatedIn) {
             return;
         }
 
-        clearTween(this.circle);
+        clearTween(this.props);
 
         this.needsUpdate = true;
 
@@ -134,13 +88,13 @@ export class DetailsButton extends Interface {
             if (type === 'mouseenter') {
                 this.hoveredIn = true;
 
-                tween(this.circle, { radius: this.hoverRadius }, 275, 'easeInOutCubic', () => {
+                tween(this.props, { radius: this.hoverRadius }, 275, 'easeInOutCubic', () => {
                     this.needsUpdate = false;
                 });
             } else {
                 this.hoveredIn = false;
 
-                tween(this.circle, { radius: this.openRadius }, 275, 'easeInOutCubic', () => {
+                tween(this.props, { radius: this.openRadius }, 275, 'easeInOutCubic', () => {
                     this.needsUpdate = false;
                 });
             }
@@ -149,8 +103,8 @@ export class DetailsButton extends Interface {
                 this.hoveredIn = true;
 
                 const start = () => {
-                    tween(this.circle, { radius: this.hoverRadius }, 800, 'easeOutQuart', () => {
-                        tween(this.circle, { radius: this.radius, spring: 1, damping: 0.5 }, 800, 'easeOutElastic', 500, () => {
+                    tween(this.props, { radius: this.hoverRadius }, 800, 'easeOutQuart', () => {
+                        tween(this.props, { radius: this.radius, spring: 1, damping: 0.5 }, 800, 'easeOutElastic', 500, () => {
                             if (this.hoveredIn) {
                                 start();
                             } else {
@@ -164,7 +118,7 @@ export class DetailsButton extends Interface {
             } else {
                 this.hoveredIn = false;
 
-                tween(this.circle, { radius: this.radius, spring: 1, damping: 0.5 }, 800, 'easeOutElastic', 200, () => {
+                tween(this.props, { radius: this.radius, spring: 1, damping: 0.5 }, 800, 'easeOutElastic', 200, () => {
                     this.needsUpdate = false;
                 });
             }
@@ -187,8 +141,7 @@ export class DetailsButton extends Interface {
             this.number.css({
                 position: 'absolute',
                 left: 34,
-                top: 12,
-                letterSpacing: 1
+                top: 12
             });
             this.number.text(data.count);
             this.add(this.number);
@@ -204,21 +157,38 @@ export class DetailsButton extends Interface {
         });
     };
 
+    resize = () => {
+        const dpr = 2; // Always 2
+
+        this.canvas.element.width = Math.round(this.width * dpr);
+        this.canvas.element.height = Math.round(this.height * dpr);
+        this.canvas.element.style.width = this.width + 'px';
+        this.canvas.element.style.height = this.height + 'px';
+        this.context.scale(dpr, dpr);
+
+        // Context properties need to be reassigned after resize
+        this.context.lineWidth = 1.5;
+        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
+
+        this.update();
+    };
+
     update = () => {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
-
-        this.drawCircle();
+        this.context.beginPath();
+        this.context.arc(this.x, this.y, this.props.radius, this.startAngle, this.endAngle);
+        this.context.stroke();
     };
 
     animateIn = () => {
-        this.css({ pointerEvents: 'auto' });
+        clearTween(this.props);
 
-        clearTween(this.circle);
+        this.props.radius = 0;
 
-        this.circle.radius = 0;
+        this.animatedIn = false;
         this.needsUpdate = true;
 
-        tween(this.circle, { radius: this.radius }, 1000, 'easeInOutExpo', () => {
+        tween(this.props, { radius: this.isOpen ? this.openRadius : this.radius }, 1000, 'easeOutExpo', () => {
             this.needsUpdate = false;
             this.animatedIn = true;
         });
@@ -229,27 +199,17 @@ export class DetailsButton extends Interface {
     animateOut = () => {
         this.animatedIn = false;
 
-        this.css({ pointerEvents: 'none' });
-
-        clearTween(this.circle);
-
-        this.needsUpdate = true;
-
-        tween(this.circle, { radius: 0 }, 1000, 'easeInOutQuart', () => {
-            this.needsUpdate = false;
-        });
-
         this.tween({ opacity: 0 }, 400, 'easeOutCubic');
     };
 
     open = () => {
         this.isOpen = true;
 
-        clearTween(this.circle);
+        clearTween(this.props);
 
         this.needsUpdate = true;
 
-        tween(this.circle, { radius: this.openRadius }, 400, 'easeOutCubic', () => {
+        tween(this.props, { radius: this.openRadius }, 400, 'easeOutCubic', () => {
             this.needsUpdate = false;
         });
     };
@@ -257,11 +217,11 @@ export class DetailsButton extends Interface {
     close = () => {
         this.isOpen = false;
 
-        clearTween(this.circle);
+        clearTween(this.props);
 
         this.needsUpdate = true;
 
-        tween(this.circle, { radius: this.radius }, 400, 'easeOutCubic', () => {
+        tween(this.props, { radius: this.radius }, 400, 'easeOutCubic', () => {
             this.needsUpdate = false;
         });
     };
@@ -269,7 +229,7 @@ export class DetailsButton extends Interface {
     destroy = () => {
         this.removeListeners();
 
-        clearTween(this.circle);
+        clearTween(this.props);
 
         return super.destroy();
     };

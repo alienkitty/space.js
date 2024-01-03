@@ -15,6 +15,7 @@ export class Tracker extends Interface {
         this.lerpSpeed = 1;
         this.locked = false;
         this.animatedIn = false;
+        this.isInstanced = false;
         this.isVisible = false;
 
         this.initHTML();
@@ -125,6 +126,7 @@ export class Tracker extends Interface {
 
     show = () => {
         this.clearTimeout(this.timeout);
+
         this.corners.clearTween().tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
         this.animatedIn = true;
@@ -136,6 +138,7 @@ export class Tracker extends Interface {
         }
 
         this.clearTimeout(this.timeout);
+
         this.timeout = this.delayedCall(fast ? 0 : 2000, () => {
             this.corners.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
         });
@@ -143,9 +146,14 @@ export class Tracker extends Interface {
         this.animatedIn = false;
     };
 
-    animateIn = () => {
+    animateIn = isInstanced => {
+        this.isInstanced = isInstanced;
+
         this.clearTimeout(this.timeout);
-        this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+
+        if (!this.isInstanced) {
+            this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+        }
 
         this.animatedIn = true;
         this.isVisible = true;
@@ -153,6 +161,7 @@ export class Tracker extends Interface {
 
     animateOut = callback => {
         this.clearTimeout(this.timeout);
+
         this.corners.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.corners.invisible();
 

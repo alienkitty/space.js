@@ -19,6 +19,20 @@ export class NavLink extends Interface {
     }
 
     initHTML() {
+        this.css({
+            cssFloat: 'left',
+            padding: 10,
+            fontFamily: 'var(--ui-nav-link-font-family)',
+            fontWeight: 'var(--ui-nav-link-font-weight)',
+            fontSize: 'var(--ui-nav-link-font-size)',
+            lineHeight: 'var(--ui-nav-link-line-height)',
+            letterSpacing: 'var(--ui-nav-link-letter-spacing)',
+            textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'auto',
+            webkitUserSelect: 'none',
+            userSelect: 'none'
+        });
         this.attr({ href: this.link });
     }
 

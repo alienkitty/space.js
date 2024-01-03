@@ -1,4 +1,4 @@
-import { ImageBitmapLoaderThread, Stage, Thread, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, Thread, UI, ticker, wait } from '@alienkitty/space.js/three';
 
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
@@ -8,7 +8,6 @@ import { InputManager } from './world/InputManager.js';
 import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
 import { SceneView } from '../views/SceneView.js';
-import { UI } from '../views/UI.js';
 
 export class App {
     static async init() {
@@ -48,7 +47,17 @@ export class App {
         this.view = new SceneView();
         WorldController.scene.add(this.view);
 
-        this.ui = new UI();
+        this.ui = new UI({
+            fps: true,
+            header: {
+                links: [
+                    {
+                        title: 'Space.js',
+                        link: 'https://github.com/alienkitty/space.js'
+                    }
+                ]
+            }
+        });
         Stage.add(this.ui);
     }
 

@@ -1,5 +1,7 @@
 import { BoxGeometry, Color, Group, Mesh } from 'three';
 
+import { Stage } from '@alienkitty/space.js/three';
+
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { GridHelper } from './GridHelper.js';
 
@@ -30,7 +32,7 @@ export class Floor extends Group {
     // Public methods
 
     invert = isInverted => {
-        const colorStyle = `rgb(${getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color-triplet').trim()})`;
+        const colorStyle = `rgb(${Stage.rootStyle.getPropertyValue('--ui-color-triplet').trim()})`;
         const color = new Color(colorStyle);
 
         if (!isInverted) { // Dark colour is muted

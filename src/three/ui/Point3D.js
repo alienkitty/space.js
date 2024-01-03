@@ -376,6 +376,7 @@ export class Point3D extends Group {
         this.name = name;
         this.type = type;
         this.noTracker = noTracker;
+        this.isInstanced = mesh.isInstancedMesh;
         this.isDefault = name === mesh.geometry.type && type === mesh.material.type;
         this.isMultiple = false;
         this.camera = Point3D.camera;
@@ -421,12 +422,7 @@ export class Point3D extends Group {
     initHTML() {
         this.element = new Interface('.target');
         this.element.css({
-            position: 'static',
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)'
+            position: 'static'
         });
         Point3D.container.add(this.element);
     }
@@ -526,7 +522,7 @@ export class Point3D extends Group {
         }
 
         if (type === 'over') {
-            if (this.object.isInstancedMesh) {
+            if (this.isInstanced) {
                 const { instanceId } = Point3D;
 
                 const { position, quaternion, scale } = this.mesh;
@@ -553,7 +549,7 @@ export class Point3D extends Group {
         clearTween(this.timeout);
 
         if (this.tracker) {
-            if (this.object.isInstancedMesh) {
+            if (this.isInstanced) {
                 const { instanceId } = Point3D;
 
                 if (!this.instances.some(instance => instance.index === instanceId)) {
@@ -730,7 +726,7 @@ export class Point3D extends Group {
 
         this.point.target.set(centerX + halfWidth, centerY - halfHeight);
 
-        if (this.object.isInstancedMesh) {
+        if (this.isInstanced) {
             this.instances.forEach(instance => {
                 const { position, quaternion, scale } = instance;
 
@@ -851,7 +847,7 @@ export class Point3D extends Group {
     };
 
     toggle = (show, multiple) => {
-        if (this.object.isInstancedMesh) {
+        if (this.isInstanced) {
             const { instanceId } = Point3D;
 
             if (show) {
@@ -860,10 +856,7 @@ export class Point3D extends Group {
                 }
 
                 if (!multiple) {
-                    this.instances.forEach(instance => {
-                        this.removeMesh(instance);
-                    });
-
+                    this.instances.forEach(instance => this.removeMesh(instance));
                     this.instances.length = 0;
                 }
 
@@ -880,10 +873,7 @@ export class Point3D extends Group {
                 mesh.tracker.animateIn();
             } else {
                 if (!multiple) {
-                    this.instances.forEach(instance => {
-                        this.removeMesh(instance);
-                    });
-
+                    this.instances.forEach(instance => this.removeMesh(instance));
                     this.instances.length = 0;
                 } else {
                     const index = this.instances.findIndex(instance => instance.index === instanceId);
@@ -949,7 +939,7 @@ export class Point3D extends Group {
             this.reticle.animateOut();
 
             if (this.tracker) {
-                this.tracker.animateIn();
+                this.tracker.animateIn(this.isInstanced);
             }
 
             const selected = Point3D.getSelected();
@@ -1005,11 +995,8 @@ export class Point3D extends Group {
     };
 
     inactive = () => {
-        if (this.object.isInstancedMesh) {
-            this.instances.forEach(instance => {
-                this.removeMesh(instance);
-            });
-
+        if (this.isInstanced) {
+            this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
 
             this.point.setData({
@@ -1060,11 +1047,8 @@ export class Point3D extends Group {
             this.toggleUVHelper(false);
         }
 
-        if (this.object.isInstancedMesh) {
-            this.instances.forEach(instance => {
-                this.removeMesh(instance);
-            });
-
+        if (this.isInstanced) {
+            this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
         }
 

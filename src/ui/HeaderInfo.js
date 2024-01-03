@@ -33,11 +33,6 @@ export class HeaderInfo extends Interface {
         this.css({
             cssFloat: 'right',
             padding: 10,
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'

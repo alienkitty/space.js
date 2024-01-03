@@ -17,6 +17,13 @@ export class DetailsLink extends Interface {
     }
 
     initHTML() {
+        this.css({
+            width: 'fit-content',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'auto',
+            webkitUserSelect: 'none',
+            userSelect: 'none'
+        });
         this.attr({ href: this.link });
 
         this.content = new Interface('.content');
@@ -28,8 +35,7 @@ export class DetailsLink extends Interface {
 
         this.line = new Interface('.line');
         this.line.css({
-            display: 'inline-block',
-            fontWeight: '700'
+            display: 'inline-block'
         });
         this.line.html('&nbsp;&nbsp;―');
         this.add(this.line);

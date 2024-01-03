@@ -70,7 +70,7 @@ export class ProgressCanvas extends Interface {
     // Public methods
 
     resize = () => {
-        const dpr = 2;
+        const dpr = 2; // Always 2
 
         this.element.width = Math.round(this.width * dpr);
         this.element.height = Math.round(this.height * dpr);
@@ -78,6 +78,7 @@ export class ProgressCanvas extends Interface {
         this.element.style.height = this.height + 'px';
         this.context.scale(dpr, dpr);
 
+        // Context properties need to be reassigned after resize
         this.context.lineWidth = 1.5;
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 

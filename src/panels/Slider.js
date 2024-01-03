@@ -57,8 +57,8 @@ export class Slider extends Interface {
         this.content.css({
             cssFloat: 'left',
             marginRight: 10,
-            textTransform: 'uppercase',
             lineHeight: 20,
+            textTransform: 'uppercase',
             whiteSpace: 'nowrap'
         });
         this.content.text(this.name);
@@ -69,8 +69,7 @@ export class Slider extends Interface {
             cssFloat: 'right',
             fontVariantNumeric: 'tabular-nums',
             lineHeight: 20,
-            letterSpacing: 'var(--ui-number-letter-spacing)',
-            whiteSpace: 'nowrap'
+            letterSpacing: 'var(--ui-number-letter-spacing)'
         });
         this.container.add(this.number);
 

@@ -97,25 +97,17 @@ export class PointInfo extends Interface {
         });
 
         if (this.locked) {
-            this.numbers.forEach(number => {
-                number.visible();
-            });
+            this.numbers.forEach(number => number.visible());
         }
     };
 
     lock = () => {
-        this.numbers.forEach(number => {
-            number.animateIn();
-        });
-
+        this.numbers.forEach(number => number.animateIn());
         this.locked = true;
     };
 
     unlock = () => {
-        this.numbers.forEach(number => {
-            number.animateOut();
-        });
-
+        this.numbers.forEach(number => number.animateOut());
         this.locked = false;
     };
 
@@ -125,9 +117,7 @@ export class PointInfo extends Interface {
         this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
-            this.numbers.forEach(number => {
-                number.animateIn(100);
-            });
+            this.numbers.forEach(number => number.animateIn(100));
         }
 
         this.panel.animateIn();
@@ -139,9 +129,7 @@ export class PointInfo extends Interface {
 
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
 
-        this.numbers.forEach(number => {
-            number.animateOut();
-        });
+        this.numbers.forEach(number => number.animateOut());
 
         this.panel.animateOut();
         this.panel.inactive();

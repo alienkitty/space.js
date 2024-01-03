@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Details — Space.js</title>
+    <title>UI — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@500;700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
@@ -22,6 +22,15 @@
 
             static initViews() {
                 this.ui = new UI({
+                    fps: true,
+                    header: {
+                        links: [
+                            {
+                                title: 'Space.js',
+                                link: 'https://github.com/alienkitty/space.js'
+                            }
+                        ]
+                    },
                     details: {
                         title: 'Mars',
                         content: /* html */ `
@@ -33,18 +42,32 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
                                 link: 'https://en.wikipedia.org/wiki/Mars'
                             }
                         ]
+                    },
+                    instructions: {
+                        content: 'Instructions'
+                    },
+                    detailsButton: true,
+                    muteButton: {
+                        sound: true
                     }
                 });
+                this.ui.instructions.animateIn();
+                this.ui.detailsButton.setData({ count: 1 });
                 this.ui.toggleDetails(true);
                 document.body.appendChild(this.ui.element);
             }
 
             static addListeners() {
                 window.addEventListener('load', this.onLoad);
+                ticker.add(this.onUpdate);
                 ticker.start();
             }
 
             // Event handlers
+
+            static onUpdate = () => {
+                this.ui.update();
+            };
 
             static onLoad = () => {
                 this.ui.animateIn();

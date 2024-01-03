@@ -13,7 +13,14 @@ export class DetailsTitle extends Interface {
         this.title = title;
         this.letters = [];
 
+        this.initHTML();
         this.initText();
+    }
+
+    initHTML() {
+        this.css({
+            width: 'fit-content'
+        });
     }
 
     initText() {

@@ -106,7 +106,8 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 #### ui
 
 [logo](https://space.js.org/examples/logo.html) (interface)  
-[components](https://space.js.org/examples/components.html) (ui)  
+[ui](https://space.js.org/examples/ui.html) (hud)  
+[components](https://space.js.org/examples/ui_components.html) (ui)  
 [progress](https://space.js.org/examples/progress_canvas.html) (canvas)  
 [progress](https://space.js.org/examples/progress.html) (svg)  
 [progress indeterminate](https://space.js.org/examples/progress_indeterminate.html) (svg)  
@@ -114,7 +115,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [tween](https://space.js.org/examples/tween.html) (svg)  
 [magnetic](https://space.js.org/examples/magnetic.html) (component, svg)  
 [details](https://space.js.org/examples/details.html)  
-[info](https://space.js.org/examples/details_info.html)  
+[info](https://space.js.org/examples/details_info.html) (details)  
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
 [panel](https://space.js.org/examples/panel.html) (standalone)  

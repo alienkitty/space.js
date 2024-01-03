@@ -7,19 +7,17 @@ import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
 
 export class Details extends Interface {
-    constructor(data, {
-        breakpoint = 1000
-    } = {}) {
+    constructor(data) {
         super('.details');
 
         this.data = data;
-        this.breakpoint = breakpoint;
+
+        this.animatedIn = false;
 
         this.initHTML();
         this.initViews();
 
         this.addListeners();
-        this.onResize();
     }
 
     initHTML() {
@@ -60,38 +58,44 @@ export class Details extends Interface {
         this.container.add(this.title);
 
         this.content = new Interface('.content', 'p');
+        this.content.css({
+            width: 'fit-content'
+        });
         this.content.html(this.data.content);
         this.container.add(this.content);
 
         this.data.links.forEach(data => {
             const link = new DetailsLink(data.title, data.link);
             link.css({
-                display: 'block',
-                width: 'fit-content'
+                display: 'block'
             });
             this.container.add(link);
         });
     }
 
     addListeners() {
-        window.addEventListener('resize', this.onResize);
         this.bg.element.addEventListener('click', this.onClick);
     }
 
     removeListeners() {
-        window.removeEventListener('resize', this.onResize);
         this.bg.element.removeEventListener('click', this.onClick);
     }
 
     // Event handlers
 
-    onResize = () => {
-        if (document.documentElement.clientWidth < this.breakpoint) {
+    onClick = () => {
+        this.events.emit('click');
+    };
+
+    // Public methods
+
+    resize = (width, height, dpr, breakpoint) => {
+        if (width < breakpoint) {
             this.css({ display: '' });
 
             this.container.css({
                 width: '',
-                margin: '24px 20px 0'
+                margin: '80px 20px 40px'
             });
         } else {
             this.css({ display: 'flex' });
@@ -102,12 +106,6 @@ export class Details extends Interface {
             });
         }
     };
-
-    onClick = () => {
-        this.events.emit('click');
-    };
-
-    // Public methods
 
     animateIn = () => {
         this.clearTween();
@@ -129,6 +127,8 @@ export class Details extends Interface {
         });
 
         this.title.animateIn();
+
+        this.animatedIn = true;
     };
 
     animateOut = () => {
@@ -138,6 +138,8 @@ export class Details extends Interface {
 
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
             this.invisible();
+
+            this.animatedIn = false;
         });
     };
 

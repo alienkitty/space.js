@@ -6,19 +6,15 @@ import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 
 export class DetailsInfo extends Interface {
-    constructor(data, {
-        breakpoint = 1000
-    } = {}) {
-        super('.details');
+    constructor(data) {
+        super('.info');
 
         this.data = data;
-        this.breakpoint = breakpoint;
+
+        this.animatedIn = false;
 
         this.initHTML();
         this.initViews();
-
-        this.addListeners();
-        this.onResize();
     }
 
     initHTML() {
@@ -49,22 +45,18 @@ export class DetailsInfo extends Interface {
         this.container.add(this.title);
 
         this.content = new Interface('.content', 'p');
+        this.content.css({
+            width: 'fit-content',
+            textTransform: 'uppercase'
+        });
         this.content.html(this.data.content);
         this.container.add(this.content);
     }
 
-    addListeners() {
-        window.addEventListener('resize', this.onResize);
-    }
+    // Public methods
 
-    removeListeners() {
-        window.removeEventListener('resize', this.onResize);
-    }
-
-    // Event handlers
-
-    onResize = () => {
-        if (document.documentElement.clientWidth < this.breakpoint) {
+    resize = (width, height, dpr, breakpoint) => {
+        if (width < breakpoint) {
             this.css({ display: '' });
 
             this.container.css({
@@ -80,8 +72,6 @@ export class DetailsInfo extends Interface {
             });
         }
     };
-
-    // Public methods
 
     animateIn = () => {
         this.clearTween();
@@ -101,6 +91,8 @@ export class DetailsInfo extends Interface {
         });
 
         this.title.animateIn();
+
+        this.animatedIn = true;
     };
 
     animateOut = () => {
@@ -108,12 +100,8 @@ export class DetailsInfo extends Interface {
 
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
             this.invisible();
+
+            this.animatedIn = false;
         });
-    };
-
-    destroy = () => {
-        this.removeListeners();
-
-        return super.destroy();
     };
 }

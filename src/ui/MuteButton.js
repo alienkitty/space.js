@@ -8,38 +8,34 @@ import { Stage } from '../utils/Stage.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 export class MuteButton extends Interface {
-    constructor(sound, {
-        breakpoint = 1000
-    } = {}) {
+    constructor(data) {
         super('.button');
 
-        this.sound = sound;
-        this.breakpoint = breakpoint;
+        this.data = data;
 
         this.width = 24;
         this.height = 16;
-        this.progress = 1;
-        this.yMultiplier = this.sound ? 1 : 0;
         this.animatedIn = false;
         this.needsUpdate = false;
 
+        this.props = {
+            progress: 0,
+            yMultiplier: this.data.sound ? 1 : 0
+        };
+
         this.initHTML();
         this.initCanvas();
-        this.initLine();
 
         this.addListeners();
-        this.onResize();
     }
 
     initHTML() {
         this.css({
-            position: 'absolute',
-            right: 22,
-            bottom: 20,
+            position: 'relative',
             width: this.width + 20,
             height: this.height + 20,
             cursor: 'pointer',
-            pointerEvents: 'none',
+            pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none',
             opacity: 0
@@ -56,8 +52,73 @@ export class MuteButton extends Interface {
             marginTop: -this.height / 2
         });
         this.context = this.canvas.element.getContext('2d');
+        this.add(this.canvas);
+    }
 
-        const dpr = 2;
+    addListeners() {
+        this.element.addEventListener('mouseenter', this.onHover);
+        this.element.addEventListener('mouseleave', this.onHover);
+        this.element.addEventListener('click', this.onClick);
+    }
+
+    removeListeners() {
+        this.element.removeEventListener('mouseenter', this.onHover);
+        this.element.removeEventListener('mouseleave', this.onHover);
+        this.element.removeEventListener('click', this.onClick);
+    }
+
+    // Event handlers
+
+    onHover = ({ type }) => {
+        if (!this.animatedIn) {
+            return;
+        }
+
+        clearTween(this.props);
+
+        this.needsUpdate = true;
+
+        if (type === 'mouseenter') {
+            tween(this.props, { yMultiplier: this.data.sound ? 0.7 : 0.3 }, 275, 'easeInOutCubic', () => {
+                this.needsUpdate = false;
+            });
+        } else {
+            tween(this.props, { yMultiplier: this.data.sound ? 1 : 0 }, 275, 'easeInOutCubic', () => {
+                this.needsUpdate = false;
+            });
+        }
+    };
+
+    onClick = () => {
+        clearTween(this.props);
+
+        if (this.data.sound) {
+            this.data.sound = false;
+
+            this.needsUpdate = true;
+
+            tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', () => {
+                this.needsUpdate = false;
+            });
+        } else {
+            this.data.sound = true;
+
+            this.needsUpdate = true;
+
+            tween(this.props, { yMultiplier: 1 }, 300, 'easeOutCubic', () => {
+                this.needsUpdate = false;
+            });
+        }
+
+        Stage.events.emit('sound', { sound: this.data.sound });
+
+        localStorage.setItem('sound', JSON.stringify(this.data.sound));
+    };
+
+    // Public methods
+
+    resize = () => {
+        const dpr = 2; // Always 2
 
         this.canvas.element.width = Math.round(this.width * dpr);
         this.canvas.element.height = Math.round(this.height * dpr);
@@ -65,23 +126,20 @@ export class MuteButton extends Interface {
         this.canvas.element.style.height = this.height + 'px';
         this.context.scale(dpr, dpr);
 
-        this.add(this.canvas);
-    }
+        // Context properties need to be reassigned after resize
+        this.context.lineWidth = 1.5;
+        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
-    initLine() {
-        this.line = {};
-        this.line.lineWidth = 1.5;
-        this.line.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
-    }
+        this.update();
+    };
 
-    drawLine() {
+    update = () => {
         const width = this.width + 1;
         const height = this.height / 2;
-        const progress = width * this.progress;
+        const progress = width * this.props.progress;
         const increase = 90 / 180 * Math.PI / (height / 2);
 
-        this.context.lineWidth = this.line.lineWidth;
-        this.context.strokeStyle = this.line.strokeStyle;
+        this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
         this.context.beginPath();
 
         let counter = 0;
@@ -93,7 +151,7 @@ export class MuteButton extends Interface {
                 this.context.moveTo(x, y);
 
                 x = i;
-                y = height - Math.sin(counter) * (height - 1) * this.yMultiplier;
+                y = height - Math.sin(counter) * (height - 1) * this.props.yMultiplier;
                 counter += increase;
 
                 this.context.lineTo(x, y);
@@ -101,105 +159,20 @@ export class MuteButton extends Interface {
         }
 
         this.context.stroke();
-    }
-
-    addListeners() {
-        window.addEventListener('resize', this.onResize);
-        this.element.addEventListener('mouseenter', this.onHover);
-        this.element.addEventListener('mouseleave', this.onHover);
-        this.element.addEventListener('click', this.onClick);
-    }
-
-    removeListeners() {
-        window.removeEventListener('resize', this.onResize);
-        this.element.removeEventListener('mouseenter', this.onHover);
-        this.element.removeEventListener('mouseleave', this.onHover);
-        this.element.removeEventListener('click', this.onClick);
-    }
-
-    // Event handlers
-
-    onResize = () => {
-        if (document.documentElement.clientWidth < this.breakpoint) {
-            this.css({
-                right: 12,
-                bottom: 10
-            });
-        } else {
-            this.css({
-                right: 22,
-                bottom: 20
-            });
-        }
-    };
-
-    onHover = ({ type }) => {
-        if (!this.animatedIn) {
-            return;
-        }
-
-        clearTween(this);
-
-        this.needsUpdate = true;
-
-        if (type === 'mouseenter') {
-            tween(this, { yMultiplier: this.sound ? 0.7 : 0.3 }, 275, 'easeInOutCubic', () => {
-                this.needsUpdate = false;
-            });
-        } else {
-            tween(this, { yMultiplier: this.sound ? 1 : 0 }, 275, 'easeInOutCubic', () => {
-                this.needsUpdate = false;
-            });
-        }
-    };
-
-    onClick = () => {
-        if (this.sound) {
-            this.sound = false;
-
-            clearTween(this);
-
-            this.needsUpdate = true;
-
-            tween(this, { yMultiplier: 0 }, 300, 'easeOutCubic', () => {
-                this.needsUpdate = false;
-            });
-        } else {
-            this.sound = true;
-
-            clearTween(this);
-
-            this.needsUpdate = true;
-
-            tween(this, { yMultiplier: 1 }, 300, 'easeOutCubic', () => {
-                this.needsUpdate = false;
-            });
-        }
-
-        Stage.events.emit('sound', { sound: this.sound });
-
-        localStorage.setItem('sound', JSON.stringify(this.sound));
-    };
-
-    // Public methods
-
-    update = () => {
-        this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
-
-        this.drawLine();
     };
 
     animateIn = () => {
-        clearTween(this);
+        clearTween(this.props);
 
-        this.progress = 0;
+        this.props.progress = 0;
+        this.props.yMultiplier = this.data.sound ? 1 : 0;
+
+        this.animatedIn = false;
         this.needsUpdate = true;
 
-        tween(this, { progress: 1 }, 1000, 'easeInOutExpo', () => {
+        tween(this.props, { progress: 1 }, 1000, 'easeOutExpo', () => {
             this.needsUpdate = false;
             this.animatedIn = true;
-
-            this.css({ pointerEvents: 'auto' });
         });
 
         this.tween({ opacity: 1 }, 400, 'easeOutCubic');
@@ -207,17 +180,6 @@ export class MuteButton extends Interface {
 
     animateOut = () => {
         this.animatedIn = false;
-
-        this.css({ pointerEvents: 'none' });
-
-        clearTween(this);
-
-        this.progress = 1;
-        this.needsUpdate = true;
-
-        tween(this, { progress: 0 }, 1000, 'easeInOutQuart', () => {
-            this.needsUpdate = false;
-        });
 
         this.tween({ opacity: 0 }, 400, 'easeOutCubic');
     };

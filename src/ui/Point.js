@@ -10,10 +10,10 @@ import { PointInfo } from './PointInfo.js';
 import { defer, tween } from '../tween/Tween.js';
 
 export class Point extends Interface {
-    constructor(panel, tracker) {
+    constructor(ui, tracker) {
         super('.point');
 
-        this.panel = panel;
+        this.ui = ui;
         this.tracker = tracker;
 
         this.position = new Vector2();
@@ -84,12 +84,16 @@ export class Point extends Interface {
     };
 
     onHover = async ({ type }) => {
+        if (!this.ui) {
+            return;
+        }
+
         await defer();
 
         if (type === 'mouseenter') {
-            this.panel.onHover({ type: 'over', isPoint: true });
+            this.ui.onHover({ type: 'over', isPoint: true });
         } else {
-            this.panel.onHover({ type: 'out', isPoint: true });
+            this.ui.onHover({ type: 'out', isPoint: true });
         }
     };
 
@@ -142,13 +146,13 @@ export class Point extends Interface {
         }
 
         if (this.tracker && this.tracker.isVisible && this.info.container.element.contains(e.target)) {
-            if (!this.tracker.animatedIn) {
-                this.panel.show();
+            if (!this.tracker.isInstanced && !this.tracker.animatedIn) {
+                this.ui.show();
             } else if (!this.tracker.locked) {
-                this.panel.lock();
+                this.ui.lock();
             } else {
-                this.panel.unlock();
-                this.panel.hide();
+                this.ui.unlock();
+                this.ui.hide();
             }
         }
     };
@@ -190,6 +194,7 @@ export class Point extends Interface {
     close = fast => {
         if (fast) {
             this.clearTimeout(this.timeout);
+
             this.timeout = this.delayedCall(300, () => {
                 this.origin.set(0, 0);
 
