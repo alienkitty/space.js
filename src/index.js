@@ -49,6 +49,7 @@ export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
 export { NavLink } from './ui/NavLink.js';
 export { Details } from './ui/Details.js';
+export { DetailsInfo } from './ui/DetailsInfo.js';
 export { DetailsTitle } from './ui/DetailsTitle.js';
 export { DetailsLink } from './ui/DetailsLink.js';
 export { DetailsButton } from './ui/DetailsButton.js';

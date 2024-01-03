@@ -4,186 +4,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Details — Space.js</title>
+    <title>Details Info — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@100">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <style>
+        body {
+            letter-spacing: normal;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            width: fit-content;
+            margin: 0 0 6px -3px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 100;
+            font-size: 46px;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        p {
+            width: fit-content;
+            margin: 6px 0;
+        }
+    </style>
+
     <script type="module">
-        import { Interface, shuffle, ticker } from '../src/index.js';
-
-        class Config {
-            static BREAKPOINT = 1000;
-        }
-
-        class Styles {
-            static body = {
-                fontFamily: 'Roboto Mono, monospace',
-                fontWeight: '400',
-                fontSize: 11,
-                lineHeight: 15,
-                letterSpacing: 'normal',
-                textTransform: 'uppercase'
-            };
-
-            static h1 = {
-                width: 'fit-content',
-                margin: '0 0 6px -3px',
-                fontFamily: 'Roboto, sans-serif',
-                fontWeight: '100',
-                fontSize: 46,
-                lineHeight: '1.3',
-                letterSpacing: '0.02em',
-                textTransform: 'uppercase'
-            };
-
-            static content = {
-                width: 'fit-content',
-                margin: '6px 0',
-                ...this.body
-            };
-        }
-
-        class DetailsTitle extends Interface {
-            constructor(title) {
-                super('.title', 'h1');
-
-                this.title = title;
-                this.letters = [];
-
-                this.initHTML();
-                this.initText();
-            }
-
-            initHTML() {
-                this.css({
-                    ...Styles.h1
-                });
-            }
-
-            initText() {
-                const split = this.title.split('');
-
-                split.forEach(str => {
-                    if (str === ' ') {
-                        str = '&nbsp';
-                    }
-
-                    const letter = new Interface(null, 'span');
-                    letter.css({ display: 'inline-block' });
-                    letter.html(str);
-                    this.add(letter);
-
-                    this.letters.push(letter);
-                });
-            }
-
-            // Public methods
-
-            animateIn = () => {
-                shuffle(this.letters);
-
-                this.letters.forEach((letter, i) => {
-                    letter.css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 50);
-                });
-            };
-        }
-
-        class Details extends Interface {
-            constructor() {
-                super('.details');
-
-                this.initHTML();
-                this.initViews();
-
-                this.addListeners();
-                this.onResize();
-            }
-
-            initHTML() {
-                this.invisible();
-                this.css({
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    pointerEvents: 'none',
-                    opacity: 0
-                });
-
-                this.container = new Interface('.container');
-                this.container.css({
-                    width: 400,
-                    margin: '10% 10% 6%'
-                });
-                this.add(this.container);
-            }
-
-            initViews() {
-                this.title = new DetailsTitle('Mars');
-                this.title.css({
-                    width: 'fit-content'
-                });
-                this.container.add(this.title);
-
-                this.content = new Interface('.content', 'p');
-                this.content.css({
-                    width: 'fit-content',
-                    ...Styles.content
-                });
-                this.content.html('Distance from Sun: 230 million km<br>Mass: 0.11 Earths<br>Surface gravity: 0.38 Earths');
-                this.container.add(this.content);
-            }
-
-            addListeners() {
-                window.addEventListener('resize', this.onResize);
-            }
-
-            // Event handlers
-
-            onResize = () => {
-                if (document.documentElement.clientWidth < Config.BREAKPOINT) {
-                    this.css({ display: '' });
-
-                    this.container.css({
-                        width: '',
-                        margin: '24px 20px 0'
-                    });
-                } else {
-                    this.css({ display: 'flex' });
-
-                    this.container.css({
-                        width: 400,
-                        margin: '10% 10% 6%'
-                    });
-                }
-            };
-
-            // Public methods
-
-            animateIn = () => {
-                this.visible();
-                this.css({
-                    pointerEvents: 'auto',
-                    opacity: 1
-                });
-
-                const duration = 2000;
-                const stagger = 175;
-
-                this.container.children.forEach((child, i) => {
-                    const delay = i === 0 ? 0 : duration;
-
-                    child.css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
-                });
-
-                this.title.animateIn();
-            };
-        }
+        import { DetailsInfo, Interface, ticker } from '../src/index.js';
 
         class UI extends Interface {
             constructor() {
@@ -207,7 +58,12 @@
             }
 
             initViews() {
-                this.details = new Details();
+                this.details = new DetailsInfo({
+                    title: 'Mars',
+                    content: /* html */ `
+Distance from Sun: 230 million km<br>Mass: 0.11 Earths<br>Surface gravity: 0.38 Earths
+                    `
+                });
                 this.add(this.details);
             }
 
