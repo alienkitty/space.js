@@ -91,7 +91,7 @@ export class Details extends Interface {
 
             this.container.css({
                 width: '',
-                margin: '80px 20px 40px'
+                margin: '24px 20px 0'
             });
         } else {
             this.css({ display: 'flex' });
