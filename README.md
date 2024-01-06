@@ -192,12 +192,16 @@ npx eslint examples/*.html
 
 #### v1.6
 
-* [ ] OGL version
-* [ ] Documentation
+* [ ] MIDI support
 
 #### v1.7
 
 * [ ] WebXR version
+
+#### v1.8
+
+* [ ] OGL version
+* [ ] Documentation
 
 ### Resources
 
