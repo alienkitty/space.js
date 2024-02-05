@@ -23,13 +23,13 @@ export class HeaderInfo extends Interface {
         this.openColor = null;
         this.isOpen = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             cssFloat: 'right',
             padding: 10,

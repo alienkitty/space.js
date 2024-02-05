@@ -11,12 +11,12 @@ export class Link extends Interface {
         this.title = title;
         this.link = link;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             padding: 10,

@@ -16,11 +16,11 @@ export class Header extends Interface {
         this.fps = fps;
         this.data = data;
 
-        this.initHTML();
+        this.init();
         this.initViews();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 20,

@@ -58,14 +58,14 @@ export class ColorPicker extends Interface {
 
         this.color = new Color();
 
-        this.initHTML();
+        this.init();
         this.initColorRing();
         this.setValue(this.value, true);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             height: this.height

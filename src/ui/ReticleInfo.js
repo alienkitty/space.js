@@ -8,10 +8,10 @@ export class ReticleInfo extends Interface {
     constructor() {
         super('.info');
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 20,

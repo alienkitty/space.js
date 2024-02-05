@@ -4,13 +4,13 @@ export class PreloaderView extends Interface {
     constructor() {
         super('.preloader');
 
-        this.initHTML();
+        this.init();
         this.initView();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 0,

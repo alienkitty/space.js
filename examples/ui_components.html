@@ -36,13 +36,13 @@
                 this.height = size;
                 this.animatedIn = false;
 
-                this.initHTML();
+                this.init();
                 this.initViews();
 
                 this.addListeners();
             }
 
-            initHTML() {
+            init() {
                 this.css({
                     position: 'relative',
                     boxSizing: 'border-box',
@@ -136,7 +136,7 @@
 
                 this.items = [];
 
-                this.initHTML();
+                this.init();
                 this.initCanvas();
                 this.initViews();
 
@@ -144,7 +144,7 @@
                 this.onResize();
             }
 
-            initHTML() {
+            init() {
                 this.css({
                     minHeight: '100%',
                     display: 'flex',

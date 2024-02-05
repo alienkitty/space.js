@@ -16,12 +16,12 @@ export class Magnetic extends Component {
         this.threshold = threshold;
         this.hoveredIn = false;
 
-        this.initHTML();
+        this.init();
 
         this.enable();
     }
 
-    initHTML() {
+    init() {
         this.object.css({ willChange: 'transform' });
     }
 

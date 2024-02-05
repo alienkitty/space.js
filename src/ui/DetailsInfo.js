@@ -13,11 +13,11 @@ export class DetailsInfo extends Interface {
 
         this.animatedIn = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',

@@ -19,10 +19,10 @@ export class Reticle extends Interface {
         this.target = new Vector2();
         this.lerpSpeed = 1;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',

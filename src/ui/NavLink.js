@@ -12,13 +12,13 @@ export class NavLink extends Interface {
         this.link = link;
         this.letters = [];
 
-        this.initHTML();
+        this.init();
         this.initText();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             cssFloat: 'left',
             padding: 10,

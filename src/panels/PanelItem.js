@@ -15,10 +15,10 @@ export class PanelItem extends Interface {
 
         this.data = data;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             width: 108
         });

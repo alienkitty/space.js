@@ -13,11 +13,11 @@ export class PointInfo extends Interface {
         this.numbers = [];
         this.locked = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 10,

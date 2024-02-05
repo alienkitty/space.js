@@ -30,13 +30,13 @@ export class Point extends Interface {
         this.isOpen = false;
         this.isMove = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',

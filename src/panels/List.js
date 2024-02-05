@@ -24,13 +24,13 @@ export class List extends Interface {
 
         this.items = [];
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.update();
     }
 
-    initHTML() {
+    init() {
         this.container = new Interface('.container');
         this.container.css({
             height: 20

@@ -16,12 +16,12 @@ export class ListSelect extends Interface {
 
         this.active = false;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             height: 20,

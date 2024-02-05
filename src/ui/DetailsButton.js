@@ -31,13 +31,13 @@ export class DetailsButton extends Interface {
             radius: this.radius
         };
 
-        this.initHTML();
+        this.init();
         this.initCanvas();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             width: this.width + 40,

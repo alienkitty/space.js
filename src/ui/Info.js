@@ -14,10 +14,10 @@ export class Info extends Interface {
         this.bottom = bottom;
         this.data = data;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',

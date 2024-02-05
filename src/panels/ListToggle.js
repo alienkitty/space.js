@@ -16,12 +16,12 @@ export class ListToggle extends Interface {
 
         this.active = false;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             cssFloat: 'left',

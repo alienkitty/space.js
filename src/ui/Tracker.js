@@ -18,10 +18,10 @@ export class Tracker extends Interface {
         this.isInstanced = false;
         this.isVisible = false;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             pointerEvents: 'none',

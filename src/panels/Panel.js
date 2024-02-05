@@ -13,12 +13,12 @@ export class Panel extends Interface {
         this.animatedIn = false;
         this.openColor = null;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.hide();
         this.css({
             pointerEvents: 'auto',

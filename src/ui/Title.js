@@ -13,11 +13,11 @@ export class Title extends Interface {
         this.title = title;
         this.letters = [];
 
-        this.initHTML();
+        this.init();
         this.initText();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             width: 'fit-content',

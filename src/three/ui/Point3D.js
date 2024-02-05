@@ -391,7 +391,7 @@ export class Point3D extends Group {
         this.matrix = new Matrix4();
 
         this.initMesh();
-        this.initHTML();
+        this.initElement();
         this.initViews();
 
         this.addListeners();
@@ -419,7 +419,7 @@ export class Point3D extends Group {
         this.mesh = this.createMesh();
     }
 
-    initHTML() {
+    initElement() {
         this.element = new Interface('.target');
         this.element.css({
             position: 'static'

@@ -13,10 +13,10 @@ export class TargetNumber extends Interface {
         this.width = size;
         this.height = size;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'relative',

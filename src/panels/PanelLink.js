@@ -16,13 +16,13 @@ export class PanelLink extends Interface {
         this.value = value;
         this.callback = callback;
 
-        this.initHTML();
+        this.init();
         this.setValue(this.value);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             width: 'fit-content',

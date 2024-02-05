@@ -20,13 +20,13 @@ export class Menu extends Interface {
         this.active = -1;
         this.items = [];
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.update();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 20,

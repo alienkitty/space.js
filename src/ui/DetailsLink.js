@@ -11,12 +11,12 @@ export class DetailsLink extends Interface {
         this.title = title;
         this.link = link;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             width: 'fit-content',
             whiteSpace: 'nowrap',

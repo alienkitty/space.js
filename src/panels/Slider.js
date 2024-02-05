@@ -39,13 +39,13 @@ export class Slider extends Interface {
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
 
-        this.initHTML();
+        this.init();
         this.setValue(this.value, true);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.container = new Interface('.container');
         this.container.css({
             height: 27,

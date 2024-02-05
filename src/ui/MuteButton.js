@@ -27,14 +27,14 @@ export class MuteButton extends Interface {
             yMultiplier: this.sound ? 1 : 0
         };
 
-        this.initHTML();
+        this.init();
         this.initCanvas();
         this.setSound(this.sound);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             width: this.width + 20,

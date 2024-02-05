@@ -44,14 +44,14 @@ export class UI extends Interface {
         this.isDetailsOpen = false;
         this.buttons = [];
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.addListeners();
         this.onResize();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'fixed',
             left: 0,

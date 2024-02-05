@@ -31,12 +31,12 @@ export class SmoothSkew extends Component {
         this.progress = 0;
         this.height = 0;
 
-        this.initHTML();
+        this.init();
 
         this.enable();
     }
 
-    initHTML() {
+    init() {
         if (!navigator.maxTouchPoints) {
             this.root.css({
                 position: 'fixed',
