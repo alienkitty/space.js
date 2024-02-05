@@ -32,8 +32,6 @@ export class SmoothSkew extends Component {
         this.height = 0;
 
         this.init();
-
-        this.enable();
     }
 
     init() {
@@ -48,6 +46,8 @@ export class SmoothSkew extends Component {
             });
 
             this.container.css({ willChange: 'transform' });
+
+            this.enable();
         }
     }
 
@@ -91,7 +91,7 @@ export class SmoothSkew extends Component {
 
         if (!navigator.maxTouchPoints) {
             this.container.css({
-                y: -Math.round(this.position),
+                y: -Math.floor(this.position * 100) / 100,
                 skewY: (this.delta / document.documentElement.clientWidth) * 10 * this.skew
             });
         }

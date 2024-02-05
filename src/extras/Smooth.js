@@ -30,8 +30,6 @@ export class Smooth extends Component {
         this.height = 0;
 
         this.init();
-
-        this.enable();
     }
 
     init() {
@@ -46,6 +44,8 @@ export class Smooth extends Component {
             });
 
             this.container.css({ willChange: 'transform' });
+
+            this.enable();
         }
     }
 
@@ -88,7 +88,7 @@ export class Smooth extends Component {
         }
 
         if (!navigator.maxTouchPoints) {
-            this.container.css({ y: -Math.round(this.position) });
+            this.container.css({ y: -Math.floor(this.position * 100) / 100 });
         }
 
         this.progress = clamp(this.position / (this.height - document.documentElement.clientHeight), 0, 1);
