@@ -34,8 +34,8 @@
                     menu: {
                         items: ['POL', 'OBL', 'ISO'],
                         active: 'OBL',
-                        callback: (value, target) => {
-                            console.log('Menu callback:', value, target);
+                        callback: value => {
+                            console.log('Menu callback:', value);
                         }
                     },
                     info: {
@@ -59,8 +59,8 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
                     detailsButton: true,
                     muteButton: {
                         sound: true,
-                        callback: (value, target) => {
-                            console.log('MuteButton callback:', value, target);
+                        callback: value => {
+                            console.log('MuteButton callback:', value);
                         }
                     }
                 });
