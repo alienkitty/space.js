@@ -213,7 +213,7 @@ export class Point3D extends Group {
                 this.points.forEach(point => {
                     if (point !== this.click && point.animatedIn) {
                         point.animateOut(true);
-                        point.inactive();
+                        point.deactivate();
                     }
                 });
             }
@@ -237,7 +237,7 @@ export class Point3D extends Group {
                     this.points.forEach(point => {
                         if (point !== select && point.animatedIn) {
                             point.animateOut(true);
-                            point.inactive();
+                            point.deactivate();
                         }
                     });
                 }
@@ -334,7 +334,7 @@ export class Point3D extends Group {
         this.points.forEach(point => {
             if (point.animatedIn) {
                 point.animateOut(true);
-                point.inactive();
+                point.deactivate();
             }
         });
 
@@ -953,8 +953,8 @@ export class Point3D extends Group {
 
                 Point3D.multiple.push(this);
 
-                this.line.inactive();
-                this.point.inactive();
+                this.line.deactivate();
+                this.point.deactivate();
             } else {
                 this.point.open();
 
@@ -994,7 +994,7 @@ export class Point3D extends Group {
         }
     };
 
-    inactive = () => {
+    deactivate = () => {
         if (this.isInstanced) {
             this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
@@ -1020,8 +1020,8 @@ export class Point3D extends Group {
         }
 
         this.selected = false;
-        this.line.inactive();
-        this.point.inactive();
+        this.line.deactivate();
+        this.point.deactivate();
 
         const selected = Point3D.getSelected();
 

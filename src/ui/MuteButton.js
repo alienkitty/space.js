@@ -8,10 +8,14 @@ import { Stage } from '../utils/Stage.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 export class MuteButton extends Interface {
-    constructor(data) {
+    constructor({
+        sound,
+        callback
+    }) {
         super('.button');
 
-        this.data = data;
+        this.sound = sound;
+        this.callback = callback;
 
         this.width = 24;
         this.height = 16;
@@ -20,11 +24,12 @@ export class MuteButton extends Interface {
 
         this.props = {
             progress: 0,
-            yMultiplier: this.data.sound ? 1 : 0
+            yMultiplier: this.sound ? 1 : 0
         };
 
         this.initHTML();
         this.initCanvas();
+        this.setSound(this.sound);
 
         this.addListeners();
     }
@@ -79,11 +84,11 @@ export class MuteButton extends Interface {
         this.needsUpdate = true;
 
         if (type === 'mouseenter') {
-            tween(this.props, { yMultiplier: this.data.sound ? 0.7 : 0.3 }, 275, 'easeInOutCubic', () => {
+            tween(this.props, { yMultiplier: this.sound ? 0.7 : 0.3 }, 275, 'easeInOutCubic', () => {
                 this.needsUpdate = false;
             });
         } else {
-            tween(this.props, { yMultiplier: this.data.sound ? 1 : 0 }, 275, 'easeInOutCubic', () => {
+            tween(this.props, { yMultiplier: this.sound ? 1 : 0 }, 275, 'easeInOutCubic', () => {
                 this.needsUpdate = false;
             });
         }
@@ -92,8 +97,8 @@ export class MuteButton extends Interface {
     onClick = () => {
         clearTween(this.props);
 
-        if (this.data.sound) {
-            this.data.sound = false;
+        if (this.sound) {
+            this.sound = false;
 
             this.needsUpdate = true;
 
@@ -101,7 +106,7 @@ export class MuteButton extends Interface {
                 this.needsUpdate = false;
             });
         } else {
-            this.data.sound = true;
+            this.sound = true;
 
             this.needsUpdate = true;
 
@@ -110,12 +115,20 @@ export class MuteButton extends Interface {
             });
         }
 
-        Stage.events.emit('sound', { sound: this.data.sound });
-
-        localStorage.setItem('sound', JSON.stringify(this.data.sound));
+        this.setSound(this.sound);
     };
 
     // Public methods
+
+    setSound = sound => {
+        this.events.emit('update', { sound, target: this });
+
+        if (this.callback) {
+            this.callback(sound, this);
+        }
+
+        localStorage.setItem('sound', JSON.stringify(sound));
+    };
 
     resize = () => {
         const dpr = 2; // Always 2
@@ -165,7 +178,7 @@ export class MuteButton extends Interface {
         clearTween(this.props);
 
         this.props.progress = 0;
-        this.props.yMultiplier = this.data.sound ? 1 : 0;
+        this.props.yMultiplier = this.sound ? 1 : 0;
 
         this.animatedIn = false;
         this.needsUpdate = true;

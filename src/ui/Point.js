@@ -231,11 +231,7 @@ export class Point extends Interface {
         this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     };
 
-    active = () => {
-        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
-    };
-
-    inactive = () => {
+    deactivate = () => {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
         this.close(true);
     };

@@ -155,11 +155,11 @@ export class Panel extends Interface {
         });
     };
 
-    active = () => {
+    activate = () => {
         this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
     };
 
-    inactive = () => {
+    deactivate = () => {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
     };
 

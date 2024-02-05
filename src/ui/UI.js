@@ -7,6 +7,7 @@ import { Stage } from '../utils/Stage.js';
 import { Details } from './Details.js';
 import { DetailsInfo } from './DetailsInfo.js';
 import { Header } from './Header.js';
+import { Menu } from './Menu.js';
 import { Instructions } from './Instructions.js';
 import { DetailsButton } from './DetailsButton.js';
 import { MuteButton } from './MuteButton.js';
@@ -82,6 +83,11 @@ export class UI extends Interface {
             this.add(this.header);
         }
 
+        if (this.data.menu) {
+            this.menu = new Menu(this.data.menu);
+            this.add(this.menu);
+        }
+
         if (this.data.instructions) {
             this.instructions = new Instructions(this.data.instructions);
             this.add(this.instructions);
@@ -153,6 +159,10 @@ export class UI extends Interface {
 
         if (this.header) {
             this.header.resize(width, height, dpr, this.breakpoint);
+        }
+
+        if (this.menu) {
+            this.menu.resize(width, height, dpr, this.breakpoint);
         }
 
         if (this.detailsButton) {
@@ -245,6 +255,10 @@ export class UI extends Interface {
             this.header.animateIn();
         }
 
+        if (this.menu) {
+            this.menu.animateIn();
+        }
+
         this.buttons.forEach(button => button.animateIn());
     };
 
@@ -259,6 +273,10 @@ export class UI extends Interface {
 
         if (this.header) {
             this.header.animateOut();
+        }
+
+        if (this.menu) {
+            this.menu.animateOut();
         }
 
         if (this.instructions) {

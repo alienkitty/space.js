@@ -133,13 +133,13 @@ export class List extends Interface {
 
         const target = this.items[this.index];
 
-        if (target && !target.clicked) {
-            target.active();
+        if (target && !target.active) {
+            target.activate();
         }
 
         this.items.forEach(item => {
-            if (item !== target && item.clicked) {
-                item.inactive();
+            if (item !== target && item.active) {
+                item.deactivate();
             }
         });
     };

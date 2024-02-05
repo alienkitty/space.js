@@ -14,7 +14,7 @@ export class ListSelect extends Interface {
         this.list = list;
         this.index = index;
 
-        this.clicked = false;
+        this.active = false;
 
         this.initHTML();
 
@@ -73,11 +73,11 @@ export class ListSelect extends Interface {
     // Event handlers
 
     onClick = () => {
-        if (this.clicked) {
+        if (this.active) {
             return;
         }
 
-        this.clicked = true;
+        this.active = true;
 
         this.index = this.next;
 
@@ -88,7 +88,7 @@ export class ListSelect extends Interface {
             this.over.css({ y: 8, opacity: 0 });
             this.over.text(this.list[this.getNextIndex()]);
 
-            this.clicked = false;
+            this.active = false;
         });
 
         this.events.emit('click', { target: this });

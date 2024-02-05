@@ -114,7 +114,7 @@ export class Line extends Component {
         });
     };
 
-    inactive = () => {
+    deactivate = () => {
         clearTween(this.props);
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
     };

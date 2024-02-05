@@ -14,7 +14,7 @@ export class ListToggle extends Interface {
         this.name = name;
         this.index = index;
 
-        this.clicked = false;
+        this.active = false;
 
         this.initHTML();
 
@@ -70,7 +70,7 @@ export class ListToggle extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
-        if (this.clicked) {
+        if (this.active) {
             return;
         }
 
@@ -87,20 +87,24 @@ export class ListToggle extends Interface {
     };
 
     onClick = () => {
+        if (this.active) {
+            return;
+        }
+
         this.events.emit('click', { target: this });
     };
 
     // Public methods
 
-    active = () => {
-        this.clicked = true;
+    activate = () => {
+        this.active = true;
 
         this.content.css({ y: -8, opacity: 0 });
         this.over.css({ y: 0, opacity: 1 });
     };
 
-    inactive = () => {
-        this.clicked = false;
+    deactivate = () => {
+        this.active = false;
 
         this.onHover({ type: 'mouseleave' });
     };

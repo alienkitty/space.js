@@ -121,7 +121,7 @@ export class PointInfo extends Interface {
         }
 
         this.panel.animateIn();
-        this.panel.active();
+        this.panel.activate();
     };
 
     close = () => {
@@ -132,7 +132,7 @@ export class PointInfo extends Interface {
         this.numbers.forEach(number => number.animateOut());
 
         this.panel.animateOut();
-        this.panel.inactive();
+        this.panel.deactivate();
     };
 
     animateIn = () => {

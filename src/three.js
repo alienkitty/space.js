@@ -68,6 +68,8 @@ export { MuteButton } from './ui/MuteButton.js';
 export { Instructions } from './ui/Instructions.js';
 export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';
+export { Menu } from './ui/Menu.js';
+export { MenuItem } from './ui/MenuItem.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';
