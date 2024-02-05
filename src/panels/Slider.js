@@ -105,15 +105,17 @@ export class Slider extends Interface {
     // Event handlers
 
     onPointerDown = e => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.lastMouse.set(e.clientX, e.clientY);
-        this.lastOrigin.subVectors(this.lastMouse, this.bounds);
-        this.lastValue = this.value;
+        if (this.container.element.contains(e.target)) {
+            this.bounds = this.element.getBoundingClientRect();
+            this.lastMouse.set(e.clientX, e.clientY);
+            this.lastOrigin.subVectors(this.lastMouse, this.bounds);
+            this.lastValue = this.value;
 
-        this.onPointerMove(e);
+            this.onPointerMove(e);
 
-        window.addEventListener('pointermove', this.onPointerMove);
-        window.addEventListener('pointerup', this.onPointerUp);
+            window.addEventListener('pointermove', this.onPointerMove);
+            window.addEventListener('pointerup', this.onPointerUp);
+        }
     };
 
     onPointerMove = ({ clientX, clientY }) => {
