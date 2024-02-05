@@ -34,11 +34,6 @@ export class Instructions extends Interface {
 
         this.content = new Interface('.content');
         this.content.css({
-            fontFamily: 'var(--ui-instructions-font-family)',
-            fontWeight: 'var(--ui-instructions-font-weight)',
-            fontSize: 'var(--ui-instructions-font-size)',
-            lineHeight: 'var(--ui-instructions-line-height)',
-            letterSpacing: 'var(--ui-instructions-letter-spacing)',
             textAlign: 'center',
             textTransform: 'uppercase',
             opacity: 0.7
@@ -49,7 +44,7 @@ export class Instructions extends Interface {
 
     // Public methods
 
-    animateIn = (delay = 0) => {
+    animateIn = delay => {
         this.visible();
         this.tween({ opacity: 1 }, 800, 'easeInOutSine', delay);
         this.content.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);

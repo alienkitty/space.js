@@ -8,11 +8,11 @@
     --ui-number-letter-spacing: 0.5px;
     --ui-secondary-font-size: 10px;
     --ui-secondary-letter-spacing: 0.5px;
-    --ui-nav-link-font-family: 'Gothic A1', sans-serif;
-    --ui-nav-link-font-weight: 700;
-    --ui-nav-link-font-size: 11px;
-    --ui-nav-link-line-height: 18px;
-    --ui-nav-link-letter-spacing: 0.03em;
+    --ui-link-font-family: 'Gothic A1', sans-serif;
+    --ui-link-font-weight: 700;
+    --ui-link-font-size: 11px;
+    --ui-link-line-height: 18px;
+    --ui-link-letter-spacing: 0.03em;
     --ui-instructions-font-family: 'Gothic A1', sans-serif;
     --ui-instructions-font-weight: 700;
     --ui-instructions-font-size: 10px;
@@ -105,8 +105,32 @@ a:hover, a:focus {
     -webkit-font-smoothing: auto;
 }
 
-.link .line {
+.link {
+    font-family: var(--ui-link-font-family);
+    font-weight: var(--ui-link-font-weight);
+    font-size: var(--ui-link-font-size);
+    line-height: var(--ui-link-line-height);
+    letter-spacing: var(--ui-link-letter-spacing);
+}
+
+.details .link {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+}
+
+.details .link .line {
     position: relative;
     top: 1px;
     font-weight: 700;
+}
+
+.instructions {
+    font-family: var(--ui-instructions-font-family);
+    font-weight: var(--ui-instructions-font-weight);
+    font-size: var(--ui-instructions-font-size);
+    line-height: var(--ui-instructions-line-height);
+    letter-spacing: var(--ui-instructions-letter-spacing);
 }

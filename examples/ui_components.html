@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { DetailsButton, Interface, Line, MuteButton, Point, Reticle, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
+        import { DetailsButton, Interface, Line, Link, MuteButton, NavLink, Point, Reticle, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
 
         class ComponentItem extends Interface {
             constructor(view, index) {
@@ -122,7 +122,7 @@
 
             // Public methods
 
-            animateIn = (delay = 0) => {
+            animateIn = delay => {
                 this.tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
 
                 this.view.animateIn();
@@ -267,6 +267,12 @@
                 // Mute button (sound off)
                 const muteButton2 = new MuteButton({ sound: false });
 
+                // Nav link
+                const link = new NavLink('Link');
+
+                // Link
+                const link2 = new Link('Link');
+
                 // Create components
                 [
                     reticle,
@@ -282,7 +288,9 @@
                     detailsButton3,
                     detailsButton4,
                     muteButton,
-                    muteButton2
+                    muteButton2,
+                    link,
+                    link2
                 ].forEach((view, i) => {
                     const item = new ComponentItem(view, i);
                     this.container.add(item);

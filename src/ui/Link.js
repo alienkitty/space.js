@@ -4,23 +4,21 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class NavLink extends Interface {
+export class Link extends Interface {
     constructor(title, link) {
         super('.link', 'a');
 
         this.title = title;
         this.link = link;
-        this.letters = [];
 
         this.initHTML();
-        this.initText();
 
         this.addListeners();
     }
 
     initHTML() {
         this.css({
-            cssFloat: 'left',
+            position: 'relative',
             padding: 10,
             textTransform: 'uppercase',
             textDecoration: 'none',
@@ -30,22 +28,20 @@ export class NavLink extends Interface {
             userSelect: 'none'
         });
         this.attr({ href: this.link });
-    }
+        this.text(this.title);
 
-    initText() {
-        const split = this.title.split('');
-        split.forEach(str => {
-            if (str === ' ') {
-                str = '&nbsp';
-            }
-
-            const letter = new Interface(null, 'span');
-            letter.css({ display: 'inline-block' });
-            letter.html(str);
-            this.add(letter);
-
-            this.letters.push(letter);
+        this.line = new Interface('.line');
+        this.line.css({
+            position: 'absolute',
+            left: 10,
+            right: 10,
+            bottom: 10,
+            height: 1,
+            backgroundColor: 'var(--ui-color)',
+            transformOrigin: 'left center',
+            scaleX: 0
         });
+        this.add(this.line);
     }
 
     addListeners() {
@@ -63,12 +59,12 @@ export class NavLink extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
+        this.line.clearTween();
+
         if (type === 'mouseenter') {
-            this.letters.forEach((letter, i) => {
-                letter.clearTween().tween({ y: -5, opacity: 0 }, 125, 'easeOutCubic', i * 15, () => {
-                    letter.css({ y: 5 }).tween({ y: 0, opacity: 1 }, 300, 'easeOutCubic');
-                });
-            });
+            this.line.css({ transformOrigin: 'left center', scaleX: 0 }).tween({ scaleX: 1 }, 800, 'easeOutQuint');
+        } else {
+            this.line.css({ transformOrigin: 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
         }
     };
 
@@ -80,10 +76,8 @@ export class NavLink extends Interface {
 
     setTitle = title => {
         this.title = title;
-        this.letters = [];
 
-        this.empty();
-        this.initText();
+        this.element.childNodes[0].nodeValue = this.title;
     };
 
     setLink = link => {

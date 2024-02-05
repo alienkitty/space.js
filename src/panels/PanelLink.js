@@ -1,18 +1,16 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Interface } from '../utils/Interface.js';
 
-export class Link extends Interface {
+export class PanelLink extends Interface {
     constructor({
         name,
         value,
         callback
     }) {
-        super('.link');
+        super('.panel-link');
 
         this.name = name;
         this.value = value;

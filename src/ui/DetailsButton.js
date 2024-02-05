@@ -193,13 +193,13 @@ export class DetailsButton extends Interface {
             this.animatedIn = true;
         });
 
-        this.tween({ opacity: 1 }, 400, 'easeOutCubic');
+        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
     };
 
     animateOut = () => {
         this.animatedIn = false;
 
-        this.tween({ opacity: 0 }, 400, 'easeOutCubic');
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
     };
 
     open = () => {

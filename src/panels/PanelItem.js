@@ -3,7 +3,7 @@
  */
 
 import { Interface } from '../utils/Interface.js';
-import { Link } from './Link.js';
+import { PanelLink } from './PanelLink.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
@@ -62,7 +62,7 @@ export class PanelItem extends Interface {
                 margin: '2px 0 0'
             });
 
-            this.view = new Link(this.data);
+            this.view = new PanelLink(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'list') {
