@@ -54,7 +54,7 @@ export { DetailsTitle } from './ui/DetailsTitle.js';
 export { DetailsLink } from './ui/DetailsLink.js';
 export { DetailsButton } from './ui/DetailsButton.js';
 export { MuteButton } from './ui/MuteButton.js';
-export { Instructions } from './ui/Instructions.js';
+export { Info } from './ui/Info.js';
 export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';
 export { Menu } from './ui/Menu.js';

@@ -4,10 +4,14 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class Instructions extends Interface {
-    constructor(data) {
-        super('.instructions');
+export class Info extends Interface {
+    constructor({
+        bottom = false,
+        ...data
+    }) {
+        super('.info');
 
+        this.bottom = bottom;
         this.data = data;
 
         this.initHTML();
@@ -18,19 +22,16 @@ export class Instructions extends Interface {
         this.css({
             position: 'absolute',
             left: '50%',
-            bottom: 55,
             width: 300,
             marginLeft: -300 / 2,
             opacity: 0
         });
 
-        this.container = new Interface('.container');
-        this.container.css({
-            position: 'absolute',
-            bottom: 0,
-            width: '100%'
-        });
-        this.add(this.container);
+        if (this.bottom) {
+            this.css({ bottom: 55 });
+        } else {
+            this.css({ top: 55 });
+        }
 
         this.content = new Interface('.content');
         this.content.css({
@@ -39,7 +40,7 @@ export class Instructions extends Interface {
             opacity: 0.7
         });
         this.content.html(this.data.content);
-        this.container.add(this.content);
+        this.add(this.content);
     }
 
     // Public methods

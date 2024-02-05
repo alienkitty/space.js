@@ -8,7 +8,7 @@ import { Details } from './Details.js';
 import { DetailsInfo } from './DetailsInfo.js';
 import { Header } from './Header.js';
 import { Menu } from './Menu.js';
-import { Instructions } from './Instructions.js';
+import { Info } from './Info.js';
 import { DetailsButton } from './DetailsButton.js';
 import { MuteButton } from './MuteButton.js';
 
@@ -73,9 +73,9 @@ export class UI extends Interface {
             this.add(this.details);
         }
 
-        if (this.data.info) {
-            this.info = new DetailsInfo(this.data.info);
-            this.add(this.info);
+        if (this.data.detailsInfo) {
+            this.detailsInfo = new DetailsInfo(this.data.detailsInfo);
+            this.add(this.detailsInfo);
         }
 
         if (this.data.header || fps) {
@@ -88,8 +88,13 @@ export class UI extends Interface {
             this.add(this.menu);
         }
 
+        if (this.data.info) {
+            this.info = new Info({ ...this.data.info });
+            this.add(this.info);
+        }
+
         if (this.data.instructions) {
-            this.instructions = new Instructions(this.data.instructions);
+            this.instructions = new Info({ ...this.data.instructions, bottom: true });
             this.add(this.instructions);
         }
 
@@ -153,8 +158,8 @@ export class UI extends Interface {
             this.details.resize(width, height, dpr, this.breakpoint);
         }
 
-        if (this.info) {
-            this.info.resize(width, height, dpr, this.breakpoint);
+        if (this.detailsInfo) {
+            this.detailsInfo.resize(width, height, dpr, this.breakpoint);
         }
 
         if (this.header) {
@@ -267,8 +272,8 @@ export class UI extends Interface {
             this.details.animateOut();
         }
 
-        if (this.info) {
-            this.info.animateOut();
+        if (this.detailsInfo) {
+            this.detailsInfo.animateOut();
         }
 
         if (this.header) {
@@ -277,6 +282,10 @@ export class UI extends Interface {
 
         if (this.menu) {
             this.menu.animateOut();
+        }
+
+        if (this.info) {
+            this.info.animateOut();
         }
 
         if (this.instructions) {

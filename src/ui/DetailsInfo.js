@@ -7,7 +7,7 @@ import { DetailsTitle } from './DetailsTitle.js';
 
 export class DetailsInfo extends Interface {
     constructor(data) {
-        super('.info');
+        super('.details-info');
 
         this.data = data;
 

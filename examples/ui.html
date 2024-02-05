@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { UI, ticker } from '../src/index.js';
+        import { Stage, UI, ticker } from '../src/index.js';
 
         class App {
             static async init() {
@@ -38,6 +38,9 @@
                             console.log('Menu callback:', value, target);
                         }
                     },
+                    info: {
+                        content: 'Info'
+                    },
                     details: {
                         title: 'Mars',
                         content: /* html */ `
@@ -61,6 +64,7 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
                         }
                     }
                 });
+                this.ui.info.animateIn();
                 this.ui.instructions.animateIn();
                 this.ui.detailsButton.setData({ count: 1 });
                 this.ui.toggleDetails(true);
@@ -74,6 +78,10 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
 
                 this.ui.muteButton.events.on('update', e => {
                     console.log('MuteButton event:', e);
+                });
+
+                Stage.events.on('details_open', e => {
+                    console.log('Details open event:', e);
                 });
 
                 window.addEventListener('load', this.onLoad);

@@ -36,7 +36,7 @@
 
             static initViews() {
                 this.ui = new UI({
-                    info: {
+                    detailsInfo: {
                         title: 'Mars',
                         content: /* html */ `
 Distance from Sun: 230 million km
@@ -45,7 +45,7 @@ Distance from Sun: 230 million km
                         `
                     }
                 });
-                this.ui.info.animateIn();
+                this.ui.detailsInfo.animateIn();
                 document.body.appendChild(this.ui.element);
             }
 

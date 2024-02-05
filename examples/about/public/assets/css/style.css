@@ -41,11 +41,11 @@
     --ui-link-font-size: 11px;
     --ui-link-line-height: 18px;
     --ui-link-letter-spacing: 0.03em;
-    --ui-instructions-font-family: 'Gothic A1', sans-serif;
-    --ui-instructions-font-weight: 700;
-    --ui-instructions-font-size: 10px;
-    --ui-instructions-line-height: 20px;
-    --ui-instructions-letter-spacing: 0.8px;
+    --ui-info-font-family: 'Gothic A1', sans-serif;
+    --ui-info-font-weight: 700;
+    --ui-info-font-size: 10px;
+    --ui-info-line-height: 20px;
+    --ui-info-letter-spacing: 0.8px;
     --ui-color: rgba(255, 255, 255, 0.94);
     --ui-color-triplet: 255, 255, 255;
     --ui-color-line: rgba(255, 255, 255, 0.5);
@@ -123,7 +123,7 @@ a:hover, a:focus {
     color: var(--bg-color);
 }
 
-.info, .target, .panel, .number, .name, .type, .primary, .secondary {
+.info, .target, .panel, .number, .name, .type, .primary, .secondary, .details-info {
     font-family: var(--ui-font-family);
     font-weight: var(--ui-font-weight);
     font-size: var(--ui-font-size);
@@ -155,10 +155,14 @@ a:hover, a:focus {
     font-weight: 700;
 }
 
-.instructions {
-    font-family: var(--ui-instructions-font-family);
-    font-weight: var(--ui-instructions-font-weight);
-    font-size: var(--ui-instructions-font-size);
-    line-height: var(--ui-instructions-line-height);
-    letter-spacing: var(--ui-instructions-letter-spacing);
+.ui > .info {
+    font-family: var(--ui-info-font-family);
+    font-weight: var(--ui-info-font-weight);
+    font-size: var(--ui-info-font-size);
+    line-height: var(--ui-info-line-height);
+    letter-spacing: var(--ui-info-letter-spacing);
+}
+
+.menu > * {
+    width: 44px;
 }

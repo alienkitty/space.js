@@ -25,6 +25,7 @@ export class MenuItem extends Interface {
         this.css({
             position: 'relative',
             padding: 10,
+            textAlign: 'center',
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
             cursor: 'pointer',
