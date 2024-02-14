@@ -25,6 +25,7 @@ export * from './utils/Utils.js';
 export { EventEmitter } from './utils/EventEmitter.js';
 export { Interface } from './utils/Interface.js';
 export { Stage } from './utils/Stage.js';
+export { Router } from './utils/Router.js';
 export { Component } from './utils/Component.js';
 export { LinkedList } from './utils/LinkedList.js';
 export { ObjectPool } from './utils/ObjectPool.js';
