@@ -43,6 +43,8 @@ export class Tween {
         this.start();
     }
 
+    // Event handlers
+
     onUpdate = (time, delta) => {
         this.elapsed += delta;
 
@@ -65,6 +67,8 @@ export class Tween {
             }
         }
     };
+
+    // Public methods
 
     start() {
         if (this.isAnimating) {
