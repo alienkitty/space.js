@@ -31,6 +31,8 @@ export class Ticker {
         this.isAnimating = false;
     }
 
+    // Event handlers
+
     onTick = time => {
         if (this.isAnimating) {
             this.requestId = RequestFrame(this.onTick);
@@ -66,6 +68,8 @@ export class Ticker {
             callback(this.time, this.delta, this.frame);
         }
     };
+
+    // Public methods
 
     add(callback, fps) {
         if (fps) {
