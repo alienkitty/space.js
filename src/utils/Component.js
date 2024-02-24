@@ -21,27 +21,11 @@ export class Component {
         this.children.push(child);
 
         child.parent = this;
-
-        if (this.group && this.group.isObject3D) {
-            if (child.group && child.group.isObject3D) {
-                this.group.add(child.group);
-            } else if (child.isObject3D) {
-                this.group.add(child);
-            }
-        }
     }
 
     remove(child) {
         if (!this.children) {
             return;
-        }
-
-        if (this.group && this.group.isObject3D) {
-            if (child.group && child.group.isObject3D) {
-                this.group.remove(child.group);
-            } else if (child.isObject3D) {
-                this.group.remove(child);
-            }
         }
 
         const index = this.children.indexOf(child);
