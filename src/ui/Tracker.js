@@ -89,7 +89,7 @@ export class Tracker extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!this.number) {
             this.number = new TargetNumber();
             this.number.css({
@@ -101,38 +101,38 @@ export class Tracker extends Interface {
         }
 
         this.number.setData(data);
-    };
+    }
 
-    update = () => {
+    update() {
         this.position.lerp(this.target, this.lerpSpeed);
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
-    };
+    }
 
-    lock = () => {
+    lock() {
         if (this.number) {
             this.number.animateIn();
         }
 
         this.locked = true;
-    };
+    }
 
-    unlock = () => {
+    unlock() {
         if (this.number) {
             this.number.animateOut();
         }
 
         this.locked = false;
-    };
+    }
 
-    show = () => {
+    show() {
         this.clearTimeout(this.timeout);
 
         this.corners.clearTween().tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
         this.animatedIn = true;
-    };
+    }
 
-    hide = fast => {
+    hide(fast) {
         if (this.locked) {
             return;
         }
@@ -144,9 +144,9 @@ export class Tracker extends Interface {
         });
 
         this.animatedIn = false;
-    };
+    }
 
-    animateIn = isInstanced => {
+    animateIn(isInstanced) {
         this.isInstanced = isInstanced;
 
         this.clearTimeout(this.timeout);
@@ -157,9 +157,9 @@ export class Tracker extends Interface {
 
         this.animatedIn = true;
         this.isVisible = true;
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         this.clearTimeout(this.timeout);
 
         this.corners.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
@@ -172,5 +172,5 @@ export class Tracker extends Interface {
                 callback();
             }
         });
-    };
+    }
 }

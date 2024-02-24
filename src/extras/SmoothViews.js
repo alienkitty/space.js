@@ -130,24 +130,24 @@ export class SmoothViews extends Component {
 
     // Public methods
 
-    setScroll = index => {
+    setScroll(index) {
         document.scrollingElement.scrollTop = this.views[index].top;
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.addListeners();
         this.onResize();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
 
         document.body.style.height = '';
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

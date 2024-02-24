@@ -55,28 +55,28 @@ export class Reticle extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!this.info) {
             this.info = new ReticleInfo();
             this.add(this.info);
         }
 
         this.info.setData(data);
-    };
+    }
 
-    update = () => {
+    update() {
         this.position.lerp(this.target, this.lerpSpeed);
 
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.invisible();
         });
-    };
+    }
 }

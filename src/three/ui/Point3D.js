@@ -254,19 +254,19 @@ export class Point3D extends Group {
 
     // Public methods
 
-    static getPoint = mesh => {
+    static getPoint(mesh) {
         return this.points.find(point => point.object === mesh);
-    };
+    }
 
-    static getSelected = () => {
+    static getSelected() {
         return this.points.filter(point => point.selected);
-    };
+    }
 
-    static getMultipleName = () => {
+    static getMultipleName() {
         return `${this.multiple.length}&nbsp;Objects`;
-    };
+    }
 
-    static getMultipleTypes = () => {
+    static getMultipleTypes() {
         const types = this.multiple.map(point => point.type);
         const counts = {};
 
@@ -277,21 +277,21 @@ export class Point3D extends Group {
         const unique = [...new Set(types)];
 
         return unique.map(type => `${counts[type]}&nbsp;${type}`).join(', ');
-    };
+    }
 
-    static getMultipleTargetNumbers = () => {
+    static getMultipleTargetNumbers() {
         return this.multiple.map(point => point.index + 1);
-    };
+    }
 
-    static setIndexes = () => {
+    static setIndexes() {
         this.points.forEach((point, i) => point.setIndex(i));
-    };
+    }
 
-    static invert = () => {
+    static invert() {
         this.points.forEach(point => point.resize());
-    };
+    }
 
-    static update = time => {
+    static update(time) {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         this.points.forEach(point => point.update());
@@ -300,18 +300,18 @@ export class Point3D extends Group {
             this.onPointerMove();
             this.lastRaycast = time;
         }
-    };
+    }
 
-    static add = (...points) => {
+    static add(...points) {
         points.forEach(point => {
             this.objects.push(point.object);
             this.points.push(point);
         });
 
         this.setIndexes();
-    };
+    }
 
-    static remove = (...points) => {
+    static remove(...points) {
         points.forEach(point => {
             const index = this.points.indexOf(point);
 
@@ -328,9 +328,9 @@ export class Point3D extends Group {
         });
 
         this.setIndexes();
-    };
+    }
 
-    static animateOut = () => {
+    static animateOut() {
         this.points.forEach(point => {
             if (point.animatedIn) {
                 point.animateOut(true);
@@ -343,9 +343,9 @@ export class Point3D extends Group {
             this.hover = null;
             this.root.css({ cursor: '' });
         }
-    };
+    }
 
-    static destroy = () => {
+    static destroy() {
         this.removeListeners();
 
         if (this.uvTexture) {
@@ -363,7 +363,7 @@ export class Point3D extends Group {
         }
 
         return null;
-    };
+    }
 
     constructor(mesh, {
         name = mesh.material.name || mesh.geometry.type,
@@ -597,7 +597,7 @@ export class Point3D extends Group {
 
     // Public methods
 
-    setIndex = index => {
+    setIndex(index) {
         this.index = index;
 
         if (this.tracker) {
@@ -606,21 +606,21 @@ export class Point3D extends Group {
             this.tracker.setData({ targetNumber });
             this.point.setTargetNumbers([targetNumber]);
         }
-    };
+    }
 
-    addPanel = item => {
+    addPanel(item) {
         this.panel.add(item);
-    };
+    }
 
-    setPanelValue = (name, value) => {
+    setPanelValue(name, value) {
         this.panel.setPanelValue(name, value);
-    };
+    }
 
-    setPanelIndex = (name, index) => {
+    setPanelIndex(name, index) {
         this.panel.setPanelIndex(name, index);
-    };
+    }
 
-    toggleNormalsHelper = show => {
+    toggleNormalsHelper(show) {
         if (show) {
             if (!this.normalsHelper) {
                 this.object.geometry.computeBoundingSphere();
@@ -635,9 +635,9 @@ export class Point3D extends Group {
         } else if (this.normalsHelper) {
             this.normalsHelper.visible = false;
         }
-    };
+    }
 
-    toggleTangentsHelper = show => {
+    toggleTangentsHelper(show) {
         if (show) {
             if (!this.tangentsHelper) {
                 this.object.geometry.computeBoundingSphere();
@@ -653,9 +653,9 @@ export class Point3D extends Group {
         } else if (this.tangentsHelper) {
             this.tangentsHelper.visible = false;
         }
-    };
+    }
 
-    toggleUVHelper = show => {
+    toggleUVHelper(show) {
         const material = this.object.material;
 
         if (show) {
@@ -682,21 +682,21 @@ export class Point3D extends Group {
             delete this.currentMaterialMap;
             delete this.uvTexture;
         }
-    };
+    }
 
-    resize = () => {
+    resize() {
         this.line.resize();
-    };
+    }
 
-    update = () => {
+    update() {
         this.line.setStartPoint(this.reticle.position);
         this.line.setEndPoint(this.point.originPosition);
         this.line.update();
         this.reticle.update();
         this.point.update();
-    };
+    }
 
-    updateMatrixWorld = force => {
+    updateMatrixWorld(force) {
         super.updateMatrixWorld(force);
 
         this.camera.updateMatrixWorld();
@@ -763,9 +763,9 @@ export class Point3D extends Group {
                 this.tangentsHelper.update();
             }
         }
-    };
+    }
 
-    lock = () => {
+    lock() {
         this.point.lock();
 
         if (this.tracker) {
@@ -779,9 +779,9 @@ export class Point3D extends Group {
                 });
             }
         }
-    };
+    }
 
-    unlock = () => {
+    unlock() {
         this.point.unlock();
 
         if (this.tracker) {
@@ -795,9 +795,9 @@ export class Point3D extends Group {
                 });
             }
         }
-    };
+    }
 
-    show = () => {
+    show() {
         if (this.tracker) {
             this.tracker.show();
 
@@ -809,9 +809,9 @@ export class Point3D extends Group {
                 });
             }
         }
-    };
+    }
 
-    hide = () => {
+    hide() {
         if (this.tracker) {
             this.tracker.hide(true);
 
@@ -823,17 +823,17 @@ export class Point3D extends Group {
                 });
             }
         }
-    };
+    }
 
-    animateIn = reverse => {
+    animateIn(reverse) {
         this.line.animateIn(reverse);
         this.reticle.animateIn();
         this.point.animateIn();
 
         this.animatedIn = true;
-    };
+    }
 
-    animateOut = (fast, callback) => {
+    animateOut(fast, callback) {
         this.line.animateOut(fast, callback);
         this.reticle.animateOut();
 
@@ -844,9 +844,9 @@ export class Point3D extends Group {
         this.point.animateOut();
 
         this.animatedIn = false;
-    };
+    }
 
-    toggle = (show, multiple) => {
+    toggle(show, multiple) {
         if (this.isInstanced) {
             const { instanceId } = Point3D;
 
@@ -931,9 +931,9 @@ export class Point3D extends Group {
 
             panel.isMultiple = false;
         }
-    };
+    }
 
-    togglePanel = (show, multiple) => {
+    togglePanel(show, multiple) {
         if (show) {
             this.line.animateOut(true);
             this.reticle.animateOut();
@@ -992,9 +992,9 @@ export class Point3D extends Group {
             this.point.enable();
             this.point.close();
         }
-    };
+    }
 
-    deactivate = () => {
+    deactivate() {
         if (this.isInstanced) {
             this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
@@ -1026,9 +1026,9 @@ export class Point3D extends Group {
         const selected = Point3D.getSelected();
 
         Point3D.events.emit('change', { selected, target: this });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         if (this.normalsHelper) {
@@ -1058,5 +1058,5 @@ export class Point3D extends Group {
         this.animateOut(false, () => {
             this.element = this.element.destroy();
         });
-    };
+    }
 }

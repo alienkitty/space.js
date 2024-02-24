@@ -74,29 +74,29 @@ export class Link extends Interface {
 
     // Public methods
 
-    setTitle = title => {
+    setTitle(title) {
         this.title = title;
 
         this.element.childNodes[0].nodeValue = this.title;
-    };
+    }
 
-    setLink = link => {
+    setLink(link) {
         this.link = link;
 
         this.attr({ href: this.link });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

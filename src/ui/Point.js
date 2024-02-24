@@ -159,15 +159,15 @@ export class Point extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         this.info.setData(data);
-    };
+    }
 
-    setTargetNumbers = targetNumbers => {
+    setTargetNumbers(targetNumbers) {
         this.info.setTargetNumbers(targetNumbers);
-    };
+    }
 
-    update = () => {
+    update() {
         if (!this.isMove) {
             this.position.lerp(this.target, this.lerpSpeed);
         }
@@ -175,23 +175,23 @@ export class Point extends Interface {
         this.originPosition.addVectors(this.origin, this.position);
 
         this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
-    };
+    }
 
-    lock = () => {
+    lock() {
         this.info.lock();
-    };
+    }
 
-    unlock = () => {
+    unlock() {
         this.info.unlock();
-    };
+    }
 
-    open = () => {
+    open() {
         this.info.open();
 
         this.isOpen = true;
-    };
+    }
 
-    close = fast => {
+    close(fast) {
         if (fast) {
             this.clearTimeout(this.timeout);
 
@@ -209,36 +209,36 @@ export class Point extends Interface {
         }
 
         this.info.close();
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.visible();
         this.clearTween().css({ opacity: 1 });
         this.info.animateIn();
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.info.animateOut(() => {
             this.invisible();
         });
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.info.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
-    };
+    }
 
-    deactivate = () => {
+    deactivate() {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
         this.close(true);
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

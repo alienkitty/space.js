@@ -96,16 +96,16 @@ export class ListSelect extends Interface {
 
     // Public methods
 
-    setIndex = index => {
+    setIndex(index) {
         this.index = index;
 
         this.content.text(this.list[this.index]);
         this.over.text(this.list[this.getNextIndex()]);
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

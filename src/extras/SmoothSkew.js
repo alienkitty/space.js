@@ -101,24 +101,24 @@ export class SmoothSkew extends Component {
 
     // Public methods
 
-    setScroll = top => {
+    setScroll(top) {
         document.scrollingElement.scrollTop = top;
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.addListeners();
         this.onResize();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
 
         document.body.style.height = '';
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

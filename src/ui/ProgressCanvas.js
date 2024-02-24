@@ -69,7 +69,7 @@ export class ProgressCanvas extends Interface {
 
     // Public methods
 
-    resize = () => {
+    resize() {
         const dpr = 2; // Always 2
 
         this.element.width = Math.round(this.width * dpr);
@@ -83,29 +83,29 @@ export class ProgressCanvas extends Interface {
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         this.context.clearRect(0, 0, this.element.width, this.element.height);
         this.context.beginPath();
         this.context.arc(this.x, this.y, this.radius, this.startAngle, this.startAngle + degToRad(360 * this.progress));
         this.context.stroke();
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.addListeners();
         this.resize();
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.tween({ scale: 1.1, opacity: 0 }, 400, 'easeInCubic');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         clearTween(this);
 
         return super.destroy();
-    };
+    }
 }

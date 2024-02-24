@@ -40,7 +40,7 @@ export class TargetNumber extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -48,15 +48,15 @@ export class TargetNumber extends Interface {
         if (data.targetNumber) {
             this.number.text(data.targetNumber);
         }
-    };
+    }
 
-    animateIn = delay => {
+    animateIn(delay) {
         this.clearTween().visible().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
         });
-    };
+    }
 }

@@ -55,7 +55,7 @@ export class DetailsInfo extends Interface {
 
     // Public methods
 
-    resize = (width, height, dpr, breakpoint) => {
+    resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.css({ display: '' });
 
@@ -71,9 +71,9 @@ export class DetailsInfo extends Interface {
                 margin: '10% 10% 6%'
             });
         }
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween();
         this.visible();
         this.css({
@@ -93,9 +93,9 @@ export class DetailsInfo extends Interface {
         this.title.animateIn();
 
         this.animatedIn = true;
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.css({ pointerEvents: 'none' });
 
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
@@ -103,5 +103,5 @@ export class DetailsInfo extends Interface {
 
             this.animatedIn = false;
         });
-    };
+    }
 }

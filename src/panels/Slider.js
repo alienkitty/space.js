@@ -144,7 +144,7 @@ export class Slider extends Interface {
 
     // Public methods
 
-    setContent = content => {
+    setContent(content) {
         if (!this.group) {
             this.group = new Interface('.group');
             this.group.css({
@@ -162,17 +162,17 @@ export class Slider extends Interface {
         this.group = newGroup;
 
         oldGroup.destroy();
-    };
+    }
 
-    setValue = (value, force) => {
+    setValue(value, force) {
         this.value = typeof value === 'string' ? parseFloat(value) : value;
         this.value = this.getValue(this.value);
         this.lastValue = this.value;
 
         this.update(force);
-    };
+    }
 
-    update = force => {
+    update(force) {
         const scaleX = (this.value - this.min) / this.range;
 
         this.line.css({ scaleX });
@@ -187,11 +187,11 @@ export class Slider extends Interface {
                 this.callback(this.value, this);
             }
         }
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

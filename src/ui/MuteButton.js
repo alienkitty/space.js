@@ -120,7 +120,7 @@ export class MuteButton extends Interface {
 
     // Public methods
 
-    setSound = sound => {
+    setSound(sound) {
         this.events.emit('update', { sound, target: this });
 
         if (this.callback) {
@@ -128,9 +128,9 @@ export class MuteButton extends Interface {
         }
 
         localStorage.setItem('sound', JSON.stringify(sound));
-    };
+    }
 
-    resize = () => {
+    resize() {
         const dpr = 2; // Always 2
 
         this.canvas.element.width = Math.round(this.width * dpr);
@@ -144,9 +144,9 @@ export class MuteButton extends Interface {
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         const width = this.width + 1;
         const height = this.height / 2;
         const progress = width * this.props.progress;
@@ -172,9 +172,9 @@ export class MuteButton extends Interface {
         }
 
         this.context.stroke();
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         clearTween(this.props);
 
         this.props.progress = 0;
@@ -189,19 +189,19 @@ export class MuteButton extends Interface {
         });
 
         this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.animatedIn = false;
 
         this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         clearTween(this);
 
         return super.destroy();
-    };
+    }
 }

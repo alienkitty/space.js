@@ -78,25 +78,25 @@ export class PanelLink extends Interface {
 
     // Public methods
 
-    setValue = value => {
+    setValue(value) {
         this.value = value;
 
         this.element.childNodes[0].nodeValue = this.value;
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         this.events.emit('update', { path: [], value: this.value, target: this });
 
         if (this.callback) {
             this.callback(this.value, this);
         }
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

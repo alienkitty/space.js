@@ -131,7 +131,7 @@ export class DetailsButton extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -155,9 +155,9 @@ export class DetailsButton extends Interface {
             this.number.text(data.count);
             this.number.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
         });
-    };
+    }
 
-    resize = () => {
+    resize() {
         const dpr = 2; // Always 2
 
         this.canvas.element.width = Math.round(this.width * dpr);
@@ -171,16 +171,16 @@ export class DetailsButton extends Interface {
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
         this.context.beginPath();
         this.context.arc(this.x, this.y, this.props.radius, this.startAngle, this.endAngle);
         this.context.stroke();
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         clearTween(this.props);
 
         this.props.radius = 0;
@@ -194,15 +194,15 @@ export class DetailsButton extends Interface {
         });
 
         this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.animatedIn = false;
 
         this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
-    };
+    }
 
-    open = () => {
+    open() {
         this.isOpen = true;
 
         clearTween(this.props);
@@ -212,9 +212,9 @@ export class DetailsButton extends Interface {
         tween(this.props, { radius: this.openRadius }, 400, 'easeOutCubic', () => {
             this.needsUpdate = false;
         });
-    };
+    }
 
-    close = () => {
+    close() {
         this.isOpen = false;
 
         clearTween(this.props);
@@ -224,13 +224,13 @@ export class DetailsButton extends Interface {
         tween(this.props, { radius: this.radius }, 400, 'easeOutCubic', () => {
             this.needsUpdate = false;
         });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         clearTween(this.props);
 
         return super.destroy();
-    };
+    }
 }

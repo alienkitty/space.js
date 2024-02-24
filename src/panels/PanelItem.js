@@ -107,7 +107,7 @@ export class PanelItem extends Interface {
 
     // Public methods
 
-    animateIn = (delay, fast) => {
+    animateIn(delay, fast) {
         this.clearTween();
 
         if (fast) {
@@ -115,32 +115,32 @@ export class PanelItem extends Interface {
         } else {
             this.css({ y: -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 400, 'easeOutCubic', delay);
         }
-    };
+    }
 
-    animateOut = (index, total, delay, callback) => {
+    animateOut(index, total, delay, callback) {
         this.clearTween().tween({ y: -10, opacity: 0 }, 500, 'easeInCubic', delay, () => {
             if (index === 0 && callback) {
                 callback();
             }
         });
-    };
+    }
 
-    enable = (target = this.container) => {
+    enable(target = this.container) {
         target.clearTween();
         target.tween({ opacity: 1 }, 500, 'easeInOutSine', () => {
             target.css({ pointerEvents: 'auto' });
         });
-    };
+    }
 
-    disable = (target = this.container) => {
+    disable(target = this.container) {
         target.clearTween();
         target.css({ pointerEvents: 'none' });
         target.tween({ opacity: 0.35 }, 500, 'easeInOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

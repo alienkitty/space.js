@@ -88,44 +88,44 @@ export class MenuItem extends Interface {
 
     // Public methods
 
-    setTitle = title => {
+    setTitle(title) {
         this.title = title;
 
         this.element.childNodes[0].nodeValue = this.title;
-    };
+    }
 
-    activate = direction => {
+    activate(direction) {
         this.active = true;
 
         this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 800, 'easeOutQuint');
 
         this.tween({ opacity: 1 }, 300, 'easeOutSine');
-    };
+    }
 
-    deactivate = direction => {
+    deactivate(direction) {
         this.active = false;
 
         this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
 
         this.tween({ opacity: 0.5 }, 500, 'easeOutSine');
-    };
+    }
 
-    animateIn = delay => {
+    animateIn(delay) {
         this.clearTween();
         this.css({ y: 10, opacity: 0 }).tween({ y: 0, opacity: this.active ? 1 : 0.5 }, 700, 'easeOutCubic', delay, () => {
             this.css({ pointerEvents: 'auto' });
         });
-    };
+    }
 
-    animateOut = delay => {
+    animateOut(delay) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
         this.tween({ y: -5, opacity: 0 }, 700, 'easeOutCubic', delay);
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

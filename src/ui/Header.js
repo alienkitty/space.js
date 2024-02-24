@@ -53,7 +53,7 @@ export class Header extends Interface {
 
     // Public methods
 
-    resize = (width, height, dpr, breakpoint) => {
+    resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.css({
                 left: 10,
@@ -67,20 +67,20 @@ export class Header extends Interface {
                 right: 20
             });
         }
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         const duration = 1000;
         const stagger = 200;
 
         this.children.forEach((child, i) => {
             child.clearTween().tween({ x: 0, opacity: 1 }, duration, 'easeOutQuart', i * stagger);
         });
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.children.forEach(child => {
             child.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic');
         });
-    };
+    }
 }

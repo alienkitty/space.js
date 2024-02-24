@@ -71,7 +71,7 @@ export class PointInfo extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -83,9 +83,9 @@ export class PointInfo extends Interface {
         if (data.type) {
             this.type.html(data.type);
         }
-    };
+    }
 
-    setTargetNumbers = targetNumbers => {
+    setTargetNumbers(targetNumbers) {
         this.targetNumbers.empty();
         this.numbers.length = 0;
 
@@ -99,19 +99,19 @@ export class PointInfo extends Interface {
         if (this.locked) {
             this.numbers.forEach(number => number.visible());
         }
-    };
+    }
 
-    lock = () => {
+    lock() {
         this.numbers.forEach(number => number.animateIn());
         this.locked = true;
-    };
+    }
 
-    unlock = () => {
+    unlock() {
         this.numbers.forEach(number => number.animateOut());
         this.locked = false;
-    };
+    }
 
-    open = () => {
+    open() {
         this.css({ pointerEvents: 'auto' });
 
         this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
@@ -122,9 +122,9 @@ export class PointInfo extends Interface {
 
         this.panel.animateIn();
         this.panel.activate();
-    };
+    }
 
-    close = () => {
+    close() {
         this.css({ pointerEvents: 'none' });
 
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
@@ -133,13 +133,13 @@ export class PointInfo extends Interface {
 
         this.panel.animateOut();
         this.panel.deactivate();
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         this.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic', 200, callback);
-    };
+    }
 }

@@ -65,9 +65,9 @@ export class DetailsLink extends Interface {
 
     // Public methods
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

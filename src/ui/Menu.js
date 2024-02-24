@@ -63,7 +63,7 @@ export class Menu extends Interface {
 
     // Public methods
 
-    resize = (width, height, dpr, breakpoint) => {
+    resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.css({
                 left: 10,
@@ -77,9 +77,9 @@ export class Menu extends Interface {
                 right: 20
             });
         }
-    };
+    }
 
-    update = () => {
+    update() {
         const active = this.names[this.index];
 
         this.events.emit('update', { active, index: this.index, target: this });
@@ -102,19 +102,19 @@ export class Menu extends Interface {
                 item.deactivate(direction);
             }
         });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.items.forEach((item, i) => item.animateIn(i * 200));
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.items.forEach((item, i) => item.animateOut(i * 50));
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

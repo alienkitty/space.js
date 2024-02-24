@@ -95,17 +95,17 @@ export class Magnetic extends Component {
 
     // Public methods
 
-    enable = () => {
+    enable() {
         this.addListeners();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

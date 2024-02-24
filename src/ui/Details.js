@@ -89,7 +89,7 @@ export class Details extends Interface {
 
     // Public methods
 
-    resize = (width, height, dpr, breakpoint) => {
+    resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.css({ display: '' });
 
@@ -105,9 +105,9 @@ export class Details extends Interface {
                 margin: '10% 10% 13%'
             });
         }
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween();
         this.visible();
         this.css({
@@ -129,9 +129,9 @@ export class Details extends Interface {
         this.title.animateIn();
 
         this.animatedIn = true;
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.css({ pointerEvents: 'none' });
 
         this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
@@ -141,11 +141,11 @@ export class Details extends Interface {
 
             this.animatedIn = false;
         });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

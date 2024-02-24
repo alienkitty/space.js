@@ -27,23 +27,23 @@ export class Line extends Component {
 
     // Public methods
 
-    setStartPoint = ({ x, y }) => {
+    setStartPoint({ x, y }) {
         this.start.set(x + 3, y - 3);
-    };
+    }
 
-    setEndPoint = position => {
+    setEndPoint(position) {
         this.end.copy(position);
-    };
+    }
 
-    resize = () => {
+    resize() {
         // Context properties need to be reassigned after resize
         this.context.lineWidth = 1.5;
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         if (this.props.alpha <= 0) {
             return;
         }
@@ -66,9 +66,9 @@ export class Line extends Component {
         this.context.moveTo(this.start.x, this.start.y);
         this.context.lineTo(this.end.x, this.end.y);
         this.context.stroke();
-    };
+    }
 
-    animateIn = reverse => {
+    animateIn(reverse) {
         clearTween(this.props);
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
@@ -86,9 +86,9 @@ export class Line extends Component {
 
             tween(this.props, { progress: 1 }, 400, 'easeOutCubic');
         }
-    };
+    }
 
-    animateOut = (fast, callback) => {
+    animateOut(fast, callback) {
         let time;
         let ease;
 
@@ -112,10 +112,10 @@ export class Line extends Component {
         }, () => {
             this.props.progress = 1 - this.props.start;
         });
-    };
+    }
 
-    deactivate = () => {
+    deactivate() {
         clearTween(this.props);
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
-    };
+    }
 }

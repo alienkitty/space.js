@@ -63,15 +63,15 @@ export class Panel extends Interface {
 
     // Public methods
 
-    add = item => {
+    add(item) {
         item.events.on('update', this.onUpdate);
 
         super.add(item);
 
         this.items.push(item);
-    };
+    }
 
-    setPanelValue = (name, value) => {
+    setPanelValue(name, value) {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
@@ -86,9 +86,9 @@ export class Panel extends Interface {
                 item.view.group.children[0].setPanelValue(name, value);
             }
         });
-    };
+    }
 
-    setPanelIndex = (name, index) => {
+    setPanelIndex(name, index) {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
@@ -103,17 +103,17 @@ export class Panel extends Interface {
                 item.view.group.children[0].setPanelIndex(name, index);
             }
         });
-    };
+    }
 
-    animateIn = fast => {
+    animateIn(fast) {
         this.show();
 
         this.items.forEach((item, i) => item.animateIn(i * 15, fast));
 
         this.animatedIn = true;
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         if (!this.animatedIn) {
             return;
         }
@@ -129,9 +129,9 @@ export class Panel extends Interface {
                 }
             });
         });
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.items.forEach(item => {
             if (item.view && item.view.group && item.view.container) {
                 item.enable(item.view.container);
@@ -139,9 +139,9 @@ export class Panel extends Interface {
 
             item.enable();
         });
-    };
+    }
 
-    disable = target => {
+    disable(target) {
         this.items.forEach(item => {
             if (item.view && item.view.group && item.view.container) {
                 item.disable(item.view.container);
@@ -153,19 +153,19 @@ export class Panel extends Interface {
 
             item.disable();
         });
-    };
+    }
 
-    activate = () => {
+    activate() {
         this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
-    };
+    }
 
-    deactivate = () => {
+    deactivate() {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

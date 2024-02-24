@@ -150,7 +150,7 @@ export class HeaderInfo extends Interface {
 
     // Public methods
 
-    update = () => {
+    update() {
         this.time = performance.now();
 
         if (this.time - 1000 > this.prev) {
@@ -162,19 +162,19 @@ export class HeaderInfo extends Interface {
         this.count++;
 
         this.number.text(this.fps);
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.number.tween({ opacity: 1 }, 400, 'easeInOutSine');
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.number.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

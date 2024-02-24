@@ -217,19 +217,19 @@ export class UI extends Interface {
 
     // Public methods
 
-    addPanel = item => {
+    addPanel(item) {
         this.header.info.panel.add(item);
-    };
+    }
 
-    setPanelValue = (label, value) => {
+    setPanelValue(label, value) {
         this.header.info.panel.setPanelValue(label, value);
-    };
+    }
 
-    setPanelIndex = (label, index) => {
+    setPanelIndex(label, index) {
         this.header.info.panel.setPanelIndex(label, index);
-    };
+    }
 
-    invert = isInverted => {
+    invert(isInverted) {
         Stage.root.style.setProperty('--ui-color', isInverted ? this.invertColors.light : this.invertColors.dark);
         Stage.root.style.setProperty('--ui-color-triplet', isInverted ? this.invertColors.lightTriplet : this.invertColors.darkTriplet);
         Stage.root.style.setProperty('--ui-color-line', isInverted ? this.invertColors.lightLine : this.invertColors.darkLine);
@@ -237,9 +237,9 @@ export class UI extends Interface {
         Stage.events.emit('invert', { invert: isInverted });
 
         this.buttons.forEach(button => button.resize());
-    };
+    }
 
-    update = () => {
+    update() {
         if (!ticker.isAnimating) {
             ticker.onTick(performance.now() - this.startTime);
         }
@@ -253,9 +253,9 @@ export class UI extends Interface {
         if (this.header) {
             this.header.info.update();
         }
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         if (this.header) {
             this.header.animateIn();
         }
@@ -265,9 +265,9 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateIn());
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         if (this.details) {
             this.details.animateOut();
         }
@@ -293,9 +293,9 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateOut());
-    };
+    }
 
-    toggleDetails = show => {
+    toggleDetails(show) {
         if (!this.details) {
             return;
         }
@@ -319,11 +319,11 @@ export class UI extends Interface {
         }
 
         Stage.events.emit('details_open', { open: this.isDetailsOpen, target: this });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

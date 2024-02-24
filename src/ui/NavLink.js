@@ -78,31 +78,31 @@ export class NavLink extends Interface {
 
     // Public methods
 
-    setTitle = title => {
+    setTitle(title) {
         this.title = title;
         this.letters = [];
 
         this.empty();
         this.initText();
-    };
+    }
 
-    setLink = link => {
+    setLink(link) {
         this.link = link;
 
         this.attr({ href: this.link });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
-    };
+    }
 
-    animateOut = () => {
+    animateOut() {
         this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

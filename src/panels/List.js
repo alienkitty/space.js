@@ -76,7 +76,7 @@ export class List extends Interface {
 
     // Public methods
 
-    setContent = content => {
+    setContent(content) {
         content.events.on('update', this.onUpdate);
 
         if (!this.group) {
@@ -96,9 +96,9 @@ export class List extends Interface {
         this.group = newGroup;
 
         oldGroup.destroy();
-    };
+    }
 
-    setValue = value => {
+    setValue(value) {
         this.index = this.values.indexOf(value);
 
         if (this.keys.length > 2) {
@@ -106,9 +106,9 @@ export class List extends Interface {
         }
 
         this.update();
-    };
+    }
 
-    setIndex = index => {
+    setIndex(index) {
         this.index = index;
 
         if (this.keys.length > 2) {
@@ -116,9 +116,9 @@ export class List extends Interface {
         }
 
         this.update();
-    };
+    }
 
-    update = () => {
+    update() {
         const value = this.keys[this.index];
 
         this.events.emit('update', { path: [], index: this.index, target: this });
@@ -142,11 +142,11 @@ export class List extends Interface {
                 item.deactivate();
             }
         });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

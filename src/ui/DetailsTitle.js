@@ -42,7 +42,7 @@ export class DetailsTitle extends Interface {
 
     // Public methods
 
-    animateIn = () => {
+    animateIn() {
         shuffle(this.letters);
 
         const underscores = this.letters.filter(letter => letter === '_');
@@ -56,5 +56,5 @@ export class DetailsTitle extends Interface {
         letters.forEach((letter, i) => {
             letter.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 15);
         });
-    };
+    }
 }

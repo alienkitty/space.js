@@ -96,22 +96,22 @@ export class ListToggle extends Interface {
 
     // Public methods
 
-    activate = () => {
+    activate() {
         this.active = true;
 
         this.content.css({ y: -8, opacity: 0 });
         this.over.css({ y: 0, opacity: 1 });
-    };
+    }
 
-    deactivate = () => {
+    deactivate() {
         this.active = false;
 
         this.onHover({ type: 'mouseleave' });
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

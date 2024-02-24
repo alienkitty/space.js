@@ -127,6 +127,8 @@ export class WorldController {
         });
     };
 
+    // Global handlers
+
     static getTexture = (path, callback) => this.textureLoader.load(path, callback);
 
     static loadTexture = path => this.textureLoader.loadAsync(path);

@@ -44,7 +44,7 @@ export class Title extends Interface {
 
     // Public methods
 
-    setTitle = title => {
+    setTitle(title) {
         this.title = title;
         this.letters = [];
 
@@ -54,9 +54,9 @@ export class Title extends Interface {
             this.animateIn();
             this.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
         });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.visible();
 
         shuffle(this.letters);
@@ -74,9 +74,9 @@ export class Title extends Interface {
         });
 
         this.clearTween().tween({ opacity: 1 }, 1000, 'easeOutSine');
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
             this.invisible();
 
@@ -84,5 +84,5 @@ export class Title extends Interface {
                 callback();
             }
         });
-    };
+    }
 }

@@ -445,13 +445,13 @@ export class ColorPicker extends Interface {
 
     // Public methods
 
-    setHeight = () => {
+    setHeight() {
         const height = this.isOpen ? this.width + this.height + 10 : this.height;
 
         this.parent.css({ height });
-    };
+    }
 
-    setValue = (value, force) => {
+    setValue(value, force) {
         if (value && value.isColor) {
             this.value.copy(value);
         } else {
@@ -461,9 +461,9 @@ export class ColorPicker extends Interface {
         this.value.getHSL(this);
 
         this.update(force);
-    };
+    }
 
-    setHSL = (h, s, l) => {
+    setHSL(h, s, l) {
         this.value.setHSL(h, s, l);
 
         this.h = h;
@@ -471,17 +471,17 @@ export class ColorPicker extends Interface {
         this.l = l;
 
         this.update();
-    };
+    }
 
-    cursor = (cursor = '') => {
+    cursor(cursor = '') {
         if (cursor !== this.lastCursor) {
             this.lastCursor = cursor;
 
             Stage.css({ cursor });
         }
-    };
+    }
 
-    update = force => {
+    update(force) {
         this.moveMarkers();
 
         this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
@@ -503,9 +503,9 @@ export class ColorPicker extends Interface {
                 }
             }
         }
-    };
+    }
 
-    moveMarkers = () => {
+    moveMarkers() {
         const marker = this.marker;
 
         const radius = this.triangleRadius;
@@ -550,18 +550,18 @@ export class ColorPicker extends Interface {
             fill: `#${this.value.getHexString()}`,
             stroke: invert ? '#000' : '#fff'
         });
-    };
+    }
 
-    open = () => {
+    open() {
         this.isOpen = true;
 
         this.setHeight();
 
         this.colorRing.show();
         this.colorRing.css({ y: -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 175, 'easeOutCubic');
-    };
+    }
 
-    close = () => {
+    close() {
         this.isOpen = false;
 
         this.setHeight();
@@ -575,11 +575,11 @@ export class ColorPicker extends Interface {
         }
 
         this.cursor();
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

@@ -39,7 +39,7 @@ export class ReticleInfo extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -51,5 +51,5 @@ export class ReticleInfo extends Interface {
         if (data.secondary) {
             this.secondary.html(data.secondary);
         }
-    };
+    }
 }
