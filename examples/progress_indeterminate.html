@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { Interface, clearTween, ticker, tween } from '../src/index.js';
+        import { Interface, clearTween, delayedCall, ticker, tween } from '../src/index.js';
 
         class ProgressIndeterminate extends Interface {
             constructor() {
@@ -85,7 +85,7 @@
                     tween(this.circle, { progress: 1 }, 1000, 'easeOutCubic', () => {
                         tween(this.circle, { start: 1 }, 1000, 'easeInOutCubic', () => {
                             this.circle.start = 0;
-                            this.delayedCall(500, () => {
+                            delayedCall(500, () => {
                                 if (this.animatedIn) {
                                     start();
                                 } else {

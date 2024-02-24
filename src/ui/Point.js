@@ -7,7 +7,7 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 import { PointInfo } from './PointInfo.js';
 
-import { defer, tween } from '../tween/Tween.js';
+import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
 
 export class Point extends Interface {
     constructor(ui, tracker) {
@@ -193,9 +193,9 @@ export class Point extends Interface {
 
     close(fast) {
         if (fast) {
-            this.clearTimeout(this.timeout);
+            clearTween(this.timeout);
 
-            this.timeout = this.delayedCall(300, () => {
+            this.timeout = delayedCall(300, () => {
                 this.origin.set(0, 0);
 
                 this.isOpen = false;

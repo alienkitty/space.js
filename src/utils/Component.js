@@ -4,13 +4,12 @@
 
 import { EventEmitter } from './EventEmitter.js';
 
-import { clearTween, delayedCall, tween } from '../tween/Tween.js';
+import { clearTween, tween } from '../tween/Tween.js';
 
 export class Component {
     constructor() {
         this.events = new EventEmitter();
         this.children = [];
-        this.timeouts = [];
     }
 
     add(child) {
@@ -45,50 +44,6 @@ export class Component {
         return this;
     }
 
-    delayedCall(duration, complete) {
-        if (!this.timeouts) {
-            return;
-        }
-
-        const timeout = delayedCall(duration, () => {
-            this.clearTimeout(timeout, true);
-
-            if (complete) {
-                complete();
-            }
-        });
-
-        this.timeouts.push(timeout);
-
-        return timeout;
-    }
-
-    clearTimeout(timeout, isStopped) {
-        if (!this.timeouts) {
-            return;
-        }
-
-        if (!isStopped) {
-            clearTween(timeout);
-        }
-
-        const index = this.timeouts.indexOf(timeout);
-
-        if (~index) {
-            this.timeouts.splice(index, 1);
-        }
-    }
-
-    clearTimeouts() {
-        if (!this.timeouts) {
-            return;
-        }
-
-        for (let i = this.timeouts.length - 1; i >= 0; i--) {
-            this.clearTimeout(this.timeouts[i]);
-        }
-    }
-
     destroy() {
         if (!this.children) {
             return;
@@ -98,7 +53,6 @@ export class Component {
             this.parent.remove(this);
         }
 
-        this.clearTimeouts();
         this.clearTween();
 
         this.events.destroy();

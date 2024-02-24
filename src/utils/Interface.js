@@ -4,7 +4,7 @@
 
 import { EventEmitter } from './EventEmitter.js';
 
-import { clearTween, delayedCall, tween } from '../tween/Tween.js';
+import { clearTween, tween } from '../tween/Tween.js';
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/transform
 // https://developer.mozilla.org/en-US/docs/Web/CSS/filter
@@ -17,7 +17,6 @@ export class Interface {
     constructor(name, type = 'div', qualifiedName) {
         this.events = new EventEmitter();
         this.children = [];
-        this.timeouts = [];
         this.style = {};
         this.isTransform = false;
         this.isFilter = false;
@@ -377,50 +376,6 @@ export class Interface {
         return this;
     }
 
-    delayedCall(duration, complete) {
-        if (!this.timeouts) {
-            return;
-        }
-
-        const timeout = delayedCall(duration, () => {
-            this.clearTimeout(timeout, true);
-
-            if (complete) {
-                complete();
-            }
-        });
-
-        this.timeouts.push(timeout);
-
-        return timeout;
-    }
-
-    clearTimeout(timeout, isStopped) {
-        if (!this.timeouts) {
-            return;
-        }
-
-        if (!isStopped) {
-            clearTween(timeout);
-        }
-
-        const index = this.timeouts.indexOf(timeout);
-
-        if (~index) {
-            this.timeouts.splice(index, 1);
-        }
-    }
-
-    clearTimeouts() {
-        if (!this.timeouts) {
-            return;
-        }
-
-        for (let i = this.timeouts.length - 1; i >= 0; i--) {
-            this.clearTimeout(this.timeouts[i]);
-        }
-    }
-
     destroy() {
         if (!this.children) {
             return;
@@ -430,7 +385,6 @@ export class Interface {
             this.parent.remove(this);
         }
 
-        this.clearTimeouts();
         this.clearTween();
 
         this.events.destroy();

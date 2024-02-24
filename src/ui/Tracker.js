@@ -6,6 +6,8 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 
+import { clearTween, delayedCall } from '../tween/Tween.js';
+
 export class Tracker extends Interface {
     constructor() {
         super('.tracker');
@@ -125,7 +127,7 @@ export class Tracker extends Interface {
     }
 
     show() {
-        this.clearTimeout(this.timeout);
+        clearTween(this.timeout);
 
         this.corners.clearTween().tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
@@ -137,9 +139,9 @@ export class Tracker extends Interface {
             return;
         }
 
-        this.clearTimeout(this.timeout);
+        clearTween(this.timeout);
 
-        this.timeout = this.delayedCall(fast ? 0 : 2000, () => {
+        this.timeout = delayedCall(fast ? 0 : 2000, () => {
             this.corners.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
         });
 
@@ -149,7 +151,7 @@ export class Tracker extends Interface {
     animateIn(isInstanced) {
         this.isInstanced = isInstanced;
 
-        this.clearTimeout(this.timeout);
+        clearTween(this.timeout);
 
         if (!this.isInstanced) {
             this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
@@ -160,7 +162,7 @@ export class Tracker extends Interface {
     }
 
     animateOut(callback) {
-        this.clearTimeout(this.timeout);
+        clearTween(this.timeout);
 
         this.corners.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.corners.invisible();
