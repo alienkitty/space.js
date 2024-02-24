@@ -353,9 +353,9 @@ export class ColorPicker extends Interface {
         const distance = offset.length() * this.ratio;
 
         if (distance < 128) {
-            this.cursor('crosshair');
+            this.setCursor('crosshair');
         } else if (!this.isDown) {
-            this.cursor();
+            this.setCursor();
         }
 
         if (this.firstDown) {
@@ -445,6 +445,14 @@ export class ColorPicker extends Interface {
 
     // Public methods
 
+    setCursor(cursor = '') {
+        if (cursor !== this.lastCursor) {
+            this.lastCursor = cursor;
+
+            Stage.css({ cursor });
+        }
+    }
+
     setHeight() {
         const height = this.isOpen ? this.width + this.height + 10 : this.height;
 
@@ -471,14 +479,6 @@ export class ColorPicker extends Interface {
         this.l = l;
 
         this.update();
-    }
-
-    cursor(cursor = '') {
-        if (cursor !== this.lastCursor) {
-            this.lastCursor = cursor;
-
-            Stage.css({ cursor });
-        }
     }
 
     update(force) {
@@ -574,7 +574,7 @@ export class ColorPicker extends Interface {
             });
         }
 
-        this.cursor();
+        this.setCursor();
     }
 
     destroy() {
