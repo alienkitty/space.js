@@ -126,7 +126,7 @@ export class DetailsButton extends Interface {
     };
 
     onClick = () => {
-        this.events.emit('click');
+        this.events.emit('click', { target: this });
     };
 
     // Public methods

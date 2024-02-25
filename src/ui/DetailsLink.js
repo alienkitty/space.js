@@ -59,8 +59,8 @@ export class DetailsLink extends Interface {
         this.line.tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
     };
 
-    onClick = () => {
-        this.events.emit('click');
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods

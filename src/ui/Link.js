@@ -68,8 +68,8 @@ export class Link extends Interface {
         }
     };
 
-    onClick = () => {
-        this.events.emit('click');
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods
