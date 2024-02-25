@@ -24,14 +24,14 @@ export class ColorPicker extends Interface {
     constructor({
         name,
         value,
-        swatchOnly,
+        noText = false,
         callback
     }) {
         super('.color-picker');
 
         this.name = name;
         this.value = new Color(value);
-        this.swatchOnly = swatchOnly;
+        this.noText = noText;
         this.callback = callback;
 
         this.width = 108;
@@ -92,7 +92,7 @@ export class ColorPicker extends Interface {
         });
         this.container.add(this.swatch);
 
-        if (!this.swatchOnly) {
+        if (!this.noText) {
             this.content = new Interface('.content');
             this.content.css({
                 cssFloat: 'right'
@@ -486,7 +486,7 @@ export class ColorPicker extends Interface {
 
         this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
 
-        if (!this.swatchOnly) {
+        if (!this.noText) {
             this.content.text(`0x${this.value.getHexString().toUpperCase()}`);
         }
 
