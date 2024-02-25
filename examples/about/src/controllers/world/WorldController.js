@@ -2,8 +2,6 @@ import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, Hemisph
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-ColorManagement.enabled = false; // Disable color management
-
 import { BufferGeometryLoader, EnvironmentTextureLoader, Interface, Stage, TextureLoader, getFrustum, getFullscreenTriangle } from '@alienkitty/space.js/three';
 import { OimoPhysics } from '@alienkitty/alien.js/three/oimophysics';
 
@@ -22,12 +20,16 @@ export class WorldController {
     static initWorld() {
         this.renderer = new WebGLRenderer({
             powerPreference: 'high-performance',
-            stencil: false,
+            // alpha: true,
             antialias: true,
-            // alpha: true
+            stencil: false
         });
+
+        // Disable color management
+        ColorManagement.enabled = false;
         this.renderer.outputColorSpace = LinearSRGBColorSpace;
 
+        // Output canvas
         // this.element = this.renderer.domElement;
         this.element = new Interface(this.renderer.domElement);
         this.element.css({ opacity: 0 });
