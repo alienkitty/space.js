@@ -368,7 +368,7 @@ export class Point3D extends Group {
     constructor(mesh, {
         name = mesh.material.name || mesh.geometry.type,
         type = mesh.material.type,
-        noTracker
+        noTracker = false
     } = {}) {
         super();
 
