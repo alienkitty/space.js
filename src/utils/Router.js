@@ -120,8 +120,4 @@ export class Router {
 
         this.onPopState();
     }
-
-    static setTitle(title) {
-        document.title = title;
-    }
 }
