@@ -118,6 +118,7 @@ export class Router {
 
         history.pushState(null, null, path);
 
-        this.onPopState();
+        const event = new PopStateEvent('popstate');
+        window.dispatchEvent(event);
     }
 }
