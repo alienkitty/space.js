@@ -3,12 +3,11 @@ import { Mesh, MeshBasicMaterial, Raycaster, Vector2 } from 'three';
 import { Stage } from '@alienkitty/space.js/three';
 import { RigidBodyConfig, RigidBodyType, SphericalJointConfig } from '@alienkitty/alien.js/three/oimophysics';
 
-import { Layer } from '../../config/Layer.js';
 import { WorldController } from './WorldController.js';
 import { CameraController } from './CameraController.js';
 import { PhysicsController } from './PhysicsController.js';
 
-import { isDebug } from '../../config/Config.js';
+import { isDebug, layers } from '../../config/Config.js';
 
 export class InputManager {
     static init(scene, camera, controls) {
@@ -17,7 +16,7 @@ export class InputManager {
         this.controls = controls;
 
         this.raycaster = new Raycaster();
-        this.raycaster.layers.enable(Layer.PICKING);
+        this.raycaster.layers.enable(layers.picking);
 
         this.objects = [];
         this.mouse = new Vector2(-1, -1);
@@ -55,7 +54,7 @@ export class InputManager {
 
         this.dragPlane = new Mesh(quad, material);
         this.dragPlane.scale.multiplyScalar(200);
-        this.dragPlane.layers.enable(Layer.PICKING);
+        this.dragPlane.layers.enable(layers.picking);
     }
 
     static addListeners() {
