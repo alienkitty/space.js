@@ -1,3 +1,1 @@
-export class Config {
-    static DEBUG = /[?&]debug/.test(location.search);
-}
+export const isDebug = /[?&]debug/.test(location.search);

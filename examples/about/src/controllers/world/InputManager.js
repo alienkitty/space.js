@@ -3,11 +3,12 @@ import { Mesh, MeshBasicMaterial, Raycaster, Vector2 } from 'three';
 import { Stage } from '@alienkitty/space.js/three';
 import { RigidBodyConfig, RigidBodyType, SphericalJointConfig } from '@alienkitty/alien.js/three/oimophysics';
 
-import { Config } from '../../config/Config.js';
 import { Layer } from '../../config/Layer.js';
 import { WorldController } from './WorldController.js';
 import { CameraController } from './CameraController.js';
 import { PhysicsController } from './PhysicsController.js';
+
+import { isDebug } from '../../config/Config.js';
 
 export class InputManager {
     static init(scene, camera, controls) {
@@ -43,7 +44,7 @@ export class InputManager {
 
         let material;
 
-        if (Config.DEBUG) {
+        if (isDebug) {
             material = new MeshBasicMaterial({
                 color: 0xff0000,
                 wireframe: true
