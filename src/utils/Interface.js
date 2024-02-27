@@ -24,9 +24,6 @@ export class Interface {
         if (typeof name === 'object' && name !== null) {
             this.element = name;
         } else if (type !== null) {
-            this.name = name;
-            this.type = type;
-
             if (type === 'svg') {
                 this.element = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName || 'svg');
             } else {
