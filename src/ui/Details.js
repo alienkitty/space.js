@@ -34,15 +34,17 @@ export class Details extends Interface {
             opacity: 0
         });
 
-        this.bg = new Interface('.bg');
-        this.bg.css({
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            backgroundColor: '#000',
-            opacity: 0
-        });
-        this.add(this.bg);
+        if (this.data.background) {
+            this.bg = new Interface('.bg');
+            this.bg.css({
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#000',
+                opacity: 0
+            });
+            this.add(this.bg);
+        }
 
         this.container = new Interface('.container');
         this.container.css({
@@ -74,11 +76,15 @@ export class Details extends Interface {
     }
 
     addListeners() {
-        this.bg.element.addEventListener('click', this.onClick);
+        if (this.bg) {
+            this.bg.element.addEventListener('click', this.onClick);
+        }
     }
 
     removeListeners() {
-        this.bg.element.removeEventListener('click', this.onClick);
+        if (this.bg) {
+            this.bg.element.removeEventListener('click', this.onClick);
+        }
     }
 
     // Event handlers
@@ -118,7 +124,9 @@ export class Details extends Interface {
         const duration = 2000;
         const stagger = 175;
 
-        this.bg.clearTween().tween({ opacity: 0.35 }, duration, 'easeOutSine');
+        if (this.bg) {
+            this.bg.clearTween().tween({ opacity: 0.35 }, duration, 'easeOutSine');
+        }
 
         this.container.children.forEach((child, i) => {
             const delay = i === 0 ? 0 : duration;
@@ -134,7 +142,9 @@ export class Details extends Interface {
     animateOut() {
         this.css({ pointerEvents: 'none' });
 
-        this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
+        if (this.bg) {
+            this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
+        }
 
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
             this.invisible();
