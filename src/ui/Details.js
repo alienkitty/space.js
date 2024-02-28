@@ -142,7 +142,7 @@ export class Details extends Interface {
             this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
         }
 
-        this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
             this.invisible();
 
             if (callback) {
