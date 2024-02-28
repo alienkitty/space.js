@@ -56,7 +56,7 @@ export class DetailsLink extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
-        this.line.tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
+        this.line.clearTween().tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
     };
 
     onClick = e => {
@@ -64,6 +64,12 @@ export class DetailsLink extends Interface {
     };
 
     // Public methods
+
+    setLink(link) {
+        this.link = link;
+
+        this.attr({ href: this.link });
+    }
 
     destroy() {
         this.removeListeners();
