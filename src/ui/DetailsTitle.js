@@ -42,6 +42,15 @@ export class DetailsTitle extends Interface {
 
     // Public methods
 
+    setTitle(title) {
+        this.title = title;
+        this.letters = [];
+
+        this.empty();
+        this.initText();
+        this.animateIn();
+    }
+
     animateIn() {
         shuffle(this.letters);
 
