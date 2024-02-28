@@ -139,7 +139,7 @@ export class Details extends Interface {
         this.animatedIn = true;
     }
 
-    animateOut() {
+    animateOut(callback) {
         this.css({ pointerEvents: 'none' });
 
         if (this.bg) {
@@ -150,6 +150,10 @@ export class Details extends Interface {
             this.invisible();
 
             this.animatedIn = false;
+
+            if (callback) {
+                callback();
+            }
         });
     }
 
