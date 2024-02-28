@@ -12,8 +12,6 @@ export class Details extends Interface {
 
         this.data = data;
 
-        this.animatedIn = false;
-
         this.init();
         this.initViews();
 
@@ -135,8 +133,6 @@ export class Details extends Interface {
         });
 
         this.title.animateIn();
-
-        this.animatedIn = true;
     }
 
     animateOut(callback) {
@@ -148,8 +144,6 @@ export class Details extends Interface {
 
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
             this.invisible();
-
-            this.animatedIn = false;
 
             if (callback) {
                 callback();
