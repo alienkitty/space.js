@@ -44,15 +44,15 @@ export class Title extends Interface {
 
     // Public methods
 
-    setTitle(title) {
+    setTitle(title, direction = 1) {
         this.title = title;
         this.letters = [];
 
-        this.clearTween().tween({ y: -10, opacity: 0 }, 300, 'easeInSine', () => {
+        this.clearTween().tween({ y: -10 * direction, opacity: 0 }, 300, 'easeInSine', () => {
             this.empty();
             this.initText();
             this.animateIn();
-            this.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
+            this.css({ y: 10 * direction }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
         });
     }
 
