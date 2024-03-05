@@ -66,14 +66,16 @@ export class Details extends Interface {
         this.content.html(this.data.content);
         this.container.add(this.content);
 
-        this.data.links.forEach(data => {
-            const link = new DetailsLink(data.title, data.link);
-            link.css({
-                display: 'block'
+        if (Array.isArray(this.data.links)) {
+            this.data.links.forEach(data => {
+                const link = new DetailsLink(data.title, data.link);
+                link.css({
+                    display: 'block'
+                });
+                this.container.add(link);
+                this.links.push(link);
             });
-            this.container.add(link);
-            this.links.push(link);
-        });
+        }
     }
 
     addListeners() {
