@@ -12,6 +12,8 @@ export class Details extends Interface {
 
         this.data = data;
 
+        this.links = [];
+
         this.init();
         this.initViews();
 
@@ -70,6 +72,7 @@ export class Details extends Interface {
                 display: 'block'
             });
             this.container.add(link);
+            this.links.push(link);
         });
     }
 

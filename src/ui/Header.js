@@ -16,6 +16,8 @@ export class Header extends Interface {
         this.fps = fps;
         this.data = data;
 
+        this.links = [];
+
         this.init();
         this.initViews();
     }
@@ -38,6 +40,7 @@ export class Header extends Interface {
                     opacity: 0
                 });
                 this.add(link);
+                this.links.push(link);
             });
         }
 
