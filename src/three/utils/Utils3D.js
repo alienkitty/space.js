@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector3 } from 'three';
+import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector3, WebGLRenderTarget } from 'three';
 
 export function getFullscreenTriangle() {
     const geometry = new BufferGeometry();
@@ -76,4 +76,27 @@ export function lerpCameras(camera1, camera2, alpha) {
 
     camera1.position.lerp(camera2.position, alpha);
     camera1.quaternion.slerp(camera2.quaternion, alpha);
+}
+
+// Based on https://oframe.github.io/ogl/examples/?src=post-fluid-distortion.html by gordonnl
+export function createDoubleFBO(width, height, options) {
+    const fbo = {
+        read: new WebGLRenderTarget(width, height, options),
+        write: new WebGLRenderTarget(width, height, options),
+        swap: () => {
+            const temp = fbo.read;
+            fbo.read = fbo.write;
+            fbo.write = temp;
+        },
+        setSize: (width, height) => {
+            fbo.read.setSize(width, height);
+            fbo.write.setSize(width, height);
+        },
+        dispose: () => {
+            fbo.read.dispose();
+            fbo.write.dispose();
+        }
+    };
+
+    return fbo;
 }
