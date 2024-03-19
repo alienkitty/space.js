@@ -40,7 +40,7 @@ export class Ticker {
 
         this.delta = Math.min(150, time - this.last);
         this.last = time;
-        this.time = time * 0.001;
+        this.time = time * 0.001; // seconds
         this.frame++;
 
         for (let i = this.callbacks.length - 1; i >= 0; i--) {

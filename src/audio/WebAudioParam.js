@@ -47,7 +47,7 @@ export class WebAudioParam {
             const startTime = this.parent.context.currentTime + delay;
 
             this.parent[this.node][this.param].cancelScheduledValues(startTime);
-            this.parent[this.node][this.param].setTargetAtTime(value, startTime, duration * 0.001);
+            this.parent[this.node][this.param].setTargetAtTime(value, startTime, duration * 0.001); // seconds
         }
     }
 }
