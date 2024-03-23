@@ -117,7 +117,7 @@ a:hover, a:focus {
     font-family: inherit;
     font-weight: inherit;
     font-size: inherit;
-    line-height: inherit;
+    line-height: 22px;
     letter-spacing: inherit;
 }
 
