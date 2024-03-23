@@ -318,7 +318,7 @@ export class UI extends Interface {
             }
         }
 
-        Stage.events.emit('details_open', { open: this.isDetailsOpen, target: this });
+        Stage.events.emit('details', { open: this.isDetailsOpen, target: this });
     }
 
     destroy() {
