@@ -54,6 +54,8 @@ export class Interface {
         } else if (child.nodeName) {
             this.element.appendChild(child);
         }
+
+        return child;
     }
 
     remove(child) {
