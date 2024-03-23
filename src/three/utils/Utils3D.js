@@ -79,24 +79,24 @@ export function lerpCameras(camera1, camera2, alpha) {
 }
 
 // Based on https://oframe.github.io/ogl/examples/?src=post-fluid-distortion.html by gordonnl
-export function createDoubleFBO(width, height, options) {
-    const fbo = {
+export function getDoubleRenderTarget(width, height, options) {
+    const renderTarget = {
         read: new WebGLRenderTarget(width, height, options),
         write: new WebGLRenderTarget(width, height, options),
         swap: () => {
-            const temp = fbo.read;
-            fbo.read = fbo.write;
-            fbo.write = temp;
+            const temp = renderTarget.read;
+            renderTarget.read = renderTarget.write;
+            renderTarget.write = temp;
         },
         setSize: (width, height) => {
-            fbo.read.setSize(width, height);
-            fbo.write.setSize(width, height);
+            renderTarget.read.setSize(width, height);
+            renderTarget.write.setSize(width, height);
         },
         dispose: () => {
-            fbo.read.dispose();
-            fbo.write.dispose();
+            renderTarget.read.dispose();
+            renderTarget.write.dispose();
         }
     };
 
-    return fbo;
+    return renderTarget;
 }
