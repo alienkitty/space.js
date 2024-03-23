@@ -126,8 +126,6 @@ export class MuteButton extends Interface {
         if (this.callback) {
             this.callback(sound, this);
         }
-
-        localStorage.setItem('sound', JSON.stringify(sound));
     }
 
     resize() {
