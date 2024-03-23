@@ -107,6 +107,7 @@ export class Tracker extends Interface {
 
     update() {
         this.position.lerp(this.target, this.lerpSpeed);
+
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     }
 
