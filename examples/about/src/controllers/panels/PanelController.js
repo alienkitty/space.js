@@ -193,8 +193,6 @@ export class PanelController {
                 light.helper.update();
             }
         });
-
-        this.ui.update();
     };
 
     static animateIn = () => {
