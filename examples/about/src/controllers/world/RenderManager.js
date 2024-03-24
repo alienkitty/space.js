@@ -19,7 +19,7 @@ export class RenderManager {
         this.luminositySmoothing = 1;
         this.bloomStrength = 0.3;
         this.bloomRadius = 0.2;
-        this.bloomDistortion = 1.45;
+        this.bloomDistortion = 1.5;
         this.enabled = true;
 
         this.initRenderer();
