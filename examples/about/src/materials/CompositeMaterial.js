@@ -13,7 +13,7 @@ export class CompositeMaterial extends RawShaderMaterial {
             uniforms: {
                 tScene: { value: null },
                 tBloom: { value: null },
-                uBloomDistortion: { value: 1.45 },
+                uBloomDistortion: { value: 1.5 },
                 uToneMapping: { value: false },
                 uExposure: { value: 1 },
                 uGamma: { value: false }
