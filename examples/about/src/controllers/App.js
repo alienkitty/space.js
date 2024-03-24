@@ -108,6 +108,7 @@ export class App {
         InputManager.update(time);
         RenderManager.update(time, delta, frame);
         PanelController.update(time);
+        this.ui.update();
     };
 
     // Public methods
@@ -118,7 +119,7 @@ export class App {
 
         await wait(1000);
 
-        this.ui.animateIn();
         PanelController.animateIn();
+        this.ui.animateIn();
     };
 }
