@@ -36,10 +36,10 @@
             }
 
             static initSounds() {
-                this.ambient = WebAudio.get('metal_monk_loop');
-                this.ambient.gain.set(0.2);
-                this.ambient.loop = true;
-                this.ambient.play();
+                this.drone = WebAudio.get('metal_monk_loop');
+                this.drone.gain.set(1);
+                this.drone.loop = true;
+                this.drone.play();
 
                 this.bells = WebAudio.get('ethereal_bells');
                 this.bells.gain.set(0.5);
@@ -144,14 +144,14 @@
             }
 
             static initPanel() {
-                const { ambient, bells, accent1, accent2, kick, snare, hihat } = AudioController;
+                const { drone, bells, accent1, accent2, kick, snare, hihat } = AudioController;
 
                 const track1 = new Panel();
                 this.ui.add(track1);
 
                 [
                     {
-                        name: 'Ambient'
+                        name: 'Drone'
                     },
                     {
                         type: 'divider'
@@ -162,9 +162,9 @@
                         min: 0,
                         max: 1,
                         step: 0.01,
-                        value: ambient.gain.value,
+                        value: drone.gain.value,
                         callback: value => {
-                            ambient.gain.value = value;
+                            drone.gain.value = value;
                         }
                     },
                     {
@@ -173,9 +173,9 @@
                         min: -1,
                         max: 1,
                         step: 0.01,
-                        value: ambient.stereoPan.value,
+                        value: drone.stereoPan.value,
                         callback: value => {
-                            ambient.stereoPan.value = value;
+                            drone.stereoPan.value = value;
                         }
                     },
                     {
@@ -184,9 +184,9 @@
                         min: 0,
                         max: 2,
                         step: 0.01,
-                        value: ambient.playbackRate.value,
+                        value: drone.playbackRate.value,
                         callback: value => {
-                            ambient.playbackRate.value = value;
+                            drone.playbackRate.value = value;
                         }
                     }
                 ].forEach(data => {
