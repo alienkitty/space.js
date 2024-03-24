@@ -65,7 +65,7 @@ export class Thread extends EventEmitter {
 
             this.createMethod(name);
 
-            array.push(`self.${name}=${code};`);
+            array.push(`self.${name} = ${code};`);
         });
 
         this.worker = new Worker(URL.createObjectURL(new Blob([array.join('\n\n')], { type: 'text/javascript' })), { type: 'module' });
@@ -93,6 +93,8 @@ export class Thread extends EventEmitter {
         this.worker.removeEventListener('message', this.onMessage);
     }
 
+    // Event handlers
+
     onMessage = ({ data }) => {
         if (data.event) {
             this.emit(data.event, data.message);
@@ -101,6 +103,8 @@ export class Thread extends EventEmitter {
             this.off(data.id);
         }
     };
+
+    // Public methods
 
     send(name, message = {}, callback) {
         message.fn = name;

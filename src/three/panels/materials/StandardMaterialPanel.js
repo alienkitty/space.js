@@ -77,7 +77,7 @@ export class StandardMaterialPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Standard',
+                name: 'Standard',
                 list: StandardMaterialOptions,
                 value: 'Common',
                 callback: (value, panel) => {

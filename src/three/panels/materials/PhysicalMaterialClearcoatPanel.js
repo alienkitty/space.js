@@ -23,7 +23,7 @@ export class PhysicalMaterialClearcoatPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialClearcoatPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rough',
+                name: 'Rough',
                 min: 0,
                 max: 1,
                 step: 0.01,

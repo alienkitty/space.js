@@ -6,18 +6,18 @@ import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 import { Panel } from '../panels/Panel.js';
 
-export class PointText extends Interface {
+export class PointInfo extends Interface {
     constructor() {
-        super('.text');
+        super('.info');
 
         this.numbers = [];
         this.locked = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 10,
@@ -71,7 +71,7 @@ export class PointText extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -83,9 +83,9 @@ export class PointText extends Interface {
         if (data.type) {
             this.type.html(data.type);
         }
-    };
+    }
 
-    setTargetNumbers = targetNumbers => {
+    setTargetNumbers(targetNumbers) {
         this.targetNumbers.empty();
         this.numbers.length = 0;
 
@@ -97,61 +97,49 @@ export class PointText extends Interface {
         });
 
         if (this.locked) {
-            this.numbers.forEach(number => {
-                number.visible();
-            });
+            this.numbers.forEach(number => number.visible());
         }
-    };
+    }
 
-    lock = () => {
-        this.numbers.forEach(number => {
-            number.animateIn();
-        });
-
+    lock() {
+        this.numbers.forEach(number => number.animateIn());
         this.locked = true;
-    };
+    }
 
-    unlock = () => {
-        this.numbers.forEach(number => {
-            number.animateOut();
-        });
-
+    unlock() {
+        this.numbers.forEach(number => number.animateOut());
         this.locked = false;
-    };
+    }
 
-    open = () => {
+    open() {
         this.css({ pointerEvents: 'auto' });
 
         this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
-            this.numbers.forEach(number => {
-                number.animateIn(100);
-            });
+            this.numbers.forEach(number => number.animateIn(100));
         }
 
         this.panel.animateIn();
-        this.panel.active();
-    };
+        this.panel.activate();
+    }
 
-    close = () => {
+    close() {
         this.css({ pointerEvents: 'none' });
 
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
 
-        this.numbers.forEach(number => {
-            number.animateOut();
-        });
+        this.numbers.forEach(number => number.animateOut());
 
         this.panel.animateOut();
-        this.panel.inactive();
-    };
+        this.panel.deactivate();
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         this.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic', 200, callback);
-    };
+    }
 }

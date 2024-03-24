@@ -29,12 +29,10 @@ export class Smooth extends Component {
         this.progress = 0;
         this.height = 0;
 
-        this.initHTML();
-
-        this.enable();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         if (!navigator.maxTouchPoints) {
             this.root.css({
                 position: 'fixed',
@@ -46,6 +44,8 @@ export class Smooth extends Component {
             });
 
             this.container.css({ willChange: 'transform' });
+
+            this.enable();
         }
     }
 
@@ -88,7 +88,7 @@ export class Smooth extends Component {
         }
 
         if (!navigator.maxTouchPoints) {
-            this.container.css({ y: -Math.round(this.position) });
+            this.container.css({ y: -Math.floor(this.position * 100) / 100 });
         }
 
         this.progress = clamp(this.position / (this.height - document.documentElement.clientHeight), 0, 1);
@@ -96,24 +96,24 @@ export class Smooth extends Component {
 
     // Public methods
 
-    setScroll = top => {
+    setScroll(top) {
         document.scrollingElement.scrollTop = top;
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.addListeners();
         this.onResize();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
 
         document.body.style.height = '';
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

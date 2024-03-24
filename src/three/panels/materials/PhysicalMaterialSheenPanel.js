@@ -23,7 +23,7 @@ export class PhysicalMaterialSheenPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialSheenPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rough',
+                name: 'Rough',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -45,7 +45,7 @@ export class PhysicalMaterialSheenPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Sheen Color',
+                name: 'Sheen Color',
                 value: mesh.material.sheenColor,
                 callback: value => {
                     mesh.material.sheenColor.copy(value);

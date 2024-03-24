@@ -1,46 +1,41 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Interface } from '../utils/Interface.js';
 
 export class Link extends Interface {
-    constructor({
-        label,
-        value,
-        callback
-    }) {
-        super('.link');
+    constructor(title, link) {
+        super('.link', 'a');
 
-        this.label = label;
-        this.value = value;
-        this.callback = callback;
+        this.title = title;
+        this.link = link;
 
-        this.initHTML();
-        this.setValue(this.value);
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
-            width: 'fit-content',
-            height: 20,
+            padding: 10,
             textTransform: 'uppercase',
+            textDecoration: 'none',
             whiteSpace: 'nowrap',
-            cursor: 'pointer'
+            pointerEvents: 'auto',
+            webkitUserSelect: 'none',
+            userSelect: 'none'
         });
-        this.text(this.value);
+        this.attr({ href: this.link });
+        this.text(this.title);
 
         this.line = new Interface('.line');
         this.line.css({
             position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 1,
+            left: 10,
+            right: 10,
+            bottom: 10,
             height: 1,
             backgroundColor: 'var(--ui-color)',
             transformOrigin: 'left center',
@@ -73,31 +68,35 @@ export class Link extends Interface {
         }
     };
 
-    onClick = () => {
-        this.update();
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods
 
-    setValue = value => {
-        this.value = value;
+    setTitle(title) {
+        this.title = title;
 
-        this.element.childNodes[0].nodeValue = this.value;
+        this.element.childNodes[0].nodeValue = this.title;
+    }
 
-        this.update();
-    };
+    setLink(link) {
+        this.link = link;
 
-    update = () => {
-        this.events.emit('update', { path: [], value: this.value, target: this });
+        this.attr({ href: this.link });
+    }
 
-        if (this.callback) {
-            this.callback(this.value, this);
-        }
-    };
+    animateIn() {
+        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
+    }
 
-    destroy = () => {
+    animateOut() {
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
+    }
+
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

@@ -26,7 +26,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
@@ -34,7 +34,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Emissive',
+                name: 'Emissive',
                 value: mesh.material.emissive,
                 callback: value => {
                     mesh.material.emissive.copy(value);
@@ -42,7 +42,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Specular Color',
+                name: 'Specular Color',
                 value: mesh.material.specularColor,
                 callback: value => {
                     mesh.material.specularColor.copy(value);
@@ -50,7 +50,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Specular',
+                name: 'Specular',
                 min: 0,
                 max: 32,
                 step: 0.1,
@@ -61,7 +61,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rough',
+                name: 'Rough',
                 min: 0,
                 max: 2,
                 step: 0.01,
@@ -72,7 +72,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Metal',
+                name: 'Metal',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -83,7 +83,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Flat',
+                name: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
@@ -93,7 +93,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Wire',
+                name: 'Wire',
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
@@ -102,7 +102,7 @@ export class PhysicalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Tone',
+                name: 'Tone',
                 list: ToneMappedOptions,
                 value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
                 callback: value => {

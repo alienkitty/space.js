@@ -23,21 +23,16 @@ export class HeaderInfo extends Interface {
         this.openColor = null;
         this.isOpen = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             cssFloat: 'right',
             padding: 10,
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'
@@ -155,7 +150,7 @@ export class HeaderInfo extends Interface {
 
     // Public methods
 
-    update = () => {
+    update() {
         this.time = performance.now();
 
         if (this.time - 1000 > this.prev) {
@@ -167,19 +162,19 @@ export class HeaderInfo extends Interface {
         this.count++;
 
         this.number.text(this.fps);
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.number.tween({ opacity: 1 }, 400, 'easeInOutSine');
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.number.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Details — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@500;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            -moz-osx-font-smoothing: auto;
+            -webkit-font-smoothing: auto;
+        }
+    </style>
+
+    <script type="module">
+        import { UI, ticker } from '../src/index.js';
+
+        class App {
+            static async init() {
+                this.initViews();
+
+                this.addListeners();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    details: {
+                        title: 'Mars',
+                        content: /* html */ `
+Mars is the fourth planet and the furthest terrestrial planet from the Sun. The reddish color of its surface is due to finely grained iron(III) oxide dust in the soil, giving it the nickname "the Red Planet". Mars's radius is second smallest among the planets in the Solar System at 3,389.5 km.
+                        `,
+                        links: [
+                            {
+                                title: 'Wikipedia',
+                                link: 'https://en.wikipedia.org/wiki/Mars'
+                            }
+                        ]
+                    }
+                });
+                this.ui.toggleDetails(true);
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                window.addEventListener('load', this.onLoad);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static onLoad = () => {
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

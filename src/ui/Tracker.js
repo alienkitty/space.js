@@ -6,26 +6,24 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 
-export class Tracker extends Interface {
-    constructor({
-        noTargetNumber
-    } = {}) {
-        super('.tracker');
+import { clearTween, delayedCall } from '../tween/Tween.js';
 
-        this.noTargetNumber = noTargetNumber;
+export class Tracker extends Interface {
+    constructor() {
+        super('.tracker');
 
         this.position = new Vector2();
         this.target = new Vector2();
         this.lerpSpeed = 1;
         this.locked = false;
         this.animatedIn = false;
+        this.isInstanced = false;
         this.isVisible = false;
 
-        this.initHTML();
-        this.initViews();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             pointerEvents: 'none',
@@ -91,8 +89,10 @@ export class Tracker extends Interface {
         this.corners.add(this.bl);
     }
 
-    initViews() {
-        if (!this.noTargetNumber) {
+    // Public methods
+
+    setData(data) {
+        if (!this.number) {
             this.number = new TargetNumber();
             this.number.css({
                 left: -(this.number.width + 15),
@@ -101,67 +101,70 @@ export class Tracker extends Interface {
             });
             this.add(this.number);
         }
+
+        this.number.setData(data);
     }
 
-    // Public methods
-
-    setData = data => {
-        if (this.number) {
-            this.number.setData(data);
-        }
-    };
-
-    update = () => {
+    update() {
         this.position.lerp(this.target, this.lerpSpeed);
-        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
-    };
 
-    lock = () => {
+        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
+    }
+
+    lock() {
         if (this.number) {
             this.number.animateIn();
         }
 
         this.locked = true;
-    };
+    }
 
-    unlock = () => {
+    unlock() {
         if (this.number) {
             this.number.animateOut();
         }
 
         this.locked = false;
-    };
+    }
 
-    show = () => {
-        this.clearTimeout(this.timeout);
+    show() {
+        clearTween(this.timeout);
+
         this.corners.clearTween().tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
         this.animatedIn = true;
-    };
+    }
 
-    hide = fast => {
+    hide(fast) {
         if (this.locked) {
             return;
         }
 
-        this.clearTimeout(this.timeout);
-        this.timeout = this.delayedCall(fast ? 0 : 2000, () => {
+        clearTween(this.timeout);
+
+        this.timeout = delayedCall(fast ? 0 : 2000, () => {
             this.corners.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
         });
 
         this.animatedIn = false;
-    };
+    }
 
-    animateIn = () => {
-        this.clearTimeout(this.timeout);
-        this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+    animateIn(isInstanced) {
+        this.isInstanced = isInstanced;
+
+        clearTween(this.timeout);
+
+        if (!this.isInstanced) {
+            this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+        }
 
         this.animatedIn = true;
         this.isVisible = true;
-    };
+    }
 
-    animateOut = callback => {
-        this.clearTimeout(this.timeout);
+    animateOut(callback) {
+        clearTween(this.timeout);
+
         this.corners.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.corners.invisible();
 
@@ -172,5 +175,5 @@ export class Tracker extends Interface {
                 callback();
             }
         });
-    };
+    }
 }

@@ -3,7 +3,7 @@
  */
 
 import { Interface } from '../utils/Interface.js';
-import { Link } from './Link.js';
+import { PanelLink } from './PanelLink.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
@@ -15,10 +15,10 @@ export class PanelItem extends Interface {
 
         this.data = data;
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             width: 108
         });
@@ -34,13 +34,13 @@ export class PanelItem extends Interface {
                 margin: '10px 0'
             });
 
-            this.text = new Interface('.text');
-            this.text.css({
+            this.content = new Interface('.content');
+            this.content.css({
                 textTransform: 'uppercase',
                 whiteSpace: 'nowrap'
             });
-            this.text.text(this.data.label);
-            this.container.add(this.text);
+            this.content.text(this.data.name);
+            this.container.add(this.content);
         } else if (this.data.type === 'spacer') {
             this.container.css({
                 height: 7
@@ -62,7 +62,7 @@ export class PanelItem extends Interface {
                 margin: '2px 0 0'
             });
 
-            this.view = new Link(this.data);
+            this.view = new PanelLink(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'list') {
@@ -107,7 +107,7 @@ export class PanelItem extends Interface {
 
     // Public methods
 
-    animateIn = (delay, fast) => {
+    animateIn(delay, fast) {
         this.clearTween();
 
         if (fast) {
@@ -115,32 +115,32 @@ export class PanelItem extends Interface {
         } else {
             this.css({ y: -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 400, 'easeOutCubic', delay);
         }
-    };
+    }
 
-    animateOut = (index, total, delay, callback) => {
+    animateOut(index, total, delay, callback) {
         this.clearTween().tween({ y: -10, opacity: 0 }, 500, 'easeInCubic', delay, () => {
             if (index === 0 && callback) {
                 callback();
             }
         });
-    };
+    }
 
-    enable = (target = this.container) => {
+    enable(target = this.container) {
         target.clearTween();
         target.tween({ opacity: 1 }, 500, 'easeInOutSine', () => {
             target.css({ pointerEvents: 'auto' });
         });
-    };
+    }
 
-    disable = (target = this.container) => {
+    disable(target = this.container) {
         target.clearTween();
         target.css({ pointerEvents: 'none' });
         target.tween({ opacity: 0.35 }, 500, 'easeInOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

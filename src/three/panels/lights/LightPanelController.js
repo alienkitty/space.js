@@ -89,7 +89,7 @@ export class LightPanelController {
             },
             {
                 type: 'list',
-                label: 'Light',
+                name: 'Light',
                 list: lightOptions,
                 value: Object.keys(lightOptions)[0],
                 callback: (value, panel) => {
@@ -110,7 +110,7 @@ export class LightPanelController {
 
     // Public methods
 
-    static toggleHemisphereLightHelper = (light, show) => {
+    static toggleHemisphereLightHelper(light, show) {
         if (show) {
             if (!light.helper) {
                 light.helper = new HemisphereLightHelper(light);
@@ -121,9 +121,9 @@ export class LightPanelController {
         } else if (light.helper) {
             light.helper.visible = false;
         }
-    };
+    }
 
-    static toggleDirectionalLightHelper = (light, show) => {
+    static toggleDirectionalLightHelper(light, show) {
         if (show) {
             if (!light.helper) {
                 light.helper = new DirectionalLightHelper(light, 0.125);
@@ -134,9 +134,9 @@ export class LightPanelController {
         } else if (light.helper) {
             light.helper.visible = false;
         }
-    };
+    }
 
-    static togglePointLightHelper = (light, show) => {
+    static togglePointLightHelper(light, show) {
         if (show) {
             if (!light.helper) {
                 light.helper = new PointLightHelper(light, 0.125);
@@ -147,9 +147,9 @@ export class LightPanelController {
         } else if (light.helper) {
             light.helper.visible = false;
         }
-    };
+    }
 
-    static toggleSpotLightHelper = (light, show) => {
+    static toggleSpotLightHelper(light, show) {
         if (show) {
             if (!light.helper) {
                 light.helper = new SpotLightHelper(light);
@@ -160,9 +160,9 @@ export class LightPanelController {
         } else if (light.helper) {
             light.helper.visible = false;
         }
-    };
+    }
 
-    static toggleRectAreaLightHelper = (light, show) => {
+    static toggleRectAreaLightHelper(light, show) {
         if (show) {
             if (!light.helper) {
                 light.helper = new RectAreaLightHelper(light);
@@ -173,17 +173,17 @@ export class LightPanelController {
         } else if (light.helper) {
             light.helper.visible = false;
         }
-    };
+    }
 
-    static update = () => {
+    static update() {
         this.lights.forEach(light => {
             if (light.helper && !light.isRectAreaLight) {
                 light.helper.update();
             }
         });
-    };
+    }
 
-    static destroy = () => {
+    static destroy() {
         this.lights.forEach(light => {
             if (light.helper) {
                 if (light.isHemisphereLight) {
@@ -218,5 +218,5 @@ export class LightPanelController {
         }
 
         return null;
-    };
+    }
 }

@@ -23,7 +23,7 @@ export class Content extends Interface {
 
     // Public methods
 
-    setContent = content => {
+    setContent(content) {
         content.events.on('update', this.onUpdate);
 
         if (!this.group) {
@@ -40,13 +40,13 @@ export class Content extends Interface {
         this.group = newGroup;
 
         oldGroup.destroy();
-    };
+    }
 
-    update = () => {
+    update() {
         this.events.emit('update', { target: this });
 
         if (this.callback) {
             this.callback(undefined, this);
         }
-    };
+    }
 }

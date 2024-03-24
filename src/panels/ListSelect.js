@@ -14,14 +14,14 @@ export class ListSelect extends Interface {
         this.list = list;
         this.index = index;
 
-        this.clicked = false;
+        this.active = false;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             height: 20,
@@ -32,14 +32,14 @@ export class ListSelect extends Interface {
             cursor: 'pointer'
         });
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             position: 'absolute',
             width: '100%',
             height: '100%'
         });
-        this.text.text(this.list[this.index]);
-        this.add(this.text);
+        this.content.text(this.list[this.index]);
+        this.add(this.content);
 
         this.over = new Interface('.over');
         this.over.css({
@@ -73,22 +73,22 @@ export class ListSelect extends Interface {
     // Event handlers
 
     onClick = () => {
-        if (this.clicked) {
+        if (this.active) {
             return;
         }
 
-        this.clicked = true;
+        this.active = true;
 
         this.index = this.next;
 
-        this.text.tween({ y: -8, opacity: 0 }, 100, 'easeOutCubic');
+        this.content.tween({ y: -8, opacity: 0 }, 100, 'easeOutCubic');
         this.over.css({ y: 8, opacity: 0 }).tween({ y: 0, opacity: 1 }, 175, 'easeOutCubic', 50, () => {
-            this.text.text(this.list[this.index]);
-            this.text.css({ y: 0, opacity: 1 });
+            this.content.text(this.list[this.index]);
+            this.content.css({ y: 0, opacity: 1 });
             this.over.css({ y: 8, opacity: 0 });
             this.over.text(this.list[this.getNextIndex()]);
 
-            this.clicked = false;
+            this.active = false;
         });
 
         this.events.emit('click', { target: this });
@@ -96,16 +96,16 @@ export class ListSelect extends Interface {
 
     // Public methods
 
-    setIndex = index => {
+    setIndex(index) {
         this.index = index;
 
-        this.text.text(this.list[this.index]);
+        this.content.text(this.list[this.index]);
         this.over.text(this.list[this.getNextIndex()]);
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

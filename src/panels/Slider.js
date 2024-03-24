@@ -11,7 +11,7 @@ import { clamp } from '../utils/Utils.js';
 
 export class Slider extends Interface {
     constructor({
-        label,
+        name,
         min = 0,
         max = 1,
         step = 0.01,
@@ -20,7 +20,7 @@ export class Slider extends Interface {
     }) {
         super('.slider');
 
-        this.label = label;
+        this.name = name;
         this.min = min;
         this.max = max;
         this.step = step;
@@ -39,13 +39,13 @@ export class Slider extends Interface {
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
 
-        this.initHTML();
+        this.init();
         this.setValue(this.value, true);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.container = new Interface('.container');
         this.container.css({
             height: 27,
@@ -53,24 +53,23 @@ export class Slider extends Interface {
         });
         this.add(this.container);
 
-        this.text = new Interface('.text');
-        this.text.css({
+        this.content = new Interface('.content');
+        this.content.css({
             cssFloat: 'left',
             marginRight: 10,
-            textTransform: 'uppercase',
             lineHeight: 20,
+            textTransform: 'uppercase',
             whiteSpace: 'nowrap'
         });
-        this.text.text(this.label);
-        this.container.add(this.text);
+        this.content.text(this.name);
+        this.container.add(this.content);
 
         this.number = new Interface('.number');
         this.number.css({
             cssFloat: 'right',
             fontVariantNumeric: 'tabular-nums',
             lineHeight: 20,
-            letterSpacing: 'var(--ui-number-letter-spacing)',
-            whiteSpace: 'nowrap'
+            letterSpacing: 'var(--ui-number-letter-spacing)'
         });
         this.container.add(this.number);
 
@@ -106,15 +105,17 @@ export class Slider extends Interface {
     // Event handlers
 
     onPointerDown = e => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.lastMouse.set(e.clientX, e.clientY);
-        this.lastOrigin.subVectors(this.lastMouse, this.bounds);
-        this.lastValue = this.value;
+        if (this.container.element.contains(e.target)) {
+            this.bounds = this.element.getBoundingClientRect();
+            this.lastMouse.set(e.clientX, e.clientY);
+            this.lastOrigin.subVectors(this.lastMouse, this.bounds);
+            this.lastValue = this.value;
 
-        this.onPointerMove(e);
+            this.onPointerMove(e);
 
-        window.addEventListener('pointermove', this.onPointerMove);
-        window.addEventListener('pointerup', this.onPointerUp);
+            window.addEventListener('pointermove', this.onPointerMove);
+            window.addEventListener('pointerup', this.onPointerUp);
+        }
     };
 
     onPointerMove = ({ clientX, clientY }) => {
@@ -143,7 +144,7 @@ export class Slider extends Interface {
 
     // Public methods
 
-    setContent = content => {
+    setContent(content) {
         if (!this.group) {
             this.group = new Interface('.group');
             this.group.css({
@@ -161,17 +162,17 @@ export class Slider extends Interface {
         this.group = newGroup;
 
         oldGroup.destroy();
-    };
+    }
 
-    setValue = (value, force) => {
+    setValue(value, force) {
         this.value = typeof value === 'string' ? parseFloat(value) : value;
         this.value = this.getValue(this.value);
         this.lastValue = this.value;
 
         this.update(force);
-    };
+    }
 
-    update = force => {
+    update(force) {
         const scaleX = (this.value - this.min) / this.range;
 
         this.line.css({ scaleX });
@@ -186,11 +187,11 @@ export class Slider extends Interface {
                 this.callback(this.value, this);
             }
         }
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

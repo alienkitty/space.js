@@ -31,12 +31,10 @@ export class SmoothSkew extends Component {
         this.progress = 0;
         this.height = 0;
 
-        this.initHTML();
-
-        this.enable();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         if (!navigator.maxTouchPoints) {
             this.root.css({
                 position: 'fixed',
@@ -48,6 +46,8 @@ export class SmoothSkew extends Component {
             });
 
             this.container.css({ willChange: 'transform' });
+
+            this.enable();
         }
     }
 
@@ -91,7 +91,7 @@ export class SmoothSkew extends Component {
 
         if (!navigator.maxTouchPoints) {
             this.container.css({
-                y: -Math.round(this.position),
+                y: -Math.floor(this.position * 100) / 100,
                 skewY: (this.delta / document.documentElement.clientWidth) * 10 * this.skew
             });
         }
@@ -101,24 +101,24 @@ export class SmoothSkew extends Component {
 
     // Public methods
 
-    setScroll = top => {
+    setScroll(top) {
         document.scrollingElement.scrollTop = top;
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.addListeners();
         this.onResize();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
 
         document.body.style.height = '';
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

@@ -26,7 +26,7 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
@@ -34,7 +34,7 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Emissive',
+                name: 'Emissive',
                 value: mesh.material.emissive,
                 callback: value => {
                     mesh.material.emissive.copy(value);
@@ -42,7 +42,7 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Flat',
+                name: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
@@ -52,7 +52,7 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Wire',
+                name: 'Wire',
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
@@ -61,7 +61,7 @@ export class LambertMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Tone',
+                name: 'Tone',
                 list: ToneMappedOptions,
                 value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
                 callback: value => {

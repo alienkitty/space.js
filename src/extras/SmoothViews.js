@@ -34,12 +34,10 @@ export class SmoothViews extends Component {
         this.total = 0;
         this.height = 0;
 
-        this.initHTML();
-
-        this.enable();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         if (!navigator.maxTouchPoints) {
             this.root.css({
                 position: 'fixed',
@@ -51,6 +49,8 @@ export class SmoothViews extends Component {
             });
 
             this.container.css({ willChange: 'transform' });
+
+            this.enable();
         }
     }
 
@@ -102,7 +102,7 @@ export class SmoothViews extends Component {
         }
 
         if (!navigator.maxTouchPoints) {
-            this.container.css({ y: -Math.round(this.position) });
+            this.container.css({ y: -Math.floor(this.position * 100) / 100 });
         }
 
         let height = 0;
@@ -130,24 +130,24 @@ export class SmoothViews extends Component {
 
     // Public methods
 
-    setScroll = index => {
+    setScroll(index) {
         document.scrollingElement.scrollTop = this.views[index].top;
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.addListeners();
         this.onResize();
-    };
+    }
 
-    disable = () => {
+    disable() {
         this.removeListeners();
 
         document.body.style.height = '';
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.disable();
 
         return super.destroy();
-    };
+    }
 }

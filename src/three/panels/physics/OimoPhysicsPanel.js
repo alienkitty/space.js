@@ -32,7 +32,7 @@ export class OimoPhysicsPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Gravity',
+                name: 'Gravity',
                 min: -1,
                 max: 1,
                 step: 0.01,
@@ -43,7 +43,7 @@ export class OimoPhysicsPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rotate X',
+                name: 'Rotate X',
                 min: 0,
                 max: 16,
                 step: 1,
@@ -55,7 +55,7 @@ export class OimoPhysicsPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rotate Y',
+                name: 'Rotate Y',
                 min: 0,
                 max: 16,
                 step: 1,
@@ -67,7 +67,7 @@ export class OimoPhysicsPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Rotate Z',
+                name: 'Rotate Z',
                 min: 0,
                 max: 16,
                 step: 1,

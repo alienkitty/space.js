@@ -22,14 +22,14 @@ const Third = Math.PI * 2 / 3;
 
 export class ColorPicker extends Interface {
     constructor({
-        label,
+        name,
         value,
-        noText,
+        noText = false,
         callback
     }) {
         super('.color-picker');
 
-        this.label = label;
+        this.name = name;
         this.value = new Color(value);
         this.noText = noText;
         this.callback = callback;
@@ -58,14 +58,14 @@ export class ColorPicker extends Interface {
 
         this.color = new Color();
 
-        this.initHTML();
+        this.init();
         this.initColorRing();
         this.setValue(this.value, true);
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'relative',
             height: this.height
@@ -93,11 +93,11 @@ export class ColorPicker extends Interface {
         this.container.add(this.swatch);
 
         if (!this.noText) {
-            this.text = new Interface('.text');
-            this.text.css({
+            this.content = new Interface('.content');
+            this.content.css({
                 cssFloat: 'right'
             });
-            this.container.add(this.text);
+            this.container.add(this.content);
         }
     }
 
@@ -353,9 +353,9 @@ export class ColorPicker extends Interface {
         const distance = offset.length() * this.ratio;
 
         if (distance < 128) {
-            this.cursor('crosshair');
+            this.setCursor('crosshair');
         } else if (!this.isDown) {
-            this.cursor();
+            this.setCursor();
         }
 
         if (this.firstDown) {
@@ -445,13 +445,21 @@ export class ColorPicker extends Interface {
 
     // Public methods
 
-    setHeight = () => {
+    setCursor(cursor = '') {
+        if (cursor !== this.lastCursor) {
+            this.lastCursor = cursor;
+
+            Stage.css({ cursor });
+        }
+    }
+
+    setHeight() {
         const height = this.isOpen ? this.width + this.height + 10 : this.height;
 
         this.parent.css({ height });
-    };
+    }
 
-    setValue = (value, force) => {
+    setValue(value, force) {
         if (value && value.isColor) {
             this.value.copy(value);
         } else {
@@ -461,9 +469,9 @@ export class ColorPicker extends Interface {
         this.value.getHSL(this);
 
         this.update(force);
-    };
+    }
 
-    setHSL = (h, s, l) => {
+    setHSL(h, s, l) {
         this.value.setHSL(h, s, l);
 
         this.h = h;
@@ -471,23 +479,15 @@ export class ColorPicker extends Interface {
         this.l = l;
 
         this.update();
-    };
+    }
 
-    cursor = (cursor = '') => {
-        if (cursor !== this.lastCursor) {
-            this.lastCursor = cursor;
-
-            Stage.css({ cursor });
-        }
-    };
-
-    update = force => {
+    update(force) {
         this.moveMarkers();
 
         this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
 
         if (!this.noText) {
-            this.text.text(`0x${this.value.getHexString().toUpperCase()}`);
+            this.content.text(`0x${this.value.getHexString().toUpperCase()}`);
         }
 
         const value = this.value.getHex();
@@ -503,9 +503,9 @@ export class ColorPicker extends Interface {
                 }
             }
         }
-    };
+    }
 
-    moveMarkers = () => {
+    moveMarkers() {
         const marker = this.marker;
 
         const radius = this.triangleRadius;
@@ -550,18 +550,18 @@ export class ColorPicker extends Interface {
             fill: `#${this.value.getHexString()}`,
             stroke: invert ? '#000' : '#fff'
         });
-    };
+    }
 
-    open = () => {
+    open() {
         this.isOpen = true;
 
         this.setHeight();
 
         this.colorRing.show();
         this.colorRing.css({ y: -10, opacity: 0 }).tween({ y: 0, opacity: 1 }, 175, 'easeOutCubic');
-    };
+    }
 
-    close = () => {
+    close() {
         this.isOpen = false;
 
         this.setHeight();
@@ -574,12 +574,12 @@ export class ColorPicker extends Interface {
             });
         }
 
-        this.cursor();
-    };
+        this.setCursor();
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

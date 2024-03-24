@@ -4,18 +4,18 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class ReticleText extends Interface {
+export class ReticleInfo extends Interface {
     constructor() {
-        super('.text');
+        super('.info');
 
-        this.initHTML();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.css({
             position: 'absolute',
             left: 20,
-            top: -3
+            top: -4
         });
 
         this.primary = new Interface('.primary');
@@ -39,7 +39,7 @@ export class ReticleText extends Interface {
 
     // Public methods
 
-    setData = data => {
+    setData(data) {
         if (!data) {
             return;
         }
@@ -51,5 +51,5 @@ export class ReticleText extends Interface {
         if (data.secondary) {
             this.secondary.html(data.secondary);
         }
-    };
+    }
 }

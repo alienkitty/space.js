@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>UI — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            -moz-osx-font-smoothing: auto;
+            -webkit-font-smoothing: auto;
+        }
+    </style>
+
+    <script type="module">
+        import { Stage, UI, ticker } from '../src/index.js';
+
+        const store = {
+            sound: true
+        };
+
+        class App {
+            static async init() {
+                const sound = localStorage.getItem('sound');
+                store.sound = sound ? JSON.parse(sound) : true;
+
+                this.initViews();
+
+                this.addListeners();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    fps: true,
+                    header: {
+                        links: [
+                            {
+                                title: 'Space.js',
+                                link: 'https://github.com/alienkitty/space.js'
+                            }
+                        ]
+                    },
+                    menu: {
+                        items: ['POL', 'OBL', 'ISO'],
+                        active: 'OBL',
+                        callback: value => {
+                            console.log('Menu callback:', value);
+                        }
+                    },
+                    info: {
+                        content: 'Info'
+                    },
+                    details: {
+                        background: true,
+                        title: 'Mars',
+                        content: /* html */ `
+Mars is the fourth planet and the furthest terrestrial planet from the Sun. The reddish color of its surface is due to finely grained iron(III) oxide dust in the soil, giving it the nickname "the Red Planet". Mars's radius is second smallest among the planets in the Solar System at 3,389.5 km.
+                        `,
+                        links: [
+                            {
+                                title: 'Wikipedia',
+                                link: 'https://en.wikipedia.org/wiki/Mars'
+                            }
+                        ]
+                    },
+                    instructions: {
+                        content: 'Instructions'
+                    },
+                    detailsButton: true,
+                    muteButton: {
+                        sound: store.sound,
+                        callback: value => {
+                            console.log('MuteButton callback:', value);
+                        }
+                    }
+                });
+                this.ui.info.animateIn();
+                this.ui.instructions.animateIn();
+                this.ui.detailsButton.setData({ count: 1 });
+                this.ui.toggleDetails(true);
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                Stage.events.on('details', this.onDetails);
+                this.ui.menu.events.on('update', this.onMenu);
+                this.ui.muteButton.events.on('update', this.onMute);
+                window.addEventListener('load', this.onLoad);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static onUpdate = () => {
+                this.ui.update();
+            };
+
+            static onLoad = () => {
+                this.ui.animateIn();
+            };
+
+            static onDetails = e => {
+                console.log('Details event:', e);
+            };
+
+            static onMenu = e => {
+                console.log('Menu event:', e);
+            };
+
+            static onMute = e => {
+                console.log('MuteButton event:', e);
+
+                localStorage.setItem('sound', JSON.stringify(e.sound));
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

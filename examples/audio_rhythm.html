@@ -17,97 +17,11 @@
 
         body {
             position: unset;
-            overscroll-behavior: none;
         }
     </style>
 
     <script type="module">
-        import { BufferLoader, Interface, Panel, PanelItem, WebAudio, headsTails, ticker } from '../src/index.js';
-
-        class Instructions extends Interface {
-            constructor() {
-                super('.instructions');
-
-                this.initHTML();
-            }
-
-            initHTML() {
-                this.invisible();
-                this.css({
-                    position: 'absolute',
-                    left: '50%',
-                    bottom: 55,
-                    width: 300,
-                    marginLeft: -300 / 2,
-                    opacity: 0
-                });
-
-                this.container = new Interface('.container');
-                this.container.css({
-                    position: 'absolute',
-                    bottom: 0,
-                    width: '100%'
-                });
-                this.add(this.container);
-
-                this.text = new Interface('.text');
-                this.text.css({
-                    fontFamily: 'Gothic A1, sans-serif',
-                    fontWeight: '700',
-                    fontSize: 10,
-                    lineHeight: 20,
-                    letterSpacing: 0.8,
-                    textAlign: 'center',
-                    textTransform: 'uppercase',
-                    opacity: 0.7
-                });
-                this.text.text(`${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`);
-                this.container.add(this.text);
-            }
-
-            // Public methods
-
-            toggle = (show, delay = 0) => {
-                if (show) {
-                    this.visible();
-                    this.tween({ opacity: 1 }, 800, 'easeInOutSine', delay);
-                    this.text.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);
-                } else {
-                    this.tween({ opacity: 0 }, 300, 'easeOutSine', () => {
-                        this.invisible();
-                    });
-                }
-            };
-        }
-
-        class UI extends Interface {
-            constructor() {
-                super('.ui');
-
-                this.initHTML();
-                this.initViews();
-            }
-
-            initHTML() {
-                this.css({
-                    minHeight: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: 20,
-                    padding: '55px 0 125px',
-                    pointerEvents: 'none',
-                    webkitUserSelect: 'none',
-                    userSelect: 'none'
-                });
-            }
-
-            initViews() {
-                this.instructions = new Instructions();
-                this.add(this.instructions);
-            }
-        }
+        import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails, ticker } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -150,7 +64,7 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                this.instructions.toggle(true);
+                this.instructions.animateIn();
             }
 
             // Event handlers
@@ -164,7 +78,7 @@
             };
 
             static onPointerDown = () => {
-                // this.instructions.toggle(false);
+                // this.instructions.animateOut();
 
                 // Based on https://www.html5rocks.com/en/tutorials/webaudio/intro/ by smus
 
@@ -233,19 +147,18 @@
                 const { ambient, bells, accent1, accent2, kick, snare, hihat } = AudioController;
 
                 const track1 = new Panel();
-                track1.animateIn();
                 this.ui.add(track1);
 
                 [
                     {
-                        label: 'Ambient'
+                        name: 'Ambient'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -256,7 +169,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -267,7 +180,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -281,19 +194,18 @@
                 });
 
                 const track2 = new Panel();
-                track2.animateIn();
                 this.ui.add(track2);
 
                 [
                     {
-                        label: 'Bells'
+                        name: 'Bells'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -304,7 +216,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -315,7 +227,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -329,19 +241,18 @@
                 });
 
                 const track3 = new Panel();
-                track3.animateIn();
                 this.ui.add(track3);
 
                 [
                     {
-                        label: 'Accent1'
+                        name: 'Accent1'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -352,7 +263,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -363,7 +274,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -377,19 +288,18 @@
                 });
 
                 const track4 = new Panel();
-                track4.animateIn();
                 this.ui.add(track4);
 
                 [
                     {
-                        label: 'Accent2'
+                        name: 'Accent2'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -400,7 +310,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -411,7 +321,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -425,19 +335,18 @@
                 });
 
                 const track5 = new Panel();
-                track5.animateIn();
                 this.ui.add(track5);
 
                 [
                     {
-                        label: 'Kick'
+                        name: 'Kick'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -448,7 +357,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -459,7 +368,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -473,19 +382,18 @@
                 });
 
                 const track6 = new Panel();
-                track6.animateIn();
                 this.ui.add(track6);
 
                 [
                     {
-                        label: 'Snare'
+                        name: 'Snare'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -496,7 +404,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -507,7 +415,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -521,19 +429,18 @@
                 });
 
                 const track7 = new Panel();
-                track7.animateIn();
                 this.ui.add(track7);
 
                 [
                     {
-                        label: 'Hihat'
+                        name: 'Hihat'
                     },
                     {
                         type: 'divider'
                     },
                     {
                         type: 'slider',
-                        label: 'Volume',
+                        name: 'Volume',
                         min: 0,
                         max: 1,
                         step: 0.01,
@@ -544,7 +451,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Pan',
+                        name: 'Pan',
                         min: -1,
                         max: 1,
                         step: 0.01,
@@ -555,7 +462,7 @@
                     },
                     {
                         type: 'slider',
-                        label: 'Rate',
+                        name: 'Rate',
                         min: 0,
                         max: 2,
                         step: 0.01,
@@ -570,6 +477,41 @@
             }
         }
 
+        class Panels extends Interface {
+            constructor() {
+                super('.panels');
+
+                this.init();
+            }
+
+            init() {
+                this.css({
+                    minHeight: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '55px 0 125px'
+                });
+
+                this.container = new Interface('.container');
+                this.container.css({
+                    position: 'relative',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 67
+                });
+                this.add(this.container);
+            }
+
+            // Public methods
+
+            animateIn = () => {
+                this.container.children.forEach(panel => panel.animateIn());
+            };
+        }
+
         class App {
             static async init() {
                 this.initLoader();
@@ -581,6 +523,8 @@
 
                 this.initAudio();
                 this.initPanel();
+
+                this.animateIn();
             }
 
             static initLoader() {
@@ -599,7 +543,14 @@
             }
 
             static initViews() {
-                this.ui = new UI();
+                this.panels = new Panels();
+                document.body.appendChild(this.panels.element);
+
+                this.ui = new UI({
+                    instructions: {
+                        content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
+                    }
+                });
                 document.body.appendChild(this.ui.element);
             }
 
@@ -611,12 +562,19 @@
             }
 
             static initPanel() {
-                PanelController.init(this.ui);
+                PanelController.init(this.panels.container);
             }
 
             static addListeners() {
                 ticker.start();
             }
+
+            // Public methods
+
+            static animateIn = () => {
+                this.panels.animateIn();
+                this.ui.animateIn();
+            };
         }
 
         App.init();

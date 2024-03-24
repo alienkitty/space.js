@@ -44,7 +44,7 @@ export class MultiLoader extends Loader {
 
     // Public methods
 
-    destroy = () => {
+    destroy() {
         for (let i = this.loaders.length - 1; i >= 0; i--) {
             if (this.loaders[i] && this.loaders[i].destroy) {
                 this.loaders[i].destroy();
@@ -52,5 +52,5 @@ export class MultiLoader extends Loader {
         }
 
         return super.destroy();
-    };
+    }
 }

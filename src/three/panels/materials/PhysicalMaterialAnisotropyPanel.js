@@ -23,7 +23,7 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -34,7 +34,7 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Angle',
+                name: 'Angle',
                 min: 0,
                 max: Math.PI / 2,
                 step: 0.01,

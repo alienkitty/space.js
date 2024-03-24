@@ -4,15 +4,11 @@
 
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
-import { ReticleText } from './ReticleText.js';
+import { ReticleInfo } from './ReticleInfo.js';
 
 export class Reticle extends Interface {
-    constructor({
-        noText = true
-    } = {}) {
+    constructor() {
         super('.reticle');
-
-        this.noText = noText;
 
         const size = 10;
 
@@ -22,12 +18,12 @@ export class Reticle extends Interface {
         this.position = new Vector2();
         this.target = new Vector2();
         this.lerpSpeed = 1;
+        this.animatedIn = false;
 
-        this.initHTML();
-        this.initViews();
+        this.init();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',
@@ -58,32 +54,38 @@ export class Reticle extends Interface {
         this.add(this.center);
     }
 
-    initViews() {
-        if (!this.noText) {
-            this.text = new ReticleText();
-            this.add(this.text);
-        }
-    }
-
     // Public methods
 
-    setData = data => {
-        this.text.setData(data);
-    };
+    setData(data) {
+        if (!this.info) {
+            this.info = new ReticleInfo();
+            this.add(this.info);
+        }
 
-    update = () => {
+        this.info.setData(data);
+    }
+
+    update() {
         this.position.lerp(this.target, this.lerpSpeed);
 
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
-    };
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
-    };
 
-    animateOut = () => {
+        this.animatedIn = true;
+    }
+
+    animateOut(callback) {
         this.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.invisible();
+
+            this.animatedIn = false;
+
+            if (callback) {
+                callback();
+            }
         });
-    };
+    }
 }

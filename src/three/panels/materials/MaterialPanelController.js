@@ -71,7 +71,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'slider',
-                label: 'Opacity',
+                name: 'Opacity',
                 min: 0,
                 max: 1,
                 step: 0.01,
@@ -87,7 +87,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
-                label: 'Side',
+                name: 'Side',
                 list: SideOptions,
                 value: getKeyByValue(SideOptions, mesh.material.side),
                 callback: value => {
@@ -97,7 +97,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
-                label: 'Material',
+                name: 'Material',
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, mesh.material),
                 callback: (value, panel) => {
@@ -218,7 +218,7 @@ export class MaterialPanelController {
             },
             {
                 type: 'list',
-                label: 'Visible',
+                name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, mesh.visible),
                 callback: (value, panel) => {
@@ -251,11 +251,11 @@ export class MaterialPanelController {
 
     // Public methods
 
-    static destroy = () => {
+    static destroy() {
         for (const prop in this) {
             this[prop] = null;
         }
 
         return null;
-    };
+    }
 }

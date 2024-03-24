@@ -31,7 +31,7 @@ export class MapPanel extends Panel {
             const repeatItems = [
                 {
                     type: 'slider',
-                    label: 'X',
+                    name: 'X',
                     min: 1,
                     max: 16,
                     step: 1,
@@ -42,7 +42,7 @@ export class MapPanel extends Panel {
                 },
                 {
                     type: 'slider',
-                    label: 'Y',
+                    name: 'Y',
                     min: 1,
                     max: 16,
                     step: 1,
@@ -56,7 +56,7 @@ export class MapPanel extends Panel {
             items.push(
                 {
                     type: 'slider',
-                    label: 'Anisotropy',
+                    name: 'Anisotropy',
                     min: 1,
                     max: 16,
                     step: 1,
@@ -67,7 +67,7 @@ export class MapPanel extends Panel {
                 },
                 {
                     type: 'list',
-                    label: 'Wrap',
+                    name: 'Wrap',
                     list: WrapOptions,
                     value: getKeyByValue(WrapOptions, mesh.material.map.wrapS),
                     callback: (value, panel) => {

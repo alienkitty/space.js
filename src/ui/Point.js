@@ -5,15 +5,15 @@
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
-import { PointText } from './PointText.js';
+import { PointInfo } from './PointInfo.js';
 
-import { defer, tween } from '../tween/Tween.js';
+import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
 
 export class Point extends Interface {
-    constructor(panel, tracker) {
+    constructor(ui, tracker) {
         super('.point');
 
-        this.panel = panel;
+        this.ui = ui;
         this.tracker = tracker;
 
         this.position = new Vector2();
@@ -30,13 +30,13 @@ export class Point extends Interface {
         this.isOpen = false;
         this.isMove = false;
 
-        this.initHTML();
+        this.init();
         this.initViews();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.invisible();
         this.css({
             position: 'absolute',
@@ -47,21 +47,21 @@ export class Point extends Interface {
     }
 
     initViews() {
-        this.text = new PointText();
-        this.add(this.text);
+        this.info = new PointInfo();
+        this.add(this.info);
     }
 
     addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
-        this.text.container.element.addEventListener('mouseenter', this.onHover);
-        this.text.container.element.addEventListener('mouseleave', this.onHover);
+        this.info.container.element.addEventListener('mouseenter', this.onHover);
+        this.info.container.element.addEventListener('mouseleave', this.onHover);
         window.addEventListener('pointerdown', this.onPointerDown);
     }
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
-        this.text.container.element.removeEventListener('mouseenter', this.onHover);
-        this.text.container.element.removeEventListener('mouseleave', this.onHover);
+        this.info.container.element.removeEventListener('mouseenter', this.onHover);
+        this.info.container.element.removeEventListener('mouseleave', this.onHover);
         window.removeEventListener('pointerdown', this.onPointerDown);
     }
 
@@ -84,12 +84,16 @@ export class Point extends Interface {
     };
 
     onHover = async ({ type }) => {
+        if (!this.ui) {
+            return;
+        }
+
         await defer();
 
         if (type === 'mouseenter') {
-            this.panel.onHover({ type: 'over', isPoint: true });
+            this.ui.onHover({ type: 'over', isPoint: true });
         } else {
-            this.panel.onHover({ type: 'out', isPoint: true });
+            this.ui.onHover({ type: 'out', isPoint: true });
         }
     };
 
@@ -98,7 +102,7 @@ export class Point extends Interface {
             return;
         }
 
-        if (this.text.container.element.contains(e.target)) {
+        if (this.info.container.element.contains(e.target)) {
             this.lastTime = performance.now();
             this.lastMouse.set(e.clientX, e.clientY);
             this.lastOrigin.copy(this.origin);
@@ -141,29 +145,29 @@ export class Point extends Interface {
             Stage.events.emit('color_picker', { open: false, target: this });
         }
 
-        if (this.tracker && this.tracker.isVisible && this.text.container.element.contains(e.target)) {
-            if (!this.tracker.animatedIn) {
-                this.panel.show();
+        if (this.tracker && this.tracker.isVisible && this.info.container.element.contains(e.target)) {
+            if (!this.tracker.isInstanced && !this.tracker.animatedIn) {
+                this.ui.show();
             } else if (!this.tracker.locked) {
-                this.panel.lock();
+                this.ui.lock();
             } else {
-                this.panel.unlock();
-                this.panel.hide();
+                this.ui.unlock();
+                this.ui.hide();
             }
         }
     };
 
     // Public methods
 
-    setData = data => {
-        this.text.setData(data);
-    };
+    setData(data) {
+        this.info.setData(data);
+    }
 
-    setTargetNumbers = targetNumbers => {
-        this.text.setTargetNumbers(targetNumbers);
-    };
+    setTargetNumbers(targetNumbers) {
+        this.info.setTargetNumbers(targetNumbers);
+    }
 
-    update = () => {
+    update() {
         if (!this.isMove) {
             this.position.lerp(this.target, this.lerpSpeed);
         }
@@ -171,26 +175,27 @@ export class Point extends Interface {
         this.originPosition.addVectors(this.origin, this.position);
 
         this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
-    };
+    }
 
-    lock = () => {
-        this.text.lock();
-    };
+    lock() {
+        this.info.lock();
+    }
 
-    unlock = () => {
-        this.text.unlock();
-    };
+    unlock() {
+        this.info.unlock();
+    }
 
-    open = () => {
-        this.text.open();
+    open() {
+        this.info.open();
 
         this.isOpen = true;
-    };
+    }
 
-    close = fast => {
+    close(fast) {
         if (fast) {
-            this.clearTimeout(this.timeout);
-            this.timeout = this.delayedCall(300, () => {
+            clearTween(this.timeout);
+
+            this.timeout = delayedCall(300, () => {
                 this.origin.set(0, 0);
 
                 this.isOpen = false;
@@ -203,41 +208,37 @@ export class Point extends Interface {
             this.isMove = false;
         }
 
-        this.text.close();
-    };
+        this.info.close();
+    }
 
-    animateIn = () => {
+    animateIn() {
         this.visible();
         this.clearTween().css({ opacity: 1 });
-        this.text.animateIn();
-    };
+        this.info.animateIn();
+    }
 
-    animateOut = () => {
-        this.text.animateOut(() => {
+    animateOut() {
+        this.info.animateOut(() => {
             this.invisible();
         });
-    };
+    }
 
-    enable = () => {
-        this.text.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
-    };
+    enable() {
+        this.info.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
+    }
 
-    disable = () => {
-        this.text.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
-    };
+    disable() {
+        this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
+    }
 
-    active = () => {
-        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
-    };
-
-    inactive = () => {
+    deactivate() {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
         this.close(true);
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }

@@ -29,7 +29,7 @@ export class DirectionalLightPanel extends Panel {
         const lightItems = [
             {
                 type: 'list',
-                label: 'Helper',
+                name: 'Helper',
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
@@ -43,7 +43,7 @@ export class DirectionalLightPanel extends Panel {
             },
             {
                 type: 'color',
-                label: 'Color',
+                name: 'Color',
                 value: light.color,
                 callback: value => {
                     light.color.copy(value);
@@ -55,7 +55,7 @@ export class DirectionalLightPanel extends Panel {
             },
             {
                 type: 'slider',
-                label: 'Int',
+                name: 'Int',
                 min: 0,
                 max: 5,
                 step: 0.05,
@@ -72,7 +72,7 @@ export class DirectionalLightPanel extends Panel {
             },
             {
                 type: 'list',
-                label: 'Visible',
+                name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
                 callback: (value, panel) => {

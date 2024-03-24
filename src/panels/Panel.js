@@ -13,19 +13,14 @@ export class Panel extends Interface {
         this.animatedIn = false;
         this.openColor = null;
 
-        this.initHTML();
+        this.init();
 
         this.addListeners();
     }
 
-    initHTML() {
+    init() {
         this.hide();
         this.css({
-            fontFamily: 'var(--ui-font-family)',
-            fontWeight: 'var(--ui-font-weight)',
-            fontSize: 'var(--ui-font-size)',
-            lineHeight: 'var(--ui-line-height)',
-            letterSpacing: 'var(--ui-letter-spacing)',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'
@@ -68,57 +63,57 @@ export class Panel extends Interface {
 
     // Public methods
 
-    add = item => {
+    add(item) {
         item.events.on('update', this.onUpdate);
 
         super.add(item);
 
         this.items.push(item);
-    };
+    }
 
-    setPanelValue = (label, value) => {
+    setPanelValue(name, value) {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
             }
 
-            if (item.data.label === label && item.view.setValue) {
+            if (item.data.name === name && item.view.setValue) {
                 item.view.setValue(value, true);
                 return;
             }
 
             if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
-                item.view.group.children[0].setPanelValue(label, value);
+                item.view.group.children[0].setPanelValue(name, value);
             }
         });
-    };
+    }
 
-    setPanelIndex = (label, index) => {
+    setPanelIndex(name, index) {
         this.items.forEach(item => {
             if (!item.view) {
                 return;
             }
 
-            if (item.data.label === label && item.view.setIndex) {
+            if (item.data.name === name && item.view.setIndex) {
                 item.view.setIndex(index);
                 return;
             }
 
             if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelIndex) {
-                item.view.group.children[0].setPanelIndex(label, index);
+                item.view.group.children[0].setPanelIndex(name, index);
             }
         });
-    };
+    }
 
-    animateIn = fast => {
+    animateIn(fast) {
         this.show();
 
         this.items.forEach((item, i) => item.animateIn(i * 15, fast));
 
         this.animatedIn = true;
-    };
+    }
 
-    animateOut = callback => {
+    animateOut(callback) {
         if (!this.animatedIn) {
             return;
         }
@@ -134,9 +129,9 @@ export class Panel extends Interface {
                 }
             });
         });
-    };
+    }
 
-    enable = () => {
+    enable() {
         this.items.forEach(item => {
             if (item.view && item.view.group && item.view.container) {
                 item.enable(item.view.container);
@@ -144,9 +139,9 @@ export class Panel extends Interface {
 
             item.enable();
         });
-    };
+    }
 
-    disable = target => {
+    disable(target) {
         this.items.forEach(item => {
             if (item.view && item.view.group && item.view.container) {
                 item.disable(item.view.container);
@@ -158,19 +153,19 @@ export class Panel extends Interface {
 
             item.disable();
         });
-    };
+    }
 
-    active = () => {
+    activate() {
         this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
-    };
+    }
 
-    inactive = () => {
+    deactivate() {
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
-    };
+    }
 
-    destroy = () => {
+    destroy() {
         this.removeListeners();
 
         return super.destroy();
-    };
+    }
 }
