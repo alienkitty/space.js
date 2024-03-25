@@ -84,10 +84,6 @@ export class Point extends Interface {
     };
 
     onHover = async ({ type }) => {
-        if (!this.ui) {
-            return;
-        }
-
         await defer();
 
         if (type === 'mouseenter') {

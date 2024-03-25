@@ -97,14 +97,6 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
 
             // Event handlers
 
-            static onUpdate = () => {
-                this.ui.update();
-            };
-
-            static onLoad = () => {
-                this.ui.animateIn();
-            };
-
             static onDetails = e => {
                 console.log('Details event:', e);
             };
@@ -117,6 +109,14 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
                 console.log('MuteButton event:', e);
 
                 localStorage.setItem('sound', JSON.stringify(e.sound));
+            };
+
+            static onUpdate = () => {
+                this.ui.update();
+            };
+
+            static onLoad = () => {
+                this.ui.animateIn();
             };
         }
 

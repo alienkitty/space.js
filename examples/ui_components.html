@@ -315,6 +315,16 @@
 
             // Event handlers
 
+            onClick = () => {
+                this.detailsButton3.setData({
+                    count: Number(this.detailsButton3.number.text()) + 1
+                });
+
+                this.detailsButton4.setData({
+                    count: Number(this.detailsButton4.number.text()) + 1
+                });
+            };
+
             onResize = async () => {
                 await defer();
 
@@ -359,16 +369,6 @@
                 this.detailsButton4.update();
                 this.muteButton.update();
                 this.muteButton2.update();
-            };
-
-            onClick = () => {
-                this.detailsButton3.setData({
-                    count: Number(this.detailsButton3.number.text()) + 1
-                });
-
-                this.detailsButton4.setData({
-                    count: Number(this.detailsButton4.number.text()) + 1
-                });
             };
 
             // Public methods
