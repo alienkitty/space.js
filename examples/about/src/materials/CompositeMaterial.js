@@ -63,7 +63,7 @@ export class CompositeMaterial extends RawShaderMaterial {
                     }
 
                     if (uGamma) {
-                        FragColor = LinearToSRGB(FragColor);
+                        FragColor = vec4(linearToSRGB(FragColor.rgb), FragColor.a);
                     }
                 }
             `,
