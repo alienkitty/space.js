@@ -76,3 +76,14 @@ export const UVHelperOptions = {
     Off: false,
     UV: true
 };
+
+export const DisplayOptions = {
+    Default: 0,
+    Velocity: 1,
+    Geometry: 2,
+    Matcap1: 3,
+    Matcap2: 4,
+    Depth: 5,
+    Luma: 6,
+    Bloom: 7
+};
