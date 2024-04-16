@@ -18,11 +18,12 @@ export default {
       browser: true
     }),
     production && terser({
+      // Keep class and function names when using `Thread` from Space.js
+      keep_classnames: true,
+      keep_fnames: true,
       output: {
         preamble: `// ${timestamp()}`
-      },
-      keep_classnames: true,
-      keep_fnames: true
+      }
     })
   ]
 };
