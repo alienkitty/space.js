@@ -30,7 +30,6 @@ export class FloatingCrystal extends Group {
             color: new Color().offsetHSL(0, 0, -0.65),
             metalness: 0.7,
             roughness: 0.7,
-            envMapIntensity: 1.2,
             flatShading: true
         });
 

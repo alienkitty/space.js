@@ -21,8 +21,7 @@ export class WorldController {
         this.renderer = new WebGLRenderer({
             powerPreference: 'high-performance',
             // alpha: true,
-            antialias: true,
-            stencil: false
+            antialias: true
         });
 
         // Disable color management
@@ -86,6 +85,7 @@ export class WorldController {
 
     static async initEnvironment() {
         this.scene.environment = await this.loadEnvironmentTexture('assets/textures/env/jewelry_black_contrast.jpg');
+        this.scene.environmentIntensity = 1.2;
     }
 
     static initControls() {

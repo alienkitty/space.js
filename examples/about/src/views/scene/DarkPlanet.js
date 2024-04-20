@@ -29,8 +29,7 @@ export class DarkPlanet extends Group {
             name: 'Dark Planet',
             color: new Color().offsetHSL(0, 0, -0.65),
             metalness: 0.7,
-            roughness: 1,
-            envMapIntensity: 1.2
+            roughness: 1
         });
 
         const mesh = new Mesh(geometry, material);
