@@ -104,7 +104,7 @@ export function randFloatSpread(range) {
 }
 
 export function headsTails(heads, tails) {
-    if (typeof heads === 'undefined') {
+    if (heads === undefined) {
         return randInt(0, 1);
     }
 

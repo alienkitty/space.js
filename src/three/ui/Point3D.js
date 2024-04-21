@@ -585,9 +585,9 @@ export class Point3D extends Group {
                         point.setPanelIndex(name, index);
                     });
 
-                    if (typeof index !== 'undefined') {
+                    if (index !== undefined) {
                         point.setPanelIndex(target.name, index);
-                    } else if (typeof value !== 'undefined') {
+                    } else if (value !== undefined) {
                         point.setPanelValue(target.name, value);
                     }
                 }
