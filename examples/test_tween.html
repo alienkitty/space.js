@@ -10,8 +10,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
     <script type="module">
-        import { ticker, tween } from '../src/index.js';
+        import { ticker, tween } from '@alienkitty/space.js';
 
         ticker.start();
 
