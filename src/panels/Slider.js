@@ -92,10 +92,10 @@ export class Slider extends Interface {
     }
 
     getPrecision(value) {
-        const str = String(value);
-        const delimiter = str.indexOf('.') + 1;
+        const string = String(value);
+        const delimiter = string.indexOf('.') + 1;
 
-        return !delimiter ? 0 : str.length - delimiter;
+        return !delimiter ? 0 : string.length - delimiter;
     }
 
     getValue(value) {

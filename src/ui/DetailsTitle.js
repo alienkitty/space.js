@@ -26,14 +26,14 @@ export class DetailsTitle extends Interface {
     initText() {
         const split = this.title.split('');
 
-        split.forEach(str => {
-            if (str === ' ') {
-                str = '&nbsp';
+        split.forEach(string => {
+            if (string === ' ') {
+                string = '&nbsp';
             }
 
             const letter = new Interface(null, 'span');
             letter.css({ display: 'inline-block' });
-            letter.html(str);
+            letter.html(string);
             this.add(letter);
 
             this.letters.push(letter);

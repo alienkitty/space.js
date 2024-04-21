@@ -94,17 +94,17 @@ export class Color {
         const match = /^#([A-Fa-f\d]+)$/.exec(style);
 
         if (match) {
-            const str = match[1];
-            const size = str.length;
+            const string = match[1];
+            const size = string.length;
 
             if (size === 3) {
-                this.r = parseInt(str.charAt(0) + str.charAt(0), 16) / 255;
-                this.g = parseInt(str.charAt(1) + str.charAt(1), 16) / 255;
-                this.b = parseInt(str.charAt(2) + str.charAt(2), 16) / 255;
+                this.r = parseInt(string.charAt(0) + string.charAt(0), 16) / 255;
+                this.g = parseInt(string.charAt(1) + string.charAt(1), 16) / 255;
+                this.b = parseInt(string.charAt(2) + string.charAt(2), 16) / 255;
             } else if (size === 6) {
-                this.r = parseInt(str.charAt(0) + str.charAt(1), 16) / 255;
-                this.g = parseInt(str.charAt(2) + str.charAt(3), 16) / 255;
-                this.b = parseInt(str.charAt(4) + str.charAt(5), 16) / 255;
+                this.r = parseInt(string.charAt(0) + string.charAt(1), 16) / 255;
+                this.g = parseInt(string.charAt(2) + string.charAt(3), 16) / 255;
+                this.b = parseInt(string.charAt(4) + string.charAt(5), 16) / 255;
             }
         }
 

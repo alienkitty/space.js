@@ -269,29 +269,29 @@ export class Interface {
         return this;
     }
 
-    text(str) {
+    text(string) {
         if (!this.element) {
             return;
         }
 
-        if (str === undefined) {
+        if (string === undefined) {
             return this.element.textContent;
         } else {
-            this.element.textContent = str;
+            this.element.textContent = string;
         }
 
         return this;
     }
 
-    html(str) {
+    html(string) {
         if (!this.element) {
             return;
         }
 
-        if (str === undefined) {
+        if (string === undefined) {
             return this.element.innerHTML;
         } else {
-            this.element.innerHTML = str;
+            this.element.innerHTML = string;
         }
 
         return this;
