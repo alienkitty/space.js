@@ -276,7 +276,7 @@ export class Point3D extends Group {
 
         const unique = [...new Set(types)];
 
-        return unique.map(type => `${counts[type]}&nbsp;${type}`).join(', ');
+        return unique.map(type => `${counts[type]}&nbsp;${type}`).join('<br>');
     }
 
     static getMultipleTargetNumbers() {
