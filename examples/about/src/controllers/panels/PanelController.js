@@ -1,13 +1,16 @@
 import { Vector3 } from 'three';
 
-import { LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
+import { DisplayOptions, LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
 import { PhysicsController } from '../world/PhysicsController.js';
+import { RenderManager } from '../world/RenderManager.js';
 import { ScenePanelController } from './ScenePanelController.js';
 import { PostPanel } from './PostPanel.js';
 import { EnvPanel } from './EnvPanel.js';
 import { GridPanel } from './GridPanel.js';
+
+import { params } from '../../config/Config.js';
 
 export class PanelController {
     static init(renderer, scene, camera, physics, view, ui) {
@@ -43,16 +46,23 @@ export class PanelController {
     }
 
     static initPanel() {
+        const { motionBlur } = RenderManager;
+
         const scene = this.scene;
         const physics = this.physics;
+
+        const vector3 = new Vector3();
+        const gravity = physics.world.getGravity();
 
         const physicsOptions = {
             Off: false,
             Physics: true
         };
 
-        const vector3 = new Vector3();
-        const gravity = physics.world.getGravity();
+        const animateOptions = {
+            Off: false,
+            Animate: true
+        };
 
         const sceneOptions = {
             Post: PostPanel,
@@ -74,6 +84,17 @@ export class PanelController {
         const items = [
             {
                 name: 'FPS'
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'list',
+                list: DisplayOptions,
+                value: getKeyByValue(DisplayOptions, RenderManager.display),
+                callback: value => {
+                    RenderManager.display = DisplayOptions[value];
+                }
             },
             {
                 type: 'divider'
@@ -114,10 +135,24 @@ export class PanelController {
                 type: 'divider'
             },
             {
-                type: 'color',
-                value: scene.background,
+                type: 'list',
+                list: animateOptions,
+                value: getKeyByValue(animateOptions, params.animate),
                 callback: value => {
-                    scene.background.copy(value);
+                    params.animate = animateOptions[value];
+                    motionBlur.saveState = params.animate;
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'color',
+                // value: scene.background,
+                value: RenderManager.currentBackground,
+                callback: value => {
+                    // scene.background.copy(value);
+                    RenderManager.currentBackground.copy(value);
 
                     this.setInvert(value);
                 }

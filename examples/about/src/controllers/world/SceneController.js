@@ -2,9 +2,13 @@ import { wait } from '@alienkitty/space.js/three';
 
 import { RenderManager } from './RenderManager.js';
 
+import { params } from '../../config/Config.js';
+
 export class SceneController {
     static init(view) {
         this.view = view;
+
+        this.animatedOneFramePast = false;
     }
 
     // Public methods
@@ -14,7 +18,11 @@ export class SceneController {
             return;
         }
 
-        this.view.update(time);
+        if (params.animate || !this.animatedOneFramePast) {
+            this.view.update(time);
+
+            this.animatedOneFramePast = !params.animate;
+        }
     };
 
     static animateIn = () => {

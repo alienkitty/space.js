@@ -5,6 +5,8 @@ import { getSphericalCube } from '@alienkitty/space.js/three';
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
 
+import { layers } from '../../config/Config.js';
+
 export class DarkPlanet extends Group {
     constructor() {
         super();
@@ -35,6 +37,10 @@ export class DarkPlanet extends Group {
         const mesh = new Mesh(geometry, material);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
+
+        // Layers
+        mesh.layers.enable(layers.velocity);
+
         this.add(mesh);
 
         physics.add(mesh, { density: 2, autoSleep: false });

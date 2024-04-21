@@ -116,6 +116,7 @@ export class App {
     static start = async () => {
         WorldController.animateIn();
         SceneController.animateIn();
+        RenderManager.animateIn();
 
         await wait(1000);
 

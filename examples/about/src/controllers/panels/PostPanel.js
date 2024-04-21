@@ -10,7 +10,7 @@ export class PostPanel extends Panel {
     }
 
     initPanel() {
-        const { luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
+        const { motionBlur, luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
 
         const postOptions = {
             Off: false,
@@ -28,6 +28,31 @@ export class PostPanel extends Panel {
         };
 
         const postItems = [
+            {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'Interp',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: motionBlur.interpolateGeometry,
+                callback: value => {
+                    motionBlur.interpolateGeometry = value;
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Smear',
+                min: 0,
+                max: 4,
+                step: 0.02,
+                value: motionBlur.smearIntensity,
+                callback: value => {
+                    motionBlur.smearIntensity = value;
+                }
+            },
             {
                 type: 'divider'
             },
@@ -131,6 +156,7 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'list',
+                name: 'Post',
                 list: postOptions,
                 value: getKeyByValue(postOptions, RenderManager.enabled),
                 callback: (value, panel) => {
