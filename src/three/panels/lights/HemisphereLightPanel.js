@@ -22,7 +22,7 @@ export class HemisphereLightPanel extends Panel {
         const light = this.light;
 
         // Defaults
-        if (!light.userData.helper) {
+        if (light.userData.helper === undefined) {
             light.userData.helper = false;
         }
 

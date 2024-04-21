@@ -23,15 +23,15 @@ export class MeshHelperPanel extends Panel {
         const point = Point3D.getPoint(mesh);
 
         // Defaults
-        if (!mesh.userData.normals) {
+        if (mesh.userData.normals === undefined) {
             mesh.userData.normals = false;
         }
 
-        if (!mesh.userData.tangents) {
+        if (mesh.userData.tangents === undefined) {
             mesh.userData.tangents = false;
         }
 
-        if (!mesh.userData.uv) {
+        if (mesh.userData.uv === undefined) {
             mesh.userData.uv = false;
         }
 
