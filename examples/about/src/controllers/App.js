@@ -11,10 +11,7 @@ import { SceneView } from '../views/SceneView.js';
 
 export class App {
     static async init() {
-        if (!/firefox/i.test(navigator.userAgent)) {
-            this.initThread();
-        }
-
+        this.initThread();
         this.initWorld();
         this.initViews();
         this.initControllers();
