@@ -1,6 +1,6 @@
 {
   "name": "@alienkitty/space.js",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Minimal monospace UI library",
   "type": "module",
   "main": "./src/index.js",
