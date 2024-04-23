@@ -177,28 +177,25 @@ npx eslint examples/*.html
 
 #### v1.3
 
+* [ ] Change camera perspective
 * [ ] Material texture thumbnails
 * [ ] Material texture drag and drop
 
 #### v1.4
 
+* [ ] Move objects
 * [ ] GLTF drag and drop
 * [ ] Load/save scene
 
 #### v1.5
 
-* [ ] Move objects
-* [ ] Change camera perspective
+* [ ] MIDI support
 
 #### v1.6
 
-* [ ] MIDI support
-
-#### v1.7
-
 * [ ] WebXR version
 
-#### v1.8
+#### v1.7
 
 * [ ] OGL version
 * [ ] Documentation
