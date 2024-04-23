@@ -16,13 +16,13 @@ export class OimoPhysicsPanel extends Panel {
     }
 
     initPanel() {
+        const { physics } = Point3D;
+
         let object = this.mesh;
 
         if (object.parent && object.parent.isGroup) {
             object = object.parent;
         }
-
-        const { physics } = Point3D;
 
         const angularVelocity = physics.getAngularVelocity(object);
 

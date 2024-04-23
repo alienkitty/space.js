@@ -52,7 +52,7 @@ export class PanelController {
         const physics = this.physics;
 
         const vector3 = new Vector3();
-        const gravity = physics.world.getGravity();
+        const gravity = physics.getGravity();
 
         const physicsOptions = {
             Off: false,
@@ -128,7 +128,7 @@ export class PanelController {
                 value: -gravity.y,
                 callback: value => {
                     gravity.y = -value;
-                    physics.world.setGravity(gravity);
+                    physics.setGravity(gravity);
                 }
             },
             {
