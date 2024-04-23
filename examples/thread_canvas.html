@@ -131,24 +131,18 @@
             }
 
             static initThread() {
-                if ('transferControlToOffscreen' in this.params.canvas && !/firefox/i.test(navigator.userAgent)) {
-                    this.thread = new Thread({
-                        imports: [
-                            ['../src/index.js', 'ticker']
-                        ],
-                        classes: [CanvasNoise],
-                        controller: [CanvasNoiseThread, 'init', 'resize', 'start', 'stop']
-                    });
+                this.thread = new Thread({
+                    imports: [
+                        ['../src/index.js', 'ticker']
+                    ],
+                    classes: [CanvasNoise],
+                    controller: [CanvasNoiseThread, 'init', 'resize', 'start', 'stop']
+                });
 
-                    this.element = this.params.canvas;
-                    this.params.canvas = this.element.transferControlToOffscreen();
+                this.element = this.params.canvas;
+                this.params.canvas = this.element.transferControlToOffscreen();
 
-                    this.thread.init({ params: this.params, buffer: [this.params.canvas] });
-                } else {
-                    ticker.start();
-
-                    this.noise = new CanvasNoise(this.params);
-                }
+                this.thread.init({ params: this.params, buffer: [this.params.canvas] });
             }
 
             // Event handlers
@@ -160,27 +154,15 @@
             // Public methods
 
             static resize = (width, height, dpr) => {
-                if (this.thread) {
-                    this.thread.resize({ width, height, dpr });
-                } else {
-                    this.noise.resize(width, height, dpr);
-                }
+                this.thread.resize({ width, height, dpr });
             };
 
             static start = () => {
-                if (this.thread) {
-                    this.thread.start({ fps: 20 });
-                } else {
-                    ticker.add(this.onUpdate, 20);
-                }
+                this.thread.start({ fps: 20 });
             };
 
             static stop = () => {
-                if (this.thread) {
-                    this.thread.stop();
-                } else {
-                    ticker.remove(this.onUpdate);
-                }
+                this.thread.stop();
             };
         }
 

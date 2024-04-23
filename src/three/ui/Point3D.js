@@ -276,7 +276,7 @@ export class Point3D extends Group {
 
         const unique = [...new Set(types)];
 
-        return unique.map(type => `${counts[type]}&nbsp;${type}`).join(', ');
+        return unique.map(type => `${counts[type]}&nbsp;${type}`).join('<br>');
     }
 
     static getMultipleTargetNumbers() {
@@ -577,17 +577,13 @@ export class Point3D extends Group {
         Point3D.events.emit('click', { target: this });
     };
 
-    onUpdate = ({ path, value, index, target }) => {
+    onUpdate = ({ value, index, target }) => {
         if (this.isMultiple) {
             Point3D.multiple.forEach(point => {
                 if (point !== this) {
-                    path.forEach(([name, index]) => {
-                        point.setPanelIndex(name, index);
-                    });
-
-                    if (typeof index !== 'undefined') {
+                    if (index !== undefined) {
                         point.setPanelIndex(target.name, index);
-                    } else if (typeof value !== 'undefined') {
+                    } else if (value !== undefined) {
                         point.setPanelValue(target.name, value);
                     }
                 }

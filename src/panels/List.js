@@ -69,8 +69,6 @@ export class List extends Interface {
     };
 
     onUpdate = e => {
-        e.path.unshift([this.name, this.index]);
-
         this.events.emit('update', e);
     };
 
@@ -121,7 +119,7 @@ export class List extends Interface {
     update() {
         const value = this.keys[this.index];
 
-        this.events.emit('update', { path: [], index: this.index, target: this });
+        this.events.emit('update', { index: this.index, target: this });
 
         if (this.callback) {
             this.callback(value, this);

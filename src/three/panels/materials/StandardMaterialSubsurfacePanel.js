@@ -21,7 +21,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
         const mesh = this.mesh;
 
         // Defaults
-        if (!mesh.userData.subsurface) {
+        if (mesh.userData.subsurface === undefined) {
             mesh.userData.subsurface = false;
 
             mesh.userData.subsurfaceUniforms = {

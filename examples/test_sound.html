@@ -10,8 +10,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
     <script type="module">
-        import { BufferLoader, WebAudio } from '../src/index.js';
+        import { BufferLoader, WebAudio } from '@alienkitty/space.js';
 
         const bufferLoader = new BufferLoader();
         await bufferLoader.loadAllAsync(['assets/sounds/gong.mp3']);

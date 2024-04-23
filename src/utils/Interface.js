@@ -177,51 +177,51 @@ export class Interface {
         if (this.isTransform) {
             let transform = '';
 
-            if (typeof style.x !== 'undefined' || typeof style.y !== 'undefined' || typeof style.z !== 'undefined') {
-                const x = typeof style.x !== 'undefined' ? style.x : 0;
-                const y = typeof style.y !== 'undefined' ? style.y : 0;
-                const z = typeof style.z !== 'undefined' ? style.z : 0;
+            if (style.x !== undefined || style.y !== undefined || style.z !== undefined) {
+                const x = style.x !== undefined ? style.x : 0;
+                const y = style.y !== undefined ? style.y : 0;
+                const z = style.z !== undefined ? style.z : 0;
 
                 transform += `translate3d(${x}px, ${y}px, ${z}px)`;
             }
 
-            if (typeof style.skewX !== 'undefined') {
+            if (style.skewX !== undefined) {
                 transform += `skewX(${style.skewX}deg)`;
             }
 
-            if (typeof style.skewY !== 'undefined') {
+            if (style.skewY !== undefined) {
                 transform += `skewY(${style.skewY}deg)`;
             }
 
-            if (typeof style.rotation !== 'undefined') {
+            if (style.rotation !== undefined) {
                 transform += `rotate(${style.rotation}deg)`;
             }
 
-            if (typeof style.rotationX !== 'undefined') {
+            if (style.rotationX !== undefined) {
                 transform += `rotateX(${style.rotationX}deg)`;
             }
 
-            if (typeof style.rotationY !== 'undefined') {
+            if (style.rotationY !== undefined) {
                 transform += `rotateY(${style.rotationY}deg)`;
             }
 
-            if (typeof style.rotationZ !== 'undefined') {
+            if (style.rotationZ !== undefined) {
                 transform += `rotateZ(${style.rotationZ}deg)`;
             }
 
-            if (typeof style.scale !== 'undefined') {
+            if (style.scale !== undefined) {
                 transform += `scale(${style.scale})`;
             }
 
-            if (typeof style.scaleX !== 'undefined') {
+            if (style.scaleX !== undefined) {
                 transform += `scaleX(${style.scaleX})`;
             }
 
-            if (typeof style.scaleY !== 'undefined') {
+            if (style.scaleY !== undefined) {
                 transform += `scaleY(${style.scaleY})`;
             }
 
-            if (typeof style.scaleZ !== 'undefined') {
+            if (style.scaleZ !== undefined) {
                 transform += `scaleZ(${style.scaleZ})`;
             }
 
@@ -231,35 +231,35 @@ export class Interface {
         if (this.isFilter) {
             let filter = '';
 
-            if (typeof style.blur !== 'undefined') {
+            if (style.blur !== undefined) {
                 filter += `blur(${style.blur}px)`;
             }
 
-            if (typeof style.brightness !== 'undefined') {
+            if (style.brightness !== undefined) {
                 filter += `brightness(${style.brightness})`;
             }
 
-            if (typeof style.contrast !== 'undefined') {
+            if (style.contrast !== undefined) {
                 filter += `contrast(${style.contrast})`;
             }
 
-            if (typeof style.grayscale !== 'undefined') {
+            if (style.grayscale !== undefined) {
                 filter += `grayscale(${style.grayscale})`;
             }
 
-            if (typeof style.hue !== 'undefined') {
+            if (style.hue !== undefined) {
                 filter += `hue-rotate(${style.hue}deg)`;
             }
 
-            if (typeof style.invert !== 'undefined') {
+            if (style.invert !== undefined) {
                 filter += `invert(${style.invert})`;
             }
 
-            if (typeof style.saturate !== 'undefined') {
+            if (style.saturate !== undefined) {
                 filter += `saturate(${style.saturate})`;
             }
 
-            if (typeof style.sepia !== 'undefined') {
+            if (style.sepia !== undefined) {
                 filter += `sepia(${style.sepia})`;
             }
 
@@ -269,29 +269,29 @@ export class Interface {
         return this;
     }
 
-    text(str) {
+    text(string) {
         if (!this.element) {
             return;
         }
 
-        if (typeof str === 'undefined') {
+        if (string === undefined) {
             return this.element.textContent;
         } else {
-            this.element.textContent = str;
+            this.element.textContent = string;
         }
 
         return this;
     }
 
-    html(str) {
+    html(string) {
         if (!this.element) {
             return;
         }
 
-        if (typeof str === 'undefined') {
+        if (string === undefined) {
             return this.element.innerHTML;
         } else {
-            this.element.innerHTML = str;
+            this.element.innerHTML = string;
         }
 
         return this;
@@ -345,7 +345,7 @@ export class Interface {
         for (const key in props) {
             let val;
 
-            if (typeof this.style[key] !== 'undefined') {
+            if (this.style[key] !== undefined) {
                 val = this.style[key];
             } else if (~Transforms.indexOf(key) || ~Filters.indexOf(key) || ~Numeric.indexOf(key)) {
                 val = ~Lacuna1.indexOf(key) ? 1 : 0;

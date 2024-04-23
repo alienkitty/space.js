@@ -10,8 +10,16 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
     <script type="module">
-        import { WebAudio } from '../src/index.js';
+        import { WebAudio } from '@alienkitty/space.js';
 
         WebAudio.init({ sampleRate: 48000 });
 
