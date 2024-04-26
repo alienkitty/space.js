@@ -97,7 +97,7 @@ export class MenuItem extends Interface {
     activate(direction) {
         this.active = true;
 
-        this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 800, 'easeOutQuint');
+        this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
 
         this.tween({ opacity: 1 }, 300, 'easeOutSine');
     }
