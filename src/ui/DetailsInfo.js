@@ -85,7 +85,7 @@ export class DetailsInfo extends Interface {
         const stagger = 175;
 
         this.container.children.forEach((child, i) => {
-            const delay = i === 0 ? 0 : duration;
+            const delay = i === 0 ? 0 : 200;
 
             child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
