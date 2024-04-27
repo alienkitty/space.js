@@ -11,8 +11,6 @@ export class DetailsInfo extends Interface {
 
         this.data = data;
 
-        this.animatedIn = false;
-
         this.init();
         this.initViews();
     }
@@ -91,17 +89,15 @@ export class DetailsInfo extends Interface {
         });
 
         this.title.animateIn();
-
-        this.animatedIn = true;
     }
 
     animateOut() {
         this.css({ pointerEvents: 'none' });
 
+        this.title.animateOut();
+
         this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
             this.invisible();
-
-            this.animatedIn = false;
         });
     }
 }
