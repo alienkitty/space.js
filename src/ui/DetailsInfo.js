@@ -26,6 +26,7 @@ export class DetailsInfo extends Interface {
             display: 'flex',
             alignItems: 'flex-end',
             pointerEvents: 'none',
+            x: -10,
             opacity: 0
         });
 
@@ -72,7 +73,6 @@ export class DetailsInfo extends Interface {
     }
 
     animateIn() {
-        this.clearTween();
         this.visible();
         this.css({
             pointerEvents: 'auto',
@@ -89,6 +89,8 @@ export class DetailsInfo extends Interface {
         });
 
         this.title.animateIn();
+
+        this.clearTween().css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, duration, 'easeOutCubic');
     }
 
     animateOut(callback) {
