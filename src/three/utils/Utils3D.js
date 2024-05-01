@@ -61,6 +61,11 @@ export function getFrustumFromHeight(camera, height, offsetZ = 0) {
     return fov;
 }
 
+// Based on https://github.com/mrdoob/three.js/pull/21190#issuecomment-774738902 by WestLangley
+export function getHorizontalFOV(camera, fov) {
+    return Math.atan(Math.tan(fov * MathUtils.DEG2RAD * 0.5) / camera.aspect) * MathUtils.RAD2DEG * 2; // degrees
+}
+
 export function lerpCameras(camera1, camera2, alpha) {
     if (camera1.fov !== camera2.fov || camera1.zoom !== camera2.zoom) {
         if (camera1.fov !== camera2.fov) {
