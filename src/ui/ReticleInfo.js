@@ -32,7 +32,7 @@ export class ReticleInfo extends Interface {
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
             paddingBottom: 3,
-            opacity: 0.7
+            opacity: 'var(--ui-secondary-opacity)'
         });
         this.add(this.secondary);
     }
