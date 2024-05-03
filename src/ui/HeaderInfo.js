@@ -24,9 +24,6 @@ export class HeaderInfo extends Interface {
         this.isOpen = false;
 
         this.init();
-        this.initViews();
-
-        this.addListeners();
     }
 
     init() {
@@ -44,16 +41,6 @@ export class HeaderInfo extends Interface {
         });
         this.number.text(this.fps);
         this.add(this.number);
-    }
-
-    initViews() {
-        this.panel = new Panel();
-        this.panel.css({
-            position: 'absolute',
-            top: 0,
-            right: 10
-        });
-        this.add(this.panel);
     }
 
     addListeners() {
@@ -149,6 +136,22 @@ export class HeaderInfo extends Interface {
     };
 
     // Public methods
+
+    addPanel(item) {
+        if (!this.panel) {
+            this.panel = new Panel();
+            this.panel.css({
+                position: 'absolute',
+                top: 0,
+                right: 10
+            });
+            this.add(this.panel);
+
+            this.addListeners();
+        }
+
+        this.panel.add(item);
+    }
 
     update() {
         this.time = performance.now();

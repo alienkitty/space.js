@@ -14,7 +14,6 @@ export class PointInfo extends Interface {
         this.locked = false;
 
         this.init();
-        this.initViews();
     }
 
     init() {
@@ -64,11 +63,6 @@ export class PointInfo extends Interface {
         this.container.add(this.targetNumbers);
     }
 
-    initViews() {
-        this.panel = new Panel();
-        this.add(this.panel);
-    }
-
     // Public methods
 
     setData(data) {
@@ -111,6 +105,15 @@ export class PointInfo extends Interface {
         this.locked = false;
     }
 
+    addPanel(item) {
+        if (!this.panel) {
+            this.panel = new Panel();
+            this.add(this.panel);
+        }
+
+        this.panel.add(item);
+    }
+
     open() {
         this.css({ pointerEvents: 'auto' });
 
@@ -120,8 +123,10 @@ export class PointInfo extends Interface {
             this.numbers.forEach(number => number.animateIn(100));
         }
 
-        this.panel.animateIn();
-        this.panel.activate();
+        if (this.panel) {
+            this.panel.animateIn();
+            this.panel.activate();
+        }
     }
 
     close() {
@@ -131,8 +136,10 @@ export class PointInfo extends Interface {
 
         this.numbers.forEach(number => number.animateOut());
 
-        this.panel.animateOut();
-        this.panel.deactivate();
+        if (this.panel) {
+            this.panel.animateOut();
+            this.panel.deactivate();
+        }
     }
 
     animateIn() {
