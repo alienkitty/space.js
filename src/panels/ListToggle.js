@@ -25,7 +25,7 @@ export class ListToggle extends Interface {
         this.css({
             position: 'relative',
             cssFloat: 'left',
-            width: 54,
+            width: 'calc(var(--ui-panel-width) / 2)',
             height: 20,
             lineHeight: 20,
             textTransform: 'uppercase',
