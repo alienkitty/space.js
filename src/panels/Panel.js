@@ -21,6 +21,7 @@ export class Panel extends Interface {
     init() {
         this.hide();
         this.css({
+            width: 108,
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'

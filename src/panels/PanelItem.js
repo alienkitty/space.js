@@ -19,10 +19,6 @@ export class PanelItem extends Interface {
     }
 
     init() {
-        this.css({
-            width: 108
-        });
-
         this.container = new Interface('.container');
         this.container.css({
             boxSizing: 'border-box'
