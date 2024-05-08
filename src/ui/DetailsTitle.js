@@ -66,15 +66,5 @@ export class DetailsTitle extends Interface {
         letters.forEach((letter, i) => {
             letter.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 15);
         });
-
-        this.clearTween().tween({ opacity: 1 }, 1000, 'easeOutSine');
-    }
-
-    animateOut(callback) {
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
-            if (callback) {
-                callback();
-            }
-        });
     }
 }
