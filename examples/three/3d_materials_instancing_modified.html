@@ -24,7 +24,7 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
-        const DEBUG = /[?&]debug/.test(location.search);
+        const isDebug = /[?&]debug/.test(location.search);
 
         const amount = parseInt(location.search.slice(1), 10) || 3;
         const count = Math.pow(amount, 3);
@@ -221,7 +221,7 @@
         document.body.appendChild(ui.element);
 
         Point3D.init(scene, camera, {
-            debug: DEBUG
+            debug: isDebug
         });
 
         const point = new Point3D(mesh);
