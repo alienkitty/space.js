@@ -87,7 +87,7 @@ export class ColorPicker extends Interface {
             width: this.height,
             height: this.height,
             backgroundColor: 'var(--ui-bg-color)',
-            border: '1px solid rgb(var(--ui-color-triplet) / 0.25)',
+            border: '1px solid var(--ui-color-divider-line)',
             cursor: 'pointer'
         });
         this.container.add(this.swatch);

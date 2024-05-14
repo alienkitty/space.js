@@ -49,8 +49,7 @@ export class PanelItem extends Interface {
             this.line = new Interface('.line');
             this.line.css({
                 height: 1,
-                backgroundColor: 'rgb(var(--ui-color-triplet) / 0.25)',
-                transformOrigin: 'left center'
+                backgroundColor: 'var(--ui-color-divider-line)'
             });
             this.container.add(this.line);
         } else if (this.data.type === 'link') {
