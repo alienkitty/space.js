@@ -47,20 +47,6 @@ export class PointInfo extends Interface {
             opacity: 'var(--ui-secondary-opacity)'
         });
         this.container.add(this.type);
-
-        this.targetNumbers = new Interface('.numbers');
-        this.targetNumbers.css({
-            position: 'absolute',
-            left: -28,
-            top: 0,
-            minHeight: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 4,
-            paddingTop: 3
-        });
-        this.container.add(this.targetNumbers);
     }
 
     // Public methods
@@ -80,6 +66,22 @@ export class PointInfo extends Interface {
     }
 
     setTargetNumbers(targetNumbers) {
+        if (!this.targetNumbers) {
+            this.targetNumbers = new Interface('.numbers');
+            this.targetNumbers.css({
+                position: 'absolute',
+                left: -28,
+                top: 0,
+                minHeight: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 4,
+                paddingTop: 3
+            });
+            this.container.add(this.targetNumbers);
+        }
+
         this.targetNumbers.empty();
         this.numbers.length = 0;
 
