@@ -36,7 +36,7 @@ export class Floor extends Group {
         const color = new Color(colorStyle);
 
         if (!isInverted) { // Dark colour is muted
-            color.offsetHSL(0, 0, -0.65);
+            color.offsetHSL(0, 0, -0.8);
         }
 
         const array = color.toArray();
