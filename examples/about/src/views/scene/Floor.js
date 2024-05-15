@@ -32,7 +32,7 @@ export class Floor extends Group {
     // Public methods
 
     invert = isInverted => {
-        const colorStyle = `rgb(${Stage.rootStyle.getPropertyValue('--ui-color-triplet').trim()})`;
+        const colorStyle = `rgb(${Stage.rootStyle.getPropertyValue('--ui-color-triplet').trim().replace(/\s/g, ', ')})`;
         const color = new Color(colorStyle);
 
         if (!isInverted) { // Dark colour is muted
