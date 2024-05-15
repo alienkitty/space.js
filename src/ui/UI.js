@@ -218,7 +218,7 @@ export class UI extends Interface {
     // Public methods
 
     addPanel(item) {
-        this.header.info.panel.add(item);
+        this.header.info.addPanel(item);
     }
 
     setPanelValue(label, value) {

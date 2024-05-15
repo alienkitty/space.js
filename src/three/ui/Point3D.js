@@ -394,8 +394,6 @@ export class Point3D extends Group {
         this.initElement();
         this.initViews();
 
-        this.addListeners();
-
         Point3D.add(this);
     }
 
@@ -447,8 +445,6 @@ export class Point3D extends Group {
             type: this.type
         });
         this.element.add(this.point);
-
-        this.panel = this.point.info.panel;
     }
 
     createMesh() {
@@ -605,7 +601,13 @@ export class Point3D extends Group {
     }
 
     addPanel(item) {
-        this.panel.add(item);
+        this.point.info.addPanel(item);
+
+        if (!this.panel) {
+            this.panel = this.point.info.panel;
+
+            this.addListeners();
+        }
     }
 
     setPanelValue(name, value) {

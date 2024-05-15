@@ -10,6 +10,7 @@ export class NavLink extends Interface {
 
         this.title = title;
         this.link = link;
+
         this.letters = [];
 
         this.init();

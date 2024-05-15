@@ -34,7 +34,7 @@ export class ColorPicker extends Interface {
         this.noText = noText;
         this.callback = callback;
 
-        this.width = 108;
+        this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = 19;
         this.middle = this.width / 2;
         this.top = this.height + 9;
@@ -87,7 +87,7 @@ export class ColorPicker extends Interface {
             width: this.height,
             height: this.height,
             backgroundColor: 'var(--ui-bg-color)',
-            border: '1px solid rgba(var(--ui-color-triplet), 0.25)',
+            border: '1px solid var(--ui-color-divider-line)',
             cursor: 'pointer'
         });
         this.container.add(this.swatch);

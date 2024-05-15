@@ -14,7 +14,6 @@ export class PointInfo extends Interface {
         this.locked = false;
 
         this.init();
-        this.initViews();
     }
 
     init() {
@@ -45,28 +44,9 @@ export class PointInfo extends Interface {
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
             paddingBottom: 3,
-            opacity: 0.7
+            opacity: 'var(--ui-secondary-opacity)'
         });
         this.container.add(this.type);
-
-        this.targetNumbers = new Interface('.numbers');
-        this.targetNumbers.css({
-            position: 'absolute',
-            left: -28,
-            top: 0,
-            minHeight: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 4,
-            paddingTop: 3
-        });
-        this.container.add(this.targetNumbers);
-    }
-
-    initViews() {
-        this.panel = new Panel();
-        this.add(this.panel);
     }
 
     // Public methods
@@ -86,6 +66,22 @@ export class PointInfo extends Interface {
     }
 
     setTargetNumbers(targetNumbers) {
+        if (!this.targetNumbers) {
+            this.targetNumbers = new Interface('.numbers');
+            this.targetNumbers.css({
+                position: 'absolute',
+                left: -28,
+                top: 0,
+                minHeight: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 4,
+                paddingTop: 3
+            });
+            this.container.add(this.targetNumbers);
+        }
+
         this.targetNumbers.empty();
         this.numbers.length = 0;
 
@@ -111,6 +107,15 @@ export class PointInfo extends Interface {
         this.locked = false;
     }
 
+    addPanel(item) {
+        if (!this.panel) {
+            this.panel = new Panel();
+            this.add(this.panel);
+        }
+
+        this.panel.add(item);
+    }
+
     open() {
         this.css({ pointerEvents: 'auto' });
 
@@ -120,8 +125,10 @@ export class PointInfo extends Interface {
             this.numbers.forEach(number => number.animateIn(100));
         }
 
-        this.panel.animateIn();
-        this.panel.activate();
+        if (this.panel) {
+            this.panel.animateIn();
+            this.panel.activate();
+        }
     }
 
     close() {
@@ -131,8 +138,10 @@ export class PointInfo extends Interface {
 
         this.numbers.forEach(number => number.animateOut());
 
-        this.panel.animateOut();
-        this.panel.deactivate();
+        if (this.panel) {
+            this.panel.animateOut();
+            this.panel.deactivate();
+        }
     }
 
     animateIn() {

@@ -11,8 +11,6 @@ export class DetailsInfo extends Interface {
 
         this.data = data;
 
-        this.animatedIn = false;
-
         this.init();
         this.initViews();
     }
@@ -28,6 +26,7 @@ export class DetailsInfo extends Interface {
             display: 'flex',
             alignItems: 'flex-end',
             pointerEvents: 'none',
+            x: -10,
             opacity: 0
         });
 
@@ -74,7 +73,6 @@ export class DetailsInfo extends Interface {
     }
 
     animateIn() {
-        this.clearTween();
         this.visible();
         this.css({
             pointerEvents: 'auto',
@@ -85,23 +83,25 @@ export class DetailsInfo extends Interface {
         const stagger = 175;
 
         this.container.children.forEach((child, i) => {
-            const delay = i === 0 ? 0 : duration;
+            const delay = i === 0 ? 0 : 200;
 
             child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
 
         this.title.animateIn();
 
-        this.animatedIn = true;
+        this.clearTween().css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, duration, 'easeOutCubic');
     }
 
-    animateOut() {
+    animateOut(callback) {
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ opacity: 0 }, 1800, 'easeOutExpo', () => {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
             this.invisible();
 
-            this.animatedIn = false;
+            if (callback) {
+                callback();
+            }
         });
     }
 }

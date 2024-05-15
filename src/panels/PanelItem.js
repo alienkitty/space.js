@@ -19,10 +19,6 @@ export class PanelItem extends Interface {
     }
 
     init() {
-        this.css({
-            width: 108
-        });
-
         this.container = new Interface('.container');
         this.container.css({
             boxSizing: 'border-box'
@@ -53,8 +49,7 @@ export class PanelItem extends Interface {
             this.line = new Interface('.line');
             this.line.css({
                 height: 1,
-                backgroundColor: 'rgba(var(--ui-color-triplet), 0.25)',
-                transformOrigin: 'left center'
+                backgroundColor: 'var(--ui-color-divider-line)'
             });
             this.container.add(this.line);
         } else if (this.data.type === 'link') {

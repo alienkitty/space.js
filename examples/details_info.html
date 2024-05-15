@@ -32,6 +32,8 @@
 
         class App {
             static async init() {
+                this.animatedIn = false;
+
                 this.initViews();
 
                 this.addListeners();
@@ -50,14 +52,27 @@ Distance from Sun: 230 million km
                 });
                 this.ui.detailsInfo.animateIn();
                 document.body.appendChild(this.ui.element);
+
+                this.animatedIn = true;
             }
 
             static addListeners() {
+                document.body.addEventListener('click', this.onClick);
                 window.addEventListener('load', this.onLoad);
                 ticker.start();
             }
 
             // Event handlers
+
+            static onClick = () => {
+                if (this.animatedIn) {
+                    this.ui.detailsInfo.animateOut();
+                    this.animatedIn = false;
+                } else {
+                    this.ui.detailsInfo.animateIn();
+                    this.animatedIn = true;
+                }
+            };
 
             static onLoad = () => {
                 this.ui.animateIn();

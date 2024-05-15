@@ -27,7 +27,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
             mesh.userData.subsurfaceUniforms = {
                 thicknessDistortion: { value: 0.1 },
                 thicknessAmbient: { value: 0 },
-                thicknessAttenuation: { value: 0.1 },
+                thicknessAttenuation: { value: 0.8 },
                 thicknessPower: { value: 2 },
                 thicknessScale: { value: 10 }
             };

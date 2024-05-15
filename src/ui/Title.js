@@ -11,6 +11,7 @@ export class Title extends Interface {
         super('.title', 'h1');
 
         this.title = title;
+
         this.letters = [];
 
         this.init();
