@@ -165,6 +165,7 @@ export class RenderManager {
 
         this.motionBlur.setSize(width, height);
 
+        // Unreal bloom
         width = MathUtils.floorPowerOfTwo(width) / 2;
         height = MathUtils.floorPowerOfTwo(height) / 2;
 

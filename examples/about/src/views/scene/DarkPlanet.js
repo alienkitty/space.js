@@ -37,12 +37,10 @@ export class DarkPlanet extends Group {
         const mesh = new Mesh(geometry, material);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
-
-        // Layers
         mesh.layers.enable(layers.velocity);
-
         this.add(mesh);
 
+        // Physics
         physics.add(mesh, { density: 2, autoSleep: false });
 
         this.mesh = mesh;
