@@ -134,7 +134,7 @@ export class PointInfo extends Interface {
     close() {
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
+        this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
 
         this.numbers.forEach(number => number.animateOut());
 
