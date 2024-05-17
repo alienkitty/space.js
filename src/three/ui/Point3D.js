@@ -997,7 +997,7 @@ export class Point3D extends Group {
     snap() {
         // Top-left window snap
         if (this.point.originPosition.x < 20) {
-            this.point.originPosition.x = 10;
+            this.point.originPosition.x = this.point.tracker.locked ? 10 : -18;
         }
 
         if (this.point.originPosition.y < 83) {
@@ -1006,25 +1006,34 @@ export class Point3D extends Group {
 
         // Panel snap
         Point3D.points.forEach(ui => {
-            if (
-                ui !== this &&
-                ui.point.isMove &&
-                this.point.originPosition.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + 58
-            ) {
+            if (ui === this || !ui.point.isMove) {
+                return;
+            }
+
+            let gap = 20;
+
+            if (this.point.tracker.locked) {
+                gap += 28;
+            }
+
+            const min = gap - 10;
+            const max = gap + 10;
+
+            if (this.point.originPosition.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
                 // Left
                 if (
-                    this.point.originPosition.x > ui.point.originPosition.x - this.point.bounds.width - 58 &&
-                    this.point.originPosition.x < ui.point.originPosition.x - this.point.bounds.width - 38
+                    this.point.originPosition.x > ui.point.originPosition.x - this.point.bounds.width - max &&
+                    this.point.originPosition.x < ui.point.originPosition.x - this.point.bounds.width - min
                 ) {
-                    this.point.originPosition.x = ui.point.originPosition.x - this.point.bounds.width - 48;
+                    this.point.originPosition.x = ui.point.originPosition.x - this.point.bounds.width - gap;
                 }
 
                 // Right
                 if (
-                    this.point.originPosition.x > ui.point.originPosition.x + ui.point.bounds.width + 38 &&
-                    this.point.originPosition.x < ui.point.originPosition.x + ui.point.bounds.width + 58
+                    this.point.originPosition.x > ui.point.originPosition.x + ui.point.bounds.width + min &&
+                    this.point.originPosition.x < ui.point.originPosition.x + ui.point.bounds.width + max
                 ) {
-                    this.point.originPosition.x = ui.point.originPosition.x + ui.point.bounds.width + 48;
+                    this.point.originPosition.x = ui.point.originPosition.x + ui.point.bounds.width + gap;
                 }
 
                 // Top
