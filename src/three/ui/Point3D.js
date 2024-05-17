@@ -242,8 +242,10 @@ export class Point3D extends Group {
                     });
                 }
 
-                select.onHover({ type: 'over' });
-                select.onClick(e.shiftKey);
+                if (!e.ctrlKey) { // Ctrl key reserved for camera perspective
+                    select.onHover({ type: 'over' });
+                    select.onClick(e.shiftKey);
+                }
             } else {
                 this.animateOut();
             }
