@@ -7,7 +7,7 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 import { PointInfo } from './PointInfo.js';
 
-import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
+import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 
 export class Point extends Interface {
     constructor(ui, tracker) {
@@ -17,11 +17,12 @@ export class Point extends Interface {
         this.tracker = tracker;
 
         this.position = new Vector2();
+        this.target = new Vector2();
         this.origin = new Vector2();
         this.originPosition = new Vector2();
-        this.target = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
+        this.bounds = null;
         this.lastTime = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
@@ -83,12 +84,10 @@ export class Point extends Interface {
         }
     };
 
-    onHover = async ({ type }) => {
+    onHover = ({ type }) => {
         if (!this.ui) {
             return;
         }
-
-        await defer();
 
         if (type === 'mouseenter') {
             this.ui.onHover({ type: 'over', isPoint: true });
@@ -123,6 +122,15 @@ export class Point extends Interface {
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
+        this.originPosition.addVectors(this.origin, this.position);
+
+        if (this.ui && this.ui.snap) {
+            this.bounds = this.info.container.element.getBoundingClientRect();
+
+            this.ui.snap();
+        }
+
+        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
 
         this.isMove = true;
     };
@@ -168,13 +176,13 @@ export class Point extends Interface {
     }
 
     update() {
-        if (!this.isMove) {
-            this.position.lerp(this.target, this.lerpSpeed);
+        if (this.isMove) {
+            return;
         }
 
-        this.originPosition.addVectors(this.origin, this.position);
+        this.position.lerp(this.target, this.lerpSpeed);
 
-        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     }
 
     lock() {
@@ -187,6 +195,8 @@ export class Point extends Interface {
 
     open() {
         this.info.open();
+
+        this.bounds = this.info.container.element.getBoundingClientRect();
 
         this.isOpen = true;
     }
