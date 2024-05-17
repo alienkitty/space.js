@@ -7,8 +7,6 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 import { PointInfo } from './PointInfo.js';
 
-import { clearTween, delayedCall, tween } from '../tween/Tween.js';
-
 export class Point extends Interface {
     constructor(ui, tracker) {
         super('.point');
@@ -202,23 +200,12 @@ export class Point extends Interface {
     }
 
     close(fast) {
-        if (fast) {
-            clearTween(this.timeout);
+        this.info.close(fast);
 
-            this.timeout = delayedCall(300, () => {
-                this.origin.set(0, 0);
+        this.origin.set(0, 0);
 
-                this.isOpen = false;
-                this.isMove = false;
-            });
-        } else {
-            tween(this.origin, { x: 0, y: 0 }, 400, 'easeOutCubic');
-
-            this.isOpen = false;
-            this.isMove = false;
-        }
-
-        this.info.close();
+        this.isOpen = false;
+        this.isMove = false;
     }
 
     animateIn() {
@@ -241,9 +228,19 @@ export class Point extends Interface {
         this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     }
 
-    deactivate() {
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
-        this.close(true);
+    activate() {
+        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
+    }
+
+    deactivate(toggle) {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine', () => {
+            this.enable();
+            this.close(true);
+
+            if (toggle) {
+                this.activate();
+            }
+        });
     }
 
     destroy() {

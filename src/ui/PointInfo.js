@@ -12,6 +12,7 @@ export class PointInfo extends Interface {
 
         this.numbers = [];
         this.locked = false;
+        this.isOpen = false;
 
         this.init();
     }
@@ -92,7 +93,7 @@ export class PointInfo extends Interface {
             this.numbers.push(number);
         });
 
-        if (this.locked) {
+        if (this.locked && this.isOpen) {
             this.numbers.forEach(number => number.visible());
         }
     }
@@ -129,23 +130,31 @@ export class PointInfo extends Interface {
             this.panel.animateIn();
             this.panel.activate();
         }
+
+        this.isOpen = true;
     }
 
-    close() {
+    close(fast) {
         this.css({ pointerEvents: 'none' });
 
         this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
 
-        this.numbers.forEach(number => number.animateOut());
+        this.numbers.forEach(number => number.animateOut(fast));
 
         if (this.panel) {
-            this.panel.animateOut();
-            this.panel.deactivate();
+            if (fast) {
+                this.panel.hide();
+            } else {
+                this.panel.animateOut();
+                this.panel.deactivate();
+            }
         }
+
+        this.isOpen = false;
     }
 
     animateIn() {
-        this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
+        this.clearTween().css({ left: 10, opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
     }
 
     animateOut(callback) {

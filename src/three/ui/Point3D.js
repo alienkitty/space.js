@@ -989,8 +989,12 @@ export class Point3D extends Group {
                 }
             }
 
-            this.point.enable();
-            this.point.close();
+            if (this.point.isMove) {
+                this.point.deactivate(true);
+            } else {
+                this.point.enable();
+                this.point.close();
+            }
         }
     }
 
@@ -1073,6 +1077,7 @@ export class Point3D extends Group {
         }
 
         this.selected = false;
+
         this.line.deactivate();
         this.point.deactivate();
 
