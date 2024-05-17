@@ -334,17 +334,15 @@ export class Point3D extends Group {
 
     static animateOut() {
         this.points.forEach(ui => {
-            if (ui.animatedIn) {
+            if (ui.isMultiple) {
+                ui.onClick();
+            } else if (ui === this.hover && ui.point.isOpen) {
+                ui.onClick();
+            } else if (ui.animatedIn) {
                 ui.animateOut(true);
                 ui.deactivate();
             }
         });
-
-        if (this.hover) {
-            this.hover.onHover({ type: 'out' });
-            this.hover = null;
-            this.root.css({ cursor: '' });
-        }
     }
 
     static destroy() {
