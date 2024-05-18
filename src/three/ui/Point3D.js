@@ -967,6 +967,13 @@ export class Point3D extends Group {
             }
 
             if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.animateOut(true);
+                        ui.deactivate();
+                    }
+                });
+
                 Point3D.multiple.length = 0;
 
                 this.point.setData({
