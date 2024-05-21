@@ -213,8 +213,10 @@ export class Point extends Interface {
     }
 
     animateIn() {
+        this.clearTween();
         this.visible();
-        this.clearTween().css({ opacity: 1 });
+        this.css({ opacity: 1 });
+
         this.info.animateIn();
     }
 

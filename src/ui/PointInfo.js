@@ -118,9 +118,9 @@ export class PointInfo extends Interface {
     }
 
     open() {
+        this.clearTween();
         this.css({ pointerEvents: 'auto' });
-
-        this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
+        this.tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
             this.numbers.forEach(number => number.animateIn(100));
@@ -135,9 +135,9 @@ export class PointInfo extends Interface {
     }
 
     close(fast) {
+        this.clearTween();
         this.css({ pointerEvents: 'none' });
-
-        this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
+        this.tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
 
         this.numbers.forEach(number => number.animateOut(fast));
 

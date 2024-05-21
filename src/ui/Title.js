@@ -58,6 +58,7 @@ export class Title extends Interface {
     }
 
     animateIn() {
+        this.clearTween();
         this.visible();
 
         shuffle(this.letters);
@@ -74,7 +75,7 @@ export class Title extends Interface {
             letter.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 15);
         });
 
-        this.clearTween().tween({ opacity: 1 }, 1000, 'easeOutSine');
+        this.tween({ opacity: 1 }, 1000, 'easeOutSine');
     }
 
     animateOut(callback) {

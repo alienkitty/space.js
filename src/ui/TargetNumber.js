@@ -51,7 +51,9 @@ export class TargetNumber extends Interface {
     }
 
     animateIn(delay) {
-        this.clearTween().visible().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
+        this.clearTween();
+        this.visible();
+        this.css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', delay);
     }
 
     animateOut(fast) {
