@@ -20,7 +20,6 @@ export class Point extends Interface {
         this.originPosition = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.snap = new Vector2();
         this.bounds = null;
         this.lastTime = null;
         this.lastMouse = new Vector2();
@@ -103,7 +102,7 @@ export class Point extends Interface {
         if (this.info.container.element.contains(e.target)) {
             this.lastTime = performance.now();
             this.lastMouse.set(e.clientX, e.clientY);
-            this.lastOrigin.copy(this.origin).sub(this.snap);
+            this.lastOrigin.copy(this.origin);
 
             this.onPointerMove(e);
 
@@ -126,12 +125,10 @@ export class Point extends Interface {
         if (this.ui && this.ui.snap) {
             this.bounds = this.info.container.element.getBoundingClientRect();
 
-            this.snap.copy(this.originPosition);
             this.ui.snap();
-            this.snap.sub(this.originPosition);
+        } else {
+            this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
         }
-
-        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
 
         this.isMove = true;
     };
@@ -206,7 +203,6 @@ export class Point extends Interface {
         this.info.close(fast);
 
         this.origin.set(0, 0);
-        this.snap.set(0, 0);
 
         this.isOpen = false;
         this.isMove = false;

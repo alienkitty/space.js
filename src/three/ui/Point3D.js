@@ -264,6 +264,14 @@ export class Point3D extends Group {
         return this.points.filter(ui => ui.selected);
     }
 
+    static getMoved() {
+        return this.points.filter(ui => ui.point.isMove);
+    }
+
+    static getSnapped() {
+        return this.points.filter(ui => ui.snapped);
+    }
+
     static getMultipleName() {
         return `${this.multiple.length}&nbsp;Objects`;
     }
@@ -386,6 +394,10 @@ export class Point3D extends Group {
         this.size = new Vector2();
         this.selected = false;
         this.animatedIn = false;
+
+        this.snapPosition = new Vector2();
+        this.snapTarget = new Vector2();
+        this.snapped = false;
 
         this.instances = [];
         this.matrix = new Matrix4();
@@ -777,6 +789,17 @@ export class Point3D extends Group {
                 });
             }
         }
+
+        const snapped = Point3D.getSnapped();
+
+        snapped.forEach(ui => {
+            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                ui.point.origin.x += 28;
+                ui.point.originPosition.x += 28;
+
+                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
+            }
+        });
     }
 
     unlock() {
@@ -793,6 +816,17 @@ export class Point3D extends Group {
                 });
             }
         }
+
+        const snapped = Point3D.getSnapped();
+
+        snapped.forEach(ui => {
+            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                ui.point.origin.x -= 28;
+                ui.point.originPosition.x -= 28;
+
+                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
+            }
+        });
     }
 
     show() {
@@ -1004,56 +1038,93 @@ export class Point3D extends Group {
     }
 
     snap() {
+        const currentSnapped = this.snapped;
+
+        this.snapPosition.copy(this.point.originPosition);
+        this.snapTarget.copy(this.snapPosition);
+
         // Top-left window snap
-        if (this.point.originPosition.x < 20) {
-            this.point.originPosition.x = this.point.tracker.locked ? 10 : -18;
+        if (this.snapTarget.x < 20) {
+            this.snapTarget.x = -18;
+
+            if (this.point.tracker.locked) {
+                this.snapTarget.x += 28;
+            }
+
+            this.snapped = true;
+        } else {
+            this.snapped = false;
         }
 
-        if (this.point.originPosition.y < 83) {
-            this.point.originPosition.y = 73;
+        if (this.snapTarget.y < 83) {
+            this.snapTarget.y = 73;
         }
 
         // Panel snap
-        Point3D.points.forEach(ui => {
-            if (ui === this || !ui.point.isMove) {
-                return;
-            }
+        const moved = Point3D.getMoved();
 
-            let gap = 20;
+        moved.forEach(ui => {
+            if (ui !== this) {
+                let gap = 20;
+                let snap = this.snapped;
 
-            if (this.point.tracker.locked) {
-                gap += 28;
-            }
-
-            const min = gap - 10;
-            const max = gap + 10;
-
-            if (this.point.originPosition.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
-                // Left
-                if (
-                    this.point.originPosition.x > ui.point.originPosition.x - this.point.bounds.width - max &&
-                    this.point.originPosition.x < ui.point.originPosition.x - this.point.bounds.width - min
-                ) {
-                    this.point.originPosition.x = ui.point.originPosition.x - this.point.bounds.width - gap;
+                if (this.point.tracker.locked) {
+                    gap += 28;
                 }
 
-                // Right
-                if (
-                    this.point.originPosition.x > ui.point.originPosition.x + ui.point.bounds.width + min &&
-                    this.point.originPosition.x < ui.point.originPosition.x + ui.point.bounds.width + max
-                ) {
-                    this.point.originPosition.x = ui.point.originPosition.x + ui.point.bounds.width + gap;
-                }
+                const min = gap - 10;
+                const max = gap + 10;
 
-                // Top
-                if (
-                    this.point.originPosition.y > ui.point.originPosition.y - 10 &&
-                    this.point.originPosition.y < ui.point.originPosition.y + 10
-                ) {
-                    this.point.originPosition.y = ui.point.originPosition.y;
+                if (this.snapTarget.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
+                    // Left
+                    if (
+                        this.snapTarget.x > ui.point.originPosition.x - this.point.bounds.width - max &&
+                        this.snapTarget.x < ui.point.originPosition.x - this.point.bounds.width - min
+                    ) {
+                        this.snapTarget.x = ui.point.originPosition.x - this.point.bounds.width - gap;
+
+                        snap = true;
+                    }
+
+                    // Right
+                    if (
+                        this.snapTarget.x > ui.point.originPosition.x + ui.point.bounds.width + min &&
+                        this.snapTarget.x < ui.point.originPosition.x + ui.point.bounds.width + max
+                    ) {
+                        this.snapTarget.x = ui.point.originPosition.x + ui.point.bounds.width + gap;
+
+                        snap = true;
+                    }
+
+                    this.snapped = snap;
+
+                    // Top
+                    if (
+                        this.snapTarget.y > ui.point.originPosition.y - 10 &&
+                        this.snapTarget.y < ui.point.originPosition.y + 10
+                    ) {
+                        this.snapTarget.y = ui.point.originPosition.y;
+                    }
                 }
             }
         });
+
+        this.snapPosition.sub(this.snapTarget);
+        this.point.origin.sub(this.snapPosition); // Subtract delta
+        this.point.originPosition.copy(this.snapTarget);
+
+        this.point.css({ left: Math.round(this.point.originPosition.x), top: Math.round(this.point.originPosition.y) });
+
+        // Refresh panels
+        if (this.snapped !== currentSnapped) {
+            const moved = Point3D.getMoved();
+
+            moved.forEach(ui => {
+                if (ui !== this) {
+                    ui.snap();
+                }
+            });
+        }
     }
 
     deactivate() {
@@ -1082,6 +1153,7 @@ export class Point3D extends Group {
         }
 
         this.selected = false;
+        this.snapped = false;
 
         this.line.deactivate();
         this.point.deactivate();
