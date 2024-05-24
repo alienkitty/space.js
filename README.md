@@ -178,6 +178,7 @@ npx eslint examples/*.html
 #### v1.3
 
 * [ ] Change camera perspective
+* [x] Panel snapping
 * [ ] Material texture thumbnails
 * [ ] Material texture drag and drop
 
