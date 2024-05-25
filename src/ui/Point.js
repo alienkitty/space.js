@@ -202,7 +202,11 @@ export class Point extends Interface {
     close(fast) {
         this.info.close(fast);
 
+        this.position.copy(this.target);
         this.origin.set(0, 0);
+        this.originPosition.copy(this.position);
+
+        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
 
         this.isOpen = false;
         this.isMove = false;
