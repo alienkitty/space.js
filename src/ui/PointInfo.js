@@ -137,18 +137,23 @@ export class PointInfo extends Interface {
     close(fast) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
-        this.tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
 
-        this.numbers.forEach(number => number.animateOut(fast));
+        if (fast) {
+            this.css({ left: 10, opacity: 1 });
 
-        if (this.panel) {
-            if (fast) {
+            if (this.panel) {
                 this.panel.hide();
-            } else {
+            }
+        } else {
+            this.tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
+
+            if (this.panel) {
                 this.panel.animateOut();
                 this.panel.deactivate();
             }
         }
+
+        this.numbers.forEach(number => number.animateOut(fast));
 
         this.isOpen = false;
     }
