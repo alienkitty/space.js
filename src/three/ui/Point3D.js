@@ -22,6 +22,7 @@ export class Point3D extends Group {
     static init(scene, camera, {
         root = document.body,
         container = document.body,
+        breakpoint = 1000,
         physics = null,
         loader = new TextureLoader(),
         uvTexturePath = 'assets/textures/uv.jpg',
@@ -31,9 +32,10 @@ export class Point3D extends Group {
         this.events = new EventEmitter();
         this.scene = scene;
         this.camera = camera;
-        this.physics = physics;
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
+        this.breakpoint = breakpoint;
+        this.physics = physics;
         this.loader = loader;
         this.uvTexturePath = uvTexturePath;
         this.uvHelper = uvHelper;
@@ -56,6 +58,7 @@ export class Point3D extends Group {
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
+        this.windowSnapMargin = 30;
         this.openColor = null;
         this.enabled = true;
 
@@ -130,6 +133,12 @@ export class Point3D extends Group {
         this.canvas.element.style.width = this.width + 'px';
         this.canvas.element.style.height = this.height + 'px';
         this.context.scale(this.dpr, this.dpr);
+
+        if (this.width < this.breakpoint) {
+            this.windowSnapMargin = 20;
+        } else {
+            this.windowSnapMargin = 30;
+        }
 
         this.points.forEach(ui => ui.resize());
     };
@@ -696,6 +705,10 @@ export class Point3D extends Group {
 
     resize() {
         this.line.resize();
+
+        if (this.snapped) {
+            this.snap();
+        }
     }
 
     update() {
@@ -1044,20 +1057,22 @@ export class Point3D extends Group {
         this.snapTarget.copy(this.snapPosition);
 
         // Top-left window snap
-        if (this.snapTarget.x < 20) {
-            this.snapTarget.x = -18;
+        const windowSnapTop = Point3D.windowSnapMargin + 43;
+        let windowSnapLeft = -(48 - Point3D.windowSnapMargin);
 
-            if (this.point.tracker.locked) {
-                this.snapTarget.x += 28;
-            }
+        if (this.point.tracker.locked) {
+            windowSnapLeft += 28;
+        }
 
+        if (this.snapTarget.y <= windowSnapTop + 10) {
+            this.snapTarget.y = windowSnapTop;
+        }
+
+        if (this.snapTarget.x <= windowSnapLeft + 10) {
+            this.snapTarget.x = windowSnapLeft;
             this.snapped = true;
         } else {
             this.snapped = false;
-        }
-
-        if (this.snapTarget.y < 83) {
-            this.snapTarget.y = 73;
         }
 
         // Panel snap
@@ -1076,6 +1091,14 @@ export class Point3D extends Group {
                 const max = gap + 10;
 
                 if (this.snapTarget.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
+                    // Top
+                    if (
+                        this.snapTarget.y > ui.point.originPosition.y - 10 &&
+                        this.snapTarget.y < ui.point.originPosition.y + 10
+                    ) {
+                        this.snapTarget.y = ui.point.originPosition.y;
+                    }
+
                     // Left
                     if (
                         this.snapTarget.x > ui.point.originPosition.x - this.point.bounds.width - max &&
@@ -1097,14 +1120,6 @@ export class Point3D extends Group {
                     }
 
                     this.snapped = snap;
-
-                    // Top
-                    if (
-                        this.snapTarget.y > ui.point.originPosition.y - 10 &&
-                        this.snapTarget.y < ui.point.originPosition.y + 10
-                    ) {
-                        this.snapTarget.y = ui.point.originPosition.y;
-                    }
                 }
             }
         });
