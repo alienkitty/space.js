@@ -9,7 +9,7 @@
   "dependencies": {
     "@alienkitty/alien.js": "alienkitty/alien.js#dev",
     "@alienkitty/space.js": "alienkitty/space.js#dev",
-    "oimophysics": "saharan/OimoPhysics#v1.2.3",
+    "oimophysics": "saharan/OimoPhysics",
     "three": "latest"
   },
   "devDependencies": {
