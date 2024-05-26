@@ -155,7 +155,9 @@ export class Tracker extends Interface {
         clearTween(this.timeout);
 
         if (!this.isInstanced) {
-            this.corners.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+            this.corners.clearTween();
+            this.corners.visible();
+            this.corners.css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
         }
 
         this.animatedIn = true;

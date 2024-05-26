@@ -202,8 +202,10 @@ export class UI extends Interface {
     };
 
     onKeyUp = e => {
-        if (e.keyCode === 27) { // Esc
-            this.onDetailsClick();
+        if (this.details) {
+            if (e.keyCode === 27) { // Esc
+                this.onDetailsClick();
+            }
         }
     };
 
@@ -296,10 +298,6 @@ export class UI extends Interface {
     }
 
     toggleDetails(show) {
-        if (!this.details) {
-            return;
-        }
-
         if (show) {
             this.isDetailsOpen = true;
 

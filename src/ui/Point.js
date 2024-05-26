@@ -7,8 +7,6 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 import { PointInfo } from './PointInfo.js';
 
-import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
-
 export class Point extends Interface {
     constructor(ui, tracker) {
         super('.point');
@@ -17,11 +15,12 @@ export class Point extends Interface {
         this.tracker = tracker;
 
         this.position = new Vector2();
+        this.target = new Vector2();
         this.origin = new Vector2();
         this.originPosition = new Vector2();
-        this.target = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
+        this.bounds = null;
         this.lastTime = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
@@ -83,12 +82,10 @@ export class Point extends Interface {
         }
     };
 
-    onHover = async ({ type }) => {
+    onHover = ({ type }) => {
         if (!this.ui) {
             return;
         }
-
-        await defer();
 
         if (type === 'mouseenter') {
             this.ui.onHover({ type: 'over', isPoint: true });
@@ -123,6 +120,15 @@ export class Point extends Interface {
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
+        this.originPosition.addVectors(this.origin, this.position);
+
+        if (this.ui && this.ui.snap) {
+            this.bounds = this.info.container.element.getBoundingClientRect();
+
+            this.ui.snap();
+        } else {
+            this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+        }
 
         this.isMove = true;
     };
@@ -168,13 +174,13 @@ export class Point extends Interface {
     }
 
     update() {
-        if (!this.isMove) {
-            this.position.lerp(this.target, this.lerpSpeed);
+        if (this.isMove) {
+            return;
         }
 
-        this.originPosition.addVectors(this.origin, this.position);
+        this.position.lerp(this.target, this.lerpSpeed);
 
-        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     }
 
     lock() {
@@ -188,32 +194,29 @@ export class Point extends Interface {
     open() {
         this.info.open();
 
+        this.bounds = this.info.container.element.getBoundingClientRect();
+
         this.isOpen = true;
     }
 
     close(fast) {
-        if (fast) {
-            clearTween(this.timeout);
+        this.info.close(fast);
 
-            this.timeout = delayedCall(300, () => {
-                this.origin.set(0, 0);
+        this.position.copy(this.target);
+        this.origin.set(0, 0);
+        this.originPosition.copy(this.position);
 
-                this.isOpen = false;
-                this.isMove = false;
-            });
-        } else {
-            tween(this.origin, { x: 0, y: 0 }, 400, 'easeOutCubic');
+        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
 
-            this.isOpen = false;
-            this.isMove = false;
-        }
-
-        this.info.close();
+        this.isOpen = false;
+        this.isMove = false;
     }
 
     animateIn() {
+        this.clearTween();
         this.visible();
-        this.clearTween().css({ opacity: 1 });
+        this.css({ opacity: 1 });
+
         this.info.animateIn();
     }
 
@@ -231,9 +234,19 @@ export class Point extends Interface {
         this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     }
 
-    deactivate() {
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
-        this.close(true);
+    activate() {
+        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
+    }
+
+    deactivate(toggle) {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine', () => {
+            this.enable();
+            this.close(true);
+
+            if (toggle) {
+                this.activate();
+            }
+        });
     }
 
     destroy() {

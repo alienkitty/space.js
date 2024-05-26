@@ -12,6 +12,7 @@ export class PointInfo extends Interface {
 
         this.numbers = [];
         this.locked = false;
+        this.isOpen = false;
 
         this.init();
     }
@@ -92,7 +93,7 @@ export class PointInfo extends Interface {
             this.numbers.push(number);
         });
 
-        if (this.locked) {
+        if (this.locked && this.isOpen) {
             this.numbers.forEach(number => number.visible());
         }
     }
@@ -117,9 +118,9 @@ export class PointInfo extends Interface {
     }
 
     open() {
+        this.clearTween();
         this.css({ pointerEvents: 'auto' });
-
-        this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
+        this.tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
             this.numbers.forEach(number => number.animateIn(100));
@@ -129,26 +130,39 @@ export class PointInfo extends Interface {
             this.panel.animateIn();
             this.panel.activate();
         }
+
+        this.isOpen = true;
     }
 
-    close() {
+    close(fast) {
+        this.clearTween();
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 200);
+        if (fast) {
+            this.css({ left: 10, opacity: 1 });
 
-        this.numbers.forEach(number => number.animateOut());
+            if (this.panel) {
+                this.panel.hide();
+            }
+        } else {
+            this.tween({ left: 10, opacity: 1 }, 400, 'easeInCubic', 100);
 
-        if (this.panel) {
-            this.panel.animateOut();
-            this.panel.deactivate();
+            if (this.panel) {
+                this.panel.animateOut();
+                this.panel.deactivate();
+            }
         }
+
+        this.numbers.forEach(number => number.animateOut(fast));
+
+        this.isOpen = false;
     }
 
     animateIn() {
-        this.clearTween().css({ opacity: 0 }).tween({ left: 10, opacity: 1 }, 400, 'easeOutCubic', 200);
+        this.clearTween().css({ left: 10, opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
     }
 
     animateOut(callback) {
-        this.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic', 200, callback);
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeInCubic', 300, callback);
     }
 }

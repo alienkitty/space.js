@@ -72,7 +72,9 @@ export class Reticle extends Interface {
     }
 
     animateIn() {
-        this.clearTween().visible().css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+        this.clearTween();
+        this.visible();
+        this.css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
         this.animatedIn = true;
     }

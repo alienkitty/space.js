@@ -162,16 +162,16 @@ export class Interface {
                 continue;
             }
 
-            let val;
-
             if (~Numeric.indexOf(key)) {
-                val = props[key];
-                style[key] = val;
+                style[key] = props[key];
+                this.element.style[key] = props[key];
             } else {
-                val = typeof props[key] !== 'string' ? props[key] + 'px' : props[key];
-            }
+                if (typeof props[key] === 'number') {
+                    style[key] = props[key];
+                }
 
-            this.element.style[key] = val;
+                this.element.style[key] = typeof props[key] !== 'string' ? `${props[key]}px` : props[key];
+            }
         }
 
         if (this.isTransform) {
@@ -343,18 +343,22 @@ export class Interface {
         const style = getComputedStyle(this.element);
 
         for (const key in props) {
-            let val;
-
-            if (this.style[key] !== undefined) {
-                val = this.style[key];
-            } else if (~Transforms.indexOf(key) || ~Filters.indexOf(key) || ~Numeric.indexOf(key)) {
-                val = ~Lacuna1.indexOf(key) ? 1 : 0;
-            } else if (typeof style[key] === 'string') {
-                val = parseFloat(style[key]);
+            if (this.style[key] === undefined) {
+                if (~Transforms.indexOf(key) || ~Filters.indexOf(key) || ~Numeric.indexOf(key)) {
+                    this.style[key] = ~Lacuna1.indexOf(key) ? 1 : 0;
+                } else if (typeof style[key] === 'string') {
+                    this.style[key] = parseFloat(style[key]);
+                }
             }
 
-            if (!isNaN(val)) {
-                this.style[key] = val;
+            if (isNaN(this.style[key])) {
+                delete this.style[key];
+            }
+        }
+
+        for (const key in this.style) {
+            if (props[key] === undefined) {
+                delete this.style[key];
             }
         }
 

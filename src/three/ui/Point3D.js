@@ -131,7 +131,7 @@ export class Point3D extends Group {
         this.canvas.element.style.height = this.height + 'px';
         this.context.scale(this.dpr, this.dpr);
 
-        this.points.forEach(point => point.resize());
+        this.points.forEach(ui => ui.resize());
     };
 
     static onPointerDown = e => {
@@ -169,16 +169,16 @@ export class Point3D extends Group {
             if (intersection.length) {
                 this.instanceId = intersection[0].instanceId;
 
-                const point = this.points[this.objects.indexOf(intersection[0].object)];
+                const ui = this.points[this.objects.indexOf(intersection[0].object)];
 
                 if (!this.hover || this.instanceId !== this.lastInstanceId) {
                     this.lastInstanceId = this.instanceId;
-                    this.hover = point;
+                    this.hover = ui;
                     this.hover.onHover({ type: 'over' });
                     this.root.css({ cursor: 'pointer' });
-                } else if (this.hover !== point) {
+                } else if (this.hover !== ui) {
                     this.hover.onHover({ type: 'out' });
-                    this.hover = point;
+                    this.hover = ui;
                     this.hover.onHover({ type: 'over' });
                     this.root.css({ cursor: 'pointer' });
                 }
@@ -210,10 +210,10 @@ export class Point3D extends Group {
 
         if (this.click && this.click === this.hover) {
             if (!e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                this.points.forEach(point => {
-                    if (point !== this.click && point.animatedIn) {
-                        point.animateOut(true);
-                        point.deactivate();
+                this.points.forEach(ui => {
+                    if (ui !== this.click && ui.animatedIn) {
+                        ui.animateOut(true);
+                        ui.deactivate();
                     }
                 });
             }
@@ -234,16 +234,18 @@ export class Point3D extends Group {
 
             if (select) {
                 if (!e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                    this.points.forEach(point => {
-                        if (point !== select && point.animatedIn) {
-                            point.animateOut(true);
-                            point.deactivate();
+                    this.points.forEach(ui => {
+                        if (ui !== select && ui.animatedIn) {
+                            ui.animateOut(true);
+                            ui.deactivate();
                         }
                     });
                 }
 
-                select.onHover({ type: 'over' });
-                select.onClick(e.shiftKey);
+                if (!e.ctrlKey) { // Ctrl key reserved for camera perspective
+                    select.onHover({ type: 'over' });
+                    select.onClick(e.shiftKey);
+                }
             } else {
                 this.animateOut();
             }
@@ -255,11 +257,19 @@ export class Point3D extends Group {
     // Public methods
 
     static getPoint(mesh) {
-        return this.points.find(point => point.object === mesh);
+        return this.points.find(ui => ui.object === mesh);
     }
 
     static getSelected() {
-        return this.points.filter(point => point.selected);
+        return this.points.filter(ui => ui.selected);
+    }
+
+    static getMoved() {
+        return this.points.filter(ui => ui.point.isMove);
+    }
+
+    static getSnapped() {
+        return this.points.filter(ui => ui.snapped);
     }
 
     static getMultipleName() {
@@ -267,7 +277,7 @@ export class Point3D extends Group {
     }
 
     static getMultipleTypes() {
-        const types = this.multiple.map(point => point.type);
+        const types = this.multiple.map(ui => ui.type);
         const counts = {};
 
         types.forEach(type => {
@@ -280,21 +290,21 @@ export class Point3D extends Group {
     }
 
     static getMultipleTargetNumbers() {
-        return this.multiple.map(point => point.index + 1);
+        return this.multiple.map(ui => ui.index + 1);
     }
 
     static setIndexes() {
-        this.points.forEach((point, i) => point.setIndex(i));
+        this.points.forEach((ui, i) => ui.setIndex(i));
     }
 
     static invert() {
-        this.points.forEach(point => point.resize());
+        this.points.forEach(ui => ui.resize());
     }
 
     static update(time) {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
-        this.points.forEach(point => point.update());
+        this.points.forEach(ui => ui.update());
 
         if (!navigator.maxTouchPoints && time - this.lastRaycast > this.raycastInterval) {
             this.onPointerMove();
@@ -303,24 +313,24 @@ export class Point3D extends Group {
     }
 
     static add(...points) {
-        points.forEach(point => {
-            this.objects.push(point.object);
-            this.points.push(point);
+        points.forEach(ui => {
+            this.objects.push(ui.object);
+            this.points.push(ui);
         });
 
         this.setIndexes();
     }
 
     static remove(...points) {
-        points.forEach(point => {
-            const index = this.points.indexOf(point);
+        points.forEach(ui => {
+            const index = this.points.indexOf(ui);
 
             if (~index) {
                 this.objects.splice(index, 1);
                 this.points.splice(index, 1);
             }
 
-            if (point === this.hover) {
+            if (ui === this.hover) {
                 this.hover.onHover({ type: 'out' });
                 this.hover = null;
                 this.root.css({ cursor: '' });
@@ -331,18 +341,16 @@ export class Point3D extends Group {
     }
 
     static animateOut() {
-        this.points.forEach(point => {
-            if (point.animatedIn) {
-                point.animateOut(true);
-                point.deactivate();
+        this.points.forEach(ui => {
+            if (ui.isMultiple) {
+                ui.onClick();
+            } else if (ui === this.hover && ui.point.isOpen) {
+                ui.onClick();
+            } else if (ui.animatedIn) {
+                ui.animateOut(true);
+                ui.deactivate();
             }
         });
-
-        if (this.hover) {
-            this.hover.onHover({ type: 'out' });
-            this.hover = null;
-            this.root.css({ cursor: '' });
-        }
     }
 
     static destroy() {
@@ -386,6 +394,10 @@ export class Point3D extends Group {
         this.size = new Vector2();
         this.selected = false;
         this.animatedIn = false;
+
+        this.snapPosition = new Vector2();
+        this.snapTarget = new Vector2();
+        this.snapped = false;
 
         this.instances = [];
         this.matrix = new Matrix4();
@@ -507,9 +519,9 @@ export class Point3D extends Group {
             }
 
             if (isPoint && this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.onHover({ type });
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.onHover({ type });
                     }
                 });
             }
@@ -575,12 +587,12 @@ export class Point3D extends Group {
 
     onUpdate = ({ value, index, target }) => {
         if (this.isMultiple) {
-            Point3D.multiple.forEach(point => {
-                if (point !== this) {
+            Point3D.multiple.forEach(ui => {
+                if (ui !== this) {
                     if (index !== undefined) {
-                        point.setPanelIndex(target.name, index);
+                        ui.setPanelIndex(target.name, index);
                     } else if (value !== undefined) {
-                        point.setPanelValue(target.name, value);
+                        ui.setPanelValue(target.name, value);
                     }
                 }
             });
@@ -688,7 +700,7 @@ export class Point3D extends Group {
 
     update() {
         this.line.setStartPoint(this.reticle.position);
-        this.line.setEndPoint(this.point.originPosition);
+        this.line.setEndPoint(this.point.position);
         this.line.update();
         this.reticle.update();
         this.point.update();
@@ -770,13 +782,24 @@ export class Point3D extends Group {
             this.tracker.lock();
 
             if (this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.lock();
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.lock();
                     }
                 });
             }
         }
+
+        const snapped = Point3D.getSnapped();
+
+        snapped.forEach(ui => {
+            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                ui.point.origin.x += 28;
+                ui.point.originPosition.x += 28;
+
+                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
+            }
+        });
     }
 
     unlock() {
@@ -786,13 +809,24 @@ export class Point3D extends Group {
             this.tracker.unlock();
 
             if (this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.unlock();
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.unlock();
                     }
                 });
             }
         }
+
+        const snapped = Point3D.getSnapped();
+
+        snapped.forEach(ui => {
+            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                ui.point.origin.x -= 28;
+                ui.point.originPosition.x -= 28;
+
+                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
+            }
+        });
     }
 
     show() {
@@ -800,9 +834,9 @@ export class Point3D extends Group {
             this.tracker.show();
 
             if (this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.show();
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.show();
                     }
                 });
             }
@@ -814,9 +848,9 @@ export class Point3D extends Group {
             this.tracker.hide(true);
 
             if (this.isMultiple) {
-                Point3D.multiple.forEach(point => {
-                    if (point !== this) {
-                        point.hide();
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.hide();
                     }
                 });
             }
@@ -901,33 +935,33 @@ export class Point3D extends Group {
         }
 
         if (Point3D.multiple.length > 1) {
-            const panel = Point3D.multiple[0];
+            const ui = Point3D.multiple[0];
 
-            panel.point.setData({
+            ui.point.setData({
                 name: Point3D.getMultipleName(),
                 type: Point3D.getMultipleTypes()
             });
 
-            if (panel.tracker) {
-                panel.point.setTargetNumbers(Point3D.getMultipleTargetNumbers());
+            if (ui.tracker) {
+                ui.point.setTargetNumbers(Point3D.getMultipleTargetNumbers());
             }
 
-            panel.isMultiple = true;
+            ui.isMultiple = true;
         } else if (Point3D.multiple.length) {
-            const panel = Point3D.multiple[0];
+            const ui = Point3D.multiple[0];
 
             Point3D.multiple.length = 0;
 
-            panel.point.setData({
-                name: panel.name,
-                type: panel.type
+            ui.point.setData({
+                name: ui.name,
+                type: ui.type
             });
 
-            if (panel.tracker) {
-                panel.point.setTargetNumbers([panel.index + 1]);
+            if (ui.tracker) {
+                ui.point.setTargetNumbers([ui.index + 1]);
             }
 
-            panel.isMultiple = false;
+            ui.isMultiple = false;
         }
     }
 
@@ -944,9 +978,9 @@ export class Point3D extends Group {
 
             if (multiple && selected.length > 1) {
                 if (!Point3D.multiple.length) {
-                    const panel = selected.filter(point => point !== this)[0];
+                    const ui = selected.filter(ui => ui !== this)[0];
 
-                    Point3D.multiple.push(panel);
+                    Point3D.multiple.push(ui);
                 }
 
                 Point3D.multiple.push(this);
@@ -967,6 +1001,13 @@ export class Point3D extends Group {
             }
 
             if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.animateOut(true);
+                        ui.deactivate();
+                    }
+                });
+
                 Point3D.multiple.length = 0;
 
                 this.point.setData({
@@ -987,8 +1028,102 @@ export class Point3D extends Group {
                 }
             }
 
-            this.point.enable();
-            this.point.close();
+            if (this.point.isMove) {
+                this.point.deactivate(true);
+            } else {
+                this.point.enable();
+                this.point.close();
+            }
+        }
+    }
+
+    snap() {
+        const currentSnapped = this.snapped;
+
+        this.snapPosition.copy(this.point.originPosition);
+        this.snapTarget.copy(this.snapPosition);
+
+        // Top-left window snap
+        if (this.snapTarget.x < 20) {
+            this.snapTarget.x = -18;
+
+            if (this.point.tracker.locked) {
+                this.snapTarget.x += 28;
+            }
+
+            this.snapped = true;
+        } else {
+            this.snapped = false;
+        }
+
+        if (this.snapTarget.y < 83) {
+            this.snapTarget.y = 73;
+        }
+
+        // Panel snap
+        const moved = Point3D.getMoved();
+
+        moved.forEach(ui => {
+            if (ui !== this) {
+                let gap = 20;
+                let snap = this.snapped;
+
+                if (this.point.tracker.locked) {
+                    gap += 28;
+                }
+
+                const min = gap - 10;
+                const max = gap + 10;
+
+                if (this.snapTarget.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
+                    // Left
+                    if (
+                        this.snapTarget.x > ui.point.originPosition.x - this.point.bounds.width - max &&
+                        this.snapTarget.x < ui.point.originPosition.x - this.point.bounds.width - min
+                    ) {
+                        this.snapTarget.x = ui.point.originPosition.x - this.point.bounds.width - gap;
+
+                        snap = true;
+                    }
+
+                    // Right
+                    if (
+                        this.snapTarget.x > ui.point.originPosition.x + ui.point.bounds.width + min &&
+                        this.snapTarget.x < ui.point.originPosition.x + ui.point.bounds.width + max
+                    ) {
+                        this.snapTarget.x = ui.point.originPosition.x + ui.point.bounds.width + gap;
+
+                        snap = true;
+                    }
+
+                    this.snapped = snap;
+
+                    // Top
+                    if (
+                        this.snapTarget.y > ui.point.originPosition.y - 10 &&
+                        this.snapTarget.y < ui.point.originPosition.y + 10
+                    ) {
+                        this.snapTarget.y = ui.point.originPosition.y;
+                    }
+                }
+            }
+        });
+
+        this.snapPosition.sub(this.snapTarget);
+        this.point.origin.sub(this.snapPosition); // Subtract delta
+        this.point.originPosition.copy(this.snapTarget);
+
+        this.point.css({ left: Math.round(this.point.originPosition.x), top: Math.round(this.point.originPosition.y) });
+
+        // Refresh panels
+        if (this.snapped !== currentSnapped) {
+            const moved = Point3D.getMoved();
+
+            moved.forEach(ui => {
+                if (ui !== this) {
+                    ui.snap();
+                }
+            });
         }
     }
 
@@ -1018,6 +1153,8 @@ export class Point3D extends Group {
         }
 
         this.selected = false;
+        this.snapped = false;
+
         this.line.deactivate();
         this.point.deactivate();
 
