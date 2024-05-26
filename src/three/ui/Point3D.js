@@ -141,6 +141,26 @@ export class Point3D extends Group {
         }
 
         this.points.forEach(ui => ui.resize());
+
+        const snapped = this.getSnappedSorted();
+
+        snapped.forEach((ui, i) => {
+            if (i !== 0) {
+                let gap = 20;
+
+                if (ui.point.tracker.locked) {
+                    gap += 28;
+                }
+
+                const last = snapped[i - 1];
+                const positionX = last.point.originPosition.x + last.point.bounds.width + gap;
+
+                ui.point.origin.x = positionX;
+                ui.point.originPosition.x = positionX;
+            }
+
+            ui.snap();
+        });
     };
 
     static onPointerDown = e => {
@@ -279,6 +299,10 @@ export class Point3D extends Group {
 
     static getSnapped() {
         return this.points.filter(ui => ui.snapped);
+    }
+
+    static getSnappedSorted() {
+        return this.getSnapped().sort((a, b) => a.point.originPosition.x - b.point.originPosition.x);
     }
 
     static getMultipleName() {
@@ -705,10 +729,6 @@ export class Point3D extends Group {
 
     resize() {
         this.line.resize();
-
-        if (this.snapped) {
-            this.snap();
-        }
     }
 
     update() {
