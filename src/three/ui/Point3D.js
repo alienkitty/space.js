@@ -141,6 +141,26 @@ export class Point3D extends Group {
         }
 
         this.points.forEach(ui => ui.resize());
+
+        const snapped = this.getSnappedSorted();
+
+        snapped.forEach((ui, i) => {
+            if (i !== 0) {
+                let gap = 20;
+
+                if (ui.point.tracker.locked) {
+                    gap += 28;
+                }
+
+                const last = snapped[i - 1];
+                const positionX = last.point.originPosition.x + last.point.bounds.width + gap;
+
+                ui.point.origin.x = positionX;
+                ui.point.originPosition.x = positionX;
+            }
+
+            ui.snap();
+        });
     };
 
     static onPointerDown = e => {
@@ -281,6 +301,10 @@ export class Point3D extends Group {
         return this.points.filter(ui => ui.snapped);
     }
 
+    static getSnappedSorted() {
+        return this.getSnapped().sort((a, b) => a.point.originPosition.x - b.point.originPosition.x);
+    }
+
     static getMultipleName() {
         return `${this.multiple.length}&nbsp;Objects`;
     }
@@ -406,6 +430,8 @@ export class Point3D extends Group {
 
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
+        this.snappedLeft = false;
+        this.snappedRight = false;
         this.snapped = false;
 
         this.instances = [];
@@ -705,10 +731,6 @@ export class Point3D extends Group {
 
     resize() {
         this.line.resize();
-
-        if (this.snapped) {
-            this.snap();
-        }
     }
 
     update() {
@@ -803,16 +825,18 @@ export class Point3D extends Group {
             }
         }
 
-        const snapped = Point3D.getSnapped();
+        if (this.snappedLeft) {
+            const snapped = Point3D.getSnapped();
 
-        snapped.forEach(ui => {
-            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
-                ui.point.origin.x += 28;
-                ui.point.originPosition.x += 28;
+            snapped.forEach(ui => {
+                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                    ui.point.origin.x += 28;
+                    ui.point.originPosition.x += 28;
 
-                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
-            }
-        });
+                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
+                }
+            });
+        }
     }
 
     unlock() {
@@ -830,16 +854,18 @@ export class Point3D extends Group {
             }
         }
 
-        const snapped = Point3D.getSnapped();
+        if (this.snappedLeft) {
+            const snapped = Point3D.getSnapped();
 
-        snapped.forEach(ui => {
-            if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
-                ui.point.origin.x -= 28;
-                ui.point.originPosition.x -= 28;
+            snapped.forEach(ui => {
+                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                    ui.point.origin.x -= 28;
+                    ui.point.originPosition.x -= 28;
 
-                ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
-            }
-        });
+                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
+                }
+            });
+        }
     }
 
     show() {
@@ -1053,6 +1079,9 @@ export class Point3D extends Group {
     snap() {
         const currentSnapped = this.snapped;
 
+        let snappedLeft = false;
+        let snappedRight = false;
+
         this.snapPosition.copy(this.point.originPosition);
         this.snapTarget.copy(this.snapPosition);
 
@@ -1070,9 +1099,7 @@ export class Point3D extends Group {
 
         if (this.snapTarget.x <= windowSnapLeft + 10) {
             this.snapTarget.x = windowSnapLeft;
-            this.snapped = true;
-        } else {
-            this.snapped = false;
+            snappedLeft = true;
         }
 
         // Panel snap
@@ -1081,7 +1108,6 @@ export class Point3D extends Group {
         moved.forEach(ui => {
             if (ui !== this) {
                 let gap = 20;
-                let snap = this.snapped;
 
                 if (this.point.tracker.locked) {
                     gap += 28;
@@ -1090,7 +1116,10 @@ export class Point3D extends Group {
                 const min = gap - 10;
                 const max = gap + 10;
 
-                if (this.snapTarget.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max) {
+                if (
+                    this.snapTarget.x > windowSnapLeft + 10 && // Clamp inside window
+                    this.snapTarget.distanceTo(ui.point.originPosition) < Math.max(this.point.bounds.width, ui.point.bounds.width) + max
+                ) {
                     // Top
                     if (
                         this.snapTarget.y > ui.point.originPosition.y - 10 &&
@@ -1101,25 +1130,21 @@ export class Point3D extends Group {
 
                     // Left
                     if (
-                        this.snapTarget.x > ui.point.originPosition.x - this.point.bounds.width - max &&
-                        this.snapTarget.x < ui.point.originPosition.x - this.point.bounds.width - min
-                    ) {
-                        this.snapTarget.x = ui.point.originPosition.x - this.point.bounds.width - gap;
-
-                        snap = true;
-                    }
-
-                    // Right
-                    if (
                         this.snapTarget.x > ui.point.originPosition.x + ui.point.bounds.width + min &&
                         this.snapTarget.x < ui.point.originPosition.x + ui.point.bounds.width + max
                     ) {
                         this.snapTarget.x = ui.point.originPosition.x + ui.point.bounds.width + gap;
-
-                        snap = true;
+                        snappedLeft = true;
                     }
 
-                    this.snapped = snap;
+                    // Right
+                    if (
+                        this.snapTarget.x > ui.point.originPosition.x - this.point.bounds.width - max &&
+                        this.snapTarget.x < ui.point.originPosition.x - this.point.bounds.width - min
+                    ) {
+                        this.snapTarget.x = ui.point.originPosition.x - this.point.bounds.width - gap;
+                        snappedRight = true;
+                    }
                 }
             }
         });
@@ -1129,6 +1154,10 @@ export class Point3D extends Group {
         this.point.originPosition.copy(this.snapTarget);
 
         this.point.css({ left: Math.round(this.point.originPosition.x), top: Math.round(this.point.originPosition.y) });
+
+        this.snappedLeft = snappedLeft;
+        this.snappedRight = snappedRight;
+        this.snapped = this.snappedLeft || this.snappedRight;
 
         // Refresh panels
         if (this.snapped !== currentSnapped) {
@@ -1168,6 +1197,8 @@ export class Point3D extends Group {
         }
 
         this.selected = false;
+        this.snappedLeft = false;
+        this.snappedRight = false;
         this.snapped = false;
 
         this.line.deactivate();
