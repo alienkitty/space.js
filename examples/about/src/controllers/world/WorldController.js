@@ -110,6 +110,7 @@ export class WorldController {
         // Polar camera controls
         this.polarCameraControls = new OrbitControls(this.polarCamera, this.renderer.domElement);
         this.polarCameraControls.enableDamping = true;
+        this.polarCameraControls.maxPolarAngle = 0;
 
         // Oblique camera controls
         this.obliqueCameraControls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
