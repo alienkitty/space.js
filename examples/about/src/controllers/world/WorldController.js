@@ -93,10 +93,7 @@ export class WorldController {
     }
 
     static initPhysics() {
-        this.physics = new OimoPhysics({
-            velocityIterations: 8,
-            positionIterations: 8
-        });
+        this.physics = new OimoPhysics();
     }
 
     static addListeners() {
