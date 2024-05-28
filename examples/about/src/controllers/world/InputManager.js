@@ -213,16 +213,9 @@ export class InputManager {
 
     // Public methods
 
-    static setCamera = camera => {
+    static setCamera = (camera, controls) => {
         this.camera = camera;
-
-        if (camera === WorldController.obliqueCamera) {
-            this.enabled = true;
-            this.controls.enabled = true;
-        } else {
-            this.enabled = false;
-            this.controls.enabled = false;
-        }
+        this.controls = controls;
     };
 
     static update = time => {

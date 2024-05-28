@@ -107,9 +107,20 @@ export class WorldController {
     }
 
     static initControls() {
-        // Oblique camera only
-        this.controls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
-        this.controls.enableDamping = true;
+        // Polar camera controls
+        this.polarCameraControls = new OrbitControls(this.polarCamera, this.renderer.domElement);
+        this.polarCameraControls.enableDamping = true;
+
+        // Oblique camera controls
+        this.obliqueCameraControls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
+        this.obliqueCameraControls.enableDamping = true;
+
+        // Isometric camera controls
+        this.isometricCameraControls = new OrbitControls(this.isometricCamera, this.renderer.domElement);
+        this.isometricCameraControls.enableDamping = true;
+
+        // Output camera controls
+        this.controls = this.obliqueCameraControls;
     }
 
     static initPhysics() {
@@ -128,8 +139,9 @@ export class WorldController {
 
     // Public methods
 
-    static setCamera = camera => {
+    static setCamera = (camera, controls) => {
         this.camera = camera;
+        this.controls = controls;
     };
 
     static resize = (width, height, dpr) => {

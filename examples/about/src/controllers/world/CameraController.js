@@ -1,10 +1,23 @@
 import { Point3D, clearTween, delayedCall } from '@alienkitty/space.js/three';
 
 export class CameraController {
-    static init(polarCamera, obliqueCamera, isometricCamera, controls) {
+    static init(
+        polarCamera,
+        obliqueCamera,
+        isometricCamera,
+        polarCameraControls,
+        obliqueCameraControls,
+        isometricCameraControls,
+        camera,
+        controls
+    ) {
         this.polarCamera = polarCamera;
         this.obliqueCamera = obliqueCamera;
         this.isometricCamera = isometricCamera;
+        this.polarCameraControls = polarCameraControls;
+        this.obliqueCameraControls = obliqueCameraControls;
+        this.isometricCameraControls = isometricCameraControls;
+        this.camera = camera;
         this.controls = controls;
 
         this.isDown = false;
@@ -15,9 +28,20 @@ export class CameraController {
     }
 
     static addListeners() {
-        this.controls.addEventListener('change', this.onChange);
-        this.controls.addEventListener('start', this.onInteraction);
-        this.controls.addEventListener('end', this.onInteraction);
+        // Polar camera
+        this.polarCameraControls.addEventListener('change', this.onChange);
+        this.polarCameraControls.addEventListener('start', this.onInteraction);
+        this.polarCameraControls.addEventListener('end', this.onInteraction);
+
+        // Oblique camera
+        this.obliqueCameraControls.addEventListener('change', this.onChange);
+        this.obliqueCameraControls.addEventListener('start', this.onInteraction);
+        this.obliqueCameraControls.addEventListener('end', this.onInteraction);
+
+        // Isometric camera
+        this.isometricCameraControls.addEventListener('change', this.onChange);
+        this.isometricCameraControls.addEventListener('start', this.onInteraction);
+        this.isometricCameraControls.addEventListener('end', this.onInteraction);
     }
 
     // Event handlers
@@ -58,6 +82,23 @@ export class CameraController {
 
     // Public methods
 
+    static setCamera = (camera, controls) => {
+        this.camera = camera;
+        this.controls = controls;
+
+        this.polarCameraControls.enabled = false;
+        this.obliqueCameraControls.enabled = false;
+        this.isometricCameraControls.enabled = false;
+
+        if (camera === this.polarCamera) {
+            this.polarCameraControls.enabled = true;
+        } else if (camera === this.obliqueCamera) {
+            this.obliqueCameraControls.enabled = true;
+        } else if (camera === this.isometricCamera) {
+            this.isometricCameraControls.enabled = true;
+        }
+    };
+
     static resize = (width, height) => {
         // Polar camera
         this.polarCamera.aspect = width / height;
@@ -79,8 +120,19 @@ export class CameraController {
     };
 
     static update = () => {
-        if (this.controls.enabled) {
-            this.controls.update();
+        // Polar camera controls
+        if (this.polarCameraControls.enabled) {
+            this.polarCameraControls.update();
+        }
+
+        // Oblique camera controls
+        if (this.obliqueCameraControls.enabled) {
+            this.obliqueCameraControls.update();
+        }
+
+        // Isometric camera controls
+        if (this.isometricCameraControls.enabled) {
+            this.isometricCameraControls.update();
         }
     };
 }

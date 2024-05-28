@@ -69,12 +69,25 @@ export class App {
             polarCamera,
             obliqueCamera,
             isometricCamera,
+            polarCameraControls,
+            obliqueCameraControls,
+            isometricCameraControls,
             camera,
             controls,
             physics
         } = WorldController;
 
-        CameraController.init(polarCamera, obliqueCamera, isometricCamera, controls);
+        CameraController.init(
+            polarCamera,
+            obliqueCamera,
+            isometricCamera,
+            polarCameraControls,
+            obliqueCameraControls,
+            isometricCameraControls,
+            camera,
+            controls
+        );
+
         SceneController.init(this.view);
         PhysicsController.init(physics);
         InputManager.init(scene, camera, controls);
@@ -104,17 +117,22 @@ export class App {
 
     static onMenu = ({ index }) => {
         let camera;
+        let controls;
 
         if (index === 0) {
             camera = WorldController.polarCamera;
+            controls = WorldController.polarCameraControls;
         } else if (index === 1) {
             camera = WorldController.obliqueCamera;
+            controls = WorldController.obliqueCameraControls;
         } else if (index === 2) {
             camera = WorldController.isometricCamera;
+            controls = WorldController.isometricCameraControls;
         }
 
-        WorldController.setCamera(camera);
-        InputManager.setCamera(camera);
+        WorldController.setCamera(camera, controls);
+        CameraController.setCamera(camera, controls);
+        InputManager.setCamera(camera, controls);
         RenderManager.setCamera(camera);
         PanelController.setCamera(camera);
     };
