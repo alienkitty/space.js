@@ -162,8 +162,8 @@ export class DetailsButton extends Interface {
 
         this.canvas.element.width = Math.round(this.width * dpr);
         this.canvas.element.height = Math.round(this.height * dpr);
-        this.canvas.element.style.width = this.width + 'px';
-        this.canvas.element.style.height = this.height + 'px';
+        this.canvas.element.style.width = `${this.width}px`;
+        this.canvas.element.style.height = `${this.height}px`;
         this.context.scale(dpr, dpr);
 
         // Context properties need to be reassigned after resize

@@ -74,8 +74,8 @@ export class ProgressCanvas extends Interface {
 
         this.element.width = Math.round(this.width * dpr);
         this.element.height = Math.round(this.height * dpr);
-        this.element.style.width = this.width + 'px';
-        this.element.style.height = this.height + 'px';
+        this.element.style.width = `${this.width}px`;
+        this.element.style.height = `${this.height}px`;
         this.context.scale(dpr, dpr);
 
         // Context properties need to be reassigned after resize

@@ -335,8 +335,8 @@
 
                 this.canvas.element.width = Math.round(width * dpr);
                 this.canvas.element.height = Math.round(height * dpr);
-                this.canvas.element.style.width = width + 'px';
-                this.canvas.element.style.height = height + 'px';
+                this.canvas.element.style.width = `${width}px`;
+                this.canvas.element.style.height = `${height}px`;
                 this.context.scale(dpr, dpr);
 
                 // Line

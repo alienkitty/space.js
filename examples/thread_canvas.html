@@ -196,8 +196,8 @@
                 const height = document.documentElement.clientHeight;
                 const dpr = window.devicePixelRatio;
 
-                this.canvas.style.width = width + 'px';
-                this.canvas.style.height = height + 'px';
+                this.canvas.style.width = `${width}px`;
+                this.canvas.style.height = `${height}px`;
 
                 CanvasNoiseController.resize(width, height, dpr);
             };
