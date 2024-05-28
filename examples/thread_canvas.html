@@ -17,13 +17,6 @@
 
         class CanvasNoise {
             constructor(params) {
-                this.params = params;
-
-                this.initParameters();
-                this.initCanvas();
-            }
-
-            initParameters() {
                 const defaults = {
                     width: 1,
                     height: 1,
@@ -31,7 +24,9 @@
                     monochrome: true
                 };
 
-                this.params = Object.assign(defaults, this.params);
+                this.params = Object.assign(defaults, params);
+
+                this.initCanvas();
             }
 
             initCanvas() {
