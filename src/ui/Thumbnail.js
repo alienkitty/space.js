@@ -40,7 +40,11 @@ export class Thumbnail extends Interface {
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.windowSnapMargin = this.snapMargin;
-        this.isMove = false;
+        this.snappedTop = false;
+        this.snappedRight = false;
+        this.snappedBottom = false;
+        this.snappedLeft = false;
+        this.snapped = false;
 
         this.init();
 
@@ -113,8 +117,6 @@ export class Thumbnail extends Interface {
 
         if (this.delta.length()) {
             this.origin.addVectors(this.lastOrigin, this.delta);
-
-            this.bounds = this.element.getBoundingClientRect();
             this.snap();
         }
     };
@@ -159,17 +161,28 @@ export class Thumbnail extends Interface {
     }
 
     resize(width, height, dpr, breakpoint) {
-        if (!this.isMove) {
-            if (width < breakpoint) {
-                this.windowSnapMargin = this.snapMargin - 10;
-            } else {
-                this.windowSnapMargin = this.snapMargin;
+        if (width < breakpoint) {
+            this.windowSnapMargin = this.snapMargin - 10;
+        } else {
+            this.windowSnapMargin = this.snapMargin;
+        }
+
+        if (this.snapped) {
+            if (this.snappedTop) {
+                this.css({ top: this.windowSnapMargin });
             }
 
-            this.css({
-                left: this.windowSnapMargin,
-                top: this.windowSnapMargin
-            });
+            if (this.snappedRight) {
+                this.css({ left: width - this.width - this.windowSnapMargin });
+            }
+
+            if (this.snappedBottom) {
+                this.css({ top: height - this.height - this.windowSnapMargin });
+            }
+
+            if (this.snappedLeft) {
+                this.css({ left: this.windowSnapMargin });
+            }
         }
 
         if (this.context) {
@@ -203,7 +216,10 @@ export class Thumbnail extends Interface {
     }
 
     snap() {
-        let snapped = false;
+        let snappedTop = false;
+        let snappedRight = false;
+        let snappedBottom = false;
+        let snappedLeft = false;
 
         this.snapPosition.copy(this.origin);
         this.snapTarget.copy(this.snapPosition);
@@ -211,25 +227,25 @@ export class Thumbnail extends Interface {
         // Top
         if (this.snapTarget.y <= this.windowSnapMargin + 10) {
             this.snapTarget.y = this.windowSnapMargin;
-            snapped = true;
+            snappedTop = true;
         }
 
         // Right
-        if (this.snapTarget.x >= window.innerWidth - this.bounds.width - this.windowSnapMargin - 10) {
-            this.snapTarget.x = window.innerWidth - this.bounds.width - this.windowSnapMargin;
-            snapped = true;
+        if (this.snapTarget.x >= window.innerWidth - this.width - this.windowSnapMargin - 10) {
+            this.snapTarget.x = window.innerWidth - this.width - this.windowSnapMargin;
+            snappedRight = true;
         }
 
         // Bottom
-        if (this.snapTarget.y >= window.innerHeight - this.bounds.height - this.windowSnapMargin - 10) {
-            this.snapTarget.y = window.innerHeight - this.bounds.height - this.windowSnapMargin;
-            snapped = true;
+        if (this.snapTarget.y >= window.innerHeight - this.height - this.windowSnapMargin - 10) {
+            this.snapTarget.y = window.innerHeight - this.height - this.windowSnapMargin;
+            snappedBottom = true;
         }
 
         // Left
         if (this.snapTarget.x <= this.windowSnapMargin + 10) {
             this.snapTarget.x = this.windowSnapMargin;
-            snapped = true;
+            snappedLeft = true;
         }
 
         this.snapPosition.sub(this.snapTarget);
@@ -237,7 +253,11 @@ export class Thumbnail extends Interface {
 
         this.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
 
-        this.isMove = !snapped;
+        this.snappedTop = snappedTop;
+        this.snappedRight = snappedRight;
+        this.snappedBottom = snappedBottom;
+        this.snappedLeft = snappedLeft;
+        this.snapped = this.snappedTop || this.snappedRight || this.snappedBottom || this.snappedLeft;
     }
 
     destroy() {
