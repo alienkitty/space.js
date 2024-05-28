@@ -9,6 +9,7 @@ import { DetailsInfo } from './DetailsInfo.js';
 import { Header } from './Header.js';
 import { Menu } from './Menu.js';
 import { Info } from './Info.js';
+import { Thumbnail } from './Thumbnail.js';
 import { DetailsButton } from './DetailsButton.js';
 import { MuteButton } from './MuteButton.js';
 
@@ -89,13 +90,18 @@ export class UI extends Interface {
         }
 
         if (this.data.info) {
-            this.info = new Info({ ...this.data.info });
+            this.info = new Info(this.data.info);
             this.add(this.info);
         }
 
         if (this.data.instructions) {
             this.instructions = new Info({ ...this.data.instructions, bottom: true });
             this.add(this.instructions);
+        }
+
+        if (this.data.thumbnail) {
+            this.thumbnail = new Thumbnail(this.data.thumbnail);
+            this.add(this.thumbnail);
         }
 
         if (this.data.detailsButton) {
@@ -168,6 +174,10 @@ export class UI extends Interface {
 
         if (this.menu) {
             this.menu.resize(width, height, dpr, this.breakpoint);
+        }
+
+        if (this.thumbnail) {
+            this.thumbnail.resize(width, height, dpr, this.breakpoint);
         }
 
         if (this.detailsButton) {
@@ -252,8 +262,12 @@ export class UI extends Interface {
             }
         });
 
-        if (this.header) {
+        if (this.header && this.header.info) {
             this.header.info.update();
+        }
+
+        if (this.thumbnail) {
+            this.thumbnail.update();
         }
     }
 
@@ -264,6 +278,10 @@ export class UI extends Interface {
 
         if (this.menu) {
             this.menu.animateIn();
+        }
+
+        if (this.thumbnail) {
+            this.thumbnail.animateIn();
         }
 
         this.buttons.forEach(button => button.animateIn());
@@ -292,6 +310,10 @@ export class UI extends Interface {
 
         if (this.instructions) {
             this.instructions.animateOut();
+        }
+
+        if (this.thumbnail) {
+            this.thumbnail.animateOut();
         }
 
         this.buttons.forEach(button => button.animateOut());

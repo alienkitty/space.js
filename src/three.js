@@ -71,6 +71,7 @@ export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';
 export { Menu } from './ui/Menu.js';
 export { MenuItem } from './ui/MenuItem.js';
+export { Thumbnail } from './ui/Thumbnail.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';
