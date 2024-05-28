@@ -115,7 +115,6 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
             static onKeyUp = e => {
                 if (e.ctrlKey && e.keyCode >= 49 && e.keyCode <= 51) { // 1-3
                     this.ui.menu.index = e.keyCode - 49;
-
                     this.ui.menu.update();
                 }
             };

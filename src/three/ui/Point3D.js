@@ -285,6 +285,12 @@ export class Point3D extends Group {
 
     // Public methods
 
+    static setCamera(camera) {
+        this.camera = camera;
+
+        this.points.forEach(ui => ui.setCamera(camera));
+    }
+
     static getPoint(mesh) {
         return this.points.find(ui => ui.object === mesh);
     }
@@ -635,6 +641,10 @@ export class Point3D extends Group {
     };
 
     // Public methods
+
+    setCamera(camera) {
+        this.camera = camera;
+    }
 
     setIndex(index) {
         this.index = index;
