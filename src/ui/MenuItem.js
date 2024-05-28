@@ -15,6 +15,7 @@ export class MenuItem extends Interface {
         this.index = index;
 
         this.active = false;
+        this.animatedIn = false;
 
         this.init();
 
@@ -99,7 +100,9 @@ export class MenuItem extends Interface {
 
         this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
 
-        this.tween({ opacity: 1 }, 300, 'easeOutSine');
+        if (this.animatedIn) {
+            this.tween({ opacity: 1 }, 300, 'easeOutSine');
+        }
     }
 
     deactivate(direction) {
@@ -107,7 +110,9 @@ export class MenuItem extends Interface {
 
         this.line.css({ transformOrigin: direction > 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
 
-        this.tween({ opacity: 0.5 }, 500, 'easeOutSine');
+        if (this.animatedIn) {
+            this.tween({ opacity: 0.5 }, 500, 'easeOutSine');
+        }
     }
 
     animateIn(delay) {
@@ -115,12 +120,16 @@ export class MenuItem extends Interface {
         this.css({ y: 10, opacity: 0 }).tween({ y: 0, opacity: this.active ? 1 : 0.5 }, 700, 'easeOutCubic', delay, () => {
             this.css({ pointerEvents: 'auto' });
         });
+
+        this.animatedIn = true;
     }
 
     animateOut(delay) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
         this.tween({ y: -5, opacity: 0 }, 700, 'easeOutCubic', delay);
+
+        this.animatedIn = false;
     }
 
     destroy() {
