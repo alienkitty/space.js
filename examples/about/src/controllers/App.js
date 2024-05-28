@@ -56,15 +56,23 @@ export class App {
             },
             menu: {
                 items: ['POL', 'OBL', 'ISO'],
-                // active: 'OBL'
-                active: 'ISO'
+                active: 'OBL'
             }
         });
         Stage.add(this.ui);
     }
 
     static initControllers() {
-        const { renderer, scene, polarCamera, obliqueCamera, isometricCamera, camera, controls, physics } = WorldController;
+        const {
+            renderer,
+            scene,
+            polarCamera,
+            obliqueCamera,
+            isometricCamera,
+            camera,
+            controls,
+            physics
+        } = WorldController;
 
         CameraController.init(polarCamera, obliqueCamera, isometricCamera, controls);
         SceneController.init(this.view);

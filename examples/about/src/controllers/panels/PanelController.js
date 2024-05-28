@@ -10,7 +10,7 @@ import { PostPanel } from './PostPanel.js';
 import { EnvPanel } from './EnvPanel.js';
 import { GridPanel } from './GridPanel.js';
 
-import { isDebug, params } from '../../config/Config.js';
+import { params } from '../../config/Config.js';
 
 export class PanelController {
     static init(renderer, scene, camera, physics, view, ui) {
@@ -37,8 +37,7 @@ export class PanelController {
             container: this.ui,
             physics: this.physics,
             loader: textureLoader,
-            uvHelper: true,
-            debug: isDebug
+            uvHelper: true
         });
         Point3D.enabled = false;
 

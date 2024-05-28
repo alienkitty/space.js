@@ -62,8 +62,7 @@ export class WorldController {
         this.isometricCamera.lookAt(this.scene.position);
 
         // Output camera
-        // this.camera = this.obliqueCamera;
-        this.camera = this.isometricCamera;
+        this.camera = this.obliqueCamera;
 
         // Global geometries
         this.quad = new PlaneGeometry(1, 1);

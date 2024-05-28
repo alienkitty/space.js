@@ -79,7 +79,7 @@ export class CameraController {
     };
 
     static update = () => {
-        if (this.controls && this.controls.enabled) {
+        if (this.controls.enabled) {
             this.controls.update();
         }
     };
