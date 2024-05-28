@@ -31,7 +31,7 @@ export class TargetNumber extends Interface {
             position: 'absolute',
             left: window.devicePixelRatio > 1 ? 4 : 5,
             fontVariantNumeric: 'tabular-nums',
-            lineHeight: this.height - (window.devicePixelRatio > 1 ? 3 : 2),
+            lineHeight: this.height - (window.devicePixelRatio > 1 ? 4 : 3),
             letterSpacing: 'var(--ui-number-letter-spacing)',
             textAlign: 'center'
         });

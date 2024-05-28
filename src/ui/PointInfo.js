@@ -21,8 +21,7 @@ export class PointInfo extends Interface {
         this.css({
             position: 'absolute',
             left: 10,
-            top: -15,
-            pointerEvents: 'none'
+            top: -15
         });
 
         this.container = new Interface('.container');
@@ -118,9 +117,7 @@ export class PointInfo extends Interface {
     }
 
     open() {
-        this.clearTween();
-        this.css({ pointerEvents: 'auto' });
-        this.tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
+        this.clearTween().tween({ left: 48, opacity: 1 }, 400, 'easeOutCubic');
 
         if (this.locked) {
             this.numbers.forEach(number => number.animateIn(100));
@@ -136,7 +133,6 @@ export class PointInfo extends Interface {
 
     close(fast) {
         this.clearTween();
-        this.css({ pointerEvents: 'none' });
 
         if (fast) {
             this.css({ left: 10, opacity: 1 });

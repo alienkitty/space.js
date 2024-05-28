@@ -39,7 +39,7 @@ export class Point extends Interface {
         this.invisible();
         this.css({
             position: 'absolute',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
@@ -119,18 +119,21 @@ export class Point extends Interface {
 
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
-        this.origin.addVectors(this.lastOrigin, this.delta);
-        this.originPosition.addVectors(this.origin, this.position);
 
-        if (this.ui && this.ui.snap) {
-            this.bounds = this.info.container.element.getBoundingClientRect();
+        if (this.delta.length()) {
+            this.origin.addVectors(this.lastOrigin, this.delta);
+            this.originPosition.addVectors(this.origin, this.position);
 
-            this.ui.snap();
-        } else {
-            this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+            if (this.ui && this.ui.snap) {
+                this.bounds = this.info.container.element.getBoundingClientRect();
+
+                this.ui.snap();
+            } else {
+                this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+            }
+
+            this.isMove = true;
         }
-
-        this.isMove = true;
     };
 
     onPointerUp = e => {
@@ -192,6 +195,8 @@ export class Point extends Interface {
     }
 
     open() {
+        this.css({ pointerEvents: 'auto' });
+
         this.info.open();
 
         this.bounds = this.info.container.element.getBoundingClientRect();
@@ -200,6 +205,8 @@ export class Point extends Interface {
     }
 
     close(fast) {
+        this.css({ pointerEvents: 'none' });
+
         this.info.close(fast);
 
         this.position.copy(this.target);
@@ -239,6 +246,8 @@ export class Point extends Interface {
     }
 
     deactivate(toggle) {
+        this.css({ pointerEvents: 'none' });
+
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine', () => {
             this.enable();
             this.close(true);
