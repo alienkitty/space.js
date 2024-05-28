@@ -1,8 +1,10 @@
 import { Point3D, clearTween, delayedCall } from '@alienkitty/space.js/three';
 
 export class CameraController {
-    static init(camera, controls) {
-        this.camera = camera;
+    static init(polarCamera, obliqueCamera, isometricCamera, controls) {
+        this.polarCamera = polarCamera;
+        this.obliqueCamera = obliqueCamera;
+        this.isometricCamera = isometricCamera;
         this.controls = controls;
 
         this.isDown = false;
@@ -57,11 +59,28 @@ export class CameraController {
     // Public methods
 
     static resize = (width, height) => {
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
+        // Polar camera
+        this.polarCamera.aspect = width / height;
+        this.polarCamera.updateProjectionMatrix();
+
+        // Oblique camera
+        this.obliqueCamera.aspect = width / height;
+        this.obliqueCamera.updateProjectionMatrix();
+
+        // Isometric camera
+        const aspect = width / height;
+        const distance = 2.5;
+
+        this.isometricCamera.left = -distance * aspect;
+        this.isometricCamera.right = distance * aspect;
+        this.isometricCamera.top = distance;
+        this.isometricCamera.bottom = -distance;
+        this.isometricCamera.updateProjectionMatrix();
     };
 
     static update = () => {
-        this.controls.update();
+        if (this.controls && this.controls.enabled) {
+            this.controls.update();
+        }
     };
 }

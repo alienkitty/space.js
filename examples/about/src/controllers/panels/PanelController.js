@@ -10,7 +10,7 @@ import { PostPanel } from './PostPanel.js';
 import { EnvPanel } from './EnvPanel.js';
 import { GridPanel } from './GridPanel.js';
 
-import { params } from '../../config/Config.js';
+import { isDebug, params } from '../../config/Config.js';
 
 export class PanelController {
     static init(renderer, scene, camera, physics, view, ui) {
@@ -37,7 +37,8 @@ export class PanelController {
             container: this.ui,
             physics: this.physics,
             loader: textureLoader,
-            uvHelper: true
+            uvHelper: true,
+            debug: isDebug
         });
         Point3D.enabled = false;
 
@@ -205,6 +206,12 @@ export class PanelController {
     }
 
     // Public methods
+
+    static setCamera = camera => {
+        this.camera = camera;
+
+        Point3D.setCamera(camera);
+    };
 
     static setInvert = value => {
         const invert = brightness(value) > 0.6; // Light colour is inverted

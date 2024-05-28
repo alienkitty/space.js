@@ -140,6 +140,12 @@ export class RenderManager {
 
     // Public methods
 
+    static setCamera = camera => {
+        this.camera = camera;
+
+        this.motionBlur.setCamera(camera);
+    };
+
     static invert = isInverted => {
         if (isInverted) { // Light colour is inverted
             this.luminosityMaterial.uniforms.uThreshold.value = 0.75;

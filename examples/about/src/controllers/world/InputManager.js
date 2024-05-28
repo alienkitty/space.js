@@ -213,6 +213,18 @@ export class InputManager {
 
     // Public methods
 
+    static setCamera = camera => {
+        this.camera = camera;
+
+        if (camera === WorldController.obliqueCamera) {
+            this.enabled = true;
+            this.controls.enabled = true;
+        } else {
+            this.enabled = false;
+            this.controls.enabled = false;
+        }
+    };
+
     static update = time => {
         if (!navigator.maxTouchPoints && time - this.lastRaycast > this.raycastInterval) {
             this.onPointerMove();

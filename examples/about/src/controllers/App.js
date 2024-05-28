@@ -56,16 +56,17 @@ export class App {
             },
             menu: {
                 items: ['POL', 'OBL', 'ISO'],
-                active: 'OBL'
+                // active: 'OBL'
+                active: 'ISO'
             }
         });
         Stage.add(this.ui);
     }
 
     static initControllers() {
-        const { renderer, scene, camera, controls, physics } = WorldController;
+        const { renderer, scene, polarCamera, obliqueCamera, isometricCamera, camera, controls, physics } = WorldController;
 
-        CameraController.init(camera, controls);
+        CameraController.init(polarCamera, obliqueCamera, isometricCamera, controls);
         SceneController.init(this.view);
         PhysicsController.init(physics);
         InputManager.init(scene, camera, controls);
@@ -93,8 +94,21 @@ export class App {
         RenderManager.invert(invert);
     };
 
-    static onMenu = e => {
-        console.log('Menu event:', e);
+    static onMenu = ({ index }) => {
+        let camera;
+
+        if (index === 0) {
+            camera = WorldController.polarCamera;
+        } else if (index === 1) {
+            camera = WorldController.obliqueCamera;
+        } else if (index === 2) {
+            camera = WorldController.isometricCamera;
+        }
+
+        WorldController.setCamera(camera);
+        InputManager.setCamera(camera);
+        RenderManager.setCamera(camera);
+        PanelController.setCamera(camera);
     };
 
     static onKeyUp = e => {

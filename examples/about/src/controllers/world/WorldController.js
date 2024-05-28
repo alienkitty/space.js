@@ -1,4 +1,4 @@
-import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
+import { /* BasicShadowMap,  */Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, OrthographicCamera, PerspectiveCamera, PlaneGeometry, Scene, Vector2, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { BufferGeometryLoader, EnvironmentTextureLoader, Interface, Stage, TextureLoader, getFrustum, getFullscreenTriangle } from '@alienkitty/space.js/three';
@@ -39,11 +39,31 @@ export class WorldController {
         // 3D scene
         this.scene = new Scene();
         this.scene.background = new Color(Stage.rootStyle.getPropertyValue('--bg-color').trim());
-        this.camera = new PerspectiveCamera(30);
-        this.camera.near = 0.5;
-        this.camera.far = 40;
-        this.camera.position.set(0, 6, 8);
-        this.camera.lookAt(this.scene.position);
+
+        // Polar camera
+        this.polarCamera = new PerspectiveCamera(30);
+        this.polarCamera.near = 0.5;
+        this.polarCamera.far = 40;
+        this.polarCamera.position.set(0, 10, 0);
+        this.polarCamera.lookAt(this.scene.position);
+
+        // Oblique camera
+        this.obliqueCamera = new PerspectiveCamera(30);
+        this.obliqueCamera.near = 0.5;
+        this.obliqueCamera.far = 40;
+        this.obliqueCamera.position.set(0, 6, 8);
+        this.obliqueCamera.lookAt(this.scene.position);
+
+        // Isometric camera
+        this.isometricCamera = new OrthographicCamera();
+        this.isometricCamera.near = 0;
+        this.isometricCamera.far = 40;
+        this.isometricCamera.position.set(10, 10, 10);
+        this.isometricCamera.lookAt(this.scene.position);
+
+        // Output camera
+        // this.camera = this.obliqueCamera;
+        this.camera = this.isometricCamera;
 
         // Global geometries
         this.quad = new PlaneGeometry(1, 1);
@@ -88,7 +108,8 @@ export class WorldController {
     }
 
     static initControls() {
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        // Oblique camera only
+        this.controls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
         this.controls.enableDamping = true;
     }
 
@@ -107,6 +128,10 @@ export class WorldController {
     };
 
     // Public methods
+
+    static setCamera = camera => {
+        this.camera = camera;
+    };
 
     static resize = (width, height, dpr) => {
         width = Math.round(width * dpr);
