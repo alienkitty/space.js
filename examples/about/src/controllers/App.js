@@ -53,6 +53,10 @@ export class App {
                         link: 'https://github.com/alienkitty/space.js'
                     }
                 ]
+            },
+            menu: {
+                items: ['POL', 'OBL', 'ISO'],
+                active: 'OBL'
             }
         });
         Stage.add(this.ui);
@@ -76,6 +80,8 @@ export class App {
 
     static addListeners() {
         Stage.events.on('invert', this.onInvert);
+        this.ui.menu.events.on('update', this.onMenu);
+        window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
     }
@@ -85,6 +91,17 @@ export class App {
     static onInvert = ({ invert }) => {
         this.view.invert(invert);
         RenderManager.invert(invert);
+    };
+
+    static onMenu = e => {
+        console.log('Menu event:', e);
+    };
+
+    static onKeyUp = e => {
+        if (e.ctrlKey && e.keyCode >= 49 && e.keyCode <= 51) { // 1-3
+            this.ui.menu.index = e.keyCode - 49;
+            this.ui.menu.update();
+        }
     };
 
     static onResize = () => {
