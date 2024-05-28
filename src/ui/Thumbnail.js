@@ -2,6 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 
 export class Thumbnail extends Interface {
@@ -19,6 +20,15 @@ export class Thumbnail extends Interface {
             this.width = 150;
             this.height = 100;
         }
+
+        this.origin = new Vector2();
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.bounds = null;
+        this.lastTime = null;
+        this.lastMouse = new Vector2();
+        this.lastOrigin = new Vector2();
+        this.isMove = false;
 
         this.init();
 
@@ -38,7 +48,7 @@ export class Thumbnail extends Interface {
             width: this.width,
             height: this.height,
             border: '1px solid var(--ui-color-divider-line)',
-            cursor: 'pointer',
+            cursor: 'move',
             pointerEvents: 'none',
             webkitUserSelect: 'none',
             userSelect: 'none',
@@ -59,16 +69,55 @@ export class Thumbnail extends Interface {
     }
 
     addListeners() {
-        this.element.addEventListener('click', this.onClick);
+        this.element.addEventListener('pointerdown', this.onPointerDown);
     }
 
     removeListeners() {
-        this.element.removeEventListener('click', this.onClick);
+        this.element.removeEventListener('pointerdown', this.onPointerDown);
     }
 
     // Event handlers
 
-    onClick = () => {
+    onPointerDown = e => {
+        this.bounds = this.element.getBoundingClientRect();
+        this.lastTime = performance.now();
+        this.lastMouse.set(e.clientX, e.clientY);
+        this.lastOrigin.copy(this.bounds);
+
+        this.onPointerMove(e);
+
+        window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
+    };
+
+    onPointerMove = ({ clientX, clientY }) => {
+        const event = {
+            x: clientX,
+            y: clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
+        if (this.delta.length()) {
+            this.origin.addVectors(this.lastOrigin, this.delta);
+
+            this.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+
+            this.isMove = true;
+        }
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointermove', this.onPointerMove);
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
         console.log('onClick');
     };
 
@@ -99,16 +148,18 @@ export class Thumbnail extends Interface {
     }
 
     resize(width, height, dpr, breakpoint) {
-        if (width < breakpoint) {
-            this.css({
-                left: 10,
-                top: 10
-            });
-        } else {
-            this.css({
-                left: 20,
-                top: 20
-            });
+        if (!this.isMove) {
+            if (width < breakpoint) {
+                this.css({
+                    left: 10,
+                    top: 10
+                });
+            } else {
+                this.css({
+                    left: 20,
+                    top: 20
+                });
+            }
         }
 
         if (this.context) {
