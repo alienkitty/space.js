@@ -9,16 +9,25 @@ export class Thumbnail extends Interface {
     constructor(data) {
         super('.thumbnail');
 
+        const defaults = {
+            width: 150,
+            height: 100,
+            snapMargin: 20
+        };
+
         if (data.image) {
+            data = Object.assign(defaults, data);
             this.image = data.image;
             this.width = data.width;
             this.height = data.height;
+            this.snapMargin = data.snapMargin;
             this.noCanvas = data.noCanvas;
             this.callback = data.callback;
         } else {
             this.image = data;
-            this.width = 150;
-            this.height = 100;
+            this.width = defaults.width;
+            this.height = defaults.height;
+            this.snapMargin = defaults.snapMargin;
         }
 
         this.origin = new Vector2();
@@ -28,6 +37,9 @@ export class Thumbnail extends Interface {
         this.lastTime = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
+        this.snapPosition = new Vector2();
+        this.snapTarget = new Vector2();
+        this.windowSnapMargin = this.snapMargin;
         this.isMove = false;
 
         this.init();
@@ -42,8 +54,8 @@ export class Thumbnail extends Interface {
     init() {
         this.css({
             position: 'absolute',
-            left: 20,
-            top: 20,
+            left: this.snapMargin,
+            top: this.snapMargin,
             boxSizing: 'border-box',
             width: this.width,
             height: this.height,
@@ -102,9 +114,8 @@ export class Thumbnail extends Interface {
         if (this.delta.length()) {
             this.origin.addVectors(this.lastOrigin, this.delta);
 
-            this.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
-
-            this.isMove = true;
+            this.bounds = this.element.getBoundingClientRect();
+            this.snap();
         }
     };
 
@@ -150,16 +161,15 @@ export class Thumbnail extends Interface {
     resize(width, height, dpr, breakpoint) {
         if (!this.isMove) {
             if (width < breakpoint) {
-                this.css({
-                    left: 10,
-                    top: 10
-                });
+                this.windowSnapMargin = this.snapMargin - 10;
             } else {
-                this.css({
-                    left: 20,
-                    top: 20
-                });
+                this.windowSnapMargin = this.snapMargin;
             }
+
+            this.css({
+                left: this.windowSnapMargin,
+                top: this.windowSnapMargin
+            });
         }
 
         if (this.context) {
@@ -190,6 +200,44 @@ export class Thumbnail extends Interface {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
         this.tween({ opacity: 0 }, 700, 'easeOutCubic', delay);
+    }
+
+    snap() {
+        let snapped = false;
+
+        this.snapPosition.copy(this.origin);
+        this.snapTarget.copy(this.snapPosition);
+
+        // Top
+        if (this.snapTarget.y <= this.windowSnapMargin + 10) {
+            this.snapTarget.y = this.windowSnapMargin;
+            snapped = true;
+        }
+
+        // Right
+        if (this.snapTarget.x >= window.innerWidth - this.bounds.width - this.windowSnapMargin - 10) {
+            this.snapTarget.x = window.innerWidth - this.bounds.width - this.windowSnapMargin;
+            snapped = true;
+        }
+
+        // Bottom
+        if (this.snapTarget.y >= window.innerHeight - this.bounds.height - this.windowSnapMargin - 10) {
+            this.snapTarget.y = window.innerHeight - this.bounds.height - this.windowSnapMargin;
+            snapped = true;
+        }
+
+        // Left
+        if (this.snapTarget.x <= this.windowSnapMargin + 10) {
+            this.snapTarget.x = this.windowSnapMargin;
+            snapped = true;
+        }
+
+        this.snapPosition.sub(this.snapTarget);
+        this.origin.sub(this.snapPosition); // Subtract delta
+
+        this.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+
+        this.isMove = !snapped;
     }
 
     destroy() {
