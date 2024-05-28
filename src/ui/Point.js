@@ -39,7 +39,7 @@ export class Point extends Interface {
         this.invisible();
         this.css({
             position: 'absolute',
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
@@ -195,6 +195,8 @@ export class Point extends Interface {
     }
 
     open() {
+        this.css({ pointerEvents: 'auto' });
+
         this.info.open();
 
         this.bounds = this.info.container.element.getBoundingClientRect();
@@ -203,6 +205,8 @@ export class Point extends Interface {
     }
 
     close(fast) {
+        this.css({ pointerEvents: 'none' });
+
         this.info.close(fast);
 
         this.position.copy(this.target);
@@ -242,6 +246,8 @@ export class Point extends Interface {
     }
 
     deactivate(toggle) {
+        this.css({ pointerEvents: 'none' });
+
         this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine', () => {
             this.enable();
             this.close(true);
