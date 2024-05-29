@@ -102,14 +102,14 @@ export class Thumbnail extends Interface {
         this.element.addEventListener('pointerdown', this.onPointerDown);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onFileLoad);
+        this.reader.addEventListener('load', this.onLoad);
     }
 
     removeListeners() {
         this.element.removeEventListener('pointerdown', this.onPointerDown);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onFileLoad);
+        this.reader.removeEventListener('load', this.onLoad);
     }
 
     // Event handlers
@@ -165,7 +165,7 @@ export class Thumbnail extends Interface {
         this.reader.readAsDataURL(e.dataTransfer.files[0]);
     };
 
-    onFileLoad = e => {
+    onLoad = e => {
         const image = new Image();
 
         image.onload = () => {
