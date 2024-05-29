@@ -36,6 +36,13 @@ export class PanelThumbnail extends Interface {
             border: '1px solid var(--ui-color-divider-line)',
             cursor: 'pointer'
         });
+
+        // Not added to DOM
+        this.input = new Interface(null, 'input');
+        this.input.attr({
+            type: 'file',
+            accept: 'image/*'
+        });
     }
 
     initDragAndDrop() {
@@ -46,6 +53,7 @@ export class PanelThumbnail extends Interface {
         this.element.addEventListener('click', this.onClick);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
+        this.input.element.addEventListener('change', this.onChange);
         this.reader.addEventListener('load', this.onLoad);
     }
 
@@ -53,13 +61,28 @@ export class PanelThumbnail extends Interface {
         this.element.removeEventListener('click', this.onClick);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
+        this.input.element.removeEventListener('change', this.onChange);
         this.reader.removeEventListener('load', this.onLoad);
+    }
+
+    loadImage(path) {
+        const image = new Image();
+
+        image.onload = () => {
+            this.setValue(image);
+
+            image.onload = null;
+        };
+
+        image.src = path;
     }
 
     // Event handlers
 
-    onClick = () => {
-        console.log('onClick');
+    onClick = e => {
+        e.preventDefault();
+
+        this.input.element.click();
     };
 
     onDragOver = e => {
@@ -73,16 +96,16 @@ export class PanelThumbnail extends Interface {
         this.reader.readAsDataURL(e.dataTransfer.files[0]);
     };
 
+    onChange = e => {
+        e.preventDefault();
+
+        if (e.target.files.length) {
+            this.reader.readAsDataURL(e.target.files[0]);
+        }
+    };
+
     onLoad = e => {
-        const image = new Image();
-
-        image.onload = () => {
-            this.setValue(image);
-
-            image.onload = null;
-        };
-
-        image.src = e.target.result;
+        this.loadImage(e.target.result);
     };
 
     // Public methods

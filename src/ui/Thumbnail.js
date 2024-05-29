@@ -19,6 +19,7 @@ export class Thumbnail extends Interface {
 
         if (data.image) {
             data = Object.assign(defaults, data);
+
             this.image = data.image;
             this.width = data.width;
             this.height = data.height;
@@ -81,17 +82,18 @@ export class Thumbnail extends Interface {
     }
 
     initCanvas() {
-        this.thumbnail = new Interface(null, 'canvas');
-        this.thumbnail.css({
+        this.canvas = new Interface(null, 'canvas');
+        this.canvas.css({
             position: 'absolute',
             left: 0,
             top: 0,
             width: '100%',
-            height: '100%'
+            height: '100%',
+            objectFit: 'cover'
         });
-        this.add(this.thumbnail);
+        this.add(this.canvas);
 
-        this.context = this.thumbnail.element.getContext('2d');
+        this.context = this.canvas.element.getContext('2d');
     }
 
     initDragAndDrop() {
@@ -110,6 +112,18 @@ export class Thumbnail extends Interface {
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
         this.reader.removeEventListener('load', this.onLoad);
+    }
+
+    loadImage(path) {
+        const image = new Image();
+
+        image.onload = () => {
+            this.setThumbnail(image, true);
+
+            image.onload = null;
+        };
+
+        image.src = path;
     }
 
     // Event handlers
@@ -166,15 +180,7 @@ export class Thumbnail extends Interface {
     };
 
     onLoad = e => {
-        const image = new Image();
-
-        image.onload = () => {
-            this.setThumbnail(image, true);
-
-            image.onload = null;
-        };
-
-        image.src = e.target.result;
+        this.loadImage(e.target.result);
     };
 
     // Public methods
@@ -208,8 +214,9 @@ export class Thumbnail extends Interface {
 
             oldGroup.destroy();
 
-            if (this.thumbnail) {
-                this.thumbnail = this.thumbnail.destroy();
+            if (this.canvas) {
+                this.canvas = this.canvas.destroy();
+                this.context = null;
             }
         } else {
             this.update();
@@ -247,18 +254,18 @@ export class Thumbnail extends Interface {
             }
         }
 
-        if (this.thumbnail) {
-            this.thumbnail.element.width = Math.round(this.width * dpr);
-            this.thumbnail.element.height = Math.round(this.height * dpr);
+        if (this.canvas) {
+            this.canvas.element.width = Math.round(this.width * dpr);
+            this.canvas.element.height = Math.round(this.height * dpr);
 
             this.update();
         }
     }
 
     update() {
-        if (this.thumbnail) {
+        if (this.canvas && this.image) {
             // Draws from a canvas are faster
-            this.context.drawImage(this.image, 0, 0, this.thumbnail.element.width, this.thumbnail.element.height);
+            this.context.drawImage(this.image, 0, 0, this.canvas.element.width, this.canvas.element.height);
         }
     }
 
