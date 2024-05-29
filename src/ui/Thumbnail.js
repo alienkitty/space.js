@@ -52,6 +52,8 @@ export class Thumbnail extends Interface {
             this.initCanvas();
         }
 
+        this.initDragAndDrop();
+
         this.addListeners();
     }
 
@@ -84,12 +86,22 @@ export class Thumbnail extends Interface {
         this.context = this.thumbnail.element.getContext('2d');
     }
 
+    initDragAndDrop() {
+        this.reader = new FileReader();
+    }
+
     addListeners() {
         this.element.addEventListener('pointerdown', this.onPointerDown);
+        this.element.addEventListener('dragover', this.onDragOver);
+        this.element.addEventListener('drop', this.onDrop);
+        this.reader.addEventListener('load', this.onFileLoad);
     }
 
     removeListeners() {
         this.element.removeEventListener('pointerdown', this.onPointerDown);
+        this.element.removeEventListener('dragover', this.onDragOver);
+        this.element.removeEventListener('drop', this.onDrop);
+        this.reader.removeEventListener('load', this.onFileLoad);
     }
 
     // Event handlers
@@ -132,6 +144,29 @@ export class Thumbnail extends Interface {
         }
 
         console.log('onClick');
+    };
+
+    onDragOver = e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    };
+
+    onDrop = e => {
+        e.preventDefault();
+
+        this.reader.readAsDataURL(e.dataTransfer.files[0]);
+    };
+
+    onFileLoad = e => {
+        const image = new Image();
+
+        image.onload = () => {
+            this.setThumbnail(image);
+
+            image.onload = null;
+        };
+
+        image.src = e.target.result;
     };
 
     // Public methods
