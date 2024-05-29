@@ -13,7 +13,8 @@ export class Thumbnail extends Interface {
             width: 150,
             height: 100,
             snapMargin: 20,
-            position: 'tl'
+            position: 'tl',
+            noCanvas: false
         };
 
         if (data.image) {
@@ -31,6 +32,7 @@ export class Thumbnail extends Interface {
             this.height = defaults.height;
             this.snapMargin = defaults.snapMargin;
             this.position = defaults.position;
+            this.noCanvas = defaults.noCanvas;
         }
 
         this.origin = new Vector2();
