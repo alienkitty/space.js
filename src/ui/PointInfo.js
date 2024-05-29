@@ -27,8 +27,7 @@ export class PointInfo extends Interface {
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
-            cursor: 'move',
-            zIndex: 1
+            cursor: 'move'
         });
         this.add(this.container);
 

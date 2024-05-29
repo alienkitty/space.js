@@ -130,8 +130,8 @@ export class Point3D extends Group {
 
         this.canvas.element.width = Math.round(this.width * this.dpr);
         this.canvas.element.height = Math.round(this.height * this.dpr);
-        this.canvas.element.style.width = this.width + 'px';
-        this.canvas.element.style.height = this.height + 'px';
+        this.canvas.element.style.width = `${this.width}px`;
+        this.canvas.element.style.height = `${this.height}px`;
         this.context.scale(this.dpr, this.dpr);
 
         if (this.width < this.breakpoint) {

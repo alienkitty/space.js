@@ -126,7 +126,6 @@ export class Point extends Interface {
 
             if (this.ui && this.ui.snap) {
                 this.bounds = this.info.container.element.getBoundingClientRect();
-
                 this.ui.snap();
             } else {
                 this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
@@ -200,7 +199,6 @@ export class Point extends Interface {
         this.info.open();
 
         this.bounds = this.info.container.element.getBoundingClientRect();
-
         this.isOpen = true;
     }
 

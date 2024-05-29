@@ -17,13 +17,6 @@
 
         class CanvasNoise {
             constructor(params) {
-                this.params = params;
-
-                this.initParameters();
-                this.initCanvas();
-            }
-
-            initParameters() {
                 const defaults = {
                     width: 1,
                     height: 1,
@@ -31,7 +24,9 @@
                     monochrome: true
                 };
 
-                this.params = Object.assign(defaults, this.params);
+                this.params = Object.assign(defaults, params);
+
+                this.initCanvas();
             }
 
             initCanvas() {
@@ -196,8 +191,8 @@
                 const height = document.documentElement.clientHeight;
                 const dpr = window.devicePixelRatio;
 
-                this.canvas.style.width = width + 'px';
-                this.canvas.style.height = height + 'px';
+                this.canvas.style.width = `${width}px`;
+                this.canvas.style.height = `${height}px`;
 
                 CanvasNoiseController.resize(width, height, dpr);
             };
