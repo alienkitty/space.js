@@ -151,7 +151,7 @@ export class Thumbnail extends Interface {
             return;
         }
 
-        console.log('onClick');
+        this.events.emit('click', { target: this });
     };
 
     onDragOver = e => {
