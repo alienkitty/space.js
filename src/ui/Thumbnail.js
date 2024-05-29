@@ -74,13 +74,31 @@ export class Thumbnail extends Interface {
         });
 
         if (this.noCanvas) {
-            this.thumbnail = new Interface(null);
-            this.add(this.thumbnail);
+            this.group = new Interface('.group');
+            this.add(this.group);
+
+            const content = new Interface(this.image);
+            content.css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+            });
+            this.group.add(content);
         }
     }
 
     initCanvas() {
         this.thumbnail = new Interface(null, 'canvas');
+        this.thumbnail.css({
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%'
+        });
         this.add(this.thumbnail);
 
         this.context = this.thumbnail.element.getContext('2d');
@@ -175,15 +193,25 @@ export class Thumbnail extends Interface {
         this.image = image;
 
         if (this.noCanvas) {
-            const oldThumbnail = this.thumbnail;
+            const content = new Interface(this.image);
+            content.css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+            });
 
-            const newThumbnail = this.thumbnail.clone();
-            newThumbnail.add(this.value);
+            const oldGroup = this.group;
 
-            this.replace(oldThumbnail, newThumbnail);
-            this.thumbnail = newThumbnail;
+            const newGroup = this.group.clone();
+            newGroup.add(content);
 
-            oldThumbnail.destroy();
+            this.replace(oldGroup, newGroup);
+            this.group = newGroup;
+
+            oldGroup.destroy();
         } else {
             this.update();
         }
@@ -223,8 +251,6 @@ export class Thumbnail extends Interface {
         if (this.context) {
             this.thumbnail.element.width = Math.round(this.width * dpr);
             this.thumbnail.element.height = Math.round(this.height * dpr);
-            this.thumbnail.element.style.width = `${this.width}px`;
-            this.thumbnail.element.style.height = `${this.height}px`;
 
             this.update();
         }
