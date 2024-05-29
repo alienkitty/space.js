@@ -4,6 +4,7 @@
 
 import { Interface } from '../utils/Interface.js';
 import { PanelLink } from './PanelLink.js';
+import { PanelThumbnail } from './PanelThumbnail.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
@@ -58,6 +59,10 @@ export class PanelItem extends Interface {
             });
 
             this.view = new PanelLink(this.data);
+            this.view.events.on('update', this.onUpdate);
+            this.container.add(this.view);
+        } else if (this.data.type === 'thumbnail') {
+            this.view = new PanelThumbnail(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'list') {

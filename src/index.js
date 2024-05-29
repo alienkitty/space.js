@@ -37,6 +37,7 @@ export { Sound } from './audio/Sound.js';
 export { Panel } from './panels/Panel.js';
 export { PanelItem } from './panels/PanelItem.js';
 export { PanelLink } from './panels/PanelLink.js';
+export { PanelThumbnail } from './panels/PanelThumbnail.js';
 export { List } from './panels/List.js';
 export { ListToggle } from './panels/ListToggle.js';
 export { ListSelect } from './panels/ListSelect.js';
