@@ -53,6 +53,7 @@ export class Thumbnail extends Interface {
         }
 
         this.initDragAndDrop();
+        this.setThumbnail(this.image, this.noCanvas);
 
         this.addListeners();
     }
@@ -72,22 +73,6 @@ export class Thumbnail extends Interface {
             userSelect: 'none',
             opacity: 0
         });
-
-        if (this.noCanvas) {
-            this.group = new Interface('.group');
-            this.add(this.group);
-
-            const content = new Interface(this.image);
-            content.css({
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-            });
-            this.group.add(content);
-        }
     }
 
     initCanvas() {
@@ -179,7 +164,7 @@ export class Thumbnail extends Interface {
         const image = new Image();
 
         image.onload = () => {
-            this.setThumbnail(image);
+            this.setThumbnail(image, true);
 
             image.onload = null;
         };
@@ -189,10 +174,15 @@ export class Thumbnail extends Interface {
 
     // Public methods
 
-    setThumbnail(image) {
+    setThumbnail(image, noCanvas) {
         this.image = image;
 
-        if (this.noCanvas) {
+        if (noCanvas) {
+            if (!this.group) {
+                this.group = new Interface('.group');
+                this.add(this.group);
+            }
+
             const content = new Interface(this.image);
             content.css({
                 position: 'absolute',
@@ -212,6 +202,10 @@ export class Thumbnail extends Interface {
             this.group = newGroup;
 
             oldGroup.destroy();
+
+            if (this.thumbnail) {
+                this.thumbnail = this.thumbnail.destroy();
+            }
         } else {
             this.update();
         }
@@ -248,7 +242,7 @@ export class Thumbnail extends Interface {
             }
         }
 
-        if (this.context) {
+        if (this.thumbnail) {
             this.thumbnail.element.width = Math.round(this.width * dpr);
             this.thumbnail.element.height = Math.round(this.height * dpr);
 
@@ -257,7 +251,7 @@ export class Thumbnail extends Interface {
     }
 
     update() {
-        if (!this.noCanvas) {
+        if (this.thumbnail) {
             // Draws from a canvas are faster
             this.context.drawImage(this.image, 0, 0, this.thumbnail.element.width, this.thumbnail.element.height);
         }
