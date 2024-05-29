@@ -38,6 +38,10 @@
             'Empty': 3
         };
 
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.src = 'https://space.js.org/assets/meta/share.png';
+
         const items = [
             {
                 name: 'FPS'
@@ -235,6 +239,17 @@
                 }
             },
             {
+                type: 'divider'
+            },
+            {
+                type: 'thumbnail',
+                name: 'Thumbnail',
+                value: image,
+                callback: value => {
+                    console.log('Thumbnail callback:', value);
+                }
+            },
+            {
                 type: 'spacer'
             },
             {
@@ -252,6 +267,7 @@
                     ui.setPanelValue('Slider', 0);
                     ui.setPanelValue('Nested Color 2', backgroundColor);
                     ui.setPanelValue('Nested Color 3', backgroundColor);
+                    ui.setPanelValue('Thumbnail', image.cloneNode()); // Previous image is garbage collected
                 }
             }
         ];

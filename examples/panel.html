@@ -49,6 +49,10 @@
             'Empty': 3
         };
 
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.src = 'https://space.js.org/assets/meta/share.png';
+
         const items = [
             {
                 type: 'color',
@@ -240,6 +244,17 @@
                 }
             },
             {
+                type: 'divider'
+            },
+            {
+                type: 'thumbnail',
+                name: 'Thumbnail',
+                value: image,
+                callback: value => {
+                    console.log('Thumbnail callback:', value);
+                }
+            },
+            {
                 type: 'spacer'
             },
             {
@@ -257,6 +272,7 @@
                     panel.setPanelValue('Slider', 0);
                     panel.setPanelValue('Nested Color 2', backgroundColor);
                     panel.setPanelValue('Nested Color 3', backgroundColor);
+                    panel.setPanelValue('Thumbnail', image.cloneNode()); // Previous image is garbage collected
                 }
             }
         ];
