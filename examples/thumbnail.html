@@ -93,9 +93,17 @@
 
                 this.ui = new UI({
                     fps: true,
+                    // thumbnail: this.noise.element,
                     thumbnail: {
                         image: this.noise.element,
-                        position: 'bl' // tl, bl, br, tr
+                        width: 150,
+                        height: 100,
+                        snapMargin: 20,
+                        position: 'bl', // tl, bl, br, tr
+                        noCanvas: false,
+                        callback: value => {
+                            console.log('Thumbnail callback:', value);
+                        }
                     }
                 });
                 this.ui.animateIn();
@@ -103,12 +111,24 @@
             }
 
             static addListeners() {
+                this.ui.thumbnail.events.on('update', this.onThumbnail);
+                this.ui.thumbnail.events.on('click', this.onThumbnailClick);
                 window.addEventListener('resize', this.onResize);
                 ticker.add(this.onUpdate, 20);
                 ticker.start();
             }
 
             // Event handlers
+
+            static onThumbnail = e => {
+                console.log('Thumbnail event:', e);
+            };
+
+            static onThumbnailClick = e => {
+                console.log('Thumbnail click event:', e);
+
+                open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+            };
 
             static onResize = () => {
                 const width = document.documentElement.clientWidth;
