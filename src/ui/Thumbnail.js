@@ -12,7 +12,8 @@ export class Thumbnail extends Interface {
         const defaults = {
             width: 150,
             height: 100,
-            snapMargin: 20
+            snapMargin: 20,
+            position: 'tl'
         };
 
         if (data.image) {
@@ -21,6 +22,7 @@ export class Thumbnail extends Interface {
             this.width = data.width;
             this.height = data.height;
             this.snapMargin = data.snapMargin;
+            this.position = data.position;
             this.noCanvas = data.noCanvas;
             this.callback = data.callback;
         } else {
@@ -28,6 +30,7 @@ export class Thumbnail extends Interface {
             this.width = defaults.width;
             this.height = defaults.height;
             this.snapMargin = defaults.snapMargin;
+            this.position = defaults.position;
         }
 
         this.origin = new Vector2();
@@ -40,11 +43,11 @@ export class Thumbnail extends Interface {
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.windowSnapMargin = this.snapMargin;
-        this.snappedTop = false;
-        this.snappedRight = false;
-        this.snappedBottom = false;
-        this.snappedLeft = false;
-        this.snapped = false;
+        this.snappedTop = this.position === 'tl' || this.position === 'tr';
+        this.snappedRight = this.position === 'br' || this.position === 'tr';
+        this.snappedBottom = this.position === 'bl' || this.position === 'br';
+        this.snappedLeft = this.position === 'tl' || this.position === 'bl';
+        this.snapped = this.snappedTop || this.snappedRight || this.snappedBottom || this.snappedLeft;
 
         this.init();
 
