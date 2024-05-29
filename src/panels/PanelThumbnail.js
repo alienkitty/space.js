@@ -56,6 +56,18 @@ export class PanelThumbnail extends Interface {
         this.reader.removeEventListener('load', this.onLoad);
     }
 
+    loadImage(path) {
+        const image = new Image();
+
+        image.onload = () => {
+            this.setValue(image);
+
+            image.onload = null;
+        };
+
+        image.src = path;
+    }
+
     // Event handlers
 
     onClick = () => {
@@ -74,15 +86,7 @@ export class PanelThumbnail extends Interface {
     };
 
     onLoad = e => {
-        const image = new Image();
-
-        image.onload = () => {
-            this.setValue(image);
-
-            image.onload = null;
-        };
-
-        image.src = e.target.result;
+        this.loadImage(e.target.result);
     };
 
     // Public methods
