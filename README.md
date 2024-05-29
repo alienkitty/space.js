@@ -119,6 +119,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
 [panel](https://space.js.org/examples/panel.html) (standalone)  
+[thumbnail](https://space.js.org/examples/thumbnail.html)  
 [ufo](https://ufo.ai/) (2d scene, smooth scroll with skew effect)  
 
 #### 3d
@@ -177,9 +178,9 @@ npx eslint examples/*.html
 
 #### v1.3
 
-* [x] Change camera perspective
+* [x] Camera perspective toggling
 * [x] Panel snapping
-* [ ] Panel thumbnails
+* [x] Panel thumbnails
 * [ ] Material texture thumbnails
 * [ ] Material texture drag and drop
 
