@@ -193,13 +193,17 @@ npx eslint examples/*.html
 
 #### v1.5
 
-* [ ] MIDI support
+* [ ] Graphs
 
 #### v1.6
 
-* [ ] WebXR version
+* [ ] MIDI support
 
 #### v1.7
+
+* [ ] WebXR version
+
+#### v1.8
 
 * [ ] OGL version
 * [ ] Documentation
