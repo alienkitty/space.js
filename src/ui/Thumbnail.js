@@ -189,9 +189,9 @@ export class Thumbnail extends Interface {
         this.image = image;
 
         if (noCanvas) {
-            if (!this.group) {
-                this.group = new Interface('.group');
-                this.add(this.group);
+            if (!this.wrapper) {
+                this.wrapper = new Interface('.wrapper');
+                this.add(this.wrapper);
             }
 
             const content = new Interface(this.image);
@@ -204,15 +204,15 @@ export class Thumbnail extends Interface {
                 objectFit: 'cover'
             });
 
-            const oldGroup = this.group;
+            const oldWrapper = this.wrapper;
 
-            const newGroup = this.group.clone();
-            newGroup.add(content);
+            const newWrapper = this.wrapper.clone();
+            newWrapper.add(content);
 
-            this.replace(oldGroup, newGroup);
-            this.group = newGroup;
+            this.replace(oldWrapper, newWrapper);
+            this.wrapper = newWrapper;
 
-            oldGroup.destroy();
+            oldWrapper.destroy();
 
             if (this.canvas) {
                 this.canvas = this.canvas.destroy();

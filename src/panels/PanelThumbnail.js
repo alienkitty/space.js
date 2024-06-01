@@ -29,7 +29,8 @@ export class PanelThumbnail extends Interface {
     }
 
     init() {
-        this.css({
+        this.container = new Interface('.container');
+        this.container.css({
             position: 'relative',
             boxSizing: 'border-box',
             width: this.width,
@@ -37,6 +38,7 @@ export class PanelThumbnail extends Interface {
             border: '1px solid var(--ui-color-divider-line)',
             cursor: 'pointer'
         });
+        this.add(this.container);
 
         this.line = new Interface('.line');
         this.line.css({
@@ -47,9 +49,10 @@ export class PanelThumbnail extends Interface {
             height: this.width / 2 - 0.5,
             borderBottom: '1px solid var(--ui-color-divider-line)',
             transformOrigin: 'center bottom',
-            rotation: -45
+            rotation: -45,
+            pointerEvents: 'none'
         });
-        this.add(this.line);
+        this.container.add(this.line);
 
         // Not added to DOM
         this.input = new Interface(null, 'input');
@@ -64,17 +67,17 @@ export class PanelThumbnail extends Interface {
     }
 
     addListeners() {
-        this.element.addEventListener('click', this.onClick);
-        this.element.addEventListener('dragover', this.onDragOver);
-        this.element.addEventListener('drop', this.onDrop);
+        this.container.element.addEventListener('click', this.onClick);
+        this.container.element.addEventListener('dragover', this.onDragOver);
+        this.container.element.addEventListener('drop', this.onDrop);
         this.input.element.addEventListener('change', this.onChange);
         this.reader.addEventListener('load', this.onLoad);
     }
 
     removeListeners() {
-        this.element.removeEventListener('click', this.onClick);
-        this.element.removeEventListener('dragover', this.onDragOver);
-        this.element.removeEventListener('drop', this.onDrop);
+        this.container.element.removeEventListener('click', this.onClick);
+        this.container.element.removeEventListener('dragover', this.onDragOver);
+        this.container.element.removeEventListener('drop', this.onDrop);
         this.input.element.removeEventListener('change', this.onChange);
         this.reader.removeEventListener('load', this.onLoad);
     }
@@ -122,14 +125,40 @@ export class PanelThumbnail extends Interface {
         this.loadImage(e.target.result);
     };
 
+    onUpdate = e => {
+        this.events.emit('update', e);
+    };
+
     // Public methods
+
+    setContent(content) {
+        content.events.on('update', this.onUpdate);
+
+        if (!this.group) {
+            this.group = new Interface('.group');
+            this.group.css({
+                position: 'relative'
+            });
+            this.add(this.group);
+        }
+
+        const oldGroup = this.group;
+
+        const newGroup = this.group.clone();
+        newGroup.add(content);
+
+        this.replace(oldGroup, newGroup);
+        this.group = newGroup;
+
+        oldGroup.destroy();
+    }
 
     setValue(value) {
         this.value = value;
 
-        if (!this.group) {
-            this.group = new Interface('.group');
-            this.add(this.group);
+        if (!this.wrapper) {
+            this.wrapper = new Interface('.wrapper');
+            this.container.add(this.wrapper);
         }
 
         const content = new Interface(this.value);
@@ -142,15 +171,15 @@ export class PanelThumbnail extends Interface {
             objectFit: 'cover'
         });
 
-        const oldGroup = this.group;
+        const oldWrapper = this.wrapper;
 
-        const newGroup = this.group.clone();
-        newGroup.add(content);
+        const newWrapper = this.wrapper.clone();
+        newWrapper.add(content);
 
-        this.replace(oldGroup, newGroup);
-        this.group = newGroup;
+        this.replace(oldWrapper, newWrapper);
+        this.wrapper = newWrapper;
 
-        oldGroup.destroy();
+        oldWrapper.destroy();
 
         this.update();
     }
