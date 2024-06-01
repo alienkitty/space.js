@@ -55,31 +55,6 @@ export class MapPanel extends Panel {
                     const mapItems = [];
 
                     if (mesh.material.map) {
-                        const repeatItems = [
-                            {
-                                type: 'slider',
-                                name: 'X',
-                                min: 1,
-                                max: 16,
-                                step: 1,
-                                value: mesh.material.map.repeat.x,
-                                callback: value => {
-                                    mesh.material.map.repeat.setX(value);
-                                }
-                            },
-                            {
-                                type: 'slider',
-                                name: 'Y',
-                                min: 1,
-                                max: 16,
-                                step: 1,
-                                value: mesh.material.map.repeat.y,
-                                callback: value => {
-                                    mesh.material.map.repeat.setY(value);
-                                }
-                            }
-                        ];
-
                         mapItems.push(
                             {
                                 type: 'spacer'
@@ -110,29 +85,34 @@ export class MapPanel extends Panel {
                                 name: 'Wrap',
                                 list: WrapOptions,
                                 value: getKeyByValue(WrapOptions, mesh.material.map.wrapS),
-                                callback: (value, panel) => {
-                                    if (!panel.group) {
-                                        const repeatPanel = new Panel();
-                                        repeatPanel.animateIn(true);
-
-                                        repeatItems.forEach(data => {
-                                            repeatPanel.add(new PanelItem(data));
-                                        });
-
-                                        panel.setContent(repeatPanel);
-                                    }
-
+                                callback: value => {
                                     const wrapping = WrapOptions[value];
 
                                     mesh.material.map.wrapS = wrapping;
                                     mesh.material.map.wrapT = wrapping;
                                     mesh.material.map.needsUpdate = true;
-
-                                    if (value === 'Repeat' || value === 'Mirror') {
-                                        panel.group.show();
-                                    } else {
-                                        panel.group.hide();
-                                    }
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'X',
+                                min: 1,
+                                max: 16,
+                                step: 1,
+                                value: mesh.material.map.repeat.x,
+                                callback: value => {
+                                    mesh.material.map.repeat.setX(value);
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Y',
+                                min: 1,
+                                max: 16,
+                                step: 1,
+                                value: mesh.material.map.repeat.y,
+                                callback: value => {
+                                    mesh.material.map.repeat.setY(value);
                                 }
                             }
                         );
