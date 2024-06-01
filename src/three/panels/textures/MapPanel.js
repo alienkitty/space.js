@@ -31,30 +31,24 @@ export class MapPanel extends Panel {
                 name: 'Map',
                 value: mesh.material.map && mesh.material.map.image,
                 callback: (value, panel) => {
-                    let texture;
-
-                    if (value) {
-                        texture = new Texture(value);
-
-                        if (ColorManagement.enabled) {
-                            texture.colorSpace = SRGBColorSpace;
-                        }
-
-                        texture.needsUpdate = true;
-                    } else {
-                        texture = null;
-                    }
-
-                    if (mesh.material.map) {
-                        mesh.material.map.dispose();
-                    }
-
-                    mesh.material.map = texture;
-                    mesh.material.needsUpdate = true;
-
                     const mapItems = [];
 
-                    if (mesh.material.map) {
+                    if (value) {
+                        if (!mesh.material.map || value !== mesh.material.map.image) {
+                            if (mesh.material.map) {
+                                mesh.material.map.image = value;
+                            } else {
+                                mesh.material.map = new Texture(value);
+                            }
+
+                            if (ColorManagement.enabled) {
+                                mesh.material.map.colorSpace = SRGBColorSpace;
+                            }
+
+                            mesh.material.map.needsUpdate = true;
+                            mesh.material.needsUpdate = true;
+                        }
+
                         mapItems.push(
                             {
                                 type: 'spacer'
@@ -116,6 +110,10 @@ export class MapPanel extends Panel {
                                 }
                             }
                         );
+                    } else if (mesh.material.map) {
+                        mesh.material.map.dispose();
+                        mesh.material.map = null;
+                        mesh.material.needsUpdate = true;
                     }
 
                     const mapPanel = new Panel();
