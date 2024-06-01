@@ -11,16 +11,18 @@ import { ColorSpaceOptions, WrapOptions } from '../Options.js';
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MapPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, key = 'map') {
         super();
 
         this.mesh = mesh;
+        this.key = key;
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const key = this.key;
 
         const items = [
             {
@@ -29,23 +31,23 @@ export class MapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                value: mesh.material.map && mesh.material.map.image,
+                value: mesh.material[key] && mesh.material[key].image,
                 callback: (value, panel) => {
                     const mapItems = [];
 
                     if (value) {
-                        if (!mesh.material.map || value !== mesh.material.map.image) {
-                            if (mesh.material.map) {
-                                mesh.material.map.image = value;
+                        if (!mesh.material[key] || value !== mesh.material[key].image) {
+                            if (mesh.material[key]) {
+                                mesh.material[key].image = value;
                             } else {
-                                mesh.material.map = new Texture(value);
+                                mesh.material[key] = new Texture(value);
                             }
 
                             if (ColorManagement.enabled) {
-                                mesh.material.map.colorSpace = SRGBColorSpace;
+                                mesh.material[key].colorSpace = SRGBColorSpace;
                             }
 
-                            mesh.material.map.needsUpdate = true;
+                            mesh.material[key].needsUpdate = true;
                             mesh.material.needsUpdate = true;
                         }
 
@@ -57,10 +59,10 @@ export class MapPanel extends Panel {
                                 type: 'list',
                                 name: 'Color Space',
                                 list: ColorSpaceOptions,
-                                value: getKeyByValue(ColorSpaceOptions, mesh.material.map.colorSpace),
+                                value: getKeyByValue(ColorSpaceOptions, mesh.material[key].colorSpace),
                                 callback: value => {
-                                    mesh.material.map.colorSpace = ColorSpaceOptions[value];
-                                    mesh.material.map.needsUpdate = true;
+                                    mesh.material[key].colorSpace = ColorSpaceOptions[value];
+                                    mesh.material[key].needsUpdate = true;
                                 }
                             },
                             {
@@ -69,22 +71,22 @@ export class MapPanel extends Panel {
                                 min: 1,
                                 max: 16,
                                 step: 1,
-                                value: mesh.material.map.anisotropy,
+                                value: mesh.material[key].anisotropy,
                                 callback: value => {
-                                    mesh.material.map.anisotropy = value;
+                                    mesh.material[key].anisotropy = value;
                                 }
                             },
                             {
                                 type: 'list',
                                 name: 'Wrap',
                                 list: WrapOptions,
-                                value: getKeyByValue(WrapOptions, mesh.material.map.wrapS),
+                                value: getKeyByValue(WrapOptions, mesh.material[key].wrapS),
                                 callback: value => {
                                     const wrapping = WrapOptions[value];
 
-                                    mesh.material.map.wrapS = wrapping;
-                                    mesh.material.map.wrapT = wrapping;
-                                    mesh.material.map.needsUpdate = true;
+                                    mesh.material[key].wrapS = wrapping;
+                                    mesh.material[key].wrapT = wrapping;
+                                    mesh.material[key].needsUpdate = true;
                                 }
                             },
                             {
@@ -93,9 +95,9 @@ export class MapPanel extends Panel {
                                 min: 1,
                                 max: 16,
                                 step: 1,
-                                value: mesh.material.map.repeat.x,
+                                value: mesh.material[key].repeat.x,
                                 callback: value => {
-                                    mesh.material.map.repeat.setX(value);
+                                    mesh.material[key].repeat.setX(value);
                                 }
                             },
                             {
@@ -104,15 +106,15 @@ export class MapPanel extends Panel {
                                 min: 1,
                                 max: 16,
                                 step: 1,
-                                value: mesh.material.map.repeat.y,
+                                value: mesh.material[key].repeat.y,
                                 callback: value => {
-                                    mesh.material.map.repeat.setY(value);
+                                    mesh.material[key].repeat.setY(value);
                                 }
                             }
                         );
-                    } else if (mesh.material.map) {
-                        mesh.material.map.dispose();
-                        mesh.material.map = null;
+                    } else if (mesh.material[key]) {
+                        mesh.material[key].dispose();
+                        mesh.material[key] = null;
                         mesh.material.needsUpdate = true;
                     }
 
