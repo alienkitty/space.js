@@ -161,7 +161,7 @@ export class PanelThumbnail extends Interface {
             this.container.add(this.wrapper);
         }
 
-        const content = new Interface(this.value);
+        const content = new Interface(this.value && this.value.cloneNode());
         content.css({
             position: 'absolute',
             left: 0,
