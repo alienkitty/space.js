@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { SRGBColorSpace, Texture } from 'three';
+import { ColorManagement, SRGBColorSpace, Texture } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
@@ -35,7 +35,11 @@ export class MapPanel extends Panel {
 
                     if (value) {
                         texture = new Texture(value);
-                        texture.colorSpace = SRGBColorSpace;
+
+                        if (ColorManagement.enabled) {
+                            texture.colorSpace = SRGBColorSpace;
+                        }
+
                         texture.needsUpdate = true;
                     } else {
                         texture = null;

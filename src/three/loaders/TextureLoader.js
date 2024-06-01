@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Texture } from 'three';
+import { ColorManagement, SRGBColorSpace, Texture } from 'three';
 
 import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
@@ -63,6 +63,11 @@ export class TextureLoader extends Loader {
                 }
 
                 texture.image = image;
+
+                if (ColorManagement.enabled) {
+                    texture.colorSpace = SRGBColorSpace;
+                }
+
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
