@@ -2,11 +2,11 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Texture } from 'three';
+import { SRGBColorSpace, Texture } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { WrapOptions } from '../Options.js';
+import { ColorSpaceOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -35,6 +35,7 @@ export class MapPanel extends Panel {
 
                     if (value) {
                         texture = new Texture(value);
+                        texture.colorSpace = SRGBColorSpace;
                         texture.needsUpdate = true;
                     } else {
                         texture = null;
@@ -78,6 +79,16 @@ export class MapPanel extends Panel {
                         mapItems.push(
                             {
                                 type: 'spacer'
+                            },
+                            {
+                                type: 'list',
+                                name: 'Color Space',
+                                list: ColorSpaceOptions,
+                                value: getKeyByValue(ColorSpaceOptions, mesh.material.map.colorSpace),
+                                callback: value => {
+                                    mesh.material.map.colorSpace = ColorSpaceOptions[value];
+                                    mesh.material.map.needsUpdate = true;
+                                }
                             },
                             {
                                 type: 'slider',
