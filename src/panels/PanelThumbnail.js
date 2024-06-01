@@ -18,7 +18,8 @@ export class PanelThumbnail extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = this.width * 0.75;
+        this.diagonal = this.width * 1.414;
+        this.lineOffset = -(this.diagonal - this.width) / 2 + 1;
 
         this.init();
         this.initDragAndDrop();
@@ -32,10 +33,23 @@ export class PanelThumbnail extends Interface {
             position: 'relative',
             boxSizing: 'border-box',
             width: this.width,
-            height: this.height,
+            height: this.width,
             border: '1px solid var(--ui-color-divider-line)',
             cursor: 'pointer'
         });
+
+        this.line = new Interface('.line');
+        this.line.css({
+            position: 'absolute',
+            left: this.lineOffset,
+            right: this.lineOffset,
+            boxSizing: 'border-box',
+            height: this.width / 2 - 0.5,
+            borderBottom: '1px solid var(--ui-color-divider-line)',
+            transformOrigin: 'center bottom',
+            rotation: -45
+        });
+        this.add(this.line);
 
         // Not added to DOM
         this.input = new Interface(null, 'input');
