@@ -10,12 +10,14 @@ export class PanelThumbnail extends Interface {
     constructor({
         name,
         value,
+        flipY = false,
         callback
     }) {
         super('.panel-thumbnail');
 
         this.name = name;
         this.value = value;
+        this.flipY = flipY;
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
@@ -96,6 +98,23 @@ export class PanelThumbnail extends Interface {
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
         this.reader.removeEventListener('load', this.onLoad);
+    }
+
+    imageToCanvas(image) {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        const context = canvas.getContext('2d');
+
+        if (this.flipY) {
+            context.translate(0, canvas.height);
+            context.scale(1, -1);
+        }
+
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        return canvas;
     }
 
     loadImage(path) {
@@ -217,10 +236,7 @@ export class PanelThumbnail extends Interface {
 
     setValue(value) {
         if (value instanceof ImageBitmap) {
-            const canvas = document.createElement('canvas');
-            canvas.width = value.width;
-            canvas.height = value.height;
-            canvas.getContext('2d').drawImage(value, 0, 0, canvas.width, canvas.height);
+            const canvas = this.imageToCanvas(value);
             this.loadImage(canvas.toDataURL());
             return;
         } else {

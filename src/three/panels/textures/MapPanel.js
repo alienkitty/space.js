@@ -32,6 +32,7 @@ export class MapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 value: mesh.material[key] && mesh.material[key].source.data,
+                flipY: true,
                 callback: (value, panel) => {
                     const mapProperties = {};
                     const mapItems = [];
