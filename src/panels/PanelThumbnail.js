@@ -2,6 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
@@ -21,6 +22,17 @@ export class PanelThumbnail extends Interface {
         this.diagonal = this.width * 1.414;
         this.lineOffset = -(this.diagonal - this.width) / 2 + 1;
 
+        this.origin = new Vector2();
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.bounds = null;
+        this.lastTime = null;
+        this.lastMouse = new Vector2();
+        this.lastOrigin = new Vector2();
+        this.snapPosition = new Vector2();
+        this.snapTarget = new Vector2();
+        this.snapped = false;
+
         this.init();
         this.initDragAndDrop();
         this.setValue(this.value);
@@ -29,6 +41,10 @@ export class PanelThumbnail extends Interface {
     }
 
     init() {
+        this.css({
+            position: 'relative'
+        });
+
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
@@ -68,17 +84,17 @@ export class PanelThumbnail extends Interface {
 
     addListeners() {
         this.container.element.addEventListener('click', this.onClick);
-        this.container.element.addEventListener('dragover', this.onDragOver);
-        this.container.element.addEventListener('drop', this.onDrop);
         this.input.element.addEventListener('change', this.onChange);
+        this.element.addEventListener('dragover', this.onDragOver);
+        this.element.addEventListener('drop', this.onDrop);
         this.reader.addEventListener('load', this.onLoad);
     }
 
     removeListeners() {
         this.container.element.removeEventListener('click', this.onClick);
-        this.container.element.removeEventListener('dragover', this.onDragOver);
-        this.container.element.removeEventListener('drop', this.onDrop);
         this.input.element.removeEventListener('change', this.onChange);
+        this.element.removeEventListener('dragover', this.onDragOver);
+        this.element.removeEventListener('drop', this.onDrop);
         this.reader.removeEventListener('load', this.onLoad);
     }
 
@@ -98,6 +114,49 @@ export class PanelThumbnail extends Interface {
 
     onClick = e => {
         e.preventDefault();
+
+        this.input.element.click();
+    };
+
+    onPointerDown = e => {
+        this.bounds = this.wrapper.element.getBoundingClientRect();
+        this.lastTime = performance.now();
+        this.lastMouse.set(e.clientX, e.clientY);
+        this.lastOrigin.set(0, 0);
+
+        this.onPointerMove(e);
+
+        window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
+    };
+
+    onPointerMove = ({ clientX, clientY }) => {
+        const event = {
+            x: clientX,
+            y: clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
+        if (this.delta.length()) {
+            this.origin.addVectors(this.lastOrigin, this.delta);
+
+            this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+        }
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointermove', this.onPointerMove);
+
+        this.onPointerMove(e);
+
+        this.wrapper.css({ left: 0, top: 0 });
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
 
         this.input.element.click();
     };
@@ -167,7 +226,15 @@ export class PanelThumbnail extends Interface {
 
         if (!this.wrapper) {
             this.wrapper = new Interface('.wrapper');
-            this.container.add(this.wrapper);
+            this.wrapper.css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: this.width,
+                height: this.width,
+                cursor: 'move'
+            });
+            this.add(this.wrapper);
         }
 
         const content = new Interface(this.value && this.value.cloneNode());
@@ -177,18 +244,27 @@ export class PanelThumbnail extends Interface {
             top: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'cover'
+            objectFit: 'cover',
+            pointerEvents: 'none'
         });
 
         const oldWrapper = this.wrapper;
 
         const newWrapper = this.wrapper.clone();
+        newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
         newWrapper.add(content);
 
         this.replace(oldWrapper, newWrapper);
         this.wrapper = newWrapper;
 
+        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
         oldWrapper.destroy();
+
+        if (value) {
+            this.wrapper.show();
+        } else {
+            this.wrapper.hide();
+        }
 
         this.update();
     }
