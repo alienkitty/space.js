@@ -119,7 +119,7 @@ export class PanelThumbnail extends Interface {
     };
 
     onPointerDown = e => {
-        this.bounds = this.wrapper.element.getBoundingClientRect();
+        this.bounds = this.element.getBoundingClientRect();
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
         this.lastOrigin.set(0, 0);
@@ -141,8 +141,7 @@ export class PanelThumbnail extends Interface {
 
         if (this.delta.length()) {
             this.origin.addVectors(this.lastOrigin, this.delta);
-
-            this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+            this.snap();
         }
     };
 
@@ -232,7 +231,8 @@ export class PanelThumbnail extends Interface {
                 top: 0,
                 width: this.width,
                 height: this.width,
-                cursor: 'move'
+                cursor: 'move',
+                zIndex: 1
             });
             this.add(this.wrapper);
         }
@@ -275,6 +275,40 @@ export class PanelThumbnail extends Interface {
         if (this.callback) {
             this.callback(this.value, this);
         }
+    }
+
+    snap() {
+        let snapped = false;
+
+        this.snapPosition.addVectors(this.bounds, this.origin);
+        this.snapTarget.copy(this.snapPosition);
+
+        if (this.snapTarget.distanceTo(this.bounds) < this.bounds.width + 10) {
+            // Top
+            if (
+                this.snapTarget.y > this.bounds.y - 10 &&
+                this.snapTarget.y < this.bounds.y + 10
+            ) {
+                this.snapTarget.y = this.bounds.y;
+                snapped = true;
+            }
+
+            // Left
+            if (
+                this.snapTarget.x > this.bounds.x - 10 &&
+                this.snapTarget.x < this.bounds.x + 10
+            ) {
+                this.snapTarget.x = this.bounds.x;
+                snapped = true;
+            }
+        }
+
+        this.snapPosition.sub(this.snapTarget);
+        this.origin.sub(this.snapPosition); // Subtract delta
+
+        this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+
+        this.snapped = snapped;
     }
 
     destroy() {
