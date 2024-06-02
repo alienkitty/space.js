@@ -151,6 +151,10 @@ export class PanelThumbnail extends Interface {
 
         this.onPointerMove(e);
 
+        if (!this.intersects(this.wrapper)) {
+            this.setValue(null);
+        }
+
         this.wrapper.css({ left: 0, top: 0 });
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
@@ -260,10 +264,11 @@ export class PanelThumbnail extends Interface {
         oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
         oldWrapper.destroy();
 
-        if (value) {
+        if (this.value) {
             this.wrapper.show();
         } else {
             this.wrapper.hide();
+            this.input.element.value = '';
         }
 
         this.update();
