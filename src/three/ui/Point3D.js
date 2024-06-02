@@ -626,10 +626,14 @@ export class Point3D extends Group {
         Point3D.events.emit('click', { target: this });
     };
 
-    onUpdate = ({ value, index, target }) => {
+    onUpdate = ({ path, value, index, target }) => {
         if (this.isMultiple) {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
+                    path.forEach(([name, index]) => {
+                        ui.setPanelIndex(name, index);
+                    });
+
                     if (index !== undefined) {
                         ui.setPanelIndex(target.name, index);
                     } else if (value !== undefined) {
