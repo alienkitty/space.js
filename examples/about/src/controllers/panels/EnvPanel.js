@@ -23,6 +23,39 @@ export class EnvPanel extends Panel {
             items.push(
                 {
                     type: 'slider',
+                    name: 'Rotate X',
+                    min: 0,
+                    max: Math.PI,
+                    step: 0.01,
+                    value: scene.environmentRotation.x,
+                    callback: value => {
+                        scene.environmentRotation.x = value;
+                    }
+                },
+                {
+                    type: 'slider',
+                    name: 'Rotate Y',
+                    min: 0,
+                    max: Math.PI,
+                    step: 0.01,
+                    value: scene.environmentRotation.y,
+                    callback: value => {
+                        scene.environmentRotation.y = value;
+                    }
+                },
+                {
+                    type: 'slider',
+                    name: 'Rotate Z',
+                    min: 0,
+                    max: Math.PI,
+                    step: 0.01,
+                    value: scene.environmentRotation.z,
+                    callback: value => {
+                        scene.environmentRotation.z = value;
+                    }
+                },
+                {
+                    type: 'slider',
                     name: 'Int',
                     min: 0,
                     max: 10,
