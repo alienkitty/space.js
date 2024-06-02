@@ -1087,6 +1087,7 @@ export class Point3D extends Group {
             } else {
                 this.point.enable();
                 this.point.close();
+                this.point.activate();
             }
         }
     }
