@@ -313,6 +313,23 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
+    intersects(object) {
+        if (!this.element) {
+            return;
+        }
+
+        const a = this.element.getBoundingClientRect();
+        let b;
+
+        if (object.element) {
+            b = object.element.getBoundingClientRect();
+        } else if (object.nodeName) {
+            b = object.getBoundingClientRect();
+        }
+
+        return a.bottom > b.top && a.right > b.left && a.top < b.bottom && a.left < b.right;
+    }
+
     drawLine(progress = this.progress || 0) {
         if (!this.element) {
             return;
