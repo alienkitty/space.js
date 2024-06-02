@@ -33,23 +33,36 @@ export class MapPanel extends Panel {
                 name: 'Map',
                 value: mesh.material[key] && mesh.material[key].image,
                 callback: (value, panel) => {
+                    const mapProperties = {};
                     const mapItems = [];
 
                     if (value) {
-                        if (!mesh.material[key] || value !== mesh.material[key].image) {
-                            if (mesh.material[key]) {
-                                mesh.material[key].image = value;
-                            } else {
-                                mesh.material[key] = new Texture(value);
-                            }
+                        if (mesh.material[key]) {
+                            mapProperties.colorSpace = mesh.material[key].colorSpace;
+                            mapProperties.anisotropy = mesh.material[key].anisotropy;
+                            mapProperties.wrapS = mesh.material[key].wrapS;
+                            mapProperties.wrapT = mesh.material[key].wrapT;
+                            mapProperties.repeat = mesh.material[key].repeat.clone();
+
+                            mesh.material[key].dispose();
+
+                            mesh.material[key] = new Texture(value);
+
+                            mesh.material[key].colorSpace = mapProperties.colorSpace;
+                            mesh.material[key].anisotropy = mapProperties.anisotropy;
+                            mesh.material[key].wrapS = mapProperties.wrapS;
+                            mesh.material[key].wrapT = mapProperties.wrapT;
+                            mesh.material[key].repeat.copy(mapProperties.repeat);
+                        } else {
+                            mesh.material[key] = new Texture(value);
 
                             if (ColorManagement.enabled) {
                                 mesh.material[key].colorSpace = SRGBColorSpace;
                             }
-
-                            mesh.material[key].needsUpdate = true;
-                            mesh.material.needsUpdate = true;
                         }
+
+                        mesh.material[key].needsUpdate = true;
+                        mesh.material.needsUpdate = true;
 
                         mapItems.push(
                             {
