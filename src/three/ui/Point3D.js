@@ -732,6 +732,7 @@ export class Point3D extends Group {
 
             if (this.uvTexture) {
                 this.uvTexture.dispose();
+                this.uvTexture = null;
             }
 
             delete this.currentMaterialMap;

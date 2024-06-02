@@ -4,6 +4,7 @@
 
 import { ColorManagement, SRGBColorSpace, Texture } from 'three';
 
+import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, WrapOptions } from '../Options.js';
@@ -23,6 +24,7 @@ export class MapPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const key = this.key;
+        const point = Point3D.getPoint(mesh);
 
         const items = [
             {
@@ -64,7 +66,20 @@ export class MapPanel extends Panel {
 
                         mesh.material[key].needsUpdate = true;
                         mesh.material.needsUpdate = true;
+                    } else if (mesh.material[key]) {
+                        if (point.uvTexture) {
+                            mesh.userData.uv = false;
+                            point.toggleUVHelper(false);
 
+                            panel.setValue(mesh.material[key].source.data);
+                        } else {
+                            mesh.material[key].dispose();
+                            mesh.material[key] = null;
+                            mesh.material.needsUpdate = true;
+                        }
+                    }
+
+                    if (mesh.material[key]) {
                         mapItems.push(
                             {
                                 type: 'spacer'
@@ -126,10 +141,6 @@ export class MapPanel extends Panel {
                                 }
                             }
                         );
-                    } else if (mesh.material[key]) {
-                        mesh.material[key].dispose();
-                        mesh.material[key] = null;
-                        mesh.material.needsUpdate = true;
                     }
 
                     const mapPanel = new Panel();
