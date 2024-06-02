@@ -52,6 +52,7 @@ export class PhysicalMaterialPanel extends Panel {
         standard: [
             'roughness',
             'metalness',
+            'envMapRotation',
             'envMapIntensity'
         ],
         physical: [
