@@ -726,7 +726,7 @@ export class Point3D extends Group {
                     material.needsUpdate = true;
                 }
             }
-        } else {
+        } else if (this.currentMaterialMap) {
             material.map = this.currentMaterialMap;
             material.needsUpdate = true;
 
