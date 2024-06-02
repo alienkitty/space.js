@@ -154,7 +154,16 @@ export class PanelThumbnail extends Interface {
     }
 
     setValue(value) {
-        this.value = value;
+        if (value instanceof ImageBitmap) {
+            const canvas = document.createElement('canvas');
+            canvas.width = value.width;
+            canvas.height = value.height;
+            canvas.getContext('2d').drawImage(value, 0, 0, canvas.width, canvas.height);
+            this.loadImage(canvas.toDataURL());
+            return;
+        } else {
+            this.value = value;
+        }
 
         if (!this.wrapper) {
             this.wrapper = new Interface('.wrapper');
