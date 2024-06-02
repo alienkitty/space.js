@@ -314,6 +314,10 @@ export class Interface {
     }
 
     drawLine(progress = this.progress || 0) {
+        if (!this.element) {
+            return;
+        }
+
         const start = this.start || 0;
         const offset = this.offset || 0;
 
