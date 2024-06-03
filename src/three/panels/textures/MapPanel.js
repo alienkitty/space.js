@@ -119,6 +119,7 @@ export class MapPanel extends Panel {
                                 value: mesh.material[key].anisotropy,
                                 callback: value => {
                                     mesh.material[key].anisotropy = value;
+                                    mesh.material[key].needsUpdate = true;
                                 }
                             },
                             {
