@@ -28,12 +28,14 @@ export class PanelThumbnail extends Interface {
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.bounds = null;
+        this.thumbnails = null;
         this.lastTime = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
+        this.isDragging = false;
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
-        this.snapped = false;
+        this.snapped = null;
 
         this.init();
         this.initDragAndDrop();
@@ -85,19 +87,23 @@ export class PanelThumbnail extends Interface {
     }
 
     addListeners() {
+        Stage.events.on('thumbnail_drop', this.onThumbnailDrop);
         this.container.element.addEventListener('click', this.onClick);
         this.input.element.addEventListener('change', this.onChange);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
         this.reader.addEventListener('load', this.onLoad);
+        window.addEventListener('keyup', this.onKeyUp);
     }
 
     removeListeners() {
+        Stage.events.off('thumbnail_drop', this.onThumbnailDrop);
         this.container.element.removeEventListener('click', this.onClick);
         this.input.element.removeEventListener('change', this.onChange);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
         this.reader.removeEventListener('load', this.onLoad);
+        window.removeEventListener('keyup', this.onKeyUp);
     }
 
     imageToCanvas(image) {
@@ -131,6 +137,12 @@ export class PanelThumbnail extends Interface {
 
     // Event handlers
 
+    onThumbnailDrop = ({ element, value }) => {
+        if (element === this.element) {
+            this.setValue(value);
+        }
+    };
+
     onClick = e => {
         e.preventDefault();
 
@@ -139,6 +151,14 @@ export class PanelThumbnail extends Interface {
 
     onPointerDown = e => {
         this.bounds = this.element.getBoundingClientRect();
+        this.thumbnails = [...document.querySelectorAll('.panel-thumbnail')];
+        this.thumbnails = this.thumbnails.filter(element => element !== this.element).map(element => {
+            return {
+                element,
+                bounds: element.getBoundingClientRect()
+            };
+        });
+
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
         this.lastOrigin.set(0, 0);
@@ -161,6 +181,12 @@ export class PanelThumbnail extends Interface {
         if (this.delta.length()) {
             this.origin.addVectors(this.lastOrigin, this.delta);
             this.snap();
+
+            if (!this.isDragging) {
+                this.isDragging = true;
+
+                Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+            }
         }
     };
 
@@ -170,17 +196,43 @@ export class PanelThumbnail extends Interface {
 
         this.onPointerMove(e);
 
-        if (!this.intersects(this.wrapper)) {
+        let intersects = false;
+
+        this.thumbnails.forEach(({ element }) => {
+            if (this.wrapper.intersects(element)) {
+                Stage.events.emit('thumbnail_drop', { element, value: this.value, target: this });
+
+                this.setValue(null);
+                intersects = true;
+            }
+        });
+
+        if (!intersects && !this.wrapper.intersects(this.element)) {
             this.setValue(null);
         }
 
         this.wrapper.css({ left: 0, top: 0 });
+        this.isDragging = false;
+
+        Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
         }
 
         this.input.element.click();
+    };
+
+    onKeyUp = e => {
+        if (e.keyCode === 27) { // Esc
+            window.removeEventListener('pointerup', this.onPointerUp);
+            window.removeEventListener('pointermove', this.onPointerMove);
+
+            this.wrapper.css({ left: 0, top: 0 });
+            this.isDragging = false;
+
+            Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+        }
     };
 
     onDragOver = e => {
@@ -323,6 +375,28 @@ export class PanelThumbnail extends Interface {
                 snapped = true;
             }
         }
+
+        this.thumbnails.forEach(({ element, bounds }) => {
+            if (this.snapTarget.distanceTo(bounds) < bounds.width + 10) {
+                // Top
+                if (
+                    this.snapTarget.y > bounds.y - 10 &&
+                    this.snapTarget.y < bounds.y + 10
+                ) {
+                    this.snapTarget.y = bounds.y;
+                    snapped = element;
+                }
+
+                // Left
+                if (
+                    this.snapTarget.x > bounds.x - 10 &&
+                    this.snapTarget.x < bounds.x + 10
+                ) {
+                    this.snapTarget.x = bounds.x;
+                    snapped = element;
+                }
+            }
+        });
 
         this.snapPosition.sub(this.snapTarget);
         this.origin.sub(this.snapPosition); // Subtract delta

@@ -61,6 +61,7 @@ export class Point3D extends Group {
         this.uvTexture = null;
         this.windowSnapMargin = 30;
         this.openColor = null;
+        this.isDragging = false;
         this.enabled = true;
 
         this.initCanvas();
@@ -90,6 +91,7 @@ export class Point3D extends Group {
 
     static addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
+        Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
@@ -100,6 +102,7 @@ export class Point3D extends Group {
 
     static removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
+        Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.off('invert', this.onInvert);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
@@ -116,6 +119,10 @@ export class Point3D extends Group {
         } else {
             this.openColor = null;
         }
+    };
+
+    static onThumbnailDragging = ({ dragging }) => {
+        this.isDragging = dragging;
     };
 
     static onInvert = () => {
@@ -279,7 +286,7 @@ export class Point3D extends Group {
             } else {
                 this.animateOut();
             }
-        } else if (e.keyCode === 27) { // Esc
+        } else if (e.keyCode === 27 && !this.isDragging) { // Esc
             this.animateOut();
         }
     };
@@ -477,7 +484,10 @@ export class Point3D extends Group {
     initElement() {
         this.element = new Interface('.target');
         this.element.css({
-            position: 'static'
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            pointerEvents: 'none'
         });
         Point3D.container.add(this.element);
     }
@@ -1098,7 +1108,6 @@ export class Point3D extends Group {
         this.snapPosition.copy(this.point.originPosition);
         this.snapTarget.copy(this.snapPosition);
 
-        // Top-left window snap
         const windowSnapTop = Point3D.windowSnapMargin + 43;
         let windowSnapLeft = -(48 - Point3D.windowSnapMargin);
 
@@ -1115,7 +1124,6 @@ export class Point3D extends Group {
             snappedLeft = true;
         }
 
-        // Panel snap
         const moved = Point3D.getMoved();
 
         moved.forEach(ui => {
@@ -1172,7 +1180,6 @@ export class Point3D extends Group {
         this.snappedRight = snappedRight;
         this.snapped = this.snappedLeft || this.snappedRight;
 
-        // Refresh panels
         if (this.snapped !== currentSnapped) {
             const moved = Point3D.getMoved();
 

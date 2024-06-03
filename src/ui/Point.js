@@ -52,6 +52,7 @@ export class Point extends Interface {
 
     addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
+        Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         this.info.container.element.addEventListener('mouseenter', this.onHover);
         this.info.container.element.addEventListener('mouseleave', this.onHover);
         window.addEventListener('pointerdown', this.onPointerDown);
@@ -59,6 +60,7 @@ export class Point extends Interface {
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
+        Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
         this.info.container.element.removeEventListener('mouseenter', this.onHover);
         this.info.container.element.removeEventListener('mouseleave', this.onHover);
         window.removeEventListener('pointerdown', this.onPointerDown);
@@ -79,6 +81,18 @@ export class Point extends Interface {
             this.enable();
 
             this.openColor = null;
+        }
+    };
+
+    onThumbnailDragging = ({ dragging, target }) => {
+        if (!this.element.contains(target.element)) {
+            return;
+        }
+
+        if (dragging) {
+            this.bringToFront();
+        } else {
+            this.sendToBack();
         }
     };
 
@@ -105,6 +119,7 @@ export class Point extends Interface {
             this.lastOrigin.copy(this.origin);
 
             this.onPointerMove(e);
+            this.bringToFront();
 
             window.addEventListener('pointermove', this.onPointerMove);
             window.addEventListener('pointerup', this.onPointerUp);
@@ -144,6 +159,7 @@ export class Point extends Interface {
         }
 
         this.onPointerMove(e);
+        this.sendToBack();
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
@@ -180,7 +196,9 @@ export class Point extends Interface {
             return;
         }
 
-        this.position.lerp(this.target, this.lerpSpeed);
+        this.isMove = true;
+
+        this.position.copy(this.target);
 
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     }
@@ -254,6 +272,14 @@ export class Point extends Interface {
                 this.activate();
             }
         });
+    }
+
+    bringToFront() {
+        this.css({ zIndex: 99 });
+    }
+
+    sendToBack() {
+        this.css({ zIndex: '' }); // Original DOM order
     }
 
     destroy() {
