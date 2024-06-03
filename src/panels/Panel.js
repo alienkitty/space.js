@@ -72,36 +72,60 @@ export class Panel extends Interface {
         this.items.push(item);
     }
 
-    setPanelValue(name, value) {
-        this.items.forEach(item => {
-            if (!item.view) {
+    setPanelIndex(name, index, path) {
+        this.items.forEach(({ view }) => {
+            if (!view) {
                 return;
             }
 
-            if (item.data.name === name && item.view.setValue) {
-                item.view.setValue(value, true);
+            if (view.name === name && view.setIndex) {
+                view.setIndex(index);
                 return;
             }
 
-            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelValue) {
-                item.view.group.children[0].setPanelValue(name, value);
+            if (path.length) {
+                const [pathName, pathIndex] = path[0];
+
+                if (view.name === pathName) {
+                    if (view.index !== pathIndex) {
+                        view.setIndex(pathIndex);
+                    }
+
+                    path.shift();
+                }
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
+                view.group.children[0].setPanelIndex(name, index, path);
             }
         });
     }
 
-    setPanelIndex(name, index) {
-        this.items.forEach(item => {
-            if (!item.view) {
+    setPanelValue(name, value, path) {
+        this.items.forEach(({ view }) => {
+            if (!view) {
                 return;
             }
 
-            if (item.data.name === name && item.view.setIndex) {
-                item.view.setIndex(index);
+            if (view.name === name && view.setValue) {
+                view.setValue(value);
                 return;
             }
 
-            if (item.view.group && item.view.group.children[0] && item.view.group.children[0].setPanelIndex) {
-                item.view.group.children[0].setPanelIndex(name, index);
+            if (path.length) {
+                const [pathName, pathIndex] = path[0];
+
+                if (view.name === pathName) {
+                    if (view.index !== pathIndex) {
+                        view.setIndex(pathIndex);
+                    }
+
+                    path.shift();
+                }
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
+                view.group.children[0].setPanelValue(name, value, path);
             }
         });
     }

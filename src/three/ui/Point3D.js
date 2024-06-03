@@ -58,6 +58,7 @@ export class Point3D extends Group {
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
+        this.uvTexture = null;
         this.windowSnapMargin = 30;
         this.openColor = null;
         this.enabled = true;
@@ -434,6 +435,9 @@ export class Point3D extends Group {
         this.selected = false;
         this.animatedIn = false;
 
+        this.currentMaterialMap = null;
+        this.uvTexture = null;
+
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.snappedLeft = false;
@@ -630,14 +634,10 @@ export class Point3D extends Group {
         if (this.isMultiple) {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
-                    path.forEach(([name, index]) => {
-                        ui.setPanelIndex(name, index);
-                    });
-
                     if (index !== undefined) {
-                        ui.setPanelIndex(target.name, index);
+                        ui.setPanelIndex(target.name, index, path.slice());
                     } else if (value !== undefined) {
-                        ui.setPanelValue(target.name, value);
+                        ui.setPanelValue(target.name, value, path.slice());
                     }
                 }
             });
@@ -671,12 +671,12 @@ export class Point3D extends Group {
         }
     }
 
-    setPanelValue(name, value) {
-        this.panel.setPanelValue(name, value);
+    setPanelIndex(name, index, path) {
+        this.panel.setPanelIndex(name, index, path);
     }
 
-    setPanelIndex(name, index) {
-        this.panel.setPanelIndex(name, index);
+    setPanelValue(name, value, path) {
+        this.panel.setPanelValue(name, value, path);
     }
 
     toggleNormalsHelper(show) {
@@ -723,24 +723,21 @@ export class Point3D extends Group {
                     this.uvTexture = Point3D.uvTexture.clone();
                 }
 
-                if (!this.currentMaterialMap && material.map !== this.uvTexture) {
+                if (material.map !== this.uvTexture) {
                     this.currentMaterialMap = material.map;
 
                     material.map = this.uvTexture;
                     material.needsUpdate = true;
                 }
             }
-        } else if (this.currentMaterialMap) {
+        } else if (this.uvTexture) {
             material.map = this.currentMaterialMap;
             material.needsUpdate = true;
 
-            if (this.uvTexture) {
-                this.uvTexture.dispose();
-                this.uvTexture = null;
-            }
+            this.currentMaterialMap = null;
 
-            delete this.currentMaterialMap;
-            delete this.uvTexture;
+            this.uvTexture.dispose();
+            this.uvTexture = null;
         }
     }
 

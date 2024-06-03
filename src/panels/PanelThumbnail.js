@@ -236,9 +236,9 @@ export class PanelThumbnail extends Interface {
 
     setValue(value) {
         if (value instanceof ImageBitmap) {
-            const canvas = this.imageToCanvas(value);
-            this.loadImage(canvas.toDataURL());
-            return;
+            this.value = this.imageToCanvas(value);
+        } else if (value && value.nodeName) {
+            this.value = value.cloneNode();
         } else {
             this.value = value;
         }
@@ -257,7 +257,7 @@ export class PanelThumbnail extends Interface {
             this.add(this.wrapper);
         }
 
-        const content = new Interface(this.value && this.value.cloneNode());
+        const content = new Interface(this.value);
         content.css({
             position: 'absolute',
             left: 0,

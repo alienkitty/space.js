@@ -39,6 +39,29 @@ export class MapPanel extends Panel {
                     const mapProperties = {};
                     const mapItems = [];
 
+                    if (point.uvTexture) {
+                        if (value) {
+                            if (!mesh.userData.uvTexture) {
+                                mesh.userData.uvTexture = value;
+                            }
+
+                            if (mesh.material[key] && value !== mesh.userData.uvTexture) {
+                                mesh.userData.uv = false;
+                                mesh.userData.uvTexture = null;
+                                point.toggleUVHelper(false);
+                            }
+                        } else if (mesh.material[key]) {
+                            mesh.userData.uv = false;
+                            mesh.userData.uvTexture = null;
+                            point.toggleUVHelper(false);
+
+                            if (mesh.material[key] && mesh.material[key].source.data) {
+                                panel.setValue(mesh.material[key].source.data);
+                                return;
+                            }
+                        }
+                    }
+
                     if (value) {
                         if (mesh.material[key]) {
                             mapProperties.colorSpace = mesh.material[key].colorSpace;
@@ -67,16 +90,9 @@ export class MapPanel extends Panel {
                         mesh.material[key].needsUpdate = true;
                         mesh.material.needsUpdate = true;
                     } else if (mesh.material[key]) {
-                        if (point.uvTexture) {
-                            mesh.userData.uv = false;
-                            point.toggleUVHelper(false);
-
-                            panel.setValue(mesh.material[key].source.data);
-                        } else {
-                            mesh.material[key].dispose();
-                            mesh.material[key] = null;
-                            mesh.material.needsUpdate = true;
-                        }
+                        mesh.material[key].dispose();
+                        mesh.material[key] = null;
+                        mesh.material.needsUpdate = true;
                     }
 
                     if (mesh.material[key]) {
