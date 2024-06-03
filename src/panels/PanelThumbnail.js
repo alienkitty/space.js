@@ -35,7 +35,6 @@ export class PanelThumbnail extends Interface {
         this.isDragging = false;
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
-        this.snapped = null;
 
         this.init();
         this.initDragAndDrop();
@@ -350,60 +349,34 @@ export class PanelThumbnail extends Interface {
         }
     }
 
-    snap() {
-        let snapped = false;
-
-        this.snapPosition.addVectors(this.bounds, this.origin);
-        this.snapTarget.copy(this.snapPosition);
-
-        if (this.snapTarget.distanceTo(this.bounds) < this.bounds.width + 10) {
+    topLeftSnap(target, bounds) {
+        if (target.distanceTo(bounds) < bounds.width + 10) {
             // Top
-            if (
-                this.snapTarget.y > this.bounds.y - 10 &&
-                this.snapTarget.y < this.bounds.y + 10
-            ) {
-                this.snapTarget.y = this.bounds.y;
-                snapped = true;
+            if (target.y > bounds.y - 10 && target.y < bounds.y + 10) {
+                target.y = bounds.y;
             }
 
             // Left
-            if (
-                this.snapTarget.x > this.bounds.x - 10 &&
-                this.snapTarget.x < this.bounds.x + 10
-            ) {
-                this.snapTarget.x = this.bounds.x;
-                snapped = true;
+            if (target.x > bounds.x - 10 && target.x < bounds.x + 10) {
+                target.x = bounds.x;
             }
         }
+    }
 
-        this.thumbnails.forEach(({ element, bounds }) => {
-            if (this.snapTarget.distanceTo(bounds) < bounds.width + 10) {
-                // Top
-                if (
-                    this.snapTarget.y > bounds.y - 10 &&
-                    this.snapTarget.y < bounds.y + 10
-                ) {
-                    this.snapTarget.y = bounds.y;
-                    snapped = element;
-                }
+    snap() {
+        this.snapPosition.addVectors(this.bounds, this.origin);
+        this.snapTarget.copy(this.snapPosition);
 
-                // Left
-                if (
-                    this.snapTarget.x > bounds.x - 10 &&
-                    this.snapTarget.x < bounds.x + 10
-                ) {
-                    this.snapTarget.x = bounds.x;
-                    snapped = element;
-                }
-            }
+        this.topLeftSnap(this.snapTarget, this.bounds);
+
+        this.thumbnails.forEach(({ bounds }) => {
+            this.topLeftSnap(this.snapTarget, bounds);
         });
 
         this.snapPosition.sub(this.snapTarget);
         this.origin.sub(this.snapPosition); // Subtract delta
 
         this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
-
-        this.snapped = snapped;
     }
 
     destroy() {

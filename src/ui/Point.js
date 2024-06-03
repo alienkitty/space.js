@@ -196,9 +196,7 @@ export class Point extends Interface {
             return;
         }
 
-        this.isMove = true;
-
-        this.position.copy(this.target);
+        this.position.lerp(this.target, this.lerpSpeed);
 
         this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
     }
