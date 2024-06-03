@@ -1,3 +1,5 @@
+import { MathUtils } from 'three';
+
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 export class EnvPanel extends Panel {
@@ -25,10 +27,11 @@ export class EnvPanel extends Panel {
                     type: 'slider',
                     name: 'Rotate X',
                     min: 0,
-                    max: Math.PI,
-                    step: 0.01,
-                    value: scene.environmentRotation.x,
+                    max: 360,
+                    step: 0.3,
+                    value: MathUtils.radToDeg(scene.environmentRotation.x),
                     callback: value => {
+                        value = MathUtils.degToRad(value);
                         scene.environmentRotation.x = value;
                     }
                 },
@@ -36,10 +39,11 @@ export class EnvPanel extends Panel {
                     type: 'slider',
                     name: 'Rotate Y',
                     min: 0,
-                    max: Math.PI,
-                    step: 0.01,
-                    value: scene.environmentRotation.y,
+                    max: 360,
+                    step: 0.3,
+                    value: MathUtils.radToDeg(scene.environmentRotation.y),
                     callback: value => {
+                        value = MathUtils.degToRad(value);
                         scene.environmentRotation.y = value;
                     }
                 },
@@ -47,10 +51,11 @@ export class EnvPanel extends Panel {
                     type: 'slider',
                     name: 'Rotate Z',
                     min: 0,
-                    max: Math.PI,
-                    step: 0.01,
-                    value: scene.environmentRotation.z,
+                    max: 360,
+                    step: 0.3,
+                    value: MathUtils.radToDeg(scene.environmentRotation.z),
                     callback: value => {
+                        value = MathUtils.degToRad(value);
                         scene.environmentRotation.z = value;
                     }
                 },

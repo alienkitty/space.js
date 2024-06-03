@@ -2,6 +2,8 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { MathUtils } from 'three';
+
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
@@ -26,10 +28,11 @@ export class StandardMaterialEnvPanel extends Panel {
                 type: 'slider',
                 name: 'Rotate X',
                 min: 0,
-                max: Math.PI,
-                step: 0.01,
-                value: mesh.material.envMapRotation.x,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.x),
                 callback: value => {
+                    value = MathUtils.degToRad(value);
                     mesh.material.envMapRotation.x = value;
                 }
             },
@@ -37,10 +40,11 @@ export class StandardMaterialEnvPanel extends Panel {
                 type: 'slider',
                 name: 'Rotate Y',
                 min: 0,
-                max: Math.PI,
-                step: 0.01,
-                value: mesh.material.envMapRotation.y,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.y),
                 callback: value => {
+                    value = MathUtils.degToRad(value);
                     mesh.material.envMapRotation.y = value;
                 }
             },
@@ -48,10 +52,11 @@ export class StandardMaterialEnvPanel extends Panel {
                 type: 'slider',
                 name: 'Rotate Z',
                 min: 0,
-                max: Math.PI,
-                step: 0.01,
-                value: mesh.material.envMapRotation.z,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.z),
                 callback: value => {
+                    value = MathUtils.degToRad(value);
                     mesh.material.envMapRotation.z = value;
                 }
             },
