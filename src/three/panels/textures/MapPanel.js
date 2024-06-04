@@ -35,52 +35,42 @@ export class MapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                value: mesh.material[key] && mesh.material[key].source.data,
                 flipY: true,
+                data: mesh.material[key] || {},
+                value: mesh.material[key] && mesh.material[key].source.data,
                 callback: (value, panel) => {
-                    const mapProperties = {};
                     const mapItems = [];
+
+                    if (panel.data.isTexture && panel.data.userData.uv && !mesh.userData.uv) {
+                        mesh.userData.uv = true;
+                        point.toggleUVHelper(true);
+                    }
 
                     if (point.uvTexture) {
                         if (value) {
-                            if (!mesh.userData.uvTexture) {
-                                mesh.userData.uvTexture = value;
-                            }
-
-                            if (mesh.material[key] && value !== mesh.userData.uvTexture) {
+                            if (mesh.material[key] && panel.data.isTexture && !panel.data.userData.uv) {
                                 mesh.userData.uv = false;
-                                mesh.userData.uvTexture = null;
                                 point.toggleUVHelper(false);
                             }
                         } else if (mesh.material[key]) {
                             mesh.userData.uv = false;
-                            mesh.userData.uvTexture = null;
                             point.toggleUVHelper(false);
 
                             if (mesh.material[key] && mesh.material[key].source.data) {
+                                panel.setData(mesh.material[key]);
                                 panel.setValue(mesh.material[key].source.data);
                                 return;
                             }
                         }
-                    }
-
-                    if (value) {
+                    } else if (value) {
                         if (mesh.material[key]) {
-                            mapProperties.colorSpace = mesh.material[key].colorSpace;
-                            mapProperties.anisotropy = mesh.material[key].anisotropy;
-                            mapProperties.wrapS = mesh.material[key].wrapS;
-                            mapProperties.wrapT = mesh.material[key].wrapT;
-                            mapProperties.repeat = mesh.material[key].repeat.clone();
-
                             mesh.material[key].dispose();
-
                             mesh.material[key] = new Texture(value);
-
-                            mesh.material[key].colorSpace = mapProperties.colorSpace;
-                            mesh.material[key].anisotropy = mapProperties.anisotropy;
-                            mesh.material[key].wrapS = mapProperties.wrapS;
-                            mesh.material[key].wrapT = mapProperties.wrapT;
-                            mesh.material[key].repeat.copy(mapProperties.repeat);
+                            mesh.material[key].colorSpace = panel.data.colorSpace;
+                            mesh.material[key].anisotropy = panel.data.anisotropy;
+                            mesh.material[key].wrapS = panel.data.wrapS;
+                            mesh.material[key].wrapT = panel.data.wrapT;
+                            mesh.material[key].repeat.copy(panel.data.repeat);
                         } else {
                             mesh.material[key] = new Texture(value);
 
@@ -98,6 +88,8 @@ export class MapPanel extends Panel {
                         mesh.material[key] = null;
                         mesh.material.needsUpdate = true;
                     }
+
+                    panel.setData(mesh.material[key] || {});
 
                     if (mesh.material[key]) {
                         mapItems.push(

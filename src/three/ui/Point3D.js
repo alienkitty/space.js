@@ -89,6 +89,7 @@ export class Point3D extends Group {
         if (this.uvHelper) {
             this.uvTexture = this.loader.load(this.uvTexturePath);
             this.uvTexture.anisotropy = this.anisotropy;
+            this.uvTexture.userData.uv = true;
         }
     }
 

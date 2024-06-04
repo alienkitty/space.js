@@ -9,15 +9,17 @@ import { Stage } from '../utils/Stage.js';
 export class PanelThumbnail extends Interface {
     constructor({
         name,
-        value,
         flipY = false,
+        data = {},
+        value,
         callback
     }) {
         super('.panel-thumbnail');
 
         this.name = name;
-        this.value = value;
         this.flipY = flipY;
+        this.data = data;
+        this.value = value;
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
@@ -137,8 +139,9 @@ export class PanelThumbnail extends Interface {
 
     // Event handlers
 
-    onThumbnailDrop = ({ element, value }) => {
+    onThumbnailDrop = ({ element, data, value }) => {
         if (element === this.element) {
+            this.setData(data);
             this.setValue(value);
         }
     };
@@ -211,7 +214,7 @@ export class PanelThumbnail extends Interface {
 
         this.thumbnails.forEach(({ element }) => {
             if (this.wrapper.intersects(element)) {
-                Stage.events.emit('thumbnail_drop', { element, value: this.value, target: this });
+                Stage.events.emit('thumbnail_drop', { element, data: this.data, value: this.value, target: this });
 
                 if (!e.altKey) {
                     this.setValue(null);
@@ -308,6 +311,14 @@ export class PanelThumbnail extends Interface {
         this.group = newGroup;
 
         oldGroup.destroy();
+    }
+
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        this.data = data;
     }
 
     setValue(value) {
