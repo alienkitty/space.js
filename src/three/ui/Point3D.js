@@ -19,7 +19,7 @@ import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getScreenSpaceBox } from '../utils/Utils3D.js';
 
 export class Point3D extends Group {
-    static init(scene, camera, {
+    static init(renderer, scene, camera, {
         root = document.body,
         container = document.body,
         breakpoint = 1000,
@@ -30,6 +30,7 @@ export class Point3D extends Group {
         debug = false
     } = {}) {
         this.events = new EventEmitter();
+        this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
         this.root = root instanceof Interface ? root : new Interface(root);
@@ -58,6 +59,7 @@ export class Point3D extends Group {
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
+        this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         this.uvTexture = null;
         this.windowSnapMargin = 30;
         this.openColor = null;
@@ -65,7 +67,7 @@ export class Point3D extends Group {
         this.enabled = true;
 
         this.initCanvas();
-        this.initLoaders();
+        this.initTextures();
 
         this.addListeners();
         this.onResize();
@@ -83,9 +85,10 @@ export class Point3D extends Group {
         this.container.add(this.canvas);
     }
 
-    static initLoaders() {
+    static initTextures() {
         if (this.uvHelper) {
             this.uvTexture = this.loader.load(this.uvTexturePath);
+            this.uvTexture.anisotropy = this.anisotropy;
         }
     }
 

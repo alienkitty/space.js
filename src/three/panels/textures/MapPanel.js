@@ -22,6 +22,8 @@ export class MapPanel extends Panel {
     }
 
     initPanel() {
+        const { anisotropy } = Point3D;
+
         const mesh = this.mesh;
         const key = this.key;
         const point = Point3D.getPoint(mesh);
@@ -85,6 +87,8 @@ export class MapPanel extends Panel {
                             if (ColorManagement.enabled) {
                                 mesh.material[key].colorSpace = SRGBColorSpace;
                             }
+
+                            mesh.material[key].anisotropy = anisotropy;
                         }
 
                         mesh.material[key].needsUpdate = true;

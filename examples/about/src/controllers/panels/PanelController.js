@@ -32,7 +32,7 @@ export class PanelController {
     static initControllers() {
         const { textureLoader } = WorldController;
 
-        Point3D.init(this.scene, this.camera, {
+        Point3D.init(this.renderer, this.scene, this.camera, {
             root: Stage,
             container: this.ui,
             physics: this.physics,
