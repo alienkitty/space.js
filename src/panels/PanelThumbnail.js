@@ -187,6 +187,12 @@ export class PanelThumbnail extends Interface {
                 if (e.altKey) {
                     this.duplicate = this.wrapper.clone(true);
                     this.addBefore(this.duplicate, this.wrapper);
+
+                    const canvas = this.duplicate.element.querySelector('canvas');
+
+                    if (canvas) {
+                        canvas.getContext('2d').drawImage(this.wrapper.children[0].element, 0, 0, canvas.width, canvas.height);
+                    }
                 }
             }
 
@@ -309,6 +315,10 @@ export class PanelThumbnail extends Interface {
             this.value = this.imageToCanvas(value);
         } else if (value && value.nodeName) {
             this.value = value.cloneNode();
+
+            if (this.value instanceof HTMLCanvasElement) {
+                this.value.getContext('2d').drawImage(value, 0, 0, this.value.width, this.value.height);
+            }
         } else {
             this.value = value;
         }
