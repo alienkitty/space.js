@@ -2,6 +2,7 @@ import { GLSL3, NoBlending, RawShaderMaterial } from 'three';
 
 import rgbshift from '@alienkitty/alien.js/src/shaders/modules/rgbshift/rgbshift.glsl.js';
 import encodings from '@alienkitty/alien.js/src/shaders/modules/encodings/encodings.glsl.js';
+import dither from '@alienkitty/alien.js/src/shaders/modules/dither/dither.glsl.js';
 
 // Based on https://github.com/mrdoob/three.js/blob/dev/examples/jsm/shaders/ACESFilmicToneMappingShader.js by WestLangley
 // Based on https://github.com/mrdoob/three.js/blob/dev/examples/jsm/shaders/GammaCorrectionShader.js by WestLangley
@@ -46,6 +47,7 @@ export class CompositeMaterial extends RawShaderMaterial {
 
                 ${rgbshift}
                 ${encodings}
+                ${dither}
 
                 void main() {
                     FragColor = texture(tScene, vUv);
@@ -65,6 +67,9 @@ export class CompositeMaterial extends RawShaderMaterial {
                     if (uGamma) {
                         FragColor = vec4(linearToSRGB(FragColor.rgb), FragColor.a);
                     }
+
+                    FragColor.rgb = dither(FragColor.rgb);
+                    FragColor.a = 1.0;
                 }
             `,
             blending: NoBlending,
