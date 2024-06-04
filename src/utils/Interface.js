@@ -58,6 +58,32 @@ export class Interface {
         return child;
     }
 
+    addBefore(child, object) {
+        if (!this.children) {
+            return;
+        }
+
+        this.children.push(child);
+
+        child.parent = this;
+
+        if (child.element) {
+            if (object.element) {
+                this.element.insertBefore(child.element, object.element);
+            } else if (object.nodeName) {
+                this.element.insertBefore(child.element, object);
+            }
+        } else if (child.nodeName) {
+            if (object.element) {
+                this.element.insertBefore(child, object.element);
+            } else if (object.nodeName) {
+                this.element.insertBefore(child, object);
+            }
+        }
+
+        return child;
+    }
+
     remove(child) {
         if (!this.children) {
             return;
