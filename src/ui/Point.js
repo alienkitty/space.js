@@ -53,6 +53,7 @@ export class Point extends Interface {
     addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
         Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
+        Stage.events.on('thumbnail_snap', this.onThumbnailSnap);
         this.info.container.element.addEventListener('mouseenter', this.onHover);
         this.info.container.element.addEventListener('mouseleave', this.onHover);
         window.addEventListener('pointerdown', this.onPointerDown);
@@ -61,6 +62,7 @@ export class Point extends Interface {
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
         Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
+        Stage.events.off('thumbnail_snap', this.onThumbnailSnap);
         this.info.container.element.removeEventListener('mouseenter', this.onHover);
         this.info.container.element.removeEventListener('mouseleave', this.onHover);
         window.removeEventListener('pointerdown', this.onPointerDown);
@@ -93,6 +95,16 @@ export class Point extends Interface {
             this.bringToFront();
         } else {
             this.sendToBack();
+        }
+    };
+
+    onThumbnailSnap = ({ element }) => {
+        if (!this.element.contains(element)) {
+            return;
+        }
+
+        if (!this.isMove) {
+            this.isMove = true;
         }
     };
 

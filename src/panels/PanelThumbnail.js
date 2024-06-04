@@ -37,6 +37,7 @@ export class PanelThumbnail extends Interface {
         this.isDragging = false;
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
+        this.snapped = null;
         this.duplicate = null;
 
         this.init();
@@ -153,15 +154,6 @@ export class PanelThumbnail extends Interface {
     };
 
     onPointerDown = e => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.thumbnails = [...document.querySelectorAll('.panel-thumbnail')];
-        this.thumbnails = this.thumbnails.filter(element => element !== this.element).map(element => {
-            return {
-                element,
-                bounds: element.getBoundingClientRect()
-            };
-        });
-
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
         this.lastOrigin.set(0, 0);
@@ -200,6 +192,16 @@ export class PanelThumbnail extends Interface {
             }
 
             this.origin.addVectors(this.lastOrigin, this.delta);
+
+            this.bounds = this.element.getBoundingClientRect();
+            this.thumbnails = [...document.querySelectorAll('.panel-thumbnail')];
+            this.thumbnails = this.thumbnails.filter(element => element !== this.element).map(element => {
+                return {
+                    element,
+                    bounds: element.getBoundingClientRect()
+                };
+            });
+
             this.snap();
         }
     };
@@ -390,33 +392,53 @@ export class PanelThumbnail extends Interface {
     }
 
     topLeftSnap(target, bounds) {
+        let snapped = false;
+
         if (target.distanceTo(bounds) < bounds.width + 10) {
             // Top
             if (target.y > bounds.y - 10 && target.y < bounds.y + 10) {
                 target.y = bounds.y;
+                snapped = true;
             }
 
             // Left
             if (target.x > bounds.x - 10 && target.x < bounds.x + 10) {
                 target.x = bounds.x;
+                snapped = true;
             }
         }
+
+        return snapped;
     }
 
     snap() {
+        const currentSnapped = this.snapped;
+
+        let snapped = null;
+
         this.snapPosition.addVectors(this.bounds, this.origin);
         this.snapTarget.copy(this.snapPosition);
 
-        this.topLeftSnap(this.snapTarget, this.bounds);
+        if (this.topLeftSnap(this.snapTarget, this.bounds)) {
+            snapped = this.element;
+        }
 
-        this.thumbnails.forEach(({ bounds }) => {
-            this.topLeftSnap(this.snapTarget, bounds);
+        this.thumbnails.forEach(({ element, bounds }) => {
+            if (this.topLeftSnap(this.snapTarget, bounds)) {
+                snapped = element;
+            }
         });
 
         this.snapPosition.sub(this.snapTarget);
         this.origin.sub(this.snapPosition); // Subtract delta
 
         this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+
+        this.snapped = snapped;
+
+        if (this.snapped !== currentSnapped) {
+            Stage.events.emit('thumbnail_snap', { element: this.snapped, target: this });
+        }
     }
 
     destroy() {
