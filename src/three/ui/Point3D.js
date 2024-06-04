@@ -644,6 +644,10 @@ export class Point3D extends Group {
     };
 
     onUpdate = ({ path, value, index, target }) => {
+        if (!this.point.isMove) {
+            this.point.isMove = true;
+        }
+
         if (this.isMultiple) {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
