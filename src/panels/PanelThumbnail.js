@@ -35,6 +35,7 @@ export class PanelThumbnail extends Interface {
         this.isDragging = false;
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
+        this.duplicate = null;
 
         this.init();
         this.initDragAndDrop();
@@ -168,24 +169,29 @@ export class PanelThumbnail extends Interface {
         window.addEventListener('pointerup', this.onPointerUp);
     };
 
-    onPointerMove = ({ clientX, clientY }) => {
+    onPointerMove = e => {
         const event = {
-            x: clientX,
-            y: clientY
+            x: e.clientX,
+            y: e.clientY
         };
 
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
 
         if (this.delta.length()) {
-            this.origin.addVectors(this.lastOrigin, this.delta);
-            this.snap();
-
             if (!this.isDragging) {
                 this.isDragging = true;
 
                 Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+
+                if (e.altKey) {
+                    this.duplicate = this.wrapper.clone(true);
+                    this.addBefore(this.duplicate, this.wrapper);
+                }
             }
+
+            this.origin.addVectors(this.lastOrigin, this.delta);
+            this.snap();
         }
     };
 
@@ -201,12 +207,15 @@ export class PanelThumbnail extends Interface {
             if (this.wrapper.intersects(element)) {
                 Stage.events.emit('thumbnail_drop', { element, value: this.value, target: this });
 
-                this.setValue(null);
+                if (!e.altKey) {
+                    this.setValue(null);
+                }
+
                 intersects = true;
             }
         });
 
-        if (!intersects && !this.wrapper.intersects(this.element)) {
+        if (!intersects && !this.wrapper.intersects(this.element) && !e.altKey) {
             this.setValue(null);
         }
 
@@ -214,6 +223,10 @@ export class PanelThumbnail extends Interface {
         this.isDragging = false;
 
         Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+
+        if (this.duplicate) {
+            this.duplicate = this.duplicate.destroy();
+        }
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
@@ -224,13 +237,19 @@ export class PanelThumbnail extends Interface {
 
     onKeyUp = e => {
         if (e.keyCode === 27) { // Esc
-            window.removeEventListener('pointerup', this.onPointerUp);
-            window.removeEventListener('pointermove', this.onPointerMove);
+            if (this.isDragging) {
+                window.removeEventListener('pointerup', this.onPointerUp);
+                window.removeEventListener('pointermove', this.onPointerMove);
 
-            this.wrapper.css({ left: 0, top: 0 });
-            this.isDragging = false;
+                this.wrapper.css({ left: 0, top: 0 });
+                this.isDragging = false;
 
-            Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+                Stage.events.emit('thumbnail_dragging', { dragging: this.isDragging, target: this });
+
+                if (this.duplicate) {
+                    this.duplicate = this.duplicate.destroy();
+                }
+            }
         }
     };
 
