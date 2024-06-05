@@ -8,8 +8,12 @@ import { Stage } from '../utils/Stage.js';
 import { Panel } from '../panels/Panel.js';
 
 export class HeaderInfo extends Interface {
-    constructor() {
+    constructor({
+        fpsOpen = false
+    }) {
         super('.info');
+
+        this.fpsOpen = fpsOpen;
 
         this.count = 0;
         this.time = 0;
@@ -83,9 +87,7 @@ export class HeaderInfo extends Interface {
         }
 
         if (type === 'mouseenter') {
-            this.css({ pointerEvents: 'none' });
-            this.panel.animateIn();
-            this.isOpen = true;
+            this.animateIn();
         }
     };
 
@@ -93,14 +95,9 @@ export class HeaderInfo extends Interface {
         e.preventDefault();
 
         if (this.isOpen) {
-            this.panel.animateOut(() => {
-                this.css({ pointerEvents: 'auto' });
-            });
-            this.isOpen = false;
+            this.animateOut();
         } else {
-            this.css({ pointerEvents: 'none' });
-            this.panel.animateIn();
-            this.isOpen = true;
+            this.animateIn();
         }
     };
 
@@ -145,10 +142,7 @@ export class HeaderInfo extends Interface {
         if (this.openColor && !this.openColor.element.contains(e.target)) {
             Stage.events.emit('color_picker', { open: false, target: this });
         } else if (!this.element.contains(e.target)) {
-            this.panel.animateOut(() => {
-                this.css({ pointerEvents: 'auto' });
-            });
-            this.isOpen = false;
+            this.animateOut();
         }
     };
 
@@ -182,6 +176,30 @@ export class HeaderInfo extends Interface {
         this.count++;
 
         this.number.text(this.fps);
+    }
+
+    animateIn() {
+        if (!this.panel) {
+            return;
+        }
+
+        this.css({ pointerEvents: 'none' });
+
+        this.panel.animateIn();
+
+        this.isOpen = true;
+    }
+
+    animateOut() {
+        if (!this.panel || this.fpsOpen) {
+            return;
+        }
+
+        this.panel.animateOut(() => {
+            this.css({ pointerEvents: 'auto' });
+        });
+
+        this.isOpen = false;
     }
 
     enable() {

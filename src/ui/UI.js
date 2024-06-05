@@ -18,12 +18,14 @@ import { ticker } from '../tween/Ticker.js';
 export class UI extends Interface {
     constructor({
         fps = false,
+        fpsOpen = false,
         breakpoint = 1000,
         ...data
     } = {}) {
         super('.ui');
 
         this.fps = fps;
+        this.fpsOpen = fpsOpen;
         this.breakpoint = breakpoint;
         this.data = data;
 
@@ -68,6 +70,7 @@ export class UI extends Interface {
 
     initViews() {
         const fps = this.fps;
+        const fpsOpen = this.fpsOpen;
 
         if (this.data.details) {
             this.details = new Details(this.data.details);
@@ -79,8 +82,8 @@ export class UI extends Interface {
             this.add(this.detailsInfo);
         }
 
-        if (this.data.header || fps) {
-            this.header = new Header({ ...this.data.header, fps });
+        if (this.data.header || fps || fpsOpen) {
+            this.header = new Header({ ...this.data.header, fps, fpsOpen });
             this.add(this.header);
         }
 
