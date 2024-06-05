@@ -25,7 +25,9 @@ export class DetailsInfo extends Interface {
             height: '100%',
             display: 'flex',
             alignItems: 'flex-end',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            x: -10,
+            opacity: 0
         });
 
         this.container = new Interface('.container');

@@ -40,6 +40,10 @@ export class Header extends Interface {
         if (Array.isArray(this.data.links)) {
             this.data.links.forEach(data => {
                 const link = new NavLink(data.title, data.link);
+                link.css({
+                    x: -10,
+                    opacity: 0
+                });
                 this.add(link);
                 this.links.push(link);
             });
@@ -47,6 +51,10 @@ export class Header extends Interface {
 
         if (fps || fpsOpen) {
             this.info = new HeaderInfo({ fpsOpen });
+            this.info.css({
+                x: -10,
+                opacity: 0
+            });
             this.add(this.info);
         }
     }
