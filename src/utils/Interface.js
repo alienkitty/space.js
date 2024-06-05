@@ -403,12 +403,6 @@ export class Interface {
             }
         }
 
-        for (const key in this.style) {
-            if (props[key] === undefined) {
-                delete this.style[key];
-            }
-        }
-
         const promise = tween(this.style, props, duration, ease, delay, complete, () => {
             this.css(this.style);
 
