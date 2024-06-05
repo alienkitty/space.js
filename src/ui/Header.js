@@ -84,7 +84,7 @@ export class Header extends Interface {
 
     animateOut() {
         this.children.forEach(child => {
-            child.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic');
+            child.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
         });
     }
 }

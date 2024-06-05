@@ -124,10 +124,10 @@ export class MenuItem extends Interface {
         this.animatedIn = true;
     }
 
-    animateOut(delay) {
+    animateOut() {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
-        this.tween({ y: -5, opacity: 0 }, 700, 'easeOutCubic', delay);
+        this.tween({ opacity: 0 }, 400, 'easeOutCubic');
 
         this.animatedIn = false;
     }

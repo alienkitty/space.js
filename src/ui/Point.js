@@ -272,9 +272,10 @@ export class Point extends Interface {
     }
 
     deactivate(toggle) {
+        this.clearTween();
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine', () => {
+        this.tween({ opacity: 0 }, 300, 'easeOutSine', () => {
             this.enable();
             this.close(true);
 

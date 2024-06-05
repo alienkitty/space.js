@@ -141,13 +141,14 @@ export class Details extends Interface {
     }
 
     animateOut(callback) {
+        this.clearTween();
         this.css({ pointerEvents: 'none' });
 
         if (this.bg) {
             this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
         }
 
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
+        this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
 
             if (callback) {
