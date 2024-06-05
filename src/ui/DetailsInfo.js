@@ -95,7 +95,7 @@ export class DetailsInfo extends Interface {
     animateOut(callback) {
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
+        this.tween({ opacity: 0 }, 300, 'easeInSine', () => {
             this.invisible();
 
             if (callback) {
