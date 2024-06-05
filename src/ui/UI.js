@@ -232,6 +232,8 @@ export class UI extends Interface {
             } else {
                 this.animateIn();
             }
+
+            Stage.events.emit('ui', { open: this.animatedIn, target: this });
         }
     };
 

@@ -88,6 +88,7 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
 
             static addListeners() {
                 Stage.events.on('details', this.onDetails);
+                Stage.events.on('ui', this.onUI);
                 this.ui.menu.events.on('update', this.onMenu);
                 this.ui.muteButton.events.on('update', this.onMute);
                 window.addEventListener('keyup', this.onKeyUp);
@@ -100,6 +101,10 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
 
             static onDetails = e => {
                 console.log('Details event:', e);
+            };
+
+            static onUI = e => {
+                console.log('UI event:', e);
             };
 
             static onMenu = e => {
