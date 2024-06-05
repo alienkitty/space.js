@@ -339,6 +339,16 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
+    atPoint(p) {
+        if (!this.element) {
+            return;
+        }
+
+        const b = this.element.getBoundingClientRect();
+
+        return p.y > b.top && p.x > b.left && p.y < b.bottom && p.x < b.right;
+    }
+
     intersects(object) {
         if (!this.element) {
             return;
