@@ -98,20 +98,20 @@ export class MenuItem extends Interface {
     activate(direction) {
         this.active = true;
 
-        this.line.css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
+        this.line.clearTween().css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
 
         if (this.animatedIn) {
-            this.tween({ opacity: 1 }, 300, 'easeOutSine');
+            this.clearTween().tween({ y: 0, opacity: 1 }, 300, 'easeOutSine');
         }
     }
 
     deactivate(direction) {
         this.active = false;
 
-        this.line.css({ transformOrigin: direction > 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
+        this.line.clearTween().css({ transformOrigin: direction > 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
 
         if (this.animatedIn) {
-            this.tween({ opacity: 0.5 }, 500, 'easeOutSine');
+            this.clearTween().tween({ y: 0, opacity: 0.5 }, 500, 'easeOutSine');
         }
     }
 
