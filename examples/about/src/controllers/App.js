@@ -138,7 +138,7 @@ export class App {
     };
 
     static onKeyUp = e => {
-        if (e.ctrlKey && e.keyCode >= 49 && e.keyCode <= 51) { // 1-3
+        if (e.ctrlKey && e.keyCode >= 49 && e.keyCode <= 51) { // Ctrl 1-3
             this.ui.menu.index = e.keyCode - 49;
             this.ui.menu.update();
         }
