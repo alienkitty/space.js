@@ -270,7 +270,7 @@ export class Point3D extends Group {
     };
 
     static onKeyUp = e => {
-        if (e.keyCode >= 48 && e.keyCode <= 57) { // 0-9
+        if (e.keyCode >= 49 && e.keyCode <= 57) { // 1-9
             const select = this.points[e.keyCode - 49];
 
             if (select) {

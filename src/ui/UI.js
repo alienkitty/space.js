@@ -44,8 +44,9 @@ export class UI extends Interface {
         };
 
         this.startTime = performance.now();
-        this.isDetailsOpen = false;
         this.buttons = [];
+        this.isDetailsOpen = false;
+        this.animatedIn = false;
 
         this.init();
         this.initViews();
@@ -220,6 +221,18 @@ export class UI extends Interface {
                 this.onDetailsClick();
             }
         }
+
+        if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
+            if (this.animatedIn) {
+                if (this.isDetailsOpen) {
+                    this.toggleDetails(false);
+                }
+
+                this.animateOut();
+            } else {
+                this.animateIn();
+            }
+        }
     };
 
     onDetailsClick = () => {
@@ -288,6 +301,8 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateIn());
+
+        this.animatedIn = true;
     }
 
     animateOut() {
@@ -320,6 +335,8 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateOut());
+
+        this.animatedIn = false;
     }
 
     toggleDetails(show) {
