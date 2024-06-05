@@ -30,7 +30,7 @@ export class PanelThumbnail extends Interface {
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.bounds = null;
-        this.thumbnails = null;
+        this.thumbnails = [];
         this.lastTime = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
