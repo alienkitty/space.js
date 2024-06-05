@@ -2,6 +2,8 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { MathUtils } from 'three';
+
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
@@ -44,6 +46,42 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 }
             },
             // TODO: Texture thumbnails
+            {
+                type: 'slider',
+                name: 'Rotate X',
+                min: 0,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.x),
+                callback: value => {
+                    value = MathUtils.degToRad(value);
+                    mesh.material.envMapRotation.x = value;
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Rotate Y',
+                min: 0,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.y),
+                callback: value => {
+                    value = MathUtils.degToRad(value);
+                    mesh.material.envMapRotation.y = value;
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Rotate Z',
+                min: 0,
+                max: 360,
+                step: 0.3,
+                value: MathUtils.radToDeg(mesh.material.envMapRotation.z),
+                callback: value => {
+                    value = MathUtils.degToRad(value);
+                    mesh.material.envMapRotation.z = value;
+                }
+            },
             {
                 type: 'slider',
                 name: 'Int',

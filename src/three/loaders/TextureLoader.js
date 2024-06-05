@@ -1,8 +1,11 @@
 /**
  * @author pschroen / https://ufo.ai/
+ *
+ * Based on https://github.com/mrdoob/three.js/blob/dev/src/loaders/ImageBitmapLoader.js
+ * Based on https://github.com/mrdoob/three.js/blob/dev/src/loaders/TextureLoader.js
  */
 
-import { Texture } from 'three';
+import { ColorManagement, SRGBColorSpace, Texture } from 'three';
 
 import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
@@ -15,6 +18,7 @@ export class TextureLoader extends Loader {
         this.defaultOptions = {
             imageOrientation: 'flipY',
             premultiplyAlpha: 'none',
+            colorSpaceConversion: 'none',
             preserveData: false
         };
 
@@ -63,6 +67,11 @@ export class TextureLoader extends Loader {
                 }
 
                 texture.image = image;
+
+                if (ColorManagement.enabled) {
+                    texture.colorSpace = SRGBColorSpace;
+                }
+
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {

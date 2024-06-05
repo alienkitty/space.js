@@ -109,7 +109,7 @@ export class Menu extends Interface {
     }
 
     animateOut() {
-        this.items.forEach((item, i) => item.animateOut(i * 50));
+        this.items.forEach(item => item.animateOut());
     }
 
     destroy() {

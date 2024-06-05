@@ -58,6 +58,32 @@ export class Interface {
         return child;
     }
 
+    addBefore(child, object) {
+        if (!this.children) {
+            return;
+        }
+
+        this.children.push(child);
+
+        child.parent = this;
+
+        if (child.element) {
+            if (object.element) {
+                this.element.insertBefore(child.element, object.element);
+            } else if (object.nodeName) {
+                this.element.insertBefore(child.element, object);
+            }
+        } else if (child.nodeName) {
+            if (object.element) {
+                this.element.insertBefore(child, object.element);
+            } else if (object.nodeName) {
+                this.element.insertBefore(child, object);
+            }
+        }
+
+        return child;
+    }
+
     remove(child) {
         if (!this.children) {
             return;
@@ -313,7 +339,38 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
+    atPoint(p) {
+        if (!this.element) {
+            return;
+        }
+
+        const b = this.element.getBoundingClientRect();
+
+        return p.y > b.top && p.x > b.left && p.y < b.bottom && p.x < b.right;
+    }
+
+    intersects(object) {
+        if (!this.element) {
+            return;
+        }
+
+        const a = this.element.getBoundingClientRect();
+        let b;
+
+        if (object.element) {
+            b = object.element.getBoundingClientRect();
+        } else if (object.nodeName) {
+            b = object.getBoundingClientRect();
+        }
+
+        return a.bottom > b.top && a.right > b.left && a.top < b.bottom && a.left < b.right;
+    }
+
     drawLine(progress = this.progress || 0) {
+        if (!this.element) {
+            return;
+        }
+
         const start = this.start || 0;
         const offset = this.offset || 0;
 
@@ -352,12 +409,6 @@ export class Interface {
             }
 
             if (isNaN(this.style[key])) {
-                delete this.style[key];
-            }
-        }
-
-        for (const key in this.style) {
-            if (props[key] === undefined) {
                 delete this.style[key];
             }
         }

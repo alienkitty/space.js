@@ -18,12 +18,14 @@ import { ticker } from '../tween/Ticker.js';
 export class UI extends Interface {
     constructor({
         fps = false,
+        fpsOpen = false,
         breakpoint = 1000,
         ...data
     } = {}) {
         super('.ui');
 
         this.fps = fps;
+        this.fpsOpen = fpsOpen;
         this.breakpoint = breakpoint;
         this.data = data;
 
@@ -42,8 +44,9 @@ export class UI extends Interface {
         };
 
         this.startTime = performance.now();
-        this.isDetailsOpen = false;
         this.buttons = [];
+        this.isDetailsOpen = false;
+        this.animatedIn = false;
 
         this.init();
         this.initViews();
@@ -68,6 +71,7 @@ export class UI extends Interface {
 
     initViews() {
         const fps = this.fps;
+        const fpsOpen = this.fpsOpen;
 
         if (this.data.details) {
             this.details = new Details(this.data.details);
@@ -79,8 +83,8 @@ export class UI extends Interface {
             this.add(this.detailsInfo);
         }
 
-        if (this.data.header || fps) {
-            this.header = new Header({ ...this.data.header, fps });
+        if (this.data.header || fps || fpsOpen) {
+            this.header = new Header({ ...this.data.header, fps, fpsOpen });
             this.add(this.header);
         }
 
@@ -217,6 +221,18 @@ export class UI extends Interface {
                 this.onDetailsClick();
             }
         }
+
+        if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
+            if (this.animatedIn) {
+                if (this.isDetailsOpen) {
+                    this.toggleDetails(false);
+                }
+
+                this.animateOut();
+            } else {
+                this.animateIn();
+            }
+        }
     };
 
     onDetailsClick = () => {
@@ -233,12 +249,12 @@ export class UI extends Interface {
         this.header.info.addPanel(item);
     }
 
-    setPanelValue(label, value) {
-        this.header.info.panel.setPanelValue(label, value);
+    setPanelIndex(name, index, path) {
+        this.header.info.panel.setPanelIndex(name, index, path);
     }
 
-    setPanelIndex(label, index) {
-        this.header.info.panel.setPanelIndex(label, index);
+    setPanelValue(name, value, path) {
+        this.header.info.panel.setPanelValue(name, value, path);
     }
 
     invert(isInverted) {
@@ -285,6 +301,8 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateIn());
+
+        this.animatedIn = true;
     }
 
     animateOut() {
@@ -317,6 +335,8 @@ export class UI extends Interface {
         }
 
         this.buttons.forEach(button => button.animateOut());
+
+        this.animatedIn = false;
     }
 
     toggleDetails(show) {

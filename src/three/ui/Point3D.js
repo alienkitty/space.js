@@ -19,7 +19,7 @@ import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getScreenSpaceBox } from '../utils/Utils3D.js';
 
 export class Point3D extends Group {
-    static init(scene, camera, {
+    static init(renderer, scene, camera, {
         root = document.body,
         container = document.body,
         breakpoint = 1000,
@@ -30,6 +30,7 @@ export class Point3D extends Group {
         debug = false
     } = {}) {
         this.events = new EventEmitter();
+        this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
         this.root = root instanceof Interface ? root : new Interface(root);
@@ -58,12 +59,15 @@ export class Point3D extends Group {
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
+        this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+        this.uvTexture = null;
         this.windowSnapMargin = 30;
         this.openColor = null;
+        this.isDragging = false;
         this.enabled = true;
 
         this.initCanvas();
-        this.initLoaders();
+        this.initTextures();
 
         this.addListeners();
         this.onResize();
@@ -81,14 +85,17 @@ export class Point3D extends Group {
         this.container.add(this.canvas);
     }
 
-    static initLoaders() {
+    static initTextures() {
         if (this.uvHelper) {
             this.uvTexture = this.loader.load(this.uvTexturePath);
+            this.uvTexture.anisotropy = this.anisotropy;
+            this.uvTexture.userData.uv = true;
         }
     }
 
     static addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
+        Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.on('invert', this.onInvert);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
@@ -99,6 +106,7 @@ export class Point3D extends Group {
 
     static removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
+        Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.off('invert', this.onInvert);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
@@ -115,6 +123,10 @@ export class Point3D extends Group {
         } else {
             this.openColor = null;
         }
+    };
+
+    static onThumbnailDragging = ({ dragging }) => {
+        this.isDragging = dragging;
     };
 
     static onInvert = () => {
@@ -258,7 +270,7 @@ export class Point3D extends Group {
     };
 
     static onKeyUp = e => {
-        if (e.keyCode >= 48 && e.keyCode <= 57) { // 0-9
+        if (e.keyCode >= 49 && e.keyCode <= 57) { // 1-9
             const select = this.points[e.keyCode - 49];
 
             if (select) {
@@ -278,7 +290,7 @@ export class Point3D extends Group {
             } else {
                 this.animateOut();
             }
-        } else if (e.keyCode === 27) { // Esc
+        } else if (e.keyCode === 27 && !this.isDragging) { // Esc
             this.animateOut();
         }
     };
@@ -434,6 +446,9 @@ export class Point3D extends Group {
         this.selected = false;
         this.animatedIn = false;
 
+        this.currentMaterialMap = null;
+        this.uvTexture = null;
+
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.snappedLeft = false;
@@ -473,7 +488,10 @@ export class Point3D extends Group {
     initElement() {
         this.element = new Interface('.target');
         this.element.css({
-            position: 'static'
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            pointerEvents: 'none'
         });
         Point3D.container.add(this.element);
     }
@@ -626,14 +644,18 @@ export class Point3D extends Group {
         Point3D.events.emit('click', { target: this });
     };
 
-    onUpdate = ({ value, index, target }) => {
+    onUpdate = ({ path, value, index, target }) => {
+        if (!this.point.isMove) {
+            this.point.isMove = true;
+        }
+
         if (this.isMultiple) {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
                     if (index !== undefined) {
-                        ui.setPanelIndex(target.name, index);
+                        ui.setPanelIndex(target.name, index, path.slice());
                     } else if (value !== undefined) {
-                        ui.setPanelValue(target.name, value);
+                        ui.setPanelValue(target.name, value, path.slice());
                     }
                 }
             });
@@ -667,12 +689,12 @@ export class Point3D extends Group {
         }
     }
 
-    setPanelValue(name, value) {
-        this.panel.setPanelValue(name, value);
+    setPanelIndex(name, index, path) {
+        this.panel.setPanelIndex(name, index, path);
     }
 
-    setPanelIndex(name, index) {
-        this.panel.setPanelIndex(name, index);
+    setPanelValue(name, value, path) {
+        this.panel.setPanelValue(name, value, path);
     }
 
     toggleNormalsHelper(show) {
@@ -719,23 +741,21 @@ export class Point3D extends Group {
                     this.uvTexture = Point3D.uvTexture.clone();
                 }
 
-                if (!this.currentMaterialMap && material.map !== this.uvTexture) {
+                if (material.map !== this.uvTexture) {
                     this.currentMaterialMap = material.map;
 
                     material.map = this.uvTexture;
                     material.needsUpdate = true;
                 }
             }
-        } else {
+        } else if (this.uvTexture) {
             material.map = this.currentMaterialMap;
             material.needsUpdate = true;
 
-            if (this.uvTexture) {
-                this.uvTexture.dispose();
-            }
+            this.currentMaterialMap = null;
 
-            delete this.currentMaterialMap;
-            delete this.uvTexture;
+            this.uvTexture.dispose();
+            this.uvTexture = null;
         }
     }
 
@@ -1082,6 +1102,7 @@ export class Point3D extends Group {
             } else {
                 this.point.enable();
                 this.point.close();
+                this.point.activate();
             }
         }
     }
@@ -1095,7 +1116,6 @@ export class Point3D extends Group {
         this.snapPosition.copy(this.point.originPosition);
         this.snapTarget.copy(this.snapPosition);
 
-        // Top-left window snap
         const windowSnapTop = Point3D.windowSnapMargin + 43;
         let windowSnapLeft = -(48 - Point3D.windowSnapMargin);
 
@@ -1112,7 +1132,6 @@ export class Point3D extends Group {
             snappedLeft = true;
         }
 
-        // Panel snap
         const moved = Point3D.getMoved();
 
         moved.forEach(ui => {
@@ -1169,7 +1188,6 @@ export class Point3D extends Group {
         this.snappedRight = snappedRight;
         this.snapped = this.snappedLeft || this.snappedRight;
 
-        // Refresh panels
         if (this.snapped !== currentSnapped) {
             const moved = Point3D.getMoved();
 

@@ -2,104 +2,171 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { ColorManagement, SRGBColorSpace, Texture } from 'three';
+
+import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { WrapOptions } from '../Options.js';
+import { ColorSpaceOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MapPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, key = 'map') {
         super();
 
         this.mesh = mesh;
+        this.key = key;
 
         this.initPanel();
     }
 
     initPanel() {
+        const { anisotropy } = Point3D;
+
         const mesh = this.mesh;
+        const key = this.key;
+        const point = Point3D.getPoint(mesh);
 
         const items = [
             {
                 type: 'divider'
-            }
-            // TODO: Texture thumbnails
-        ];
+            },
+            {
+                type: 'thumbnail',
+                name: 'Map',
+                flipY: true,
+                data: mesh.material[key] || {},
+                value: mesh.material[key] && mesh.material[key].source.data,
+                callback: (value, panel) => {
+                    const mapItems = [];
 
-        if (mesh.material.map) {
-            const repeatItems = [
-                {
-                    type: 'slider',
-                    name: 'X',
-                    min: 1,
-                    max: 16,
-                    step: 1,
-                    value: mesh.material.map.repeat.x,
-                    callback: value => {
-                        mesh.material.map.repeat.setX(value);
+                    if (panel.data.isTexture && panel.data.userData.uv && !mesh.userData.uv) {
+                        mesh.userData.uv = true;
+                        point.toggleUVHelper(true);
                     }
-                },
-                {
-                    type: 'slider',
-                    name: 'Y',
-                    min: 1,
-                    max: 16,
-                    step: 1,
-                    value: mesh.material.map.repeat.y,
-                    callback: value => {
-                        mesh.material.map.repeat.setY(value);
-                    }
-                }
-            ];
 
-            items.push(
-                {
-                    type: 'slider',
-                    name: 'Anisotropy',
-                    min: 1,
-                    max: 16,
-                    step: 1,
-                    value: mesh.material.map.anisotropy,
-                    callback: value => {
-                        mesh.material.map.anisotropy = value;
-                    }
-                },
-                {
-                    type: 'list',
-                    name: 'Wrap',
-                    list: WrapOptions,
-                    value: getKeyByValue(WrapOptions, mesh.material.map.wrapS),
-                    callback: (value, panel) => {
-                        if (!panel.group) {
-                            const repeatPanel = new Panel();
-                            repeatPanel.animateIn(true);
+                    if (point.uvTexture) {
+                        if (value) {
+                            if (mesh.material[key] && panel.data.isTexture && !panel.data.userData.uv) {
+                                mesh.userData.uv = false;
+                                point.toggleUVHelper(false);
+                            }
+                        } else if (mesh.material[key]) {
+                            mesh.userData.uv = false;
+                            point.toggleUVHelper(false);
 
-                            repeatItems.forEach(data => {
-                                repeatPanel.add(new PanelItem(data));
-                            });
-
-                            panel.setContent(repeatPanel);
+                            if (mesh.material[key] && mesh.material[key].source.data) {
+                                panel.setData(mesh.material[key]);
+                                panel.setValue(mesh.material[key].source.data);
+                                return;
+                            }
                         }
-
-                        const wrapping = WrapOptions[value];
-
-                        mesh.material.map.wrapS = wrapping;
-                        mesh.material.map.wrapT = wrapping;
-
-                        if (mesh.material.map.image) {
-                            mesh.material.map.needsUpdate = true;
-                        }
-
-                        if (value === 'Repeat' || value === 'Mirror') {
-                            panel.group.show();
+                    } else if (value) {
+                        if (mesh.material[key]) {
+                            mesh.material[key].dispose();
+                            mesh.material[key] = new Texture(value);
+                            mesh.material[key].colorSpace = panel.data.colorSpace;
+                            mesh.material[key].anisotropy = panel.data.anisotropy;
+                            mesh.material[key].wrapS = panel.data.wrapS;
+                            mesh.material[key].wrapT = panel.data.wrapT;
+                            mesh.material[key].repeat.copy(panel.data.repeat);
                         } else {
-                            panel.group.hide();
+                            mesh.material[key] = new Texture(value);
+
+                            if (ColorManagement.enabled) {
+                                mesh.material[key].colorSpace = SRGBColorSpace;
+                            }
+
+                            mesh.material[key].anisotropy = anisotropy;
                         }
+
+                        mesh.material[key].needsUpdate = true;
+                        mesh.material.needsUpdate = true;
+                    } else if (mesh.material[key]) {
+                        mesh.material[key].dispose();
+                        mesh.material[key] = null;
+                        mesh.material.needsUpdate = true;
                     }
+
+                    panel.setData(mesh.material[key] || {});
+
+                    if (mesh.material[key]) {
+                        mapItems.push(
+                            {
+                                type: 'spacer'
+                            },
+                            {
+                                type: 'list',
+                                name: 'Color Space',
+                                list: ColorSpaceOptions,
+                                value: getKeyByValue(ColorSpaceOptions, mesh.material[key].colorSpace),
+                                callback: value => {
+                                    mesh.material[key].colorSpace = ColorSpaceOptions[value];
+                                    mesh.material[key].needsUpdate = true;
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Anisotropy',
+                                min: 1,
+                                max: 16,
+                                step: 1,
+                                value: mesh.material[key].anisotropy,
+                                callback: value => {
+                                    mesh.material[key].anisotropy = value;
+                                    mesh.material[key].needsUpdate = true;
+                                }
+                            },
+                            {
+                                type: 'list',
+                                name: 'Wrap',
+                                list: WrapOptions,
+                                value: getKeyByValue(WrapOptions, mesh.material[key].wrapS),
+                                callback: value => {
+                                    const wrapping = WrapOptions[value];
+
+                                    mesh.material[key].wrapS = wrapping;
+                                    mesh.material[key].wrapT = wrapping;
+                                    mesh.material[key].needsUpdate = true;
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'X',
+                                min: 1,
+                                max: 16,
+                                step: 1,
+                                value: mesh.material[key].repeat.x,
+                                callback: value => {
+                                    mesh.material[key].repeat.setX(value);
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Y',
+                                min: 1,
+                                max: 16,
+                                step: 1,
+                                value: mesh.material[key].repeat.y,
+                                callback: value => {
+                                    mesh.material[key].repeat.setY(value);
+                                }
+                            }
+                        );
+                    }
+
+                    const mapPanel = new Panel();
+                    mapPanel.animateIn(true);
+
+                    mapItems.forEach(data => {
+                        mapPanel.add(new PanelItem(data));
+                    });
+
+                    panel.setContent(mapPanel);
                 }
-            );
-        }
+            }
+        ];
 
         items.forEach(data => {
             this.add(new PanelItem(data));

@@ -25,9 +25,7 @@ export class DetailsInfo extends Interface {
             height: '100%',
             display: 'flex',
             alignItems: 'flex-end',
-            pointerEvents: 'none',
-            x: -10,
-            opacity: 0
+            pointerEvents: 'none'
         });
 
         this.container = new Interface('.container');
@@ -97,7 +95,7 @@ export class DetailsInfo extends Interface {
     animateOut(callback) {
         this.css({ pointerEvents: 'none' });
 
-        this.clearTween().tween({ opacity: 0 }, 300, 'easeInSine', () => {
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
 
             if (callback) {

@@ -9,11 +9,13 @@ import { HeaderInfo } from './HeaderInfo.js';
 export class Header extends Interface {
     constructor({
         fps = false,
+        fpsOpen = false,
         ...data
     }) {
         super('.header');
 
         this.fps = fps;
+        this.fpsOpen = fpsOpen;
         this.data = data;
 
         this.links = [];
@@ -32,6 +34,9 @@ export class Header extends Interface {
     }
 
     initViews() {
+        const fps = this.fps;
+        const fpsOpen = this.fpsOpen;
+
         if (Array.isArray(this.data.links)) {
             this.data.links.forEach(data => {
                 const link = new NavLink(data.title, data.link);
@@ -44,8 +49,8 @@ export class Header extends Interface {
             });
         }
 
-        if (this.fps) {
-            this.info = new HeaderInfo();
+        if (fps || fpsOpen) {
+            this.info = new HeaderInfo({ fpsOpen });
             this.info.css({
                 x: -10,
                 opacity: 0
@@ -77,13 +82,17 @@ export class Header extends Interface {
         const stagger = 200;
 
         this.children.forEach((child, i) => {
-            child.clearTween().tween({ x: 0, opacity: 1 }, duration, 'easeOutQuart', i * stagger);
+            child.clearTween().css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, duration, 'easeOutQuart', i * stagger);
         });
+
+        if (this.fpsOpen) {
+            this.info.animateIn();
+        }
     }
 
     animateOut() {
         this.children.forEach(child => {
-            child.clearTween().tween({ opacity: 0 }, 500, 'easeInCubic');
+            child.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
         });
     }
 }

@@ -8,10 +8,13 @@ import {
     ClampToEdgeWrapping,
     DoubleSide,
     FrontSide,
+    LinearSRGBColorSpace,
     MirroredRepeatWrapping,
     MixOperation,
     MultiplyOperation,
-    RepeatWrapping
+    NoColorSpace,
+    RepeatWrapping,
+    SRGBColorSpace
 } from 'three';
 
 export const VisibleOptions = {
@@ -55,6 +58,12 @@ export const WrapOptions = {
     Repeat: RepeatWrapping,
     Clamp: ClampToEdgeWrapping,
     Mirror: MirroredRepeatWrapping
+};
+
+export const ColorSpaceOptions = {
+    None: NoColorSpace,
+    SRGB: SRGBColorSpace,
+    Linear: LinearSRGBColorSpace
 };
 
 export const HelperOptions = {

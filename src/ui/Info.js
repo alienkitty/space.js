@@ -52,7 +52,7 @@ export class Info extends Interface {
     }
 
     animateOut() {
-        this.tween({ opacity: 0 }, 300, 'easeOutSine', () => {
+        this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
         });
     }

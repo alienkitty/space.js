@@ -8,8 +8,12 @@ import { Stage } from '../utils/Stage.js';
 import { Panel } from '../panels/Panel.js';
 
 export class HeaderInfo extends Interface {
-    constructor() {
+    constructor({
+        fpsOpen = false
+    }) {
         super('.info');
+
+        this.fpsOpen = fpsOpen;
 
         this.count = 0;
         this.time = 0;
@@ -81,17 +85,11 @@ export class HeaderInfo extends Interface {
         }
 
         if (type === 'mouseenter') {
-            this.isOpen = true;
-            this.css({ pointerEvents: 'none' });
-            this.panel.animateIn();
+            this.animateIn();
         }
     };
 
     onPointerDown = e => {
-        if (!this.isOpen) {
-            return;
-        }
-
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
 
@@ -115,10 +113,6 @@ export class HeaderInfo extends Interface {
         window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
 
-        if (!this.isOpen) {
-            return;
-        }
-
         this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
@@ -127,11 +121,14 @@ export class HeaderInfo extends Interface {
 
         if (this.openColor && !this.openColor.element.contains(e.target)) {
             Stage.events.emit('color_picker', { open: false, target: this });
+        } else if (this.atPoint(this.mouse)) {
+            if (this.isOpen) {
+                this.animateOut();
+            } else {
+                this.animateIn();
+            }
         } else if (!this.element.contains(e.target)) {
-            this.panel.animateOut(() => {
-                this.isOpen = false;
-                this.css({ pointerEvents: 'auto' });
-            });
+            this.animateOut();
         }
     };
 
@@ -165,6 +162,30 @@ export class HeaderInfo extends Interface {
         this.count++;
 
         this.number.text(this.fps);
+    }
+
+    animateIn() {
+        if (!this.panel) {
+            return;
+        }
+
+        this.css({ pointerEvents: 'none' });
+
+        this.panel.animateIn();
+
+        this.isOpen = true;
+    }
+
+    animateOut() {
+        if (!this.panel || this.fpsOpen) {
+            return;
+        }
+
+        this.panel.animateOut(() => {
+            this.css({ pointerEvents: 'auto' });
+
+            this.isOpen = false;
+        });
     }
 
     enable() {

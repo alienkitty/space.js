@@ -36,7 +36,7 @@ export class Link extends Interface {
             left: 10,
             right: 10,
             bottom: 10,
-            height: 1,
+            height: window.devicePixelRatio > 1 ? 1.5 : 1,
             backgroundColor: 'var(--ui-color)',
             transformOrigin: 'left center',
             scaleX: 0

@@ -13,7 +13,10 @@
     <script type="module">
         import { Panel, PanelItem, UI, brightness, getKeyByValue } from '../src/index.js';
 
-        const ui = new UI({ fps: true });
+        const ui = new UI({
+            fps: true,      // Hover or tap to open
+            fpsOpen: true   // Always open
+        });
         ui.animateIn();
         document.body.appendChild(ui.element);
 
@@ -267,7 +270,8 @@
                     ui.setPanelValue('Slider', 0);
                     ui.setPanelValue('Nested Color 2', backgroundColor);
                     ui.setPanelValue('Nested Color 3', backgroundColor);
-                    ui.setPanelValue('Thumbnail', image.cloneNode()); // Previous image is garbage collected
+                    // ui.setPanelValue('Thumbnail', image);
+                    ui.setPanelValue('Thumbnail', null);
                 }
             }
         ];
@@ -275,6 +279,10 @@
         items.forEach(data => {
             ui.addPanel(new PanelItem(data));
         });
+
+        // Call after adding to show the fps panel right away
+        // ui.animateIn();
+        ui.header.info.animateIn();
 
         function animate() {
             requestAnimationFrame(animate);

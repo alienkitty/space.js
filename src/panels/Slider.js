@@ -40,7 +40,7 @@ export class Slider extends Interface {
         this.lastOrigin = new Vector2();
 
         this.init();
-        this.setValue(this.value, true);
+        this.setValue(this.value);
 
         this.addListeners();
     }
@@ -48,7 +48,7 @@ export class Slider extends Interface {
     init() {
         this.container = new Interface('.container');
         this.container.css({
-            height: 27,
+            height: 25,
             cursor: 'w-resize'
         });
         this.add(this.container);
@@ -164,28 +164,23 @@ export class Slider extends Interface {
         oldGroup.destroy();
     }
 
-    setValue(value, force) {
+    setValue(value) {
         this.value = typeof value === 'string' ? parseFloat(value) : value;
         this.value = this.getValue(this.value);
-        this.lastValue = this.value;
 
-        this.update(force);
+        this.update();
     }
 
-    update(force) {
+    update() {
         const scaleX = (this.value - this.min) / this.range;
 
         this.line.css({ scaleX });
         this.number.text(this.value);
 
-        if (this.value !== this.lastValue || force) {
-            this.lastValue = this.value;
+        this.events.emit('update', { path: [], value: this.value, target: this });
 
-            this.events.emit('update', { value: this.value, target: this });
-
-            if (this.callback) {
-                this.callback(this.value, this);
-            }
+        if (this.callback) {
+            this.callback(this.value, this);
         }
     }
 

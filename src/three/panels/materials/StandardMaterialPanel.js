@@ -41,6 +41,7 @@ export class StandardMaterialPanel extends Panel {
         standard: [
             'roughness',
             'metalness',
+            'envMapRotation',
             'envMapIntensity'
         ]
     };

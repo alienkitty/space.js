@@ -1,5 +1,7 @@
 /**
  * @author pschroen / https://ufo.ai/
+ *
+ * Based on https://github.com/mrdoob/three.js/blob/dev/src/loaders/ImageBitmapLoader.js
  */
 
 import { Thread } from '../utils/Thread.js';
@@ -11,7 +13,9 @@ export class ImageBitmapLoader extends Loader {
         super();
 
         this.defaultOptions = {
-            imageOrientation: 'none'
+            imageOrientation: 'none',
+            premultiplyAlpha: 'none',
+            colorSpaceConversion: 'none'
         };
 
         this.options = this.defaultOptions;

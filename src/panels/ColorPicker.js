@@ -49,7 +49,6 @@ export class ColorPicker extends Interface {
         this.isDown = false;
         this.firstDown = false;
         this.lastCursor = '';
-        this.lastValue = this.value.getHex();
         this.fastClose = true;
 
         this.h = 0;
@@ -60,7 +59,7 @@ export class ColorPicker extends Interface {
 
         this.init();
         this.initColorRing();
-        this.setValue(this.value, true);
+        this.setValue(this.value);
 
         this.addListeners();
     }
@@ -459,7 +458,7 @@ export class ColorPicker extends Interface {
         this.parent.css({ height });
     }
 
-    setValue(value, force) {
+    setValue(value) {
         if (value && value.isColor) {
             this.value.copy(value);
         } else {
@@ -468,7 +467,7 @@ export class ColorPicker extends Interface {
 
         this.value.getHSL(this);
 
-        this.update(force);
+        this.update();
     }
 
     setHSL(h, s, l) {
@@ -481,7 +480,7 @@ export class ColorPicker extends Interface {
         this.update();
     }
 
-    update(force) {
+    update() {
         this.moveMarkers();
 
         this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
@@ -490,18 +489,10 @@ export class ColorPicker extends Interface {
             this.content.text(`0x${this.value.getHexString().toUpperCase()}`);
         }
 
-        const value = this.value.getHex();
+        this.events.emit('update', { path: [], value: this.value, target: this });
 
-        if (value !== this.lastValue || force) {
-            this.lastValue = value;
-
-            if (this.isDown || force) {
-                this.events.emit('update', { value: this.value, target: this });
-
-                if (this.callback) {
-                    this.callback(this.value, this);
-                }
-            }
+        if (this.callback) {
+            this.callback(this.value, this);
         }
     }
 
