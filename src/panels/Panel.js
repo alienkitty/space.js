@@ -72,7 +72,7 @@ export class Panel extends Interface {
         this.items.push(item);
     }
 
-    setPanelIndex(name, index, path) {
+    setPanelIndex(name, index, path = []) {
         this.items.forEach(({ view }) => {
             if (!view) {
                 return;
@@ -101,7 +101,7 @@ export class Panel extends Interface {
         });
     }
 
-    setPanelValue(name, value, path) {
+    setPanelValue(name, value, path = []) {
         this.items.forEach(({ view }) => {
             if (!view) {
                 return;
