@@ -238,10 +238,10 @@ export class UI extends Interface {
     };
 
     onDetailsClick = () => {
-        if (!this.isDetailsOpen) {
-            this.toggleDetails(true);
-        } else {
+        if (this.isDetailsOpen) {
             this.toggleDetails(false);
+        } else {
+            this.toggleDetails(true);
         }
     };
 
