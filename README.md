@@ -108,6 +108,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [logo](https://space.js.org/examples/logo.html) (interface)  
 [ui](https://space.js.org/examples/ui.html) (hud)  
 [components](https://space.js.org/examples/ui_components.html) (ui)  
+[audio](https://space.js.org/examples/ui_audio.html) (ui)  
 [progress](https://space.js.org/examples/progress_canvas.html) (canvas)  
 [progress](https://space.js.org/examples/progress.html) (svg)  
 [progress indeterminate](https://space.js.org/examples/progress_indeterminate.html) (svg)  
@@ -134,6 +135,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [gong](https://space.js.org/examples/audio_gong.html)  
 [stream](https://space.js.org/examples/audio_stream.html)  
 [rhythm](https://space.js.org/examples/audio_rhythm.html)  
+[audio](https://space.js.org/examples/ui_audio.html) (ui)  
 
 #### thread
 

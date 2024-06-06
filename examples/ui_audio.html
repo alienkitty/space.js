@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>UI Audio — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            -moz-osx-font-smoothing: auto;
+            -webkit-font-smoothing: auto;
+        }
+    </style>
+
+    <script type="module">
+        import { Stage, UI, ticker } from '../src/index.js';
+
+        const store = {
+            sound: true
+        };
+
+        class App {
+            static async init() {
+                const sound = localStorage.getItem('sound');
+                store.sound = sound ? JSON.parse(sound) : true;
+
+                const image = new Image();
+                image.crossOrigin = 'anonymous';
+                image.src = 'https://space.js.org/assets/meta/share.png';
+
+                this.image = image;
+
+                this.initViews();
+
+                this.addListeners();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    // detailsButton: true,
+                    audioButton: {
+                        sound: store.sound,
+                        callback: value => {
+                            console.log('AudioButton callback:', value);
+                        }
+                    }
+                });
+
+                this.ui.audioButton.setData({
+                    image: this.image,
+                    name: '127.0.0.1',
+                    title: 'localhost'
+                });
+
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                Stage.events.on('ui', this.onUI);
+                this.ui.audioButton.events.on('update', this.onAudio);
+                document.body.addEventListener('click', this.onClick);
+                window.addEventListener('load', this.onLoad);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static onUI = e => {
+                console.log('UI event:', e);
+            };
+
+            static onAudio = e => {
+                console.log('AudioButton event:', e);
+
+                localStorage.setItem('sound', JSON.stringify(e.sound));
+            };
+
+            static onClick = ({ clientX, clientY }) => {
+                if (document.elementFromPoint(clientX, clientY) === document.body) {
+                    this.ui.audioButton.setData({
+                        image: this.image,
+                        name: '127.0.0.1',
+                        title: 'localhost',
+                        link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                    });
+                }
+            };
+
+            static onUpdate = () => {
+                this.ui.update();
+            };
+
+            static onLoad = () => {
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>
