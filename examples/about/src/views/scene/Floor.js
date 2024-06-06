@@ -1,6 +1,6 @@
 import { BoxGeometry, Color, Group, Mesh } from 'three';
 
-import { Stage } from '@alienkitty/space.js/three';
+import { Stage, clearTween, tween } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { GridHelper } from './GridHelper.js';
@@ -19,6 +19,7 @@ export class Floor extends Group {
 
         this.gridHelper = new GridHelper();
         this.gridHelper.position.y = 0.494; // 1 / 2 - 0.006
+        this.gridHelper.material.transparent = true;
         this.add(this.gridHelper);
 
         // Physics mesh
@@ -48,5 +49,15 @@ export class Floor extends Group {
         }
 
         colors.needsUpdate = true;
+    };
+
+    toggle = show => {
+        clearTween(this.gridHelper.material);
+
+        if (show) {
+            tween(this.gridHelper.material, { opacity: 1 }, 400, 'easeOutCubic');
+        } else {
+            tween(this.gridHelper.material, { opacity: 0 }, 400, 'easeOutCubic');
+        }
     };
 }

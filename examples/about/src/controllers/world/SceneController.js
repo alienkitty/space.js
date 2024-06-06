@@ -31,6 +31,10 @@ export class SceneController {
         this.view.visible = true;
     };
 
+    static toggle = show => {
+        this.view.toggle(show);
+    };
+
     static ready = async () => {
         await this.view.ready();
 

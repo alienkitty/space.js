@@ -102,6 +102,7 @@ export class App {
 
     static addListeners() {
         Stage.events.on('invert', this.onInvert);
+        Stage.events.on('ui', this.onUI);
         this.ui.menu.events.on('update', this.onMenu);
         window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('resize', this.onResize);
@@ -113,6 +114,10 @@ export class App {
     static onInvert = ({ invert }) => {
         this.view.invert(invert);
         RenderManager.invert(invert);
+    };
+
+    static onUI = ({ open }) => {
+        SceneController.toggle(open);
     };
 
     static onMenu = ({ index }) => {

@@ -53,6 +53,10 @@ export class SceneView extends Group {
         this.addListeners();
     };
 
+    toggle = show => {
+        this.floor.toggle(show);
+    };
+
     ready = () => Promise.all([
         this.darkPlanet.initMesh(),
         this.floatingCrystal.initMesh(),
