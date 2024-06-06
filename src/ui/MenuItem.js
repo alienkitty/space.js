@@ -25,6 +25,12 @@ export class MenuItem extends Interface {
     init() {
         this.css({
             position: 'relative',
+            y: 10
+        });
+
+        this.container = new Interface('.container');
+        this.container.css({
+            position: 'relative',
             padding: 10,
             textAlign: 'center',
             textTransform: 'uppercase',
@@ -35,7 +41,8 @@ export class MenuItem extends Interface {
             userSelect: 'none',
             opacity: 0
         });
-        this.text(this.name);
+        this.container.text(this.name);
+        this.add(this.container);
 
         this.line = new Interface('.line');
         this.line.css({
@@ -48,7 +55,7 @@ export class MenuItem extends Interface {
             transformOrigin: 'left center',
             scaleX: 0
         });
-        this.add(this.line);
+        this.container.add(this.line);
     }
 
     addListeners() {
@@ -73,9 +80,9 @@ export class MenuItem extends Interface {
         this.clearTween();
 
         if (type === 'mouseenter') {
-            this.tween({ opacity: 1 }, 200, 'easeOutSine');
+            this.container.tween({ opacity: 1 }, 200, 'easeOutSine');
         } else {
-            this.tween({ opacity: 0.5 }, 400, 'easeOutSine');
+            this.container.tween({ opacity: 0.5 }, 400, 'easeOutSine');
         }
     };
 
@@ -98,26 +105,29 @@ export class MenuItem extends Interface {
     activate(direction) {
         this.active = true;
 
-        this.line.clearTween().css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
-
         if (this.animatedIn) {
-            this.clearTween().tween({ y: 0, opacity: 1 }, 300, 'easeOutSine');
+            this.container.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
         }
+
+        this.line.clearTween().css({ transformOrigin: direction < 0 ? 'left center' : 'right center', scaleX: 0 }).tween({ scaleX: 1 }, 500, 'easeOutQuint');
     }
 
     deactivate(direction) {
         this.active = false;
 
-        this.line.clearTween().css({ transformOrigin: direction > 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
-
         if (this.animatedIn) {
-            this.clearTween().tween({ y: 0, opacity: 0.5 }, 500, 'easeOutSine');
+            this.container.clearTween().tween({ opacity: 0.5 }, 500, 'easeOutSine');
         }
+
+        this.line.clearTween().css({ transformOrigin: direction > 0 ? 'left center' : 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
     }
 
     animateIn(delay) {
         this.clearTween();
-        this.css({ y: 10, opacity: 0 }).tween({ y: 0, opacity: this.active ? 1 : 0.5 }, 700, 'easeOutCubic', delay, () => {
+
+        this.container.clearTween().css({ opacity: 0 }).tween({ opacity: this.active ? 1 : 0.5 }, 700, 'easeOutCubic', delay);
+
+        this.css({ y: 10 }).tween({ y: 0 }, 700, 'easeOutCubic', delay, () => {
             this.css({ pointerEvents: 'auto' });
         });
 
@@ -127,7 +137,10 @@ export class MenuItem extends Interface {
     animateOut() {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
-        this.tween({ opacity: 0 }, 400, 'easeOutCubic');
+
+        this.container.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
+
+        this.tween({ y: 0 }, 400, 'easeOutCubic');
 
         this.animatedIn = false;
     }
