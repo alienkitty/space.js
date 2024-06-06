@@ -260,11 +260,11 @@ export class Point extends Interface {
     }
 
     enable() {
-        this.info.container.tween({ opacity: 1 }, 400, 'easeInOutSine');
+        this.info.container.clearTween().tween({ opacity: 1 }, 400, 'easeInOutSine');
     }
 
     disable() {
-        this.info.container.tween({ opacity: 0.35 }, 400, 'easeInOutSine');
+        this.info.container.clearTween().tween({ opacity: 0.35 }, 400, 'easeInOutSine');
     }
 
     activate() {
