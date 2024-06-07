@@ -43,6 +43,8 @@ export class AudioButtonInfo extends Interface {
         }
 
         const oldWrapper = this.wrapper;
+        oldWrapper.element.removeEventListener('click', this.onClick);
+
         const newWrapper = this.wrapper.clone();
 
         const name = new Interface('.name');
@@ -112,7 +114,6 @@ export class AudioButtonInfo extends Interface {
             this.replace(oldWrapper, newWrapper);
             this.wrapper = newWrapper;
 
-            oldWrapper.element.removeEventListener('click', this.onClick);
             oldWrapper.destroy();
 
             this.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');

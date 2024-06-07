@@ -362,6 +362,7 @@ export class PanelThumbnail extends Interface {
         });
 
         const oldWrapper = this.wrapper;
+        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
 
         const newWrapper = this.wrapper.clone();
         newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
@@ -370,7 +371,6 @@ export class PanelThumbnail extends Interface {
         this.replace(oldWrapper, newWrapper);
         this.wrapper = newWrapper;
 
-        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
         oldWrapper.destroy();
 
         if (this.value) {
