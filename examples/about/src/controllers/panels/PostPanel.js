@@ -102,7 +102,7 @@ export class PostPanel extends Panel {
                     bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
                 }
             },
-            {
+            /* {
                 type: 'slider',
                 name: 'Chroma',
                 min: 0,
@@ -112,7 +112,7 @@ export class PostPanel extends Panel {
                 callback: value => {
                     compositeMaterial.uniforms.uBloomDistortion.value = value;
                 }
-            },
+            }, */
             {
                 type: 'divider'
             },
