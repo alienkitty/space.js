@@ -70,11 +70,6 @@ export class CompositeMaterial extends RawShaderMaterial {
                 ${dither}
 
                 void main() {
-                    vec2 sceneUv = vUv;
-                    vec2 dirtUv = vUv;
-                    vec2 tilesUv = vUv;
-                    tilesUv.x *= uAspect;
-
                     vec2 dir = 0.5 - vUv;
                     float dist = length(dir);
                     dist = clamp(smoothstep(0.2, 0.7, dist), 0.0, 1.0);
@@ -83,32 +78,41 @@ export class CompositeMaterial extends RawShaderMaterial {
 
                     vec4 bloom = getRGB(tBloom, vUv, angle, amount);
 
-                    float aspectRatio2 = 1.0;
-                    float aspectRatio = uResolution.x / uResolution.y;
-
-                    if (aspectRatio2 > aspectRatio) {
-                        float widthRatio = aspectRatio / aspectRatio2;
-                        dirtUv.x = vUv.x * widthRatio;
-                        dirtUv.x += 0.5 * (1.0 - widthRatio);
-                        dirtUv.y = vUv.y;
-                    } else {
-                        float heightRatio = aspectRatio2 / aspectRatio;
-                        dirtUv.x = vUv.x;
-                        dirtUv.y = vUv.y * heightRatio;
-                        dirtUv.y += 0.5 * (1.0 - heightRatio);
-                    }
-
-                    float distortion = 1.0 - texture(tLensDirtTiles, tilesUv).r;
-                    distortion = smoothstep(0.5, 0.7, distortion);
-                    sceneUv.xy += smoothstep(0.0, 0.4, bloom.rg) * distortion * dir * 0.005 * dist * uRGBStrength;
-                    dirtUv.xy += distortion * dir * 0.05 * dist * uRGBStrength;
-
-                    FragColor = texture(tScene, sceneUv);
-
-                    FragColor.rgb += bloom.rgb;
-
                     if (uLensDirt) {
+                        vec2 tilesUv = vUv;
+                        tilesUv.x *= uAspect;
+
+                        float distortion = 1.0 - texture(tLensDirtTiles, tilesUv).r;
+                        distortion = smoothstep(0.5, 0.7, distortion);
+
+                        vec2 sceneUv = vUv;
+                        sceneUv.xy += smoothstep(0.0, 0.4, bloom.rg) * distortion * dir * 0.005 * dist * uRGBStrength;
+
+                        vec2 dirtUv = vUv;
+
+                        float aspectRatio2 = 1.0;
+                        float aspectRatio = uResolution.x / uResolution.y;
+
+                        if (aspectRatio2 > aspectRatio) {
+                            float widthRatio = aspectRatio / aspectRatio2;
+                            dirtUv.x = vUv.x * widthRatio;
+                            dirtUv.x += 0.5 * (1.0 - widthRatio);
+                            dirtUv.y = vUv.y;
+                        } else {
+                            float heightRatio = aspectRatio2 / aspectRatio;
+                            dirtUv.x = vUv.x;
+                            dirtUv.y = vUv.y * heightRatio;
+                            dirtUv.y += 0.5 * (1.0 - heightRatio);
+                        }
+
+                        dirtUv.xy += distortion * dir * 0.05 * dist * uRGBStrength;
+
+                        FragColor = texture(tScene, sceneUv);
+                        FragColor.rgb += bloom.rgb;
                         FragColor.rgb += smoothstep(0.0, 0.4, bloom.rgb) * texture(tLensDirt, dirtUv).rgb * dist * uRGBStrength;
+                    } else {
+                        FragColor = texture(tScene, vUv);
+                        FragColor.rgb += bloom.rgb;
                     }
 
                     if (uToneMapping) {

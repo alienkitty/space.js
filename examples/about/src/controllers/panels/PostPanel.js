@@ -17,6 +17,11 @@ export class PostPanel extends Panel {
             On: true
         };
 
+        const dirtOptions = {
+            Off: false,
+            Dirt: true
+        };
+
         const toneMappingOptions = {
             Off: false,
             Tone: true
@@ -102,17 +107,25 @@ export class PostPanel extends Panel {
                     bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
                 }
             },
-            /* {
+            {
                 type: 'slider',
                 name: 'Chroma',
                 min: 0,
                 max: 10,
                 step: 0.1,
-                value: compositeMaterial.uniforms.uBloomDistortion.value,
+                value: compositeMaterial.uniforms.uRGBStrength.value,
                 callback: value => {
-                    compositeMaterial.uniforms.uBloomDistortion.value = value;
+                    compositeMaterial.uniforms.uRGBStrength.value = value;
                 }
-            }, */
+            },
+            {
+                type: 'list',
+                list: dirtOptions,
+                value: getKeyByValue(dirtOptions, compositeMaterial.uniforms.uLensDirt.value),
+                callback: value => {
+                    compositeMaterial.uniforms.uLensDirt.value = dirtOptions[value];
+                }
+            },
             {
                 type: 'divider'
             },

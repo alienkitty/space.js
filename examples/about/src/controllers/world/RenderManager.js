@@ -23,7 +23,7 @@ export class RenderManager {
         this.luminositySmoothing = 1;
         this.bloomStrength = 0.3;
         this.bloomRadius = 0.2;
-        this.bloomDistortion = 1.5;
+        this.bloomDistortion = 2.2;
 
         // Debug
         this.display = DisplayOptions.Default;
@@ -104,7 +104,7 @@ export class RenderManager {
 
         // Composite material
         this.compositeMaterial = new CompositeMaterial();
-        // this.compositeMaterial.uniforms.uBloomDistortion.value = this.bloomDistortion;
+        this.compositeMaterial.uniforms.uRGBStrength.value = this.bloomDistortion;
 
         // Debug materials
         this.blackoutMaterial = new MeshBasicMaterial({ color: 0x000000 });
