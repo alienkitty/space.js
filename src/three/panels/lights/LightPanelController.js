@@ -14,11 +14,9 @@ import {
     SpotLight,
     SpotLightHelper
 } from 'three';
-
 import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 
 import { PanelItem } from '../../../panels/PanelItem.js';
-
 import { AmbientLightPanel } from './AmbientLightPanel.js';
 import { HemisphereLightPanel } from './HemisphereLightPanel.js';
 import { DirectionalLightPanel } from './DirectionalLightPanel.js';
