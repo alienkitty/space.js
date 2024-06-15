@@ -12,7 +12,7 @@ export class Router {
         path = '',
         page,
         transition
-    }) {
+    } = {}) {
         this.path = path;
         this.page = page;
         this.transition = transition;
