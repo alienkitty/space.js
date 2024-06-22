@@ -33,6 +33,11 @@ export class ScenePanelController {
         // Shrink tracker meshes a little bit
         floatingCrystal.point.mesh.scale.multiply(new Vector3(1, 0.9, 1));
         abstractCube.point.mesh.scale.multiplyScalar(0.9);
+
+        // Debug
+        // darkPlanet.point.setPanelIndex('Standard', 4);
+        // darkPlanet.point.setPanelValue('UV', true);
+        // darkPlanet.point.setPanelValue('UV', true, [['Standard', 4]]);
     }
 
     static addListeners() {
