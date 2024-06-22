@@ -644,7 +644,7 @@ export class Point3D extends Group {
     };
 
     onUpdate = ({ path, value, index, target }) => {
-        if (!this.point.isMove) {
+        if (this.point.isOpen && !this.point.isMove) {
             this.point.isMove = true;
         }
 
