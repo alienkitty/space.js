@@ -735,7 +735,7 @@ export class Point3D extends Group {
         const material = this.object.material;
 
         if (show) {
-            if (Point3D.uvTexture && Point3D.uvTexture.image) {
+            if (Point3D.uvTexture) {
                 if (!this.uvTexture) {
                     this.uvTexture = Point3D.uvTexture.clone();
                 }
