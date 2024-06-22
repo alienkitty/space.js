@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, Group, MathUtils, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { BoxGeometry, Color, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
 import { PhysicsController } from '../../controllers/world/PhysicsController.js';
@@ -12,9 +12,6 @@ export class AbstractCube extends Group {
         this.position.x = 2.5;
         this.rotation.x = MathUtils.degToRad(-45);
         this.rotation.z = MathUtils.degToRad(-45);
-
-        this.force = new Vector3();
-        this.contact = false;
     }
 
     async initMesh() {
