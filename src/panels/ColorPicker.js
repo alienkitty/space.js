@@ -131,9 +131,10 @@ export class ColorPicker extends Interface {
         const segments = 24;
         const nudge = 8 / radius / segments * Math.PI;
 
-        let a1 = 0;
+        let colors, gradient;
 
-        let array, color, lastColor, colors, gradient;
+        let a1 = 0;
+        let lastColor;
 
         // Hue
         for (let i = 0; i <= segments; i++) {
@@ -142,13 +143,13 @@ export class ColorPicker extends Interface {
             const am = (a1 + a2) / 2;
             const tan = 1 / Math.cos((a2 - a1) / 2);
 
-            array = [
+            const array = [
                 Math.sin(a1), -Math.cos(a1),
                 Math.sin(am) * tan, -Math.cos(am) * tan,
                 Math.sin(a2), -Math.cos(a2)
             ];
 
-            color = `#${this.color.setHSL(hue, 1, 0.5).getHexString()}`;
+            const color = `#${this.color.setHSL(hue, 1, 0.5).getHexString()}`;
 
             if (i > 0) {
                 let j = 6;
