@@ -134,7 +134,7 @@
                             });
 
                             panel.setContent(nestedPanel);
-                            panel.group.show();
+                            panel.toggleContent(true);
                             break;
                         }
                         case 'Content B': {
@@ -161,11 +161,11 @@
                             });
 
                             panel.setContent(nestedPanel);
-                            panel.group.show();
+                            panel.toggleContent(true);
                             break;
                         }
                         default: {
-                            panel.group.hide();
+                            panel.toggleContent(false);
                             break;
                         }
                     }
@@ -210,9 +210,9 @@
                     }
 
                     if (value > 0) {
-                        panel.group.show();
+                        panel.toggleContent(true);
                     } else {
-                        panel.group.hide();
+                        panel.toggleContent(false);
                     }
                 }
             },

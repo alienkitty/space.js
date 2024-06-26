@@ -315,6 +315,14 @@ export class PanelThumbnail extends Interface {
         oldGroup.destroy();
     }
 
+    toggleContent(show) {
+        if (show) {
+            this.group.show();
+        } else {
+            this.group.hide();
+        }
+    }
+
     setData(data) {
         if (!data) {
             return;

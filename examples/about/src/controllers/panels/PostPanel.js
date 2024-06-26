@@ -187,9 +187,9 @@ export class PostPanel extends Panel {
                     RenderManager.enabled = postOptions[value];
 
                     if (RenderManager.enabled) {
-                        panel.group.show();
+                        panel.toggleContent(true);
                     } else {
-                        panel.group.hide();
+                        panel.toggleContent(false);
                     }
                 }
             }

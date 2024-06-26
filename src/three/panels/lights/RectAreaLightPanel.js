@@ -108,9 +108,9 @@ export class RectAreaLightPanel extends Panel {
                     light.visible = VisibleOptions[value];
 
                     if (light.visible) {
-                        panel.group.show();
+                        panel.toggleContent(true);
                     } else {
-                        panel.group.hide();
+                        panel.toggleContent(false);
                     }
 
                     if (light.helper) {
