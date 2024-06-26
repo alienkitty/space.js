@@ -36,7 +36,8 @@ export class Floor extends Group {
         const colorStyle = `rgb(${Stage.rootStyle.getPropertyValue('--ui-color-triplet').trim().replace(/\s/g, ', ')})`;
         const color = new Color(colorStyle);
 
-        if (!isInverted) { // Dark colour is muted
+        // Dark colour is muted
+        if (!isInverted) {
             color.offsetHSL(0, 0, -0.8);
         }
 

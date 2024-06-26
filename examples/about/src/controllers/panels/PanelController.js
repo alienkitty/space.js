@@ -213,7 +213,8 @@ export class PanelController {
     };
 
     static setInvert = value => {
-        const invert = brightness(value) > 0.6; // Light colour is inverted
+        // Light colour is inverted
+        const invert = brightness(value) > 0.6;
 
         if (invert !== this.lastInvert) {
             this.lastInvert = invert;

@@ -520,7 +520,8 @@ export class ColorPicker extends Interface {
 
         marker.set(x, y).addScalar(128);
 
-        const invert = brightness(this.value) > 0.6; // Light colour is inverted
+        // Light colour is inverted
+        const invert = brightness(this.value) > 0.6;
 
         this.colorRing.sl.css({
             rotation: radToDeg(angle - PI90)
