@@ -22,7 +22,7 @@ export class HeaderInfo extends Interface {
 
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.lastTime = null;
+        this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.openColor = null;
         this.isOpen = false;

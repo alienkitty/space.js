@@ -28,7 +28,7 @@
                 this.instructions = instructions;
 
                 this.context = WebAudio.context;
-                this.lastTime = null;
+                this.lastTime = 0;
 
                 this.initSounds();
 
@@ -89,7 +89,7 @@
                 const snare = this.snare;
                 const hihat = this.hihat;
 
-                const tempo = 70; // BPM (beats per minute)
+                const tempo = 70; // Beats per minute
                 const eighthNoteTime = (60 / tempo) / 2;
                 const barLength = 8 * eighthNoteTime;
 
@@ -99,7 +99,7 @@
                 // Next 4 bars
                 const lastLength = this.lastTime + 4 * barLength;
 
-                if (this.lastTime !== null && startTime < lastLength) {
+                if (startTime < lastLength) {
                     startTime = lastLength;
                 }
 
