@@ -81,7 +81,6 @@ export class Graph extends Interface {
         this.content.css({
             cssFloat: 'left',
             marginRight: 10,
-            lineHeight: 20,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap'
         });
@@ -93,7 +92,6 @@ export class Graph extends Interface {
             this.number.css({
                 cssFloat: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                lineHeight: 20,
                 letterSpacing: 'var(--ui-number-letter-spacing)'
             });
             this.container.add(this.number);
