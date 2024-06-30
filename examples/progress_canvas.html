@@ -87,7 +87,7 @@
 
                 // Context properties need to be reassigned after resize
                 this.context.lineWidth = 1.5;
-                this.context.strokeStyle = 'rgb(255 255 255 / 0.94)';
+                this.context.strokeStyle = getComputedStyle(document.querySelector(':root')).getPropertyValue('--ui-color').trim();
 
                 this.update();
             };
