@@ -92,7 +92,7 @@ export class Graph extends Interface {
             this.number.css({
                 cssFloat: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                letterSpacing: 'var(--ui-number-letter-spacing)'
+                letterSpacing: 1
             });
             this.container.add(this.number);
         }

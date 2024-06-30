@@ -41,6 +41,7 @@ export class HeaderInfo extends Interface {
 
         this.number = new Interface('.number');
         this.number.css({
+            fontVariantNumeric: 'tabular-nums',
             letterSpacing: 1
         });
         this.number.text(this.fps);
