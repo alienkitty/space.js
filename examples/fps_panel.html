@@ -45,10 +45,168 @@
         image.crossOrigin = 'anonymous';
         image.src = 'https://space.js.org/assets/meta/share.png';
 
+        let needsUpdate = false;
+
         const items = [
-            {
+            /* {
                 name: 'FPS'
+            }, */
+            /* {
+                type: 'graph',
+                name: 'FPS'
+            }, */
+            {
+                type: 'graph',
+                name: 'FPS',
+                noText: true
             },
+            /* {
+                type: 'graph',
+                name: 'MS',
+                value: performance.now(),
+                callback: (value, panel) => {
+                    console.log('MS callback:', value);
+
+                    const time = performance.now();
+                    const ms = time - value;
+
+                    panel.update(ms);
+                    panel.setValue(ms);
+
+                    // The return value is passed back in the next frame
+                    return time;
+                }
+            },
+            {
+                type: 'graph',
+                name: 'MEM',
+                // precision: 2,
+                value: performance.memory,
+                callback: (value, panel) => {
+                    console.log('MEM callback:', value);
+
+                    const heapSize = value.usedJSHeapSize;
+                    const heapSizeLimit = value.jsHeapSizeLimit;
+                    const mem = Math.round(heapSize * 0.000000954);
+                    const mm = heapSize / heapSizeLimit;
+
+                    panel.update(mm);
+                    panel.setValue(mem);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'graph',
+                name: 'Sine',
+                value: 0,
+                noText: true,
+                noHover: true,
+                callback: (value, panel) => {
+                    console.log('Sine callback:', value);
+
+                    const increase = 90 / 180 * Math.PI / 9;
+                    const y = Math.sin(value);
+                    value += increase;
+
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'graph',
+                name: 'Clip',
+                value: 0,
+                noText: true,
+                noHover: true,
+                callback: (value, panel) => {
+                    console.log('Clip callback:', value);
+
+                    const increase = 90 / 180 * Math.PI / 9;
+                    let y = Math.sin(value);
+                    value += increase;
+
+                    // Values passed to panel.update() should be normalized in the 0-1 range,
+                    // however you can push values below 0 and higher than 1 which will be
+                    // colour shifted to blue and red respectively.
+
+                    // Convert to spread in -1 to 1 range
+                    y = 2 * y - 1;
+
+                    // Multiply to push values further than original range
+                    y *= 1.1;
+
+                    // Convert back to 0-1 range, keeping values below 0 and higher than 1
+                    y = (y - -1) / 2;
+
+                    panel.update(y);
+
+                    return value;
+                }
+            },
+            {
+                type: 'graph',
+                name: 'Array',
+                resolution: 80,
+                value: new Array(80).fill(Math.random())
+            },
+            {
+                type: 'graph',
+                name: 'Random',
+                resolution: 80,
+                value: performance.now(),
+                noText: true,
+                noHover: true,
+                callback: (value, panel) => {
+                    console.log('Random callback:', value);
+
+                    const time = performance.now();
+
+                    // Update once per second
+                    if (time - 1000 > value) {
+                        value = time;
+
+                        // Passing an array to panel.update() will update the entire graph
+                        const array = new Array(80).fill(Math.random());
+                        panel.update(array);
+                    }
+
+                    return value;
+                }
+            },
+            {
+                type: 'graph',
+                name: 'Graph',
+                value: true,
+                noText: true,
+                noHover: true,
+                callback: (value, panel) => {
+                    console.log('Graph callback:', value);
+
+                    if (value || needsUpdate) {
+                        value = false;
+                        needsUpdate = false;
+
+                        // Passing an array to panel.update() will update the entire graph
+                        const array = new Array(100).fill(Math.random());
+                        panel.update(array);
+                    }
+
+                    return value;
+                }
+            },
+            {
+                type: 'link',
+                value: 'Update',
+                callback: value => {
+                    console.log('Update callback:', value);
+
+                    needsUpdate = true;
+                }
+            }, */
             {
                 type: 'divider'
             },

@@ -185,6 +185,7 @@ npx eslint examples/*.html
 * [x] Panel thumbnails
 * [ ] Material texture thumbnails
 * [ ] Material texture drag and drop
+* [x] Graphs
 
 #### v1.4
 
@@ -195,19 +196,18 @@ npx eslint examples/*.html
 
 #### v1.5
 
-* [ ] Graphs
+* [ ] MIDI support
 
 #### v1.6
 
-* [ ] MIDI support
+* [ ] WebXR version
 
 #### v1.7
 
-* [ ] WebXR version
+* [ ] OGL version
 
 #### v1.8
 
-* [ ] OGL version
 * [ ] Documentation
 
 ### Resources
