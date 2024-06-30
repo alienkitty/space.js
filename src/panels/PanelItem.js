@@ -83,7 +83,6 @@ export class PanelItem extends Interface {
             this.container.add(this.view);
         } else if (this.data.type === 'color') {
             this.container.css({
-                height: 19,
                 margin: '0 0 7px'
             });
 

@@ -35,7 +35,7 @@ export class ColorPicker extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = 19;
+        this.height = 20;
         this.middle = this.width / 2;
         this.top = this.height + 9;
         this.distance = 256;
