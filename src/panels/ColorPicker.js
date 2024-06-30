@@ -224,9 +224,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.saturation.css({
-            fill: `url(#saturation_${id})`,
-            stroke: `url(#saturation_${id})`,
-            strokeWidth: 1
+            fill: `url(#saturation_${id})`
         });
         this.colorRing.sl.add(this.colorRing.saturation);
 
@@ -235,9 +233,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.lightness.css({
-            fill: `url(#lightness_${id})`,
-            stroke: `url(#lightness_${id})`,
-            strokeWidth: 1
+            fill: `url(#lightness_${id})`
         });
         this.colorRing.sl.add(this.colorRing.lightness);
 
