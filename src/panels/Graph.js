@@ -14,7 +14,7 @@ export class Graph extends Interface {
         name,
         resolution = 80,
         precision = 0,
-        range = 165,
+        range = 1,
         value,
         noText = false,
         noHover = false,
