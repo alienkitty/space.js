@@ -145,7 +145,7 @@ export class MuteButton extends Interface {
     }
 
     update() {
-        const width = this.width + 1;
+        const width = this.width + 2;
         const height = this.height / 2;
         const progress = width * this.props.progress;
         const increase = 90 / 180 * Math.PI / (height / 2);
@@ -155,9 +155,9 @@ export class MuteButton extends Interface {
 
         let counter = 0;
         let x = 0;
-        let y = height;
+        let y = 0;
 
-        for (let i = -4; i <= width; i++) {
+        for (let i = -4; i < width; i++) {
             if (progress >= i) {
                 this.context.moveTo(x, y);
 
