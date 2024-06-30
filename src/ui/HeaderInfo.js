@@ -15,8 +15,8 @@ export class HeaderInfo extends Interface {
 
         this.fpsOpen = fpsOpen;
 
-        this.count = 0;
         this.time = 0;
+        this.count = 0;
         this.prev = 0;
         this.fps = 0;
 
@@ -154,8 +154,8 @@ export class HeaderInfo extends Interface {
         this.time = performance.now();
 
         if (this.time - 1000 > this.prev) {
+            this.fps = Math.round(this.count * 1000 / (this.time - this.prev));
             this.prev = this.time;
-            this.fps = this.count;
             this.count = 0;
         }
 
