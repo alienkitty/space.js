@@ -38,7 +38,7 @@ export class Ticker {
             this.requestId = RequestFrame(this.onTick);
         }
 
-        this.delta = Math.min(150, time - this.last);
+        this.delta = time - this.last;
         this.last = time;
         this.time = time * 0.001; // seconds
         this.frame++;
