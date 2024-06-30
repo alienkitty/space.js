@@ -140,7 +140,8 @@ export class HeaderInfo extends Interface {
             this.panel.css({
                 position: 'absolute',
                 top: 0,
-                right: 10
+                right: 10,
+                marginTop: 10
             });
             this.add(this.panel);
 

@@ -28,10 +28,6 @@ export class PanelItem extends Interface {
         this.add(this.container);
 
         if (!this.data.type) {
-            this.container.css({
-                margin: '10px 0'
-            });
-
             this.content = new Interface('.content');
             this.content.css({
                 textTransform: 'uppercase',
