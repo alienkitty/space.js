@@ -33,7 +33,7 @@ export class Graph extends Interface {
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = this.width / 2;
-        this.range = (1 / this.range) * (this.height - 2);
+        this.range = this.getRange(this.range);
 
         if (Array.isArray(this.value)) {
             if (!this.callback) {
@@ -48,10 +48,16 @@ export class Graph extends Interface {
         this.length = this.points.length;
 
         if (this.value === undefined) {
+            this.last = performance.now();
             this.time = 0;
+            this.delta = 0;
             this.count = 0;
             this.prev = 0;
             this.fps = 0;
+
+            // Midpoint step
+            this.refreshRate120 = 1000 / 90;
+            this.refreshRate240 = 1000 / 180;
         }
 
         this.init();
@@ -154,16 +160,30 @@ export class Graph extends Interface {
         ticker.remove(this.onUpdate);
     }
 
+    getRange(range) {
+        return (1 / range) * (this.height - 2);
+    }
+
     // Event handlers
 
     onUpdate = () => {
         if (this.value === undefined) {
             this.time = performance.now();
+            this.delta = this.time - this.last;
+            this.last = this.time;
 
             if (this.time - 1000 > this.prev) {
                 this.fps = Math.round(this.count * 1000 / (this.time - this.prev));
                 this.prev = this.time;
                 this.count = 0;
+
+                if (this.delta < this.refreshRate240) {
+                    this.range = this.getRange(660);
+                } else if (this.delta < this.refreshRate120) {
+                    this.range = this.getRange(330);
+                } else {
+                    this.range = this.getRange(165);
+                }
             }
 
             this.count++;
