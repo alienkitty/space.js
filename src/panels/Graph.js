@@ -12,7 +12,7 @@ import { ticker } from '../tween/Ticker.js';
 export class Graph extends Interface {
     constructor({
         name,
-        resolution = 40,
+        resolution = 80,
         precision = 0,
         range = 165,
         value,
@@ -33,7 +33,7 @@ export class Graph extends Interface {
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = this.width / 2;
-        this.range = (1 / this.range) * 49;
+        this.range = (1 / this.range) * (this.height - 2);
 
         if (Array.isArray(this.value)) {
             if (!this.callback) {
@@ -42,8 +42,10 @@ export class Graph extends Interface {
                 this.points = value.slice();
             }
         } else {
-            this.points = new Array(this.resolution + 1).fill(50);
+            this.points = new Array(this.resolution).fill(0);
         }
+
+        this.length = this.points.length;
 
         if (this.value === undefined) {
             this.count = 0;
@@ -96,9 +98,9 @@ export class Graph extends Interface {
         this.graph = new Interface(null, 'svg');
         this.graph.hide();
         this.graph.attr({
-            viewBox: `0 0 ${this.resolution} ${50}`,
-            width: this.resolution,
-            height: 50,
+            viewBox: '0 0 ' + this.length + ' ' + this.height,
+            width: this.length,
+            height: this.height,
             preserveAspectRatio: 'none'
         });
         this.graph.css({
@@ -121,18 +123,27 @@ export class Graph extends Interface {
         this.add(this.graph);
     }
 
-    createPath(point) {
-        let p = '';
+    createPath(points) {
+        let path = '';
 
-        p += 'M ' + -1 + ' ' + 50;
+        for (let i = 0; i < points.length - 1; i++) {
+            const x1 = i;
+            const x2 = i + 1;
+            const y1 = this.height - points[i] * this.range - 1;
+            const y2 = this.height - points[i + 1] * this.range - 1;
+            const xMid = (x1 + x2) / 2;
+            const yMid = (y1 + y2) / 2;
+            const cpX1 = (xMid + x1) / 2;
+            const cpX2 = (xMid + x2) / 2;
 
-        for (let i = 0; i < this.resolution + 1; i++) {
-            p += ' L ' + i + ' ' + point[i];
+            if (i === 0) {
+                path += 'M ' + x1 + ' ' + y1;
+            } else {
+                path += ' Q ' + cpX1 + ' ' + y1 + ' ' + xMid + ' ' + yMid + ' Q ' + cpX2 + ' ' + y2 + ' ' + x2 + ' ' + y2;
+            }
         }
 
-        p += ' L ' + (this.resolution + 1) + ' ' + 50;
-
-        return p;
+        return path;
     }
 
     addListeners() {
@@ -180,7 +191,7 @@ export class Graph extends Interface {
                 this.points = value.slice();
             } else {
                 this.points.shift();
-                this.points.push(50 - value * this.range);
+                this.points.push(value);
             }
         }
 
