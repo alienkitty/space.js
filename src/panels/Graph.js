@@ -62,6 +62,9 @@ export class Graph extends Interface {
 
         this.init();
         this.initGraph();
+        this.initCanvas();
+
+        this.resize();
     }
 
     init() {
@@ -150,6 +153,18 @@ export class Graph extends Interface {
         return path;
     }
 
+    initCanvas() {
+        this.canvas = new Interface(null, 'canvas');
+        this.canvas.css({
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            pointerEvents: 'none'
+        });
+        this.context = this.canvas.element.getContext('2d');
+        this.add(this.canvas);
+    }
+
     addListeners() {
         ticker.add(this.onUpdate);
     }
@@ -203,6 +218,22 @@ export class Graph extends Interface {
         }
     }
 
+    resize() {
+        const dpr = 2; // Always 2
+
+        this.canvas.element.width = Math.round(this.width * dpr);
+        this.canvas.element.height = Math.round(this.height * dpr);
+        this.canvas.element.style.width = `${this.width}px`;
+        this.canvas.element.style.height = `${this.height}px`;
+        this.context.scale(dpr, dpr);
+
+        // Context properties need to be reassigned after resize
+        this.context.lineWidth = 1.5;
+        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+
+        this.update();
+    }
+
     update(value) {
         if (value !== undefined) {
             if (Array.isArray(value)) {
@@ -214,6 +245,13 @@ export class Graph extends Interface {
         }
 
         this.graph.path.attr({ d: this.createPath(this.points) });
+
+        // Draw white line
+        this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
+        this.context.beginPath();
+        this.context.moveTo(0, this.height);
+        this.context.lineTo(this.width, this.height);
+        this.context.stroke();
     }
 
     enable() {
