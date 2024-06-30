@@ -98,7 +98,7 @@ export class Graph extends Interface {
         this.graph = new Interface(null, 'svg');
         this.graph.hide();
         this.graph.attr({
-            viewBox: '0 0 ' + this.length + ' ' + this.height,
+            viewBox: `0 0 ${this.length} ${this.height}`,
             width: this.length,
             height: this.height,
             preserveAspectRatio: 'none'
@@ -126,7 +126,7 @@ export class Graph extends Interface {
     createPath(points) {
         let path = '';
 
-        for (let i = 0; i < points.length - 1; i++) {
+        for (let i = 0, l = points.length - 1; i < l; i++) {
             const x1 = i;
             const x2 = i + 1;
             const y1 = this.height - points[i] * this.range - 1;
@@ -137,9 +137,9 @@ export class Graph extends Interface {
             const cpX2 = (xMid + x2) / 2;
 
             if (i === 0) {
-                path += 'M ' + x1 + ' ' + y1;
+                path += `M ${x1} ${y1}`;
             } else {
-                path += ' Q ' + cpX1 + ' ' + y1 + ' ' + xMid + ' ' + yMid + ' Q ' + cpX2 + ' ' + y2 + ' ' + x2 + ' ' + y2;
+                path += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
             }
         }
 
