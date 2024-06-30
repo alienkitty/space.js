@@ -176,11 +176,11 @@ export class Graph extends Interface {
                 this.count = 0;
 
                 if (this.delta < this.refreshRate240) {
-                    this.range = this.getRange(660);
+                    this.range = this.getRange(720);
                 } else if (this.delta < this.refreshRate120) {
-                    this.range = this.getRange(330);
+                    this.range = this.getRange(360);
                 } else {
-                    this.range = this.getRange(165);
+                    this.range = this.getRange(180);
                 }
             }
 
