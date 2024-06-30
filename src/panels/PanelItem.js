@@ -9,6 +9,7 @@ import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
+import { Graph } from './Graph.js';
 
 export class PanelItem extends Interface {
     constructor(data) {
@@ -89,6 +90,9 @@ export class PanelItem extends Interface {
             this.view = new ColorPicker(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
+        } else if (this.data.type === 'graph') {
+            this.graph = new Graph(this.data);
+            this.container.add(this.graph);
         }
     }
 
@@ -109,6 +113,10 @@ export class PanelItem extends Interface {
     animateIn(delay, fast) {
         this.clearTween();
 
+        if (this.graph) {
+            this.graph.enable();
+        }
+
         if (fast) {
             this.css({ y: 0, opacity: 1 });
         } else {
@@ -119,6 +127,10 @@ export class PanelItem extends Interface {
     animateOut(index, total, delay, callback) {
         this.clearTween().tween({ y: -10, opacity: 0 }, 500, 'easeInCubic', delay, () => {
             if (index === 0 && callback) {
+                if (this.graph) {
+                    this.graph.disable();
+                }
+
                 callback();
             }
         });

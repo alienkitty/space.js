@@ -44,6 +44,7 @@ export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
+export { Graph } from './panels/Graph.js';
 
 // UI
 export { UI } from './ui/UI.js';
