@@ -186,19 +186,13 @@ export class Graph extends Interface {
         gradient.addColorStop(0.25, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.75)), 1));
         gradient.addColorStop(0.3, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(1)), 1));
         gradient.addColorStop(0.7, this.toRGBA(this.green, 1));
-        // this.color.copy(this.green);
-        // gradient.addColorStop(0.7, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0)), 1));
-        // gradient.addColorStop(0.75, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.25)), 1));
-        // gradient.addColorStop(0.8, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.5)), 1));
-        // gradient.addColorStop(0.85, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.75)), 1));
-        // gradient.addColorStop(0.9, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(1)), 1));
         gradient.addColorStop(1, this.toRGBA(this.red, 1));
 
         return gradient;
     }
 
     toRGBA(color, alpha) {
-        return 'rgb(' + Math.round(color.r * 255) + ' ' + Math.round(color.g * 255) + ' ' + Math.round(color.b * 255) + ' / ' + alpha * this.alpha + ')';
+        return `rgb(${Math.round(color.r * 255)} ${Math.round(color.g * 255)} ${Math.round(color.b * 255)} / ${alpha * this.alpha})`;
     }
 
     addListeners() {
