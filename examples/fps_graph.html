@@ -82,6 +82,7 @@
             {
                 type: 'graph',
                 name: 'Sine',
+                precision: 2,
                 value: -13,
                 noText: true,
                 noHover: true,
@@ -102,6 +103,7 @@
             {
                 type: 'graph',
                 name: 'Clip',
+                precision: 2,
                 value: -13,
                 noText: true,
                 noHover: true,
@@ -122,6 +124,7 @@
             {
                 type: 'graph',
                 name: 'Sine',
+                precision: 2,
                 value: -13,
                 noText: true,
                 callback: (value, panel) => {
@@ -140,6 +143,7 @@
             {
                 type: 'graph',
                 name: 'Clip',
+                precision: 2,
                 value: -13,
                 noText: true,
                 callback: (value, panel) => {
@@ -159,6 +163,7 @@
                 type: 'graph',
                 name: 'Array',
                 resolution: 10,
+                precision: 2,
                 value: Array.from({ length: 10 }, () => Math.random())
             },
             {
@@ -168,6 +173,7 @@
                 type: 'graph',
                 name: 'Random',
                 resolution: 10,
+                precision: 2,
                 value: performance.now() - 1000,
                 noText: true,
                 callback: (value, panel) => {
@@ -197,6 +203,7 @@
                 type: 'graph',
                 name: 'Graph',
                 resolution: 10,
+                precision: 2,
                 value: Array.from({ length: 10 }, () => Math.random()),
                 noText: true,
                 callback: (value, panel) => {
