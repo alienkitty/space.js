@@ -63,7 +63,6 @@ export class AudioButtonInfo extends Interface {
         title.css({
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
-            paddingBottom: 3,
             opacity: 'var(--ui-secondary-opacity)'
         });
 
