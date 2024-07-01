@@ -64,12 +64,9 @@
                 callback: (value, panel) => {
                     // console.log('MEM callback:', value);
 
-                    const heapSize = value.usedJSHeapSize;
-                    const heapSizeLimit = value.jsHeapSizeLimit;
-                    const mem = Math.round(heapSize * 0.000000954);
-                    const mm = heapSize / heapSizeLimit;
+                    const mem = value.usedJSHeapSize / Math.pow(1000, 2);
 
-                    panel.update(mm);
+                    panel.update(mem);
                     panel.setValue(mem);
 
                     // The return value is passed back in the next frame
