@@ -339,16 +339,20 @@ export class Graph extends Interface {
             this.context.fill();
         }
 
-        // Draw handle line
+        // Draw handle line and circle
         if (!this.noHover) {
             const x = this.xTarget * this.width;
             const y = this.height - this.array[Math.floor(this.xTarget * (this.length - 1))] * this.range - 1;
 
-            this.context.lineWidth = 1.5;
+            this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
             this.context.beginPath();
-            this.context.moveTo(x, y);
+            this.context.moveTo(x, y + 2);
             this.context.lineTo(x, this.height);
+            this.context.stroke();
+
+            this.context.beginPath();
+            this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
             this.context.stroke();
         }
     }
