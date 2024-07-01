@@ -124,7 +124,6 @@
                 name: 'Sine',
                 value: -13,
                 noText: true,
-                noHover: true,
                 callback: (value, panel) => {
                     // console.log('Sine callback:', value);
 
@@ -143,7 +142,6 @@
                 name: 'Clip',
                 value: -13,
                 noText: true,
-                noHover: true,
                 callback: (value, panel) => {
                     // console.log('Clip callback:', value);
 
@@ -172,7 +170,6 @@
                 resolution: 10,
                 value: performance.now() - 1000,
                 noText: true,
-                noHover: true,
                 callback: (value, panel) => {
                     // console.log('Random callback:', value);
 
@@ -185,6 +182,8 @@
                         // Passing an array to panel.update() will update the entire graph
                         const array = Array.from({ length: 10 }, () => Math.random());
                         panel.update(array);
+                    } else {
+                        panel.update();
                     }
 
                     // The return value is passed back in the next frame
@@ -198,20 +197,18 @@
                 type: 'graph',
                 name: 'Graph',
                 resolution: 10,
-                value: true,
+                value: Array.from({ length: 10 }, () => Math.random()),
                 noText: true,
-                noHover: true,
                 callback: (value, panel) => {
                     // console.log('Graph callback:', value);
 
-                    if (value || needsUpdate) {
-                        value = false;
+                    if (needsUpdate) {
+                        value = Array.from({ length: 10 }, () => Math.random());
                         needsUpdate = false;
-
-                        // Passing an array to panel.update() will update the entire graph
-                        const array = Array.from({ length: 10 }, () => Math.random());
-                        panel.update(array);
                     }
+
+                    // Passing an array to panel.update() will update the entire graph
+                    panel.update(value);
 
                     // The return value is passed back in the next frame
                     return value;

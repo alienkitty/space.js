@@ -38,16 +38,14 @@ export class Graph extends Interface {
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = this.width / 2;
         this.range = this.getRange(this.range);
+        this.xTarget = 0;
 
-        if (Array.isArray(this.value)) {
-            if (!this.callback) {
-                this.values = value;
-            } else {
-                this.values = value.slice();
-            }
-        } else {
-            this.values = new Array(this.resolution).fill(0);
-        }
+        this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
+        this.green = new Color(0x00ff00).offsetHSL(0.04, -0.4, 0);
+        this.blue = new Color(0x0000ff).offsetHSL(-0.05, -0.3, -0.07);
+        this.alpha = 1;
+
+        this.color = new Color();
 
         if (this.value === undefined) {
             this.last = performance.now();
@@ -62,15 +60,10 @@ export class Graph extends Interface {
             this.refreshRate240 = 1000 / 180;
         }
 
-        this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
-        this.green = new Color(0x00ff00).offsetHSL(0.04, -0.4, 0);
-        this.blue = new Color(0x0000ff).offsetHSL(-0.05, -0.3, -0.07);
-        this.alpha = 1;
-        this.color = new Color();
-
         this.init();
         this.initGraph();
         this.initCanvas();
+        this.setArray(this.value);
 
         this.resize();
     }
@@ -139,14 +132,14 @@ export class Graph extends Interface {
         this.add(this.graph);
     }
 
-    createPath(values) {
+    createPath(array) {
         let path = '';
 
-        for (let i = 0, l = values.length - 1; i < l; i++) {
+        for (let i = 0, l = array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - values[i] * this.range - 1;
-            const y2 = this.height - values[i + 1] * this.range - 1;
+            const y1 = this.height - array[i] * this.range - 1;
+            const y2 = this.height - array[i + 1] * this.range - 1;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -196,10 +189,12 @@ export class Graph extends Interface {
     }
 
     addListeners() {
+        this.element.addEventListener('pointermove', this.onPointerMove);
         ticker.add(this.onUpdate);
     }
 
     removeListeners() {
+        this.element.removeEventListener('pointermove', this.onPointerMove);
         ticker.remove(this.onUpdate);
     }
 
@@ -208,6 +203,12 @@ export class Graph extends Interface {
     }
 
     // Event handlers
+
+    onPointerMove = ({ clientX }) => {
+        const bounds = this.element.getBoundingClientRect();
+
+        this.xTarget = (clientX - bounds.left) / this.width;
+    };
 
     onUpdate = () => {
         if (this.value === undefined) {
@@ -242,6 +243,20 @@ export class Graph extends Interface {
 
     // Public methods
 
+    setArray(value) {
+        if (Array.isArray(value)) {
+            if (!this.callback) {
+                this.array = value;
+            } else {
+                this.array = value.slice();
+            }
+        } else {
+            this.array = new Array(this.resolution).fill(0);
+        }
+
+        this.length = this.array.length;
+    }
+
     setValue(value) {
         if (this.number) {
             this.number.text(value.toFixed(this.precision));
@@ -263,14 +278,14 @@ export class Graph extends Interface {
     update(value) {
         if (value !== undefined) {
             if (Array.isArray(value)) {
-                this.values = value.slice();
+                this.setArray(value);
             } else {
-                this.values.shift();
-                this.values.push(value);
+                this.array.shift();
+                this.array.push(value);
             }
         }
 
-        // this.graph.path.attr({ d: this.createPath(this.values) });
+        // this.graph.path.attr({ d: this.createPath(this.array) });
 
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -296,11 +311,11 @@ export class Graph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = this.values.length - 1; i < l; i++) {
+        for (let i = 0, l = this.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - this.values[i] * this.range - 1;
-            const y2 = this.height - this.values[i + 1] * this.range - 1;
+            const y1 = this.height - this.array[i] * this.range - 1;
+            const y2 = this.height - this.array[i + 1] * this.range - 1;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -322,6 +337,19 @@ export class Graph extends Interface {
             this.context.lineTo(this.width, this.height);
             this.context.lineTo(0, this.height);
             this.context.fill();
+        }
+
+        // Draw handle line
+        if (!this.noHover) {
+            const x = this.xTarget * this.width;
+            const y = this.height - this.array[Math.floor(this.xTarget * (this.length - 1))] * this.range - 1;
+
+            this.context.lineWidth = 1.5;
+            this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
+            this.context.beginPath();
+            this.context.moveTo(x, y);
+            this.context.lineTo(x, this.height);
+            this.context.stroke();
         }
     }
 
