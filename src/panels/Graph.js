@@ -10,6 +10,7 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
 import { ticker } from '../tween/Ticker.js';
+import { clamp } from '../utils/Utils.js';
 
 export class Graph extends Interface {
     constructor({
@@ -102,6 +103,21 @@ export class Graph extends Interface {
                 letterSpacing: 1
             });
             this.container.add(this.number);
+        }
+
+        if (!this.noHover) {
+            this.info = new Interface('.info');
+            this.info.css({
+                position: 'absolute',
+                left: 0,
+                bottom: 3,
+                marginLeft: 10,
+                fontSize: 'var(--ui-secondary-font-size)',
+                letterSpacing: 'var(--ui-secondary-letter-spacing)',
+                zIndex: 1,
+                pointerEvents: 'none'
+            });
+            this.add(this.info);
         }
     }
 
@@ -207,7 +223,7 @@ export class Graph extends Interface {
     onPointerMove = ({ clientX }) => {
         const bounds = this.element.getBoundingClientRect();
 
-        this.xTarget = (clientX - bounds.left) / this.width;
+        this.xTarget = clamp((clientX - bounds.left) / this.width, 0, 1);
     };
 
     onUpdate = () => {
@@ -341,8 +357,9 @@ export class Graph extends Interface {
 
         // Draw handle line and circle
         if (!this.noHover) {
+            const value = this.array[Math.floor(this.xTarget * (this.length - 1))];
             const x = this.xTarget * this.width;
-            const y = this.height - this.array[Math.floor(this.xTarget * (this.length - 1))] * this.range - 1;
+            const y = this.height - value * this.range - 1;
 
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
@@ -354,6 +371,9 @@ export class Graph extends Interface {
             this.context.beginPath();
             this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
             this.context.stroke();
+
+            this.info.css({ left: x });
+            this.info.text(value.toFixed(this.precision));
         }
     }
 
