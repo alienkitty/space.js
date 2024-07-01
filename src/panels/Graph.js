@@ -4,6 +4,8 @@
  * Based on https://github.com/lo-th/uil
  */
 
+import { Color } from '../math/Color.js';
+import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
@@ -60,6 +62,12 @@ export class Graph extends Interface {
             this.refreshRate240 = 1000 / 180;
         }
 
+        this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
+        this.green = new Color(0x00ff00).offsetHSL(0.04, -0.4, 0);
+        this.blue = new Color(0x0000ff).offsetHSL(-0.05, -0.3, -0.07);
+        this.alpha = 1;
+        this.color = new Color();
+
         this.init();
         this.initGraph();
         this.initCanvas();
@@ -75,8 +83,11 @@ export class Graph extends Interface {
 
         this.container = new Interface('.container');
         this.container.css({
+            position: 'relative',
             height: 20,
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            zIndex: 1,
+            pointerEvents: 'none'
         });
         this.add(this.container);
 
@@ -161,6 +172,33 @@ export class Graph extends Interface {
         });
         this.context = this.canvas.element.getContext('2d');
         this.add(this.canvas);
+    }
+
+    createGradient(x1, y1, x2, y2, alpha = 1) {
+        this.alpha = alpha;
+
+        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        gradient.addColorStop(0, this.toRGBA(this.blue, 1));
+        this.color.copy(this.blue);
+        gradient.addColorStop(0.1, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0)), 1));
+        gradient.addColorStop(0.15, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.25)), 1));
+        gradient.addColorStop(0.2, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.5)), 1));
+        gradient.addColorStop(0.25, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.75)), 1));
+        gradient.addColorStop(0.3, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(1)), 1));
+        gradient.addColorStop(0.7, this.toRGBA(this.green, 1));
+        // this.color.copy(this.green);
+        // gradient.addColorStop(0.7, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0)), 1));
+        // gradient.addColorStop(0.75, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.25)), 1));
+        // gradient.addColorStop(0.8, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.5)), 1));
+        // gradient.addColorStop(0.85, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(0.75)), 1));
+        // gradient.addColorStop(0.9, this.toRGBA(this.color.lerp(this.red, Easing.easeInOutSine(1)), 1));
+        gradient.addColorStop(1, this.toRGBA(this.red, 1));
+
+        return gradient;
+    }
+
+    toRGBA(color, alpha) {
+        return 'rgb(' + Math.round(color.r * 255) + ' ' + Math.round(color.g * 255) + ' ' + Math.round(color.b * 255) + ' / ' + alpha * this.alpha + ')';
     }
 
     addListeners() {
@@ -256,7 +294,8 @@ export class Graph extends Interface {
         if (this.noGradient) {
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
         } else {
-            this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+            this.context.strokeStyle = this.createGradient(0, this.height, 0, 0);
+            this.context.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
             this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
             this.context.shadowBlur = 15;
         }
@@ -286,7 +325,6 @@ export class Graph extends Interface {
         // Draw gradient fill
         if (!this.noGradient) {
             this.context.shadowBlur = 0;
-            this.context.fillStyle = 'rgb(255 255 255 / 0.1)';
             this.context.lineTo(this.width, this.height);
             this.context.lineTo(0, this.height);
             this.context.fill();
