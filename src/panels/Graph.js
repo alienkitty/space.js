@@ -37,15 +37,13 @@ export class Graph extends Interface {
 
         if (Array.isArray(this.value)) {
             if (!this.callback) {
-                this.points = value;
+                this.values = value;
             } else {
-                this.points = value.slice();
+                this.values = value.slice();
             }
         } else {
-            this.points = new Array(this.resolution).fill(0);
+            this.values = new Array(this.resolution).fill(0);
         }
-
-        this.length = this.points.length;
 
         if (this.value === undefined) {
             this.last = performance.now();
@@ -105,10 +103,9 @@ export class Graph extends Interface {
         this.graph = new Interface(null, 'svg');
         this.graph.hide();
         this.graph.attr({
-            viewBox: `0 0 ${this.length} ${this.height}`,
-            width: this.length,
-            height: this.height,
-            preserveAspectRatio: 'none'
+            viewBox: `0 0 ${this.width} ${this.height}`,
+            width: this.width,
+            height: this.height
         });
         this.graph.css({
             position: 'absolute',
@@ -122,22 +119,21 @@ export class Graph extends Interface {
         this.graph.path.css({
             fill: 'none',
             stroke: 'var(--ui-color)',
-            strokeWidth: 1.5,
-            vectorEffect: 'non-scaling-stroke'
+            strokeWidth: 1.5
         });
         this.graph.add(this.graph.path);
 
         this.add(this.graph);
     }
 
-    createPath(points) {
+    createPath(values) {
         let path = '';
 
-        for (let i = 0, l = points.length - 1; i < l; i++) {
-            const x1 = i;
-            const x2 = i + 1;
-            const y1 = this.height - points[i] * this.range - 1;
-            const y2 = this.height - points[i + 1] * this.range - 1;
+        for (let i = 0, l = values.length - 1; i < l; i++) {
+            const x1 = (i / l) * this.width;
+            const x2 = ((i + 1) / l) * this.width;
+            const y1 = this.height - values[i] * this.range - 1;
+            const y2 = this.height - values[i + 1] * this.range - 1;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -227,31 +223,63 @@ export class Graph extends Interface {
         this.canvas.element.style.height = `${this.height}px`;
         this.context.scale(dpr, dpr);
 
-        // Context properties need to be reassigned after resize
-        this.context.lineWidth = 1.5;
-        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
-
         this.update();
     }
 
     update(value) {
         if (value !== undefined) {
             if (Array.isArray(value)) {
-                this.points = value.slice();
+                this.values = value.slice();
             } else {
-                this.points.shift();
-                this.points.push(value);
+                this.values.shift();
+                this.values.push(value);
             }
         }
 
-        this.graph.path.attr({ d: this.createPath(this.points) });
+        // this.graph.path.attr({ d: this.createPath(this.values) });
+
+        this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw white line
-        this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
+        this.context.lineWidth = 1.5;
+        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
         this.context.beginPath();
         this.context.moveTo(0, this.height);
         this.context.lineTo(this.width, this.height);
         this.context.stroke();
+
+        // Draw gradient line
+        this.context.lineWidth = 1.5;
+        this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
+        this.context.shadowBlur = 15;
+        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+        this.context.beginPath();
+
+        for (let i = 0, l = this.values.length - 1; i < l; i++) {
+            const x1 = (i / l) * this.width;
+            const x2 = ((i + 1) / l) * this.width;
+            const y1 = this.height - this.values[i] * this.range - 1;
+            const y2 = this.height - this.values[i + 1] * this.range - 1;
+            const xMid = (x1 + x2) / 2;
+            const yMid = (y1 + y2) / 2;
+            const cpX1 = (xMid + x1) / 2;
+            const cpX2 = (xMid + x2) / 2;
+
+            if (i === 0) {
+                this.context.moveTo(x1, y1);
+            } else {
+                this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
+                this.context.quadraticCurveTo(cpX2, y2, x2, y2);
+            }
+        }
+
+        this.context.stroke();
+
+        // Draw gradient
+        this.context.fillStyle = 'rgb(255 255 255 / 0.1)';
+        this.context.lineTo(this.width, this.height);
+        this.context.lineTo(0, this.height);
+        this.context.fill();
     }
 
     enable() {
