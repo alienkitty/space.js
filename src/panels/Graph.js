@@ -18,6 +18,7 @@ export class Graph extends Interface {
         value,
         noText = false,
         noHover = false,
+        noGradient = false,
         callback
     }) {
         super('.graph');
@@ -29,6 +30,7 @@ export class Graph extends Interface {
         this.value = value;
         this.noText = noText;
         this.noHover = noHover;
+        this.noGradient = noGradient;
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
@@ -240,7 +242,7 @@ export class Graph extends Interface {
 
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
-        // Draw white line
+        // Draw bottom line
         this.context.lineWidth = 1.5;
         this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
         this.context.beginPath();
@@ -248,11 +250,17 @@ export class Graph extends Interface {
         this.context.lineTo(this.width, this.height);
         this.context.stroke();
 
-        // Draw gradient line
+        // Draw graph line
         this.context.lineWidth = 1.5;
-        this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
-        this.context.shadowBlur = 15;
-        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+
+        if (this.noGradient) {
+            this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
+        } else {
+            this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+            this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
+            this.context.shadowBlur = 15;
+        }
+
         this.context.beginPath();
 
         for (let i = 0, l = this.values.length - 1; i < l; i++) {
@@ -275,12 +283,14 @@ export class Graph extends Interface {
 
         this.context.stroke();
 
-        // Draw gradient
-        this.context.shadowBlur = 0;
-        this.context.fillStyle = 'rgb(255 255 255 / 0.1)';
-        this.context.lineTo(this.width, this.height);
-        this.context.lineTo(0, this.height);
-        this.context.fill();
+        // Draw gradient fill
+        if (!this.noGradient) {
+            this.context.shadowBlur = 0;
+            this.context.fillStyle = 'rgb(255 255 255 / 0.1)';
+            this.context.lineTo(this.width, this.height);
+            this.context.lineTo(0, this.height);
+            this.context.fill();
+        }
     }
 
     enable() {

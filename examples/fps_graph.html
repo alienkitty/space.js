@@ -85,6 +85,46 @@
                 value: -13,
                 noText: true,
                 noHover: true,
+                noGradient: true,
+                callback: (value, panel) => {
+                    // console.log('Sine callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Clip',
+                value: -13,
+                noText: true,
+                noHover: true,
+                noGradient: true,
+                callback: (value, panel) => {
+                    // console.log('Clip callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9);
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Sine',
+                value: -13,
+                noText: true,
+                noHover: true,
                 callback: (value, panel) => {
                     // console.log('Sine callback:', value);
 
