@@ -276,6 +276,7 @@ export class Graph extends Interface {
         this.context.stroke();
 
         // Draw gradient
+        this.context.shadowBlur = 0;
         this.context.fillStyle = 'rgb(255 255 255 / 0.1)';
         this.context.lineTo(this.width, this.height);
         this.context.lineTo(0, this.height);
