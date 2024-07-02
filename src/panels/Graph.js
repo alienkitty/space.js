@@ -202,6 +202,9 @@ export class Graph extends Interface {
         });
         this.context = this.canvas.element.getContext('2d');
         this.add(this.canvas);
+
+        this.strokeStyle = this.createGradient(0, this.height, 0, 0);
+        this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
     }
 
     createGradient(x1, y1, x2, y2, alpha = 1) {
@@ -351,8 +354,8 @@ export class Graph extends Interface {
         if (this.noGradient) {
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
         } else {
-            this.context.strokeStyle = this.createGradient(0, this.height, 0, 0);
-            this.context.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
+            this.context.strokeStyle = this.strokeStyle;
+            this.context.fillStyle = this.fillStyle;
             this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
             this.context.shadowBlur = 15;
         }
