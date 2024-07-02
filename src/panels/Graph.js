@@ -136,7 +136,7 @@ export class Graph extends Interface {
                 marginLeft: 10,
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
-                opacity: 0.94,
+                opacity: 0,
                 zIndex: 1,
                 pointerEvents: 'none'
             });
@@ -533,7 +533,7 @@ export class Graph extends Interface {
 
         this.info.clearTween();
         this.info.visible();
-        this.info.css({ opacity: 0 }).tween({ opacity: 1 }, 275, 'easeInOutCubic');
+        this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
     fadeDown() {
