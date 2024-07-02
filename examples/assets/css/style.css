@@ -25,12 +25,14 @@
     --ui-color-triplet: 255 255 255;
     --ui-color-line-opacity: 0.5;
     --ui-color-divider-line-opacity: 0.15;
+    --ui-color-graph-bottom-line-opacity: 0.2;
     --ui-invert-light-color: #000;
     --ui-invert-light-color-triplet: 0 0 0;
     --ui-invert-dark-color: rgb(255 255 255 / 0.94);
     --ui-invert-dark-color-triplet: 255 255 255;
     --ui-color-line: rgb(var(--ui-color-triplet) / var(--ui-color-line-opacity));
     --ui-color-divider-line: rgb(var(--ui-color-triplet) / var(--ui-color-divider-line-opacity));
+    --ui-color-graph-bottom-line: rgb(var(--ui-color-triplet) / var(--ui-color-graph-bottom-line-opacity));
 }
 
 *, :after, :before {
