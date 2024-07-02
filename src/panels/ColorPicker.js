@@ -290,16 +290,12 @@ export class ColorPicker extends Interface {
         Stage.events.on('color_picker', this.onColorPicker);
         this.container.element.addEventListener('click', this.onClick);
         this.element.addEventListener('pointerdown', this.onPointerDown);
-        window.addEventListener('pointermove', this.onPointerMove);
-        window.addEventListener('pointerup', this.onPointerUp);
     }
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
         this.container.element.removeEventListener('click', this.onClick);
         this.element.removeEventListener('pointerdown', this.onPointerDown);
-        window.removeEventListener('pointermove', this.onPointerMove);
-        window.removeEventListener('pointerup', this.onPointerUp);
     }
 
     // Event handlers
@@ -333,6 +329,9 @@ export class ColorPicker extends Interface {
         this.firstDown = true;
 
         this.onPointerMove(e);
+
+        window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
     };
 
     onPointerMove = ({ clientX, clientY }) => {
@@ -429,6 +428,9 @@ export class ColorPicker extends Interface {
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointermove', this.onPointerMove);
+
         if (!this.isOpen) {
             return;
         }
