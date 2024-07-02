@@ -423,7 +423,7 @@ export class Graph extends Interface {
 
         // Draw bottom line
         this.context.lineWidth = 1.5;
-        this.context.strokeStyle = 'rgb(255 255 255 / 0.2)';
+        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
         this.context.beginPath();
         this.context.moveTo(0, this.height);
         this.context.lineTo(this.width, this.height);
@@ -437,7 +437,7 @@ export class Graph extends Interface {
         } else {
             this.context.strokeStyle = this.strokeStyle;
             this.context.fillStyle = this.fillStyle;
-            this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
+            this.context.shadowColor = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
             this.context.shadowBlur = 15;
         }
 
