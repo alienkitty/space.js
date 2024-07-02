@@ -54,7 +54,6 @@ export class Graph extends Interface {
         this.bounds = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
-        this.isMove = false;
         this.animatedIn = false;
         this.needsUpdate = false;
 
@@ -93,14 +92,13 @@ export class Graph extends Interface {
     init() {
         this.css({
             position: 'relative',
+            width: this.width,
             height: this.height
         });
 
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
-            height: 20,
-            whiteSpace: 'nowrap',
             zIndex: 1,
             pointerEvents: 'none'
         });
@@ -136,6 +134,7 @@ export class Graph extends Interface {
                 marginLeft: 10,
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
+                opacity: 0,
                 zIndex: 1,
                 pointerEvents: 'none'
             });
@@ -278,10 +277,10 @@ export class Graph extends Interface {
         clearTween(this.timeout);
 
         if (type === 'mouseenter') {
-            this.fadeUp();
+            this.hoverIn();
         } else {
             this.timeout = delayedCall(200, () => {
-                this.fadeDown();
+                this.hoverOut();
             });
         }
     };
@@ -332,7 +331,7 @@ export class Graph extends Interface {
         }
 
         if (!this.element.contains(e.target)) {
-            this.fadeDown();
+            this.hoverOut();
         }
     };
 
@@ -520,28 +519,16 @@ export class Graph extends Interface {
         }
     }
 
-    fadeUp() {
-        if (this.isMove) {
-            return;
-        }
-
-        this.isMove = true;
-
+    hoverIn() {
         clearTween(this.handle);
         tween(this.handle, { alpha: 1 }, 275, 'easeInOutCubic');
 
         this.info.clearTween();
         this.info.visible();
-        this.info.css({ opacity: 0 }).tween({ opacity: 1 }, 275, 'easeInOutCubic');
+        this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
-    fadeDown() {
-        if (!this.isMove) {
-            return;
-        }
-
-        this.isMove = false;
-
+    hoverOut() {
         clearTween(this.handle);
         tween(this.handle, { alpha: 0 }, 275, 'easeInOutCubic');
 
