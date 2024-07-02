@@ -98,6 +98,14 @@ export class List extends Interface {
         oldGroup.destroy();
     }
 
+    toggleContent(show) {
+        if (show) {
+            this.group.show();
+        } else {
+            this.group.hide();
+        }
+    }
+
     setValue(value) {
         this.index = this.values.indexOf(value);
 

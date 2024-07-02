@@ -42,6 +42,14 @@ export class Content extends Interface {
         oldGroup.destroy();
     }
 
+    toggleContent(show) {
+        if (show) {
+            this.group.show();
+        } else {
+            this.group.hide();
+        }
+    }
+
     update() {
         this.events.emit('update', { target: this });
 

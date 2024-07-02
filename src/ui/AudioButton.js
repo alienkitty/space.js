@@ -4,10 +4,11 @@
 
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { AudioButtonInfo } from './AudioButtonInfo.js';
 
 import { clearTween, tween } from '../tween/Tween.js';
 
-export class MuteButton extends Interface {
+export class AudioButton extends Interface {
     constructor({
         sound,
         callback
@@ -36,6 +37,11 @@ export class MuteButton extends Interface {
 
     init() {
         this.css({
+            position: 'relative'
+        });
+
+        this.container = new Interface('.container');
+        this.container.css({
             position: 'relative',
             width: this.width + 20,
             height: this.height + 20,
@@ -45,6 +51,7 @@ export class MuteButton extends Interface {
             userSelect: 'none',
             opacity: 0
         });
+        this.add(this.container);
     }
 
     initCanvas() {
@@ -57,19 +64,19 @@ export class MuteButton extends Interface {
             marginTop: -this.height / 2
         });
         this.context = this.canvas.element.getContext('2d');
-        this.add(this.canvas);
+        this.container.add(this.canvas);
     }
 
     addListeners() {
-        this.element.addEventListener('mouseenter', this.onHover);
-        this.element.addEventListener('mouseleave', this.onHover);
-        this.element.addEventListener('click', this.onClick);
+        this.container.element.addEventListener('mouseenter', this.onHover);
+        this.container.element.addEventListener('mouseleave', this.onHover);
+        this.container.element.addEventListener('click', this.onClick);
     }
 
     removeListeners() {
-        this.element.removeEventListener('mouseenter', this.onHover);
-        this.element.removeEventListener('mouseleave', this.onHover);
-        this.element.removeEventListener('click', this.onClick);
+        this.container.element.removeEventListener('mouseenter', this.onHover);
+        this.container.element.removeEventListener('mouseleave', this.onHover);
+        this.container.element.removeEventListener('click', this.onClick);
     }
 
     // Event handlers
@@ -119,6 +126,20 @@ export class MuteButton extends Interface {
     };
 
     // Public methods
+
+    setData(data) {
+        if (!this.info) {
+            this.info = new AudioButtonInfo();
+            this.info.css({
+                position: 'absolute',
+                left: -145,
+                top: 0
+            });
+            this.add(this.info);
+        }
+
+        this.info.setData(data);
+    }
 
     setSound(sound) {
         this.events.emit('update', { sound, target: this });
@@ -186,13 +207,13 @@ export class MuteButton extends Interface {
             this.animatedIn = true;
         });
 
-        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
+        this.container.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
     }
 
     animateOut() {
         this.animatedIn = false;
 
-        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
+        this.container.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
     }
 
     destroy() {

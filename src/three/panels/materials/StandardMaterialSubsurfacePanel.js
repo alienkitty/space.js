@@ -126,11 +126,11 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                     if (mesh.userData.subsurface) {
                         mesh.material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
 
-                        panel.group.show();
+                        panel.toggleContent(true);
                     } else {
                         delete mesh.material.userData.onBeforeCompile.subsurface;
 
-                        panel.group.hide();
+                        panel.toggleContent(false);
                     }
 
                     mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');

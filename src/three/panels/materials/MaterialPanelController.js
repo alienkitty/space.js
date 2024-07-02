@@ -236,9 +236,9 @@ export class MaterialPanelController {
                     mesh.visible = VisibleOptions[value];
 
                     if (mesh.visible) {
-                        panel.group.show();
+                        panel.toggleContent(true);
                     } else {
-                        panel.group.hide();
+                        panel.toggleContent(false);
                     }
                 }
             }

@@ -44,6 +44,7 @@ export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
+export { Graph } from './panels/Graph.js';
 
 // UI
 export { UI } from './ui/UI.js';
@@ -56,6 +57,8 @@ export { DetailsTitle } from './ui/DetailsTitle.js';
 export { DetailsLink } from './ui/DetailsLink.js';
 export { DetailsButton } from './ui/DetailsButton.js';
 export { MuteButton } from './ui/MuteButton.js';
+export { AudioButton } from './ui/AudioButton.js';
+export { AudioButtonInfo } from './ui/AudioButtonInfo.js';
 export { Info } from './ui/Info.js';
 export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';

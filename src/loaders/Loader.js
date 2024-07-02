@@ -65,6 +65,16 @@ export class Loader {
         return this.total ? this.promise : Promise.resolve();
     }
 
+    filter(callback) {
+        const files = Object.keys(this.files).filter(callback).reduce((object, key) => {
+            object[key] = this.files[key];
+
+            return object;
+        }, {});
+
+        return files;
+    }
+
     getPath(path) {
         return this.path + path;
     }

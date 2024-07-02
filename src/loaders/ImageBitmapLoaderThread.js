@@ -19,7 +19,7 @@ export class ImageBitmapLoaderThread {
                 postMessage({ id, message: bitmap }, [bitmap]);
             }).catch(error => {
                 if (error instanceof Error) {
-                    error = error.name + ': ' + error.message;
+                    error = `${error.name}: ${error.message}`;
                 }
 
                 postMessage({ id, message: { error } });

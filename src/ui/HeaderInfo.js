@@ -15,14 +15,14 @@ export class HeaderInfo extends Interface {
 
         this.fpsOpen = fpsOpen;
 
-        this.count = 0;
         this.time = 0;
+        this.count = 0;
         this.prev = 0;
         this.fps = 0;
 
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.lastTime = null;
+        this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.openColor = null;
         this.isOpen = false;
@@ -41,6 +41,7 @@ export class HeaderInfo extends Interface {
 
         this.number = new Interface('.number');
         this.number.css({
+            fontVariantNumeric: 'tabular-nums',
             letterSpacing: 1
         });
         this.number.text(this.fps);
@@ -140,7 +141,8 @@ export class HeaderInfo extends Interface {
             this.panel.css({
                 position: 'absolute',
                 top: 0,
-                right: 10
+                right: 10,
+                marginTop: 10
             });
             this.add(this.panel);
 
@@ -154,8 +156,8 @@ export class HeaderInfo extends Interface {
         this.time = performance.now();
 
         if (this.time - 1000 > this.prev) {
+            this.fps = Math.round(this.count * 1000 / (this.time - this.prev));
             this.prev = this.time;
-            this.fps = this.count;
             this.count = 0;
         }
 

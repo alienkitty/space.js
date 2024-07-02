@@ -12,6 +12,7 @@ import { Info } from './Info.js';
 import { Thumbnail } from './Thumbnail.js';
 import { DetailsButton } from './DetailsButton.js';
 import { MuteButton } from './MuteButton.js';
+import { AudioButton } from './AudioButton.js';
 
 import { ticker } from '../tween/Ticker.js';
 
@@ -129,6 +130,17 @@ export class UI extends Interface {
             this.add(this.muteButton);
             this.buttons.push(this.muteButton);
         }
+
+        if (this.data.audioButton) {
+            this.audioButton = new AudioButton(this.data.audioButton);
+            this.audioButton.css({
+                position: 'absolute',
+                right: 22,
+                bottom: 20
+            });
+            this.add(this.audioButton);
+            this.buttons.push(this.audioButton);
+        }
     }
 
     addListeners() {
@@ -206,6 +218,20 @@ export class UI extends Interface {
                 });
             } else {
                 this.muteButton.css({
+                    right: 22,
+                    bottom: 20
+                });
+            }
+        }
+
+        if (this.audioButton) {
+            if (width < this.breakpoint) {
+                this.audioButton.css({
+                    right: 12,
+                    bottom: 10
+                });
+            } else {
+                this.audioButton.css({
                     right: 22,
                     bottom: 20
                 });

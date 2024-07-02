@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>FPS Graph — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="module">
+        import { PanelItem, UI } from '../src/index.js';
+
+        const ui = new UI({
+            fps: true,      // Hover or tap to open
+            fpsOpen: true   // Always open
+        });
+        ui.animateIn();
+        document.body.appendChild(ui.element);
+
+        let needsUpdate = false;
+
+        const items = [
+            /* {
+                type: 'graph',
+                name: 'FPS'
+            }, */
+            {
+                type: 'graph',
+                name: 'FPS',
+                noText: true
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'MS',
+                range: 150,
+                value: performance.now(),
+                callback: (value, panel) => {
+                    // console.log('MS callback:', value);
+
+                    const time = performance.now();
+                    const ms = time - value;
+
+                    panel.update(ms);
+                    panel.setValue(ms);
+
+                    // The return value is passed back in the next frame
+                    return time;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'MEM',
+                range: 100,
+                value: performance.memory,
+                callback: (value, panel) => {
+                    // console.log('MEM callback:', value);
+
+                    const mem = value.usedJSHeapSize / Math.pow(1000, 2);
+
+                    panel.update(mem);
+                    panel.setValue(mem);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Sine',
+                precision: 2,
+                value: -13,
+                noText: true,
+                noHover: true,
+                noGradient: true,
+                callback: (value, panel) => {
+                    // console.log('Sine callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Clip',
+                precision: 2,
+                value: -13,
+                noText: true,
+                noHover: true,
+                noGradient: true,
+                callback: (value, panel) => {
+                    // console.log('Clip callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9);
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Sine',
+                precision: 2,
+                value: -13,
+                noText: true,
+                callback: (value, panel) => {
+                    // console.log('Sine callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Clip',
+                precision: 2,
+                value: -13,
+                noText: true,
+                callback: (value, panel) => {
+                    // console.log('Clip callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9);
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Array',
+                resolution: 10,
+                precision: 2,
+                lookupPrecision: 50,
+                value: Array.from({ length: 10 }, () => Math.random())
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Random',
+                resolution: 10,
+                precision: 2,
+                lookupPrecision: 50,
+                value: performance.now() - 1000,
+                noText: true,
+                callback: (value, panel) => {
+                    // console.log('Random callback:', value);
+
+                    const time = performance.now();
+
+                    // Update once per second
+                    if (time - 1000 > value) {
+                        value = time;
+
+                        // Passing an array to panel.update() will update the entire graph
+                        const array = Array.from({ length: 10 }, () => Math.random());
+                        panel.update(array);
+                    } else {
+                        panel.update();
+                    }
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
+                name: 'Graph',
+                resolution: 10,
+                precision: 2,
+                lookupPrecision: 50,
+                value: Array.from({ length: 10 }, () => Math.random()),
+                noText: true,
+                callback: (value, panel) => {
+                    // console.log('Graph callback:', value);
+
+                    if (needsUpdate) {
+                        needsUpdate = false;
+
+                        // Passing an array to panel.update() will update the entire graph
+                        value = Array.from({ length: 10 }, () => Math.random());
+                        panel.update(value);
+                    }
+
+                    panel.update();
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'link',
+                value: 'Update',
+                callback: value => {
+                    console.log('Update callback:', value);
+
+                    needsUpdate = true;
+                }
+            }
+        ];
+
+        items.forEach(data => {
+            ui.addPanel(new PanelItem(data));
+        });
+
+        // Call after adding to show the fps panel right away
+        // ui.animateIn();
+        ui.header.info.animateIn();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            ui.update();
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</head>
+<body>
+</body>
+</html>

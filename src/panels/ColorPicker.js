@@ -35,7 +35,7 @@ export class ColorPicker extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = 19;
+        this.height = 20;
         this.middle = this.width / 2;
         this.top = this.height + 9;
         this.distance = 256;
@@ -131,9 +131,10 @@ export class ColorPicker extends Interface {
         const segments = 24;
         const nudge = 8 / radius / segments * Math.PI;
 
-        let a1 = 0;
+        let colors, gradient;
 
-        let array, color, lastColor, colors, gradient;
+        let a1 = 0;
+        let lastColor;
 
         // Hue
         for (let i = 0; i <= segments; i++) {
@@ -142,13 +143,13 @@ export class ColorPicker extends Interface {
             const am = (a1 + a2) / 2;
             const tan = 1 / Math.cos((a2 - a1) / 2);
 
-            array = [
+            const array = [
                 Math.sin(a1), -Math.cos(a1),
                 Math.sin(am) * tan, -Math.cos(am) * tan,
                 Math.sin(a2), -Math.cos(a2)
             ];
 
-            color = `#${this.color.setHSL(hue, 1, 0.5).getHexString()}`;
+            const color = `#${this.color.setHSL(hue, 1, 0.5).getHexString()}`;
 
             if (i > 0) {
                 let j = 6;
@@ -223,9 +224,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.saturation.css({
-            fill: `url(#saturation_${id})`,
-            stroke: `url(#saturation_${id})`,
-            strokeWidth: 1
+            fill: `url(#saturation_${id})`
         });
         this.colorRing.sl.add(this.colorRing.saturation);
 
@@ -234,9 +233,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.lightness.css({
-            fill: `url(#lightness_${id})`,
-            stroke: `url(#lightness_${id})`,
-            strokeWidth: 1
+            fill: `url(#lightness_${id})`
         });
         this.colorRing.sl.add(this.colorRing.lightness);
 
@@ -293,16 +290,12 @@ export class ColorPicker extends Interface {
         Stage.events.on('color_picker', this.onColorPicker);
         this.container.element.addEventListener('click', this.onClick);
         this.element.addEventListener('pointerdown', this.onPointerDown);
-        window.addEventListener('pointermove', this.onPointerMove);
-        window.addEventListener('pointerup', this.onPointerUp);
     }
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
         this.container.element.removeEventListener('click', this.onClick);
         this.element.removeEventListener('pointerdown', this.onPointerDown);
-        window.removeEventListener('pointermove', this.onPointerMove);
-        window.removeEventListener('pointerup', this.onPointerUp);
     }
 
     // Event handlers
@@ -336,6 +329,9 @@ export class ColorPicker extends Interface {
         this.firstDown = true;
 
         this.onPointerMove(e);
+
+        window.addEventListener('pointermove', this.onPointerMove);
+        window.addEventListener('pointerup', this.onPointerUp);
     };
 
     onPointerMove = ({ clientX, clientY }) => {
@@ -432,6 +428,9 @@ export class ColorPicker extends Interface {
     };
 
     onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+        window.removeEventListener('pointermove', this.onPointerMove);
+
         if (!this.isOpen) {
             return;
         }
@@ -519,7 +518,8 @@ export class ColorPicker extends Interface {
 
         marker.set(x, y).addScalar(128);
 
-        const invert = brightness(this.value) > 0.6; // Light colour is inverted
+        // Light colour is inverted
+        const invert = brightness(this.value) > 0.6;
 
         this.colorRing.sl.css({
             rotation: radToDeg(angle - PI90)

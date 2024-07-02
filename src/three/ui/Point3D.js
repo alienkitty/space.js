@@ -3,7 +3,6 @@
  */
 
 import { Group, Matrix4, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';
-
 import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
 import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.js';
 
@@ -51,10 +50,10 @@ export class Point3D extends Group {
         this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
-        this.coords = new Vector2();
+        this.coords = new Vector2(-2, 2);
         this.hover = null;
         this.click = null;
-        this.lastTime = null;
+        this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
@@ -645,7 +644,7 @@ export class Point3D extends Group {
     };
 
     onUpdate = ({ path, value, index, target }) => {
-        if (!this.point.isMove) {
+        if (this.point.isOpen && !this.point.isMove) {
             this.point.isMove = true;
         }
 
@@ -736,7 +735,7 @@ export class Point3D extends Group {
         const material = this.object.material;
 
         if (show) {
-            if (Point3D.uvTexture && Point3D.uvTexture.image) {
+            if (Point3D.uvTexture) {
                 if (!this.uvTexture) {
                     this.uvTexture = Point3D.uvTexture.clone();
                 }

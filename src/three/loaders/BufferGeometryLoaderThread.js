@@ -23,7 +23,7 @@ export class BufferGeometryLoaderThread {
                 postMessage({ id, message: buffers });
             }).catch(error => {
                 if (error instanceof Error) {
-                    error = error.name + ': ' + error.message;
+                    error = `${error.name}: ${error.message}`;
                 }
 
                 postMessage({ id, message: { error } });

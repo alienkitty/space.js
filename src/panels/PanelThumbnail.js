@@ -31,7 +31,7 @@ export class PanelThumbnail extends Interface {
         this.delta = new Vector2();
         this.bounds = null;
         this.thumbnails = [];
-        this.lastTime = null;
+        this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
         this.isDragging = false;
@@ -315,6 +315,14 @@ export class PanelThumbnail extends Interface {
         oldGroup.destroy();
     }
 
+    toggleContent(show) {
+        if (show) {
+            this.group.show();
+        } else {
+            this.group.hide();
+        }
+    }
+
     setData(data) {
         if (!data) {
             return;
@@ -362,6 +370,7 @@ export class PanelThumbnail extends Interface {
         });
 
         const oldWrapper = this.wrapper;
+        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
 
         const newWrapper = this.wrapper.clone();
         newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
@@ -370,7 +379,6 @@ export class PanelThumbnail extends Interface {
         this.replace(oldWrapper, newWrapper);
         this.wrapper = newWrapper;
 
-        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
         oldWrapper.destroy();
 
         if (this.value) {

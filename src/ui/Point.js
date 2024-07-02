@@ -21,7 +21,7 @@ export class Point extends Interface {
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.bounds = null;
-        this.lastTime = null;
+        this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
         this.lerpSpeed = 0.07;
