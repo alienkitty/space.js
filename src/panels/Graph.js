@@ -17,6 +17,7 @@ export class Graph extends Interface {
         name,
         resolution = 80,
         precision = 0,
+        lookupPrecision = 0,
         range = 1,
         value,
         noText = false,
@@ -29,6 +30,7 @@ export class Graph extends Interface {
         this.name = name;
         this.resolution = resolution;
         this.precision = precision;
+        this.lookupPrecision = lookupPrecision;
         this.range = range;
         this.value = value;
         this.noText = noText;
@@ -39,6 +41,12 @@ export class Graph extends Interface {
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = this.width / 2;
         this.range = this.getRange(this.range);
+        this.array = [];
+        this.length = 0;
+        this.path = '';
+        this.total = 0;
+        this.lookup = [];
+        this.needsUpdate = false;
         this.xTarget = 0;
 
         this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
@@ -122,8 +130,8 @@ export class Graph extends Interface {
     }
 
     initGraph() {
+        // Not added to DOM
         this.graph = new Interface(null, 'svg');
-        this.graph.hide();
         this.graph.attr({
             viewBox: `0 0 ${this.width} ${this.height}`,
             width: this.width,
@@ -144,31 +152,44 @@ export class Graph extends Interface {
             strokeWidth: 1.5
         });
         this.graph.add(this.graph.path);
-
-        this.add(this.graph);
     }
 
-    createPath(array) {
-        let path = '';
+    calculateLookup() {
+        this.total = this.graph.path.element.getTotalLength();
+        this.lookup = [];
 
-        for (let i = 0, l = array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - array[i] * this.range - 1;
-            const y2 = this.height - array[i + 1] * this.range - 1;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        let i = 0;
 
-            if (i === 0) {
-                path += `M ${x1} ${y1}`;
-            } else {
-                path += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
+        while (i <= 1) {
+            this.lookup.push(this.graph.path.element.getPointAtLength(this.total * i));
+
+            i += 1 / this.lookupPrecision;
+        }
+    }
+
+    getCurveY(xTarget) {
+        const x = xTarget * this.width;
+        const approxIndex = Math.floor(xTarget * this.lookupPrecision);
+
+        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+
+        for (; i < this.lookupPrecision; i++) {
+            if (this.lookup[i].x > x) {
+                break;
             }
         }
 
-        return path;
+        if (i === this.lookupPrecision) {
+            return this.lookup[this.lookupPrecision - 1].y;
+        }
+
+        const lower = this.lookup[i - 1];
+        const upper = this.lookup[i];
+        const percent = (x - lower.x) / (upper.x - lower.x);
+        const diff = (upper.y - lower.y);
+        const y = lower.y + diff * percent;
+
+        return y;
     }
 
     initCanvas() {
@@ -205,12 +226,18 @@ export class Graph extends Interface {
     }
 
     addListeners() {
-        this.element.addEventListener('pointermove', this.onPointerMove);
+        if (!this.noHover) {
+            this.element.addEventListener('pointermove', this.onPointerMove);
+        }
+
         ticker.add(this.onUpdate);
     }
 
     removeListeners() {
-        this.element.removeEventListener('pointermove', this.onPointerMove);
+        if (!this.noHover) {
+            this.element.removeEventListener('pointermove', this.onPointerMove);
+        }
+
         ticker.remove(this.onUpdate);
     }
 
@@ -271,6 +298,13 @@ export class Graph extends Interface {
         }
 
         this.length = this.array.length;
+
+        if (this.lookupPrecision > 0) {
+            this.path = '';
+            this.total = 0;
+            this.lookup = [];
+            this.needsUpdate = true;
+        }
     }
 
     setValue(value) {
@@ -300,8 +334,6 @@ export class Graph extends Interface {
                 this.array.push(value);
             }
         }
-
-        // this.graph.path.attr({ d: this.createPath(this.array) });
 
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -338,14 +370,28 @@ export class Graph extends Interface {
             const cpX2 = (xMid + x2) / 2;
 
             if (i === 0) {
+                if (this.needsUpdate) {
+                    this.path += `M ${x1} ${y1}`;
+                }
+
                 this.context.moveTo(x1, y1);
             } else {
+                if (this.needsUpdate) {
+                    this.path += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
+                }
+
                 this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
                 this.context.quadraticCurveTo(cpX2, y2, x2, y2);
             }
         }
 
         this.context.stroke();
+
+        if (this.needsUpdate) {
+            this.graph.path.attr({ d: this.path });
+            this.calculateLookup();
+            this.needsUpdate = false;
+        }
 
         // Draw gradient fill
         if (!this.noGradient) {
@@ -359,7 +405,14 @@ export class Graph extends Interface {
         if (!this.noHover) {
             const value = this.array[Math.floor(this.xTarget * (this.length - 1))];
             const x = this.xTarget * this.width;
-            const y = this.height - value * this.range - 1;
+
+            let y;
+
+            if (this.lookupPrecision > 0) {
+                y = this.getCurveY(this.xTarget);
+            } else {
+                y = this.height - value * this.range - 1;
+            }
 
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
@@ -379,19 +432,10 @@ export class Graph extends Interface {
 
     enable() {
         this.addListeners();
-
-        this.isVisible = true;
-
-        this.graph.show();
     }
 
     disable() {
         this.removeListeners();
-
-        this.isVisible = false;
-
-        this.graph.hide();
-        this.number.empty();
     }
 
     destroy() {

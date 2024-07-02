@@ -161,6 +161,7 @@
                 name: 'Array',
                 resolution: 10,
                 precision: 2,
+                lookupPrecision: 50,
                 value: Array.from({ length: 10 }, () => Math.random())
             },
             {
@@ -171,6 +172,7 @@
                 name: 'Random',
                 resolution: 10,
                 precision: 2,
+                lookupPrecision: 50,
                 value: performance.now() - 1000,
                 noText: true,
                 callback: (value, panel) => {
@@ -201,18 +203,21 @@
                 name: 'Graph',
                 resolution: 10,
                 precision: 2,
+                lookupPrecision: 50,
                 value: Array.from({ length: 10 }, () => Math.random()),
                 noText: true,
                 callback: (value, panel) => {
                     // console.log('Graph callback:', value);
 
                     if (needsUpdate) {
-                        value = Array.from({ length: 10 }, () => Math.random());
                         needsUpdate = false;
+
+                        // Passing an array to panel.update() will update the entire graph
+                        value = Array.from({ length: 10 }, () => Math.random());
+                        panel.update(value);
                     }
 
-                    // Passing an array to panel.update() will update the entire graph
-                    panel.update(value);
+                    panel.update();
 
                     // The return value is passed back in the next frame
                     return value;
