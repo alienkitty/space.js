@@ -128,7 +128,7 @@ export class Slider extends Interface {
         this.delta.subVectors(this.mouse, this.lastMouse);
         this.origin.addVectors(this.lastOrigin, this.delta);
 
-        let value = ((this.origin.x / this.bounds.width) * this.range + this.min) - this.lastValue;
+        let value = (this.min + (this.origin.x / this.bounds.width) * this.range) - this.lastValue;
         value = Math.floor(value / this.step);
         this.value = this.getValue(this.lastValue + value * this.step);
 
