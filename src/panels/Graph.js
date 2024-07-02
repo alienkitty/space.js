@@ -10,6 +10,7 @@ import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
 import { ticker } from '../tween/Ticker.js';
+import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp } from '../utils/Utils.js';
 
 export class Graph extends Interface {
@@ -46,8 +47,10 @@ export class Graph extends Interface {
         this.path = '';
         this.total = 0;
         this.lookup = [];
+        this.mouseX = 0;
+        this.isMove = false;
+        this.animatedIn = false;
         this.needsUpdate = false;
-        this.xTarget = 0;
 
         this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
         this.green = new Color(0x00ff00).offsetHSL(0.04, -0.4, 0);
@@ -68,6 +71,10 @@ export class Graph extends Interface {
             this.refreshRate120 = 1000 / 90;
             this.refreshRate240 = 1000 / 180;
         }
+
+        this.handle = {
+            alpha: 0
+        };
 
         this.init();
         this.initGraph();
@@ -115,6 +122,7 @@ export class Graph extends Interface {
 
         if (!this.noHover) {
             this.info = new Interface('.info');
+            this.info.invisible();
             this.info.css({
                 position: 'absolute',
                 left: 0,
@@ -167,9 +175,9 @@ export class Graph extends Interface {
         }
     }
 
-    getCurveY(xTarget) {
-        const x = xTarget * this.width;
-        const approxIndex = Math.floor(xTarget * this.lookupPrecision);
+    getCurveY(mouseX) {
+        const x = mouseX * this.width;
+        const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
         let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
 
@@ -230,6 +238,8 @@ export class Graph extends Interface {
 
     addListeners() {
         if (!this.noHover) {
+            this.element.addEventListener('mouseenter', this.onHover);
+            this.element.addEventListener('mouseleave', this.onHover);
             this.element.addEventListener('pointermove', this.onPointerMove);
         }
 
@@ -238,6 +248,8 @@ export class Graph extends Interface {
 
     removeListeners() {
         if (!this.noHover) {
+            this.element.removeEventListener('mouseenter', this.onHover);
+            this.element.removeEventListener('mouseleave', this.onHover);
             this.element.removeEventListener('pointermove', this.onPointerMove);
         }
 
@@ -250,10 +262,26 @@ export class Graph extends Interface {
 
     // Event handlers
 
+    onHover = ({ type }) => {
+        if (!this.animatedIn) {
+            return;
+        }
+
+        clearTween(this.timeout);
+
+        if (type === 'mouseenter') {
+            this.fadeUp();
+        } else {
+            this.timeout = delayedCall(200, () => {
+                this.fadeDown();
+            });
+        }
+    };
+
     onPointerMove = ({ clientX }) => {
         const bounds = this.element.getBoundingClientRect();
 
-        this.xTarget = clamp((clientX - bounds.left) / this.width, 0, 1);
+        this.mouseX = clamp((clientX - bounds.left) / this.width, 0, 1);
     };
 
     onUpdate = () => {
@@ -338,6 +366,7 @@ export class Graph extends Interface {
             }
         }
 
+        this.context.globalAlpha = 1;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
@@ -406,19 +435,25 @@ export class Graph extends Interface {
 
         // Draw handle line and circle
         if (!this.noHover) {
-            const value = this.array[Math.floor(this.xTarget * (this.length - 1))];
-            const x = this.xTarget * this.width;
+            const value = this.array[Math.floor(this.mouseX * (this.length - 1))];
+            const x = this.mouseX * this.width;
 
             let y;
 
             if (this.lookupPrecision > 0) {
-                y = this.getCurveY(this.xTarget);
+                y = this.getCurveY(this.mouseX);
             } else {
                 y = this.height - value * this.range - 1;
             }
 
+            if (this.handle.alpha < 0.001) {
+                this.handle.alpha = 0;
+            }
+
+            this.context.globalAlpha = this.handle.alpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
+
             this.context.beginPath();
             this.context.moveTo(x, y + 2);
             this.context.lineTo(x, this.height);
@@ -433,12 +468,46 @@ export class Graph extends Interface {
         }
     }
 
+    fadeUp() {
+        if (this.isMove) {
+            return;
+        }
+
+        this.isMove = true;
+
+        clearTween(this.handle);
+        tween(this.handle, { alpha: 1 }, 275, 'easeInOutCubic');
+
+        this.info.clearTween();
+        this.info.visible();
+        this.info.css({ opacity: 0 }).tween({ opacity: 1 }, 275, 'easeInOutCubic');
+    }
+
+    fadeDown() {
+        if (!this.isMove) {
+            return;
+        }
+
+        this.isMove = false;
+
+        clearTween(this.handle);
+        tween(this.handle, { alpha: 0 }, 275, 'easeInOutCubic');
+
+        this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+            this.info.invisible();
+        });
+    }
+
     enable() {
         this.addListeners();
+
+        this.animatedIn = true;
     }
 
     disable() {
         this.removeListeners();
+
+        this.animatedIn = false;
     }
 
     destroy() {
