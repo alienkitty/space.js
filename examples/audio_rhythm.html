@@ -99,7 +99,7 @@
                 // Next 4 bars
                 const lastLength = this.lastTime + 4 * barLength;
 
-                if (startTime < lastLength) {
+                if (this.lastTime !== 0 && startTime < lastLength) {
                     startTime = lastLength;
                 }
 
@@ -500,7 +500,7 @@
                     justifyContent: 'center',
                     alignItems: 'center',
                     flexWrap: 'wrap',
-                    gap: 67
+                    gap: 20
                 });
                 this.add(this.container);
             }
