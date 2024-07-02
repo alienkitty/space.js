@@ -5,6 +5,7 @@
  */
 
 import { Color } from '../math/Color.js';
+import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -48,6 +49,11 @@ export class Graph extends Interface {
         this.total = 0;
         this.lookup = [];
         this.mouseX = 0;
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.bounds = null;
+        this.lastTime = 0;
+        this.lastMouse = new Vector2();
         this.isMove = false;
         this.animatedIn = false;
         this.needsUpdate = false;
@@ -62,7 +68,7 @@ export class Graph extends Interface {
         if (this.value === undefined) {
             this.last = performance.now();
             this.time = 0;
-            this.delta = 0;
+            this.deltaTime = 0;
             this.count = 0;
             this.prev = 0;
             this.fps = 0;
@@ -240,6 +246,7 @@ export class Graph extends Interface {
         if (!this.noHover) {
             this.element.addEventListener('mouseenter', this.onHover);
             this.element.addEventListener('mouseleave', this.onHover);
+            this.element.addEventListener('pointerdown', this.onPointerDown);
             this.element.addEventListener('pointermove', this.onPointerMove);
         }
 
@@ -250,6 +257,7 @@ export class Graph extends Interface {
         if (!this.noHover) {
             this.element.removeEventListener('mouseenter', this.onHover);
             this.element.removeEventListener('mouseleave', this.onHover);
+            this.element.removeEventListener('pointerdown', this.onPointerDown);
             this.element.removeEventListener('pointermove', this.onPointerMove);
         }
 
@@ -278,16 +286,60 @@ export class Graph extends Interface {
         }
     };
 
-    onPointerMove = ({ clientX }) => {
-        const bounds = this.element.getBoundingClientRect();
+    onPointerDown = e => {
+        if (!this.animatedIn) {
+            return;
+        }
 
-        this.mouseX = clamp((clientX - bounds.left) / this.width, 0, 1);
+        if (this.element.contains(e.target)) {
+            this.lastTime = performance.now();
+            this.lastMouse.set(e.clientX, e.clientY);
+
+            this.onPointerMove(e);
+
+            window.addEventListener('pointerup', this.onPointerUp);
+        }
+    };
+
+    onPointerMove = ({ clientX, clientY }) => {
+        if (!this.animatedIn) {
+            return;
+        }
+
+        const event = {
+            x: clientX,
+            y: clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+
+        if (!this.animatedIn) {
+            return;
+        }
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
+        if (!this.element.contains(e.target)) {
+            this.fadeDown();
+        }
     };
 
     onUpdate = () => {
         if (this.value === undefined) {
             this.time = performance.now();
-            this.delta = this.time - this.last;
+            this.deltaTime = this.time - this.last;
             this.last = this.time;
 
             if (this.time - 1000 > this.prev) {
@@ -295,9 +347,9 @@ export class Graph extends Interface {
                 this.prev = this.time;
                 this.count = 0;
 
-                if (this.delta < this.refreshRate240) {
+                if (this.deltaTime < this.refreshRate240) {
                     this.range = this.getRange(720);
-                } else if (this.delta < this.refreshRate120) {
+                } else if (this.deltaTime < this.refreshRate120) {
                     this.range = this.getRange(360);
                 } else {
                     this.range = this.getRange(180);
