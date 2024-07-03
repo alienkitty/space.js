@@ -38,13 +38,13 @@ export { Panel } from './panels/Panel.js';
 export { PanelItem } from './panels/PanelItem.js';
 export { PanelLink } from './panels/PanelLink.js';
 export { PanelThumbnail } from './panels/PanelThumbnail.js';
+export { PanelGraph } from './panels/PanelGraph.js';
 export { List } from './panels/List.js';
 export { ListToggle } from './panels/ListToggle.js';
 export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
-export { Graph } from './panels/Graph.js';
 
 // UI
 export { UI } from './ui/UI.js';
@@ -65,6 +65,7 @@ export { Link } from './ui/Link.js';
 export { Menu } from './ui/Menu.js';
 export { MenuItem } from './ui/MenuItem.js';
 export { Thumbnail } from './ui/Thumbnail.js';
+export { Graph } from './ui/Graph.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';

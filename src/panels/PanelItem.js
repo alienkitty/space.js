@@ -5,11 +5,11 @@
 import { Interface } from '../utils/Interface.js';
 import { PanelLink } from './PanelLink.js';
 import { PanelThumbnail } from './PanelThumbnail.js';
+import { PanelGraph } from './PanelGraph.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
-import { Graph } from './Graph.js';
 
 export class PanelItem extends Interface {
     constructor(data) {
@@ -62,6 +62,9 @@ export class PanelItem extends Interface {
             this.view = new PanelThumbnail(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
+        } else if (this.data.type === 'graph') {
+            this.graph = new PanelGraph(this.data);
+            this.container.add(this.graph);
         } else if (this.data.type === 'list') {
             this.container.css({
                 margin: '2px 0 0'
@@ -86,9 +89,6 @@ export class PanelItem extends Interface {
             this.view = new ColorPicker(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
-        } else if (this.data.type === 'graph') {
-            this.graph = new Graph(this.data);
-            this.container.add(this.graph);
         }
     }
 

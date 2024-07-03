@@ -10,38 +10,33 @@ import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
-import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp } from '../utils/Utils.js';
 
 export class Graph extends Interface {
     constructor({
-        name,
+        width = 150,
+        height = 50,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
         range = 1,
         value,
-        noText = false,
         noHover = false,
-        noGradient = false,
-        callback
-    }) {
+        noGradient = false
+    } = {}) {
         super('.graph');
 
-        this.name = name;
+        this.width = width;
+        this.height = height;
         this.resolution = resolution;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.range = range;
         this.value = value;
-        this.noText = noText;
         this.noHover = noHover;
         this.noGradient = noGradient;
-        this.callback = callback;
 
-        this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = this.width / 2;
         this.range = this.getRange(this.range);
         this.array = [];
         this.length = 0;
@@ -54,8 +49,7 @@ export class Graph extends Interface {
         this.bounds = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
-        this.isMove = false;
-        this.animatedIn = false;
+        this.hoveredIn = false;
         this.needsUpdate = false;
 
         this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
@@ -65,19 +59,6 @@ export class Graph extends Interface {
 
         this.color = new Color();
 
-        if (this.value === undefined) {
-            this.last = performance.now();
-            this.time = 0;
-            this.deltaTime = 0;
-            this.count = 0;
-            this.prev = 0;
-            this.fps = 0;
-
-            // Midpoint step
-            this.refreshRate120 = 1000 / 90;
-            this.refreshRate240 = 1000 / 180;
-        }
-
         this.handle = {
             alpha: 0
         };
@@ -85,46 +66,20 @@ export class Graph extends Interface {
         this.init();
         this.initGraph();
         this.initCanvas();
-        this.setArray(this.value);
+        this.setSize(this.width, this.height);
 
-        this.resize();
+        this.addListeners();
     }
 
     init() {
         this.css({
             position: 'relative',
-            height: this.height
+            width: this.width,
+            height: this.height,
+            pointerEvents: 'auto',
+            webkitUserSelect: 'none',
+            userSelect: 'none'
         });
-
-        this.container = new Interface('.container');
-        this.container.css({
-            position: 'relative',
-            height: 20,
-            whiteSpace: 'nowrap',
-            zIndex: 1,
-            pointerEvents: 'none'
-        });
-        this.add(this.container);
-
-        this.content = new Interface('.content');
-        this.content.css({
-            cssFloat: 'left',
-            marginRight: 10,
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap'
-        });
-        this.content.text(this.name);
-        this.container.add(this.content);
-
-        if (!this.noText) {
-            this.number = new Interface('.number');
-            this.number.css({
-                cssFloat: 'right',
-                fontVariantNumeric: 'tabular-nums',
-                letterSpacing: 1
-            });
-            this.container.add(this.number);
-        }
 
         if (!this.noHover) {
             this.info = new Interface('.info');
@@ -132,8 +87,8 @@ export class Graph extends Interface {
             this.info.css({
                 position: 'absolute',
                 left: 0,
-                bottom: 3,
-                marginLeft: 10,
+                bottom: 'calc((var(--ui-line-height) + 3px) * -1)',
+                transform: 'translateX(-50%)',
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
                 opacity: 0,
@@ -147,25 +102,7 @@ export class Graph extends Interface {
     initGraph() {
         // Not added to DOM
         this.graph = new Interface(null, 'svg');
-        this.graph.attr({
-            viewBox: `0 0 ${this.width} ${this.height}`,
-            width: this.width,
-            height: this.height
-        });
-        this.graph.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: this.width,
-            height: this.height
-        });
-
         this.graph.path = new Interface(null, 'svg', 'path');
-        this.graph.path.css({
-            fill: 'none',
-            stroke: 'var(--ui-color)',
-            strokeWidth: 1.5
-        });
         this.graph.add(this.graph.path);
     }
 
@@ -217,9 +154,6 @@ export class Graph extends Interface {
         });
         this.context = this.canvas.element.getContext('2d');
         this.add(this.canvas);
-
-        this.strokeStyle = this.createGradient(0, this.height, 0, 0);
-        this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
     }
 
     createGradient(x1, y1, x2, y2, alpha = 1) {
@@ -248,10 +182,8 @@ export class Graph extends Interface {
             this.element.addEventListener('mouseenter', this.onHover);
             this.element.addEventListener('mouseleave', this.onHover);
             this.element.addEventListener('pointerdown', this.onPointerDown);
-            this.element.addEventListener('pointermove', this.onPointerMove);
+            window.addEventListener('pointermove', this.onPointerMove);
         }
-
-        ticker.add(this.onUpdate);
     }
 
     removeListeners() {
@@ -259,10 +191,8 @@ export class Graph extends Interface {
             this.element.removeEventListener('mouseenter', this.onHover);
             this.element.removeEventListener('mouseleave', this.onHover);
             this.element.removeEventListener('pointerdown', this.onPointerDown);
-            this.element.removeEventListener('pointermove', this.onPointerMove);
+            window.removeEventListener('pointermove', this.onPointerMove);
         }
-
-        ticker.remove(this.onUpdate);
     }
 
     getRange(range) {
@@ -272,26 +202,18 @@ export class Graph extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
-        if (!this.animatedIn) {
-            return;
-        }
-
         clearTween(this.timeout);
 
         if (type === 'mouseenter') {
-            this.fadeUp();
+            this.hoverIn();
         } else {
             this.timeout = delayedCall(200, () => {
-                this.fadeDown();
+                this.hoverOut();
             });
         }
     };
 
     onPointerDown = e => {
-        if (!this.animatedIn) {
-            return;
-        }
-
         if (this.element.contains(e.target)) {
             this.lastTime = performance.now();
             this.lastMouse.set(e.clientX, e.clientY);
@@ -303,10 +225,6 @@ export class Graph extends Interface {
     };
 
     onPointerMove = ({ clientX, clientY }) => {
-        if (!this.animatedIn) {
-            return;
-        }
-
         const event = {
             x: clientX,
             y: clientY
@@ -322,10 +240,6 @@ export class Graph extends Interface {
     onPointerUp = e => {
         window.removeEventListener('pointerup', this.onPointerUp);
 
-        if (!this.animatedIn) {
-            return;
-        }
-
         this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
@@ -333,38 +247,7 @@ export class Graph extends Interface {
         }
 
         if (!this.element.contains(e.target)) {
-            this.fadeDown();
-        }
-    };
-
-    onUpdate = () => {
-        if (this.value === undefined) {
-            this.time = performance.now();
-            this.deltaTime = this.time - this.last;
-            this.last = this.time;
-
-            if (this.time - 1000 > this.prev) {
-                this.fps = Math.round(this.count * 1000 / (this.time - this.prev));
-                this.prev = this.time;
-                this.count = 0;
-
-                if (this.deltaTime < this.refreshRate240) {
-                    this.range = this.getRange(720);
-                } else if (this.deltaTime < this.refreshRate120) {
-                    this.range = this.getRange(360);
-                } else {
-                    this.range = this.getRange(180);
-                }
-            }
-
-            this.count++;
-
-            this.update(this.fps);
-            this.setValue(this.fps);
-        } else if (this.callback) {
-            this.value = this.callback(this.value, this);
-        } else {
-            this.update();
+            this.hoverOut();
         }
     };
 
@@ -372,11 +255,7 @@ export class Graph extends Interface {
 
     setArray(value) {
         if (Array.isArray(value)) {
-            if (!this.callback) {
-                this.array = value;
-            } else {
-                this.array = value.slice();
-            }
+            this.array = value;
         } else {
             this.array = new Array(this.resolution).fill(0);
         }
@@ -391,13 +270,15 @@ export class Graph extends Interface {
         }
     }
 
-    setValue(value) {
-        if (this.number) {
-            this.number.text(value.toFixed(this.precision));
-        }
-    }
+    setSize(width, height) {
+        this.width = width;
+        this.height = height;
 
-    resize() {
+        this.css({
+            width: this.width,
+            height: this.height
+        });
+
         const dpr = 2; // Always 2
 
         this.canvas.element.width = Math.round(this.width * dpr);
@@ -406,6 +287,10 @@ export class Graph extends Interface {
         this.canvas.element.style.height = `${this.height}px`;
         this.context.scale(dpr, dpr);
 
+        this.strokeStyle = this.createGradient(0, this.height, 0, 0);
+        this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
+
+        this.setArray(this.value);
         this.update();
     }
 
@@ -521,12 +406,12 @@ export class Graph extends Interface {
         }
     }
 
-    fadeUp() {
-        if (this.isMove) {
+    hoverIn() {
+        if (this.hoveredIn) {
             return;
         }
 
-        this.isMove = true;
+        this.hoveredIn = true;
 
         clearTween(this.handle);
         tween(this.handle, { alpha: 1 }, 275, 'easeInOutCubic');
@@ -536,12 +421,12 @@ export class Graph extends Interface {
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
-    fadeDown() {
-        if (!this.isMove) {
+    hoverOut() {
+        if (!this.hoveredIn) {
             return;
         }
 
-        this.isMove = false;
+        this.hoveredIn = false;
 
         clearTween(this.handle);
         tween(this.handle, { alpha: 0 }, 275, 'easeInOutCubic');
@@ -551,20 +436,14 @@ export class Graph extends Interface {
         });
     }
 
-    enable() {
-        this.addListeners();
-
-        this.animatedIn = true;
+    animateIn() {
     }
 
-    disable() {
-        this.removeListeners();
-
-        this.animatedIn = false;
+    animateOut() {
     }
 
     destroy() {
-        this.disable();
+        this.removeListeners();
 
         return super.destroy();
     }
