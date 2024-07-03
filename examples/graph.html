@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-        .ui {
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,12 +19,9 @@
     </style>
 
     <script type="module">
-        import { Graph, UI, clamp, mapLinear } from '../src/index.js';
+        import { Graph, clamp, mapLinear } from '../src/index.js';
 
         // https://halo-5-visualizer.appspot.com/
-
-        const ui = new UI();
-        document.body.appendChild(ui.element);
 
         const graph = new Graph({
             width: window.innerWidth * 0.74,
@@ -36,7 +33,7 @@
         });
         graph.setArray(Array.from({ length: 10 }, () => Math.random()));
         graph.animateIn();
-        ui.add(graph);
+        document.body.appendChild(graph.element);
 
         // animation
 
@@ -44,7 +41,6 @@
             requestAnimationFrame(animate);
 
             graph.update();
-            ui.update();
         }
 
         requestAnimationFrame(animate);

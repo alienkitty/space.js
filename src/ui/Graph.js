@@ -10,6 +10,7 @@ import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
+import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp } from '../utils/Utils.js';
 
@@ -37,6 +38,12 @@ export class Graph extends Interface {
         this.noHover = noHover;
         this.noGradient = noGradient;
 
+        if (!Stage.root) {
+            Stage.root = document.querySelector(':root');
+            Stage.rootStyle = getComputedStyle(Stage.root);
+        }
+
+        this.startTime = performance.now();
         this.range = this.getRange(this.range);
         this.array = [];
         this.length = 0;
@@ -295,6 +302,10 @@ export class Graph extends Interface {
     }
 
     update(value) {
+        if (!ticker.isAnimating) {
+            ticker.onTick(performance.now() - this.startTime);
+        }
+
         if (value !== undefined) {
             if (Array.isArray(value)) {
                 this.setArray(value);
