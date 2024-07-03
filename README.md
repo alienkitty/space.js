@@ -119,8 +119,9 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 [info](https://space.js.org/examples/details_info.html) (details)  
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
-[panel](https://space.js.org/examples/panel.html) (standalone)  
 [fps graph](https://space.js.org/examples/fps_graph.html)  
+[panel](https://space.js.org/examples/panel.html) (standalone)  
+[graph](https://space.js.org/examples/graph.html) (standalone)  
 [thumbnail](https://space.js.org/examples/thumbnail.html)  
 [ufo](https://ufo.ai/) (2d scene, smooth scroll with skew effect)  
 
