@@ -33,6 +33,10 @@
     --ui-color-line: rgb(var(--ui-color-triplet) / var(--ui-color-line-opacity));
     --ui-color-divider-line: rgb(var(--ui-color-triplet) / var(--ui-color-divider-line-opacity));
     --ui-color-graph-bottom-line: rgb(var(--ui-color-triplet) / var(--ui-color-graph-bottom-line-opacity));
+    --ui-color-range-1: #3b528b;
+    --ui-color-range-2: #21918c;
+    --ui-color-range-3: #5ec962;
+    --ui-color-range-4: #fde725;
 }
 
 *, :after, :before {
