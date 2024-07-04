@@ -42,7 +42,7 @@ export class PanelGraph extends Interface {
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
         this.height = this.width / 2;
-        this.range = this.getRange(this.range);
+        this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.path = '';
         this.total = 0;
@@ -269,7 +269,7 @@ export class PanelGraph extends Interface {
         ticker.remove(this.onUpdate);
     }
 
-    getRange(range) {
+    getRangeHeight(range) {
         return (1 / range) * (this.height - 2);
     }
 
@@ -353,11 +353,11 @@ export class PanelGraph extends Interface {
                 this.count = 0;
 
                 if (this.deltaTime < this.refreshRate240) {
-                    this.range = this.getRange(720);
+                    this.rangeHeight = this.getRangeHeight(720);
                 } else if (this.deltaTime < this.refreshRate120) {
-                    this.range = this.getRange(360);
+                    this.rangeHeight = this.getRangeHeight(360);
                 } else {
-                    this.range = this.getRange(180);
+                    this.rangeHeight = this.getRangeHeight(180);
                 }
             }
 
@@ -449,8 +449,8 @@ export class PanelGraph extends Interface {
         for (let i = 0, l = this.array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - this.array[i] * this.range - 1;
-            const y2 = this.height - this.array[i + 1] * this.range - 1;
+            const y1 = this.height - this.array[i] * this.rangeHeight - 1;
+            const y2 = this.height - this.array[i + 1] * this.rangeHeight - 1;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -498,7 +498,7 @@ export class PanelGraph extends Interface {
             if (this.lookupPrecision > 0) {
                 y = this.getCurveY(this.mouseX);
             } else {
-                y = this.height - value * this.range - 1;
+                y = this.height - value * this.rangeHeight - 1;
             }
 
             if (this.handle.alpha < 0.001) {

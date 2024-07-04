@@ -44,7 +44,7 @@ export class Graph extends Interface {
         }
 
         this.startTime = performance.now();
-        this.range = this.getRange(this.range);
+        this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.path = '';
         this.total = 0;
@@ -77,6 +77,7 @@ export class Graph extends Interface {
         this.initGraph();
         this.initCanvas();
         this.setSize(this.width, this.height);
+        this.setArray(this.value);
 
         this.addListeners();
     }
@@ -208,7 +209,7 @@ export class Graph extends Interface {
         }
     }
 
-    getRange(range) {
+    getRangeHeight(range) {
         return (1 / range) * (this.height - 2);
     }
 
@@ -279,11 +280,14 @@ export class Graph extends Interface {
             this.lookup = [];
             this.needsUpdate = true;
         }
+
+        this.update();
     }
 
     setSize(width, height) {
         this.width = width;
         this.height = height;
+        this.rangeHeight = this.getRangeHeight(this.range);
 
         this.css({
             width: this.width,
@@ -301,13 +305,23 @@ export class Graph extends Interface {
         this.strokeStyle = this.createGradient(0, this.height, 0, 0);
         this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
 
-        this.setArray(this.value);
+        if (this.lookupPrecision > 0) {
+            this.path = '';
+            this.total = 0;
+            this.lookup = [];
+            this.needsUpdate = true;
+        }
+
         this.update();
     }
 
     update(value) {
         if (!ticker.isAnimating) {
             ticker.onTick(performance.now() - this.startTime);
+        }
+
+        if (!this.array.length) {
+            return;
         }
 
         if (value !== undefined) {
@@ -347,8 +361,8 @@ export class Graph extends Interface {
         for (let i = 0, l = this.array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - this.array[i] * this.range - 1;
-            const y2 = this.height - this.array[i + 1] * this.range - 1;
+            const y1 = this.height - this.array[i] * this.rangeHeight - 1;
+            const y2 = this.height - this.array[i + 1] * this.rangeHeight - 1;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -396,7 +410,7 @@ export class Graph extends Interface {
             if (this.lookupPrecision > 0) {
                 y = this.getCurveY(this.mouseX);
             } else {
-                y = this.height - value * this.range - 1;
+                y = this.height - value * this.rangeHeight - 1;
             }
 
             if (this.handle.alpha < 0.001) {

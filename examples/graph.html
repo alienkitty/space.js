@@ -24,13 +24,14 @@
         // https://halo-5-visualizer.appspot.com/
 
         const graph = new Graph({
-            width: window.innerWidth * 0.74,
-            height: clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80),
+            // width: window.innerWidth * 0.74,
+            // height: clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80),
+            // value: Array.from({ length: 10 }, () => Math.random()),
             resolution: 10,
             precision: 2,
-            lookupPrecision: 200,
-            value: Array.from({ length: 10 }, () => Math.random())
+            lookupPrecision: 200
         });
+        graph.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
         graph.setArray(Array.from({ length: 10 }, () => Math.random()));
         graph.animateIn();
         document.body.appendChild(graph.element);
