@@ -44,7 +44,6 @@ export class PanelGraph extends Interface {
         this.height = this.width / 2;
         this.range = this.getRange(this.range);
         this.array = [];
-        this.length = 0;
         this.path = '';
         this.total = 0;
         this.lookup = [];
@@ -57,12 +56,16 @@ export class PanelGraph extends Interface {
         this.animatedIn = false;
         this.needsUpdate = false;
 
-        this.red = new Color(0xff0000).offsetHSL(-0.05, 0, -0.07);
-        this.green = new Color(0x00ff00).offsetHSL(0.04, -0.4, 0);
-        this.blue = new Color(0x0000ff).offsetHSL(-0.05, -0.3, -0.07);
-        this.alpha = 1;
+        this.colorRange = [
+            new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-1').trim()),
+            new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-2').trim()),
+            new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-3').trim()),
+            new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-4').trim())
+        ];
 
+        this.colorStep = 1 / 3 / 5; // 5 steps per colour interpolation
         this.color = new Color();
+        this.alpha = 1;
 
         if (this.value === undefined) {
             this.last = performance.now();
@@ -224,15 +227,18 @@ export class PanelGraph extends Interface {
         this.alpha = alpha;
 
         const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
-        gradient.addColorStop(0, this.toRGBA(this.blue, 1));
-        this.color.copy(this.blue);
-        gradient.addColorStop(0.1, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0)), 1));
-        gradient.addColorStop(0.15, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.25)), 1));
-        gradient.addColorStop(0.2, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.5)), 1));
-        gradient.addColorStop(0.25, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(0.75)), 1));
-        gradient.addColorStop(0.3, this.toRGBA(this.color.lerp(this.green, Easing.easeInOutSine(1)), 1));
-        gradient.addColorStop(0.7, this.toRGBA(this.green, 1));
-        gradient.addColorStop(1, this.toRGBA(this.red, 1));
+
+        let offset = 0;
+
+        for (let i = 0; i < 3; i++) {
+            for (let t = 0; t < 5; t++) {
+                gradient.addColorStop(offset, this.toRGBA(this.color.lerpColors(this.colorRange[i], this.colorRange[i + 1], Easing.easeInOutSine(t / 5)), 1));
+
+                offset += this.colorStep;
+            }
+        }
+
+        gradient.addColorStop(offset, this.toRGBA(this.colorRange[3], 1));
 
         return gradient;
     }
@@ -379,8 +385,6 @@ export class PanelGraph extends Interface {
             this.array = new Array(this.resolution).fill(0);
         }
 
-        this.length = this.array.length;
-
         if (this.lookupPrecision > 0) {
             this.path = '';
             this.total = 0;
@@ -442,7 +446,7 @@ export class PanelGraph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = this.length - 1; i < l; i++) {
+        for (let i = 0, l = this.array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
             const y1 = this.height - this.array[i] * this.range - 1;
@@ -486,7 +490,7 @@ export class PanelGraph extends Interface {
 
         // Draw handle line and circle
         if (!this.noHover) {
-            const value = this.array[Math.floor(this.mouseX * (this.length - 1))];
+            const value = this.array[Math.floor(this.mouseX * (this.array.length - 1))];
             const x = this.mouseX * this.width;
 
             let y;
