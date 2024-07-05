@@ -80,8 +80,8 @@ export class PanelGraph extends Interface {
             this.refreshRate240 = 1000 / 180;
         }
 
-        this.handle = {
-            alpha: 0
+        this.props = {
+            handleAlpha: 0
         };
 
         this.init();
@@ -421,6 +421,8 @@ export class PanelGraph extends Interface {
             }
         }
 
+        const h = this.height - 1;
+
         this.context.globalAlpha = 1;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -449,8 +451,8 @@ export class PanelGraph extends Interface {
         for (let i = 0, l = this.array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - this.array[i] * this.rangeHeight - 1;
-            const y2 = this.height - this.array[i + 1] * this.rangeHeight - 1;
+            const y1 = h - this.array[i] * this.rangeHeight;
+            const y2 = h - this.array[i + 1] * this.rangeHeight;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
@@ -498,14 +500,14 @@ export class PanelGraph extends Interface {
             if (this.lookupPrecision > 0) {
                 y = this.getCurveY(this.mouseX);
             } else {
-                y = this.height - value * this.rangeHeight - 1;
+                y = h - value * this.rangeHeight;
             }
 
-            if (this.handle.alpha < 0.001) {
-                this.handle.alpha = 0;
+            if (this.props.handleAlpha < 0.001) {
+                this.props.handleAlpha = 0;
             }
 
-            this.context.globalAlpha = this.handle.alpha;
+            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
@@ -524,8 +526,8 @@ export class PanelGraph extends Interface {
     }
 
     hoverIn() {
-        clearTween(this.handle);
-        tween(this.handle, { alpha: 1 }, 275, 'easeInOutCubic');
+        clearTween(this.props);
+        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic');
 
         this.info.clearTween();
         this.info.visible();
@@ -533,8 +535,8 @@ export class PanelGraph extends Interface {
     }
 
     hoverOut() {
-        clearTween(this.handle);
-        tween(this.handle, { alpha: 0 }, 275, 'easeInOutCubic');
+        clearTween(this.props);
+        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic');
 
         this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
             this.info.invisible();
