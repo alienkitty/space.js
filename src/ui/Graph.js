@@ -58,6 +58,7 @@ export class Graph extends Interface {
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
+        this.graphNeedsUpdate = false;
 
         this.colorRange = [
             new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-1').trim()),
@@ -288,11 +289,13 @@ export class Graph extends Interface {
             this.array = new Array(this.resolution).fill(0);
         }
 
+        this.needsUpdate = true;
+
         if (this.lookupPrecision > 0) {
             this.path = '';
             this.total = 0;
             this.lookup = [];
-            this.needsUpdate = true;
+            this.graphNeedsUpdate = true;
         }
 
         this.update();
@@ -319,11 +322,13 @@ export class Graph extends Interface {
         this.strokeStyle = this.createGradient(0, this.height, 0, 0);
         this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
 
+        this.needsUpdate = true;
+
         if (this.lookupPrecision > 0) {
             this.path = '';
             this.total = 0;
             this.lookup = [];
-            this.needsUpdate = true;
+            this.graphNeedsUpdate = true;
         }
 
         this.update();
@@ -344,9 +349,17 @@ export class Graph extends Interface {
             } else {
                 this.array.shift();
                 this.array.push(value);
+                this.needsUpdate = true;
             }
         }
 
+        if (this.needsUpdate || this.hoveredIn) {
+            this.drawGraph();
+            this.needsUpdate = false;
+        }
+    }
+
+    drawGraph() {
         const w = this.width * this.props.widthMultiplier;
         const h = this.height - 1;
 
@@ -390,7 +403,7 @@ export class Graph extends Interface {
             const cpX2 = (xMid + x2) / 2;
 
             if (i === 0) {
-                if (this.needsUpdate) {
+                if (this.graphNeedsUpdate) {
                     this.path += `M ${x1} ${h - y1}`;
                 }
 
@@ -398,7 +411,7 @@ export class Graph extends Interface {
                     this.context.moveTo(x1, h - y1 * this.props.yMultiplier);
                 }
             } else {
-                if (this.needsUpdate) {
+                if (this.graphNeedsUpdate) {
                     this.path += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
                 }
 
@@ -416,10 +429,10 @@ export class Graph extends Interface {
 
         this.context.stroke();
 
-        if (this.needsUpdate) {
+        if (this.graphNeedsUpdate) {
             this.graph.path.attr({ d: this.path });
             this.calculateLookup();
-            this.needsUpdate = false;
+            this.graphNeedsUpdate = false;
         }
 
         // Draw gradient fill
@@ -470,10 +483,13 @@ export class Graph extends Interface {
             return;
         }
 
+        clearTween(this.props);
+
         this.hoveredIn = true;
 
-        clearTween(this.props);
-        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic');
+        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
 
         this.info.clearTween();
         this.info.visible();
@@ -485,10 +501,13 @@ export class Graph extends Interface {
             return;
         }
 
+        clearTween(this.props);
+
         this.hoveredIn = false;
 
-        clearTween(this.props);
-        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic');
+        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
 
         this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
             this.info.invisible();
@@ -507,7 +526,11 @@ export class Graph extends Interface {
                 if (this.hoveredIn) {
                     this.hoverIn(true);
                 }
+            }, () => {
+                this.needsUpdate = true;
             });
+        }, () => {
+            this.needsUpdate = true;
         });
     }
 
@@ -517,7 +540,10 @@ export class Graph extends Interface {
         this.animatedIn = false;
 
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
-        tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic');
+
+        tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
     }
 
     destroy() {
