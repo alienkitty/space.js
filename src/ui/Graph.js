@@ -55,8 +55,10 @@ export class Graph extends Interface {
         this.bounds = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
+        this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
+        this.graphNeedsUpdate = false;
 
         this.colorRange = [
             new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-1').trim()),
@@ -69,8 +71,11 @@ export class Graph extends Interface {
         this.color = new Color();
         this.alpha = 1;
 
-        this.handle = {
-            alpha: 0
+        this.props = {
+            alpha: 0,
+            handleAlpha: 0,
+            yMultiplier: 0,
+            widthMultiplier: 0
         };
 
         this.init();
@@ -216,6 +221,16 @@ export class Graph extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
+        if (!this.animatedIn) {
+            if (type === 'mouseenter') {
+                this.hoveredIn = true;
+            } else {
+                this.hoveredIn = false;
+            }
+
+            return;
+        }
+
         clearTween(this.timeout);
 
         if (type === 'mouseenter') {
@@ -274,11 +289,13 @@ export class Graph extends Interface {
             this.array = new Array(this.resolution).fill(0);
         }
 
+        this.needsUpdate = true;
+
         if (this.lookupPrecision > 0) {
             this.path = '';
             this.total = 0;
             this.lookup = [];
-            this.needsUpdate = true;
+            this.graphNeedsUpdate = true;
         }
 
         this.update();
@@ -305,11 +322,13 @@ export class Graph extends Interface {
         this.strokeStyle = this.createGradient(0, this.height, 0, 0);
         this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
 
+        this.needsUpdate = true;
+
         if (this.lookupPrecision > 0) {
             this.path = '';
             this.total = 0;
             this.lookup = [];
-            this.needsUpdate = true;
+            this.graphNeedsUpdate = true;
         }
 
         this.update();
@@ -330,10 +349,25 @@ export class Graph extends Interface {
             } else {
                 this.array.shift();
                 this.array.push(value);
+                this.needsUpdate = true;
             }
         }
 
-        this.context.globalAlpha = 1;
+        if (this.needsUpdate || this.hoveredIn) {
+            this.drawGraph();
+            this.needsUpdate = false;
+        }
+    }
+
+    drawGraph() {
+        const w = this.width * this.props.widthMultiplier;
+        const h = this.height - 1;
+
+        if (this.props.alpha < 0.001) {
+            this.props.alpha = 0;
+        }
+
+        this.context.globalAlpha = this.props.alpha;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
@@ -341,7 +375,7 @@ export class Graph extends Interface {
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
         this.context.beginPath();
         this.context.moveTo(0, this.height);
-        this.context.lineTo(this.width, this.height);
+        this.context.lineTo(w, this.height);
         this.context.stroke();
 
         // Draw graph line
@@ -361,41 +395,50 @@ export class Graph extends Interface {
         for (let i = 0, l = this.array.length - 1; i < l; i++) {
             const x1 = (i / l) * this.width;
             const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.height - this.array[i] * this.rangeHeight - 1;
-            const y2 = this.height - this.array[i + 1] * this.rangeHeight - 1;
+            const y1 = this.array[i] * this.rangeHeight;
+            const y2 = this.array[i + 1] * this.rangeHeight;
             const xMid = (x1 + x2) / 2;
             const yMid = (y1 + y2) / 2;
             const cpX1 = (xMid + x1) / 2;
             const cpX2 = (xMid + x2) / 2;
 
             if (i === 0) {
-                if (this.needsUpdate) {
-                    this.path += `M ${x1} ${y1}`;
+                if (this.graphNeedsUpdate) {
+                    this.path += `M ${x1} ${h - y1}`;
                 }
 
-                this.context.moveTo(x1, y1);
+                if (this.props.widthMultiplier === 1) {
+                    this.context.moveTo(x1, h - y1 * this.props.yMultiplier);
+                }
             } else {
-                if (this.needsUpdate) {
-                    this.path += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
+                if (this.graphNeedsUpdate) {
+                    this.path += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
                 }
 
-                this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
-                this.context.quadraticCurveTo(cpX2, y2, x2, y2);
+                if (this.props.widthMultiplier === 1) {
+                    this.context.quadraticCurveTo(cpX1, h - y1 * this.props.yMultiplier, xMid, h - yMid * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(cpX2, h - y2 * this.props.yMultiplier, x2, h - y2 * this.props.yMultiplier);
+                }
             }
+        }
+
+        if (this.props.widthMultiplier < 1) {
+            this.context.moveTo(0, this.height);
+            this.context.lineTo(w, this.height);
         }
 
         this.context.stroke();
 
-        if (this.needsUpdate) {
+        if (this.graphNeedsUpdate) {
             this.graph.path.attr({ d: this.path });
             this.calculateLookup();
-            this.needsUpdate = false;
+            this.graphNeedsUpdate = false;
         }
 
         // Draw gradient fill
         if (!this.noGradient) {
             this.context.shadowBlur = 0;
-            this.context.lineTo(this.width, this.height);
+            this.context.lineTo(w, this.height);
             this.context.lineTo(0, this.height);
             this.context.fill();
         }
@@ -403,21 +446,21 @@ export class Graph extends Interface {
         // Draw handle line and circle
         if (!this.noHover) {
             const value = this.array[Math.floor(this.mouseX * (this.array.length - 1))];
-            const x = this.mouseX * this.width;
+            const x = this.mouseX * w;
 
             let y;
 
             if (this.lookupPrecision > 0) {
                 y = this.getCurveY(this.mouseX);
             } else {
-                y = this.height - value * this.rangeHeight - 1;
+                y = h - value * this.rangeHeight;
             }
 
-            if (this.handle.alpha < 0.001) {
-                this.handle.alpha = 0;
+            if (this.props.handleAlpha < 0.001) {
+                this.props.handleAlpha = 0;
             }
 
-            this.context.globalAlpha = this.handle.alpha;
+            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
@@ -435,15 +478,18 @@ export class Graph extends Interface {
         }
     }
 
-    hoverIn() {
-        if (this.hoveredIn) {
+    hoverIn(force) {
+        if (this.hoveredIn && !force) {
             return;
         }
 
+        clearTween(this.props);
+
         this.hoveredIn = true;
 
-        clearTween(this.handle);
-        tween(this.handle, { alpha: 1 }, 275, 'easeInOutCubic');
+        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
 
         this.info.clearTween();
         this.info.visible();
@@ -455,10 +501,13 @@ export class Graph extends Interface {
             return;
         }
 
+        clearTween(this.props);
+
         this.hoveredIn = false;
 
-        clearTween(this.handle);
-        tween(this.handle, { alpha: 0 }, 275, 'easeInOutCubic');
+        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
 
         this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
             this.info.invisible();
@@ -466,9 +515,35 @@ export class Graph extends Interface {
     }
 
     animateIn() {
+        clearTween(this.props);
+
+        tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
+
+        tween(this.props, { widthMultiplier: 1 }, 500, 'easeInOutCubic', () => {
+            this.animatedIn = true;
+
+            tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
+                if (this.hoveredIn) {
+                    this.hoverIn(true);
+                }
+            }, () => {
+                this.needsUpdate = true;
+            });
+        }, () => {
+            this.needsUpdate = true;
+        });
     }
 
     animateOut() {
+        clearTween(this.props);
+
+        this.animatedIn = false;
+
+        tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
+
+        tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', null, () => {
+            this.needsUpdate = true;
+        });
     }
 
     destroy() {
