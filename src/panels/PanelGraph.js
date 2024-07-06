@@ -44,7 +44,7 @@ export class PanelGraph extends Interface {
         this.height = this.width / 2;
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
-        this.path = '';
+        this.pathData = '';
         this.total = 0;
         this.lookup = [];
         this.mouseX = 0;
@@ -87,8 +87,12 @@ export class PanelGraph extends Interface {
         };
 
         this.init();
-        this.initGraph();
         this.initCanvas();
+
+        if (!this.noHover && this.lookupPrecision > 0) {
+            this.initGraph();
+        }
+
         this.setArray(this.value);
 
         this.resize();
@@ -272,7 +276,7 @@ export class PanelGraph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (1 / range) * (this.height - 2);
+        return (this.height - 2) / range;
     }
 
     // Event handlers
@@ -395,10 +399,8 @@ export class PanelGraph extends Interface {
 
         this.needsUpdate = true;
 
-        if (this.lookupPrecision > 0) {
-            this.path = '';
-            this.total = 0;
-            this.lookup = [];
+        if (!this.noHover && this.lookupPrecision > 0) {
+            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
     }
@@ -445,11 +447,11 @@ export class PanelGraph extends Interface {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
-        this.context.lineWidth = 1.5;
+        this.context.lineWidth = 1;
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
         this.context.beginPath();
-        this.context.moveTo(0, this.height);
-        this.context.lineTo(this.width, this.height);
+        this.context.moveTo(0, h);
+        this.context.lineTo(this.width, h);
         this.context.stroke();
 
         // Draw graph line
@@ -460,7 +462,7 @@ export class PanelGraph extends Interface {
         } else {
             this.context.strokeStyle = this.strokeStyle;
             this.context.fillStyle = this.fillStyle;
-            this.context.shadowColor = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
+            this.context.shadowColor = 'rgb(255 255 255 / 0.2)';
             this.context.shadowBlur = 15;
         }
 
@@ -478,13 +480,13 @@ export class PanelGraph extends Interface {
 
             if (i === 0) {
                 if (this.graphNeedsUpdate) {
-                    this.path += `M ${x1} ${y1}`;
+                    this.pathData += `M ${x1} ${y1}`;
                 }
 
                 this.context.moveTo(x1, y1);
             } else {
                 if (this.graphNeedsUpdate) {
-                    this.path += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
+                    this.pathData += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
                 }
 
                 this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
@@ -493,12 +495,6 @@ export class PanelGraph extends Interface {
         }
 
         this.context.stroke();
-
-        if (this.graphNeedsUpdate) {
-            this.graph.path.attr({ d: this.path });
-            this.calculateLookup();
-            this.graphNeedsUpdate = false;
-        }
 
         // Draw gradient fill
         if (!this.noGradient) {
@@ -510,6 +506,12 @@ export class PanelGraph extends Interface {
 
         // Draw handle line and circle
         if (!this.noHover) {
+            if (this.graphNeedsUpdate) {
+                this.graph.path.attr({ d: this.pathData });
+                this.calculateLookup();
+                this.graphNeedsUpdate = false;
+            }
+
             const value = this.array[Math.floor(this.mouseX * (this.array.length - 1))];
             const x = this.mouseX * this.width;
 
@@ -530,8 +532,8 @@ export class PanelGraph extends Interface {
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
             this.context.beginPath();
-            this.context.moveTo(x, y + 2);
-            this.context.lineTo(x, this.height);
+            this.context.moveTo(x, this.height - 0.5);
+            this.context.lineTo(x, y + 2);
             this.context.stroke();
 
             this.context.beginPath();
