@@ -13,28 +13,50 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 67px;
         }
     </style>
 
     <script type="module">
-        import { Graph, clamp, mapLinear } from '../src/index.js';
+        import { Graph, GraphSegments, clamp, mapLinear } from '../src/index.js';
 
         // https://halo-5-visualizer.appspot.com/
 
+        // Graph
         const graph = new Graph({
-            // width: window.innerWidth * 0.74,
-            // height: clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80),
-            // value: Array.from({ length: 10 }, () => Math.random()),
-            resolution: 10,
+            width: window.innerWidth * 0.74,
+            height: clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80),
             precision: 2,
-            lookupPrecision: 200
+            lookupPrecision: 200,
+            value: Array.from({ length: 10 }, () => Math.random())
         });
-        graph.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
-        graph.setArray(Array.from({ length: 10 }, () => Math.random()));
         graph.animateIn();
         document.body.appendChild(graph.element);
+
+        // Graph with 2 segments
+        const graph2 = new GraphSegments({
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5] // length of each segment
+        });
+        graph2.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
+        graph2.setArray(Array.from({ length: 10 }, () => Math.random()));
+        graph2.animateIn();
+        document.body.appendChild(graph2.element);
+
+        // Graph with 3 segments
+        const graph3 = new GraphSegments({
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5, 5] // length of each segment
+        });
+        graph3.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
+        graph3.setArray(Array.from({ length: 15 }, () => Math.random()));
+        graph3.animateIn();
+        document.body.appendChild(graph3.element);
 
         // animation
 
@@ -42,6 +64,8 @@
             requestAnimationFrame(animate);
 
             graph.update();
+            graph2.update();
+            graph3.update();
         }
 
         requestAnimationFrame(animate);
@@ -55,6 +79,8 @@
             const height = clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80);
 
             graph.setSize(width, height);
+            graph2.setSize(width, height);
+            graph3.setSize(width, height);
         }
     </script>
 </head>

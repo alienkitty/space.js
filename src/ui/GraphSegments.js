@@ -12,27 +12,29 @@ import { Stage } from '../utils/Stage.js';
 
 import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
-import { clamp } from '../utils/Utils.js';
+import { clamp, mapLinear } from '../utils/Utils.js';
 
-export class Graph extends Interface {
+export class GraphSegments extends Interface {
     constructor({
         width = 150,
         height = 50,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
+        segments = [],
         range = 1,
         value,
         noHover = false,
         noGradient = false
     } = {}) {
-        super('.graph');
+        super('.graph-segments');
 
         this.width = width;
         this.height = height;
         this.resolution = resolution;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
+        this.segments = segments;
         this.range = range;
         this.value = value;
         this.noHover = noHover;
@@ -46,9 +48,7 @@ export class Graph extends Interface {
         this.startTime = performance.now();
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
-        this.pathData = '';
-        this.total = 0;
-        this.lookup = [];
+        this.graphs = [];
         this.mouseX = 0;
         this.mouse = new Vector2();
         this.delta = new Vector2();
@@ -82,7 +82,7 @@ export class Graph extends Interface {
         this.initCanvas();
 
         if (!this.noHover && this.lookupPrecision > 0) {
-            this.initGraph();
+            this.initGraphs();
         }
 
         this.setSize(this.width, this.height);
@@ -119,44 +119,52 @@ export class Graph extends Interface {
         }
     }
 
-    initGraph() {
+    initGraphs() {
         // Not added to DOM
-        this.graph = new Interface(null, 'svg');
-        this.graph.path = new Interface(null, 'svg', 'path');
-        this.graph.add(this.graph.path);
+        this.graphs = this.segments.map(() => {
+            const graph = new Interface(null, 'svg');
+            graph.path = new Interface(null, 'svg', 'path');
+            graph.add(graph.path);
+
+            graph.pathData = '';
+            graph.total = 0;
+            graph.lookup = [];
+
+            return graph;
+        });
     }
 
-    calculateLookup() {
-        this.total = this.graph.path.element.getTotalLength();
-        this.lookup = [];
+    calculateLookup(graph) {
+        graph.total = graph.path.element.getTotalLength();
+        graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(this.graph.path.element.getPointAtLength(this.total * i));
+            graph.lookup.push(graph.path.element.getPointAtLength(graph.total * i));
 
             i += 1 / this.lookupPrecision;
         }
     }
 
-    getCurveY(mouseX) {
-        const x = mouseX * this.width;
+    getCurveY(graph, mouseX, width) {
+        const x = mouseX * width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
         let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
-            if (this.lookup[i].x > x) {
+            if (graph.lookup[i].x > x) {
                 break;
             }
         }
 
         if (i === this.lookupPrecision) {
-            return this.lookup[this.lookupPrecision - 1].y;
+            return graph.lookup[this.lookupPrecision - 1].y;
         }
 
-        const lower = this.lookup[i - 1];
-        const upper = this.lookup[i];
+        const lower = graph.lookup[i - 1];
+        const upper = graph.lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
         const diff = (upper.y - lower.y);
         const y = lower.y + diff * percent;
@@ -219,7 +227,11 @@ export class Graph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 2) / range;
+        if (Array.isArray(range)) {
+            return range.map(range => (this.height - 2) / range);
+        } else {
+            return new Array(this.segments.length).fill((this.height - 2) / range);
+        }
     }
 
     // Event handlers
@@ -296,7 +308,10 @@ export class Graph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision > 0) {
-            this.pathData = '';
+            this.graphs.forEach(graph => {
+                graph.pathData = '';
+            });
+
             this.graphNeedsUpdate = true;
         }
 
@@ -327,7 +342,10 @@ export class Graph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision > 0) {
-            this.pathData = '';
+            this.graphs.forEach(graph => {
+                graph.pathData = '';
+            });
+
             this.graphNeedsUpdate = true;
         }
 
@@ -378,6 +396,16 @@ export class Graph extends Interface {
         this.context.lineTo(w, h);
         this.context.stroke();
 
+        // Draw segment lines
+        for (let i = 1, l = this.graphs.length; i < l; i++) {
+            const x = (i / l) * this.width;
+
+            this.context.beginPath();
+            this.context.moveTo(x, h - 0.5);
+            this.context.lineTo(x, h - h * this.props.yMultiplier);
+            this.context.stroke();
+        }
+
         // Draw graph line
         this.context.lineWidth = 1.5;
 
@@ -390,68 +418,107 @@ export class Graph extends Interface {
             this.context.shadowBlur = 15;
         }
 
-        this.context.beginPath();
+        let end = 0;
 
-        for (let i = 0, l = this.array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = this.array[i] * this.rangeHeight;
-            const y2 = this.array[i + 1] * this.rangeHeight;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        for (let i = 0, l = this.array.length, il = this.graphs.length; i < il; i++) {
+            if (this.props.widthMultiplier === 1) {
+                this.context.beginPath();
+            }
 
-            if (i === 0) {
-                if (this.graphNeedsUpdate) {
-                    this.pathData += `M ${x1} ${h - y1}`;
+            const start = end;
+            end += this.segments[i];
+
+            const startX = (start / l) * this.width;
+            const endX = (end / l) * this.width;
+            const segmentWidth = (this.segments[i] / l) * this.width;
+
+            for (let j = 0, jl = this.segments[i] - 1; j < jl; j++) {
+                const x1 = (j / jl) * segmentWidth;
+                const x2 = ((j + 1) / jl) * segmentWidth;
+                const y1 = this.array[start + j] * this.rangeHeight[i];
+                const y2 = this.array[start + j + 1] * this.rangeHeight[i];
+                const xMid = (x1 + x2) / 2;
+                const yMid = (y1 + y2) / 2;
+                const cpX1 = (xMid + x1) / 2;
+                const cpX2 = (xMid + x2) / 2;
+
+                if (j === 0) {
+                    if (this.graphNeedsUpdate) {
+                        this.graphs[i].pathData += `M ${x1} ${h - y1}`;
+                    }
+
+                    if (this.props.widthMultiplier === 1) {
+                        this.context.moveTo(startX + x1, h - y1 * this.props.yMultiplier);
+                    }
+                } else {
+                    if (this.graphNeedsUpdate) {
+                        this.graphs[i].pathData += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
+                    }
+
+                    if (this.props.widthMultiplier === 1) {
+                        this.context.quadraticCurveTo(startX + cpX1, h - y1 * this.props.yMultiplier, startX + xMid, h - yMid * this.props.yMultiplier);
+                        this.context.quadraticCurveTo(startX + cpX2, h - y2 * this.props.yMultiplier, startX + x2, h - y2 * this.props.yMultiplier);
+                    }
                 }
+            }
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.moveTo(x1, h - y1 * this.props.yMultiplier);
-                }
-            } else {
-                if (this.graphNeedsUpdate) {
-                    this.pathData += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
-                }
+            if (this.props.widthMultiplier === 1) {
+                this.context.stroke();
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.quadraticCurveTo(cpX1, h - y1 * this.props.yMultiplier, xMid, h - yMid * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(cpX2, h - y2 * this.props.yMultiplier, x2, h - y2 * this.props.yMultiplier);
+                // Draw gradient fill
+                if (!this.noGradient) {
+                    this.context.shadowBlur = 0;
+                    this.context.lineTo(endX, this.height);
+                    this.context.lineTo(startX, this.height);
+                    this.context.fill();
                 }
             }
         }
 
         if (this.props.widthMultiplier < 1) {
+            this.context.beginPath();
             this.context.moveTo(0, h);
             this.context.lineTo(w, h);
-        }
-
-        this.context.stroke();
-
-        // Draw gradient fill
-        if (!this.noGradient && this.props.widthMultiplier === 1) {
-            this.context.shadowBlur = 0;
-            this.context.lineTo(this.width, this.height);
-            this.context.lineTo(0, this.height);
-            this.context.fill();
+            this.context.stroke();
         }
 
         // Draw handle line and circle
         if (!this.noHover) {
             if (this.graphNeedsUpdate) {
-                this.graph.path.attr({ d: this.pathData });
-                this.calculateLookup();
+                this.graphs.forEach(graph => {
+                    graph.path.attr({ d: graph.pathData });
+                    this.calculateLookup(graph);
+                });
+
                 this.graphNeedsUpdate = false;
             }
 
-            const value = this.array[Math.floor(this.mouseX * (this.array.length - 1))];
+            const length = this.array.length;
             const x = this.mouseX * this.width;
+
+            let i = 0;
+            let start = 0;
+            let width = 0;
+            let end = 0;
+
+            for (let l = this.graphs.length; i < l; i++) {
+                start = end;
+                width = this.segments[i] / length;
+                end += width;
+
+                if (this.mouseX >= start && this.mouseX <= end) {
+                    break;
+                }
+            }
+
+            const value = this.array[Math.floor(start + this.mouseX * (length - 1))];
 
             let y;
 
             if (this.lookupPrecision > 0) {
-                y = this.getCurveY(this.mouseX);
+                const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
+
+                y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
             } else {
                 y = h - value * this.rangeHeight;
             }
