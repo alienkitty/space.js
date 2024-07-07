@@ -66,6 +66,7 @@ export { Menu } from './ui/Menu.js';
 export { MenuItem } from './ui/MenuItem.js';
 export { Thumbnail } from './ui/Thumbnail.js';
 export { Graph } from './ui/Graph.js';
+export { GraphSegments } from './ui/GraphSegments.js';
 export { Line } from './ui/Line.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';
