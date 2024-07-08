@@ -158,6 +158,27 @@
             },
             {
                 type: 'graph',
+                name: 'Ghost',
+                resolution: 100,
+                precision: 2,
+                value: -13,
+                ghost: true,
+                noText: true,
+                callback: (value, panel) => {
+                    // console.log('Ghost callback:', value);
+
+                    const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
+                    panel.update(y);
+
+                    // The return value is passed back in the next frame
+                    return value;
+                }
+            },
+            {
+                type: 'spacer'
+            },
+            {
+                type: 'graph',
                 name: 'Array',
                 precision: 2,
                 lookupPrecision: 50,
