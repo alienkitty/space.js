@@ -71,7 +71,7 @@
 
         // Graph with ghost value
         const graph5 = new Graph({
-            resolution: 800,
+            resolution: 311,
             precision: 2,
             ghost: true
         });
@@ -84,10 +84,10 @@
             precision: 2,
             lookupPrecision: 100, // per segment
             segments: [5, 5, 3], // length of each segment (minimum length of 3)
+            value: Array.from({ length: 13 }, () => Math.random()),
             ghost: Array.from({ length: 13 }, () => Math.random())
         });
         graph6.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
-        graph6.setArray(Array.from({ length: 13 }, () => Math.random()));
         graph6.animateIn();
         document.body.appendChild(graph6.element);
 
