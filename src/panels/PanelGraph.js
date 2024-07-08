@@ -5,7 +5,6 @@
  */
 
 import { Color } from '../math/Color.js';
-import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -47,12 +46,8 @@ export class PanelGraph extends Interface {
         this.pathData = '';
         this.total = 0;
         this.lookup = [];
-        this.mouseX = 0;
-        this.mouse = new Vector2();
-        this.delta = new Vector2();
         this.bounds = null;
-        this.lastTime = 0;
-        this.lastMouse = new Vector2();
+        this.mouseX = 0;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -257,7 +252,7 @@ export class PanelGraph extends Interface {
         if (!this.noHover) {
             this.element.addEventListener('mouseenter', this.onHover);
             this.element.addEventListener('mouseleave', this.onHover);
-            this.element.addEventListener('pointerdown', this.onPointerDown);
+            window.addEventListener('pointerdown', this.onPointerDown);
             this.element.addEventListener('pointermove', this.onPointerMove);
         }
 
@@ -268,7 +263,7 @@ export class PanelGraph extends Interface {
         if (!this.noHover) {
             this.element.removeEventListener('mouseenter', this.onHover);
             this.element.removeEventListener('mouseleave', this.onHover);
-            this.element.removeEventListener('pointerdown', this.onPointerDown);
+            window.removeEventListener('pointerdown', this.onPointerDown);
             this.element.removeEventListener('pointermove', this.onPointerMove);
         }
 
@@ -309,48 +304,20 @@ export class PanelGraph extends Interface {
         }
 
         if (this.element.contains(e.target)) {
-            this.lastTime = performance.now();
-            this.lastMouse.set(e.clientX, e.clientY);
-
             this.onPointerMove(e);
-
-            window.addEventListener('pointerup', this.onPointerUp);
+            this.hoverIn();
+        } else {
+            this.hoverOut();
         }
     };
 
-    onPointerMove = ({ clientX, clientY }) => {
+    onPointerMove = ({ clientX }) => {
         if (!this.animatedIn) {
             return;
         }
-
-        const event = {
-            x: clientX,
-            y: clientY
-        };
-
-        this.mouse.copy(event);
-        this.delta.subVectors(this.mouse, this.lastMouse);
 
         this.bounds = this.element.getBoundingClientRect();
         this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
-    };
-
-    onPointerUp = e => {
-        window.removeEventListener('pointerup', this.onPointerUp);
-
-        if (!this.animatedIn) {
-            return;
-        }
-
-        this.onPointerMove(e);
-
-        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
-            return;
-        }
-
-        if (!this.element.contains(e.target)) {
-            this.hoverOut();
-        }
     };
 
     onUpdate = () => {
