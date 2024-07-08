@@ -395,8 +395,12 @@ export class GraphSegments extends Interface {
         this.context.stroke();
 
         // Draw segment lines
-        for (let i = 1, l = this.graphs.length; i < l; i++) {
-            const x = (i / l) * this.width;
+        let end = 0;
+
+        for (let i = 0, l = this.array.length, il = this.graphs.length - 1; i < il; i++) {
+            end += this.segments[i] / l;
+
+            const x = end * this.width;
 
             this.context.beginPath();
             this.context.moveTo(x, h - 0.5);

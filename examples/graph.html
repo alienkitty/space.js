@@ -40,7 +40,7 @@
         const graph2 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5] // length of each segment
+            segments: [5, 5] // length of each segment (minimum length of 3)
         });
         graph2.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
         graph2.setArray(Array.from({ length: 10 }, () => Math.random()));
@@ -51,7 +51,7 @@
         const graph3 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 5] // length of each segment
+            segments: [5, 5, 5] // length of each segment (minimum length of 3)
         });
         graph3.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
         graph3.setArray(Array.from({ length: 15 }, () => Math.random()));
@@ -60,7 +60,6 @@
 
         // Graph with ghost
         const graph4 = new Graph({
-            // ghost: Array.from({ length: 10 }, () => Math.random()),
             precision: 2,
             lookupPrecision: 200
         });
@@ -80,6 +79,18 @@
         graph5.animateIn();
         document.body.appendChild(graph5.element);
 
+        // Graph with uneven segments and ghost
+        const graph6 = new GraphSegments({
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5, 3], // length of each segment (minimum length of 3)
+            ghost: Array.from({ length: 13 }, () => Math.random())
+        });
+        graph6.setSize(window.innerWidth * 0.74, clamp(mapLinear(window.innerHeight, 600, 1000, 40, 80), 40, 80));
+        graph6.setArray(Array.from({ length: 13 }, () => Math.random()));
+        graph6.animateIn();
+        document.body.appendChild(graph6.element);
+
         // animation
 
         let counter = 0;
@@ -94,6 +105,8 @@
 
             const y = 0.5 + 0.5 * Math.sin(counter++ / 9) * 0.5;
             graph5.update(y);
+
+            graph6.update();
         }
 
         requestAnimationFrame(animate);
@@ -111,6 +124,7 @@
             graph3.setSize(width, height);
             graph4.setSize(width, height);
             graph5.setSize(width, height);
+            graph6.setSize(width, height);
         }
     </script>
 </head>
