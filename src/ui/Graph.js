@@ -73,7 +73,7 @@ export class Graph extends Interface {
             alpha: 0,
             handleAlpha: 0,
             yMultiplier: 0,
-            widthMultiplier: 0
+            progress: 0
         };
 
         this.init();
@@ -178,10 +178,10 @@ export class Graph extends Interface {
         this.add(this.canvas);
     }
 
-    createGradient(x1, y1, x2, y2, alpha = 1) {
+    createGradient(x0, y0, x1, y1, alpha = 1) {
         this.alpha = alpha;
 
-        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
 
         let offset = 0;
 
@@ -358,7 +358,7 @@ export class Graph extends Interface {
     }
 
     drawGraph() {
-        const w = this.width * this.props.widthMultiplier;
+        const w = this.width * this.props.progress;
         const h = this.height - 1;
 
         if (this.props.alpha < 0.001) {
@@ -376,7 +376,7 @@ export class Graph extends Interface {
         this.context.lineTo(w, h);
         this.context.stroke();
 
-        // Draw graph line and gradient fill
+        // Draw graph line and linear gradient fill
         if (this.ghostArray.length) {
             this.drawPath(w, h, this.ghostArray, true);
         }
@@ -445,45 +445,45 @@ export class Graph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = array[i] * this.rangeHeight;
-            const y2 = array[i + 1] * this.rangeHeight;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        for (let i = 0, l = array.length; i < l - 1; i++) {
+            const x0 = (i / (l - 1)) * this.width;
+            const x1 = ((i + 1) / (l - 1)) * this.width;
+            const y0 = array[i] * this.rangeHeight;
+            const y1 = array[i + 1] * this.rangeHeight;
+            const midX = (x0 + x1) / 2;
+            const midY = (y0 + y1) / 2;
+            const cpX1 = (midX + x0) / 2;
+            const cpX2 = (midX + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x1} ${h - y1}`;
+                    this.pathData += `M ${x0} ${h - y0}`;
                 }
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.moveTo(x1, h - y1 * this.props.yMultiplier);
+                if (this.props.progress === 1) {
+                    this.context.moveTo(x0, h - y0 * this.props.yMultiplier);
                 }
             } else {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
+                    this.pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
                 }
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.quadraticCurveTo(cpX1, h - y1 * this.props.yMultiplier, xMid, h - yMid * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(cpX2, h - y2 * this.props.yMultiplier, x2, h - y2 * this.props.yMultiplier);
+                if (this.props.progress === 1) {
+                    this.context.quadraticCurveTo(cpX1, h - y0 * this.props.yMultiplier, midX, h - midY * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(cpX2, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
                 }
             }
         }
 
-        if (this.props.widthMultiplier < 1) {
+        if (this.props.progress < 1) {
             this.context.moveTo(0, h);
             this.context.lineTo(w, h);
         }
 
         this.context.stroke();
 
-        // Draw gradient fill
-        if (!this.noGradient && this.props.widthMultiplier === 1) {
+        // Draw linear gradient fill
+        if (!this.noGradient && this.props.progress === 1) {
             this.context.shadowBlur = 0;
             this.context.lineTo(this.width, this.height);
             this.context.lineTo(0, this.height);
@@ -532,7 +532,7 @@ export class Graph extends Interface {
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
-        tween(this.props, { widthMultiplier: 1 }, 500, 'easeInOutCubic', () => {
+        tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
             tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
                 this.animatedIn = true;
 

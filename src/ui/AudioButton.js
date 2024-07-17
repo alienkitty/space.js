@@ -24,8 +24,8 @@ export class AudioButton extends Interface {
         this.needsUpdate = false;
 
         this.props = {
-            progress: 0,
-            yMultiplier: this.sound ? 1 : 0
+            yMultiplier: this.sound ? 1 : 0,
+            progress: 0
         };
 
         this.init();

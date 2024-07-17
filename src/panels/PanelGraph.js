@@ -231,10 +231,10 @@ export class PanelGraph extends Interface {
         this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
     }
 
-    createGradient(x1, y1, x2, y2, alpha = 1) {
+    createGradient(x0, y0, x1, y1, alpha = 1) {
         this.alpha = alpha;
 
-        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
 
         let offset = 0;
 
@@ -448,7 +448,7 @@ export class PanelGraph extends Interface {
         this.context.lineTo(this.width, h);
         this.context.stroke();
 
-        // Draw graph line and gradient fill
+        // Draw graph line and linear gradient fill
         if (this.ghostArray.length) {
             this.drawPath(h, this.ghostArray, true);
         }
@@ -517,35 +517,35 @@ export class PanelGraph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = h - array[i] * this.rangeHeight;
-            const y2 = h - array[i + 1] * this.rangeHeight;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        for (let i = 0, l = array.length; i < l - 1; i++) {
+            const x0 = (i / (l - 1)) * this.width;
+            const x1 = ((i + 1) / (l - 1)) * this.width;
+            const y0 = h - array[i] * this.rangeHeight;
+            const y1 = h - array[i + 1] * this.rangeHeight;
+            const midX = (x0 + x1) / 2;
+            const midY = (y0 + y1) / 2;
+            const cpX1 = (midX + x0) / 2;
+            const cpX2 = (midX + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x1} ${y1}`;
+                    this.pathData += `M ${x0} ${y0}`;
                 }
 
-                this.context.moveTo(x1, y1);
+                this.context.moveTo(x0, y0);
             } else {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
+                    this.pathData += ` Q ${cpX1} ${y0} ${midX} ${midY} Q ${cpX2} ${y1} ${x1} ${y1}`;
                 }
 
-                this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
-                this.context.quadraticCurveTo(cpX2, y2, x2, y2);
+                this.context.quadraticCurveTo(cpX1, y0, midX, midY);
+                this.context.quadraticCurveTo(cpX2, y1, x1, y1);
             }
         }
 
         this.context.stroke();
 
-        // Draw gradient fill
+        // Draw linear gradient fill
         if (!this.noGradient) {
             this.context.shadowBlur = 0;
             this.context.lineTo(this.width, this.height);
