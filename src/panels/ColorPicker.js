@@ -43,6 +43,7 @@ export class ColorPicker extends Interface {
         this.triangleRadius = 98;
         this.triangleSideLength = Math.sqrt(3) * this.triangleRadius;
 
+        this.bounds = null;
         this.offset = new Vector2();
         this.marker = new Vector2();
         this.isOpen = false;
@@ -339,13 +340,11 @@ export class ColorPicker extends Interface {
             return;
         }
 
-        const bounds = this.element.getBoundingClientRect();
+        this.bounds = this.element.getBoundingClientRect();
+        this.offset.x = clientX - (this.bounds.left + this.middle);
+        this.offset.y = clientY - (this.bounds.top + this.top + this.middle);
 
-        const offset = this.offset;
-        offset.x = clientX - (bounds.left + this.middle);
-        offset.y = clientY - (bounds.top + this.top + this.middle);
-
-        const distance = offset.length() * this.ratio;
+        const distance = this.offset.length() * this.ratio;
 
         if (distance < 128) {
             this.setCursor('crosshair');
@@ -362,7 +361,7 @@ export class ColorPicker extends Interface {
             if (this.distance < 128) {
                 if (this.distance > this.triangleRadius) {
                     // Ring
-                    const angle = offset.angle();
+                    const angle = this.offset.angle();
 
                     let hue = (angle + PI90) / TwoPI;
                     hue = (hue + 1) % 1;
@@ -370,8 +369,8 @@ export class ColorPicker extends Interface {
                     this.h = hue;
                 } else {
                     // Triangle
-                    const x = offset.x * this.ratio;
-                    const y = offset.y * this.ratio;
+                    const x = this.offset.x * this.ratio;
+                    const y = this.offset.y * this.ratio;
 
                     let angle = this.h * TwoPI + PI;
 
