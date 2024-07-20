@@ -529,15 +529,15 @@ export class GraphSegments extends Interface {
                     if (this.props.progress === 1) {
                         this.context.moveTo(startX + x0, h - y0 * this.props.yMultiplier);
                     }
-                } else {
-                    if (this.graphNeedsUpdate && !ghost) {
-                        this.graphs[i].pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
-                    }
+                }
 
-                    if (this.props.progress === 1) {
-                        this.context.quadraticCurveTo(startX + cpX1, h - y0 * this.props.yMultiplier, startX + midX, h - midY * this.props.yMultiplier);
-                        this.context.quadraticCurveTo(startX + cpX2, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
-                    }
+                if (this.graphNeedsUpdate && !ghost) {
+                    this.graphs[i].pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
+                }
+
+                if (this.props.progress === 1) {
+                    this.context.quadraticCurveTo(startX + cpX1, h - y0 * this.props.yMultiplier, startX + midX, h - midY * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(startX + cpX2, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
                 }
             }
 

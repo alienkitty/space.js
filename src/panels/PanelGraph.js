@@ -533,14 +533,14 @@ export class PanelGraph extends Interface {
                 }
 
                 this.context.moveTo(x0, y0);
-            } else {
-                if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${y0} ${midX} ${midY} Q ${cpX2} ${y1} ${x1} ${y1}`;
-                }
-
-                this.context.quadraticCurveTo(cpX1, y0, midX, midY);
-                this.context.quadraticCurveTo(cpX2, y1, x1, y1);
             }
+
+            if (this.graphNeedsUpdate && !ghost) {
+                this.pathData += ` Q ${cpX1} ${y0} ${midX} ${midY} Q ${cpX2} ${y1} ${x1} ${y1}`;
+            }
+
+            this.context.quadraticCurveTo(cpX1, y0, midX, midY);
+            this.context.quadraticCurveTo(cpX2, y1, x1, y1);
         }
 
         this.context.stroke();

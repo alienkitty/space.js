@@ -463,15 +463,15 @@ export class Graph extends Interface {
                 if (this.props.progress === 1) {
                     this.context.moveTo(x0, h - y0 * this.props.yMultiplier);
                 }
-            } else {
-                if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
-                }
+            }
 
-                if (this.props.progress === 1) {
-                    this.context.quadraticCurveTo(cpX1, h - y0 * this.props.yMultiplier, midX, h - midY * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(cpX2, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
-                }
+            if (this.graphNeedsUpdate && !ghost) {
+                this.pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
+            }
+
+            if (this.props.progress === 1) {
+                this.context.quadraticCurveTo(cpX1, h - y0 * this.props.yMultiplier, midX, h - midY * this.props.yMultiplier);
+                this.context.quadraticCurveTo(cpX2, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
             }
         }
 
