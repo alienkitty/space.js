@@ -357,10 +357,7 @@ export class ColorPicker extends Interface {
                     // Ring
                     const angle = this.offset.angle();
 
-                    let hue = (angle + PI90) / TwoPI;
-                    hue = (hue + 1) % 1;
-
-                    this.h = hue;
+                    this.h = (angle + PI90) / TwoPI;
                 } else {
                     // Triangle
                     const x = this.offset.x * this.ratio;
