@@ -98,6 +98,7 @@ export class GraphSegments extends Interface {
             position: 'relative',
             width: this.width,
             height: this.height,
+            cursor: 'crosshair',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'
