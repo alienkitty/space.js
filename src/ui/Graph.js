@@ -222,7 +222,7 @@ export class Graph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 2) / range;
+        return (this.height - 4) / range;
     }
 
     // Event handlers

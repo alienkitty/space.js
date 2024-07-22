@@ -231,9 +231,9 @@ export class GraphSegments extends Interface {
 
     getRangeHeight(range) {
         if (Array.isArray(range)) {
-            return range.map(range => (this.height - 2) / range);
+            return range.map(range => (this.height - 4) / range);
         } else {
-            return new Array(this.segments.length).fill((this.height - 2) / range);
+            return new Array(this.segments.length).fill((this.height - 4) / range);
         }
     }
 
