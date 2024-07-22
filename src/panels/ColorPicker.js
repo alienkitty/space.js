@@ -12,13 +12,7 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
-import { brightness, clamp, guid, radToDeg } from '../utils/Utils.js';
-
-const PI = Math.PI;
-const TwoPI = Math.PI * 2;
-const PI90 = Math.PI / 2;
-const PI60 = Math.PI / 3;
-const Third = Math.PI * 2 / 3;
+import { PI, PI60, PI90, Third, TwoPI, brightness, clamp, guid, radToDeg } from '../utils/Utils.js';
 
 export class ColorPicker extends Interface {
     constructor({

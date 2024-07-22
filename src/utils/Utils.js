@@ -4,15 +4,18 @@
  * Based on https://github.com/mrdoob/three.js/blob/dev/src/math/MathUtils.js
  */
 
-export const DEG2RAD = Math.PI / 180;
-export const RAD2DEG = 180 / Math.PI;
+export const PI = Math.PI;
+export const TwoPI = Math.PI * 2;
+export const PI90 = Math.PI / 2;
+export const PI60 = Math.PI / 3;
+export const Third = Math.PI * 2 / 3;
 
 export function degToRad(degrees) {
-    return degrees * DEG2RAD;
+    return degrees * Math.PI / 180;
 }
 
 export function radToDeg(radians) {
-    return radians * RAD2DEG;
+    return radians * 180 / Math.PI;
 }
 
 export function isPowerOfTwo(value) {
