@@ -79,7 +79,7 @@ export class GraphSegments extends Interface {
         this.init();
         this.initCanvas();
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.initGraphs();
         }
 
@@ -130,7 +130,7 @@ export class GraphSegments extends Interface {
             graph.add(graph.path);
 
             graph.pathData = '';
-            graph.total = 0;
+            graph.length = 0;
             graph.lookup = [];
 
             return graph;
@@ -138,13 +138,13 @@ export class GraphSegments extends Interface {
     }
 
     calculateLookup(graph) {
-        graph.total = graph.path.element.getTotalLength();
+        graph.length = graph.path.element.getTotalLength();
         graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            graph.lookup.push(graph.path.element.getPointAtLength(graph.total * i));
+            graph.lookup.push(graph.path.element.getPointAtLength(i * graph.length));
 
             i += 1 / this.lookupPrecision;
         }
@@ -169,7 +169,7 @@ export class GraphSegments extends Interface {
         const lower = graph.lookup[i - 1];
         const upper = graph.lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
-        const diff = (upper.y - lower.y);
+        const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
 
         return y;
@@ -298,7 +298,7 @@ export class GraphSegments extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.graphs.forEach(graph => {
                 graph.pathData = '';
             });
@@ -332,7 +332,7 @@ export class GraphSegments extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.graphs.forEach(graph => {
                 graph.pathData = '';
             });
@@ -449,7 +449,7 @@ export class GraphSegments extends Interface {
 
             let y;
 
-            if (this.lookupPrecision > 0) {
+            if (this.lookupPrecision) {
                 const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
 
                 y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
@@ -471,7 +471,7 @@ export class GraphSegments extends Interface {
             this.context.stroke();
 
             this.context.beginPath();
-            this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
+            this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
             this.info.css({ left: x });
@@ -517,10 +517,10 @@ export class GraphSegments extends Interface {
                 const x1 = ((j + 1) / (jl - 1)) * segmentWidth;
                 const y0 = array[start + j] * this.rangeHeight[i];
                 const y1 = array[start + j + 1] * this.rangeHeight[i];
-                const midX = (x0 + x1) / 2;
-                const midY = (y0 + y1) / 2;
-                const cpX1 = (midX + x0) / 2;
-                const cpX2 = (midX + x1) / 2;
+                const mx = (x0 + x1) / 2;
+                const my = (y0 + y1) / 2;
+                const cpx1 = (mx + x0) / 2;
+                const cpx2 = (mx + x1) / 2;
 
                 if (j === 0) {
                     if (this.graphNeedsUpdate && !ghost) {
@@ -533,12 +533,12 @@ export class GraphSegments extends Interface {
                 }
 
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.graphs[i].pathData += ` Q ${cpX1} ${h - y0} ${midX} ${h - midY} Q ${cpX2} ${h - y1} ${x1} ${h - y1}`;
+                    this.graphs[i].pathData += ` Q ${cpx1} ${h - y0} ${mx} ${h - my} Q ${cpx2} ${h - y1} ${x1} ${h - y1}`;
                 }
 
                 if (this.props.progress === 1) {
-                    this.context.quadraticCurveTo(startX + cpX1, h - y0 * this.props.yMultiplier, startX + midX, h - midY * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(startX + cpX2, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(startX + cpx1, h - y0 * this.props.yMultiplier, startX + mx, h - my * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(startX + cpx2, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
                 }
             }
 
