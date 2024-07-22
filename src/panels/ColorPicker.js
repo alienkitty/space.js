@@ -440,7 +440,7 @@ export class ColorPicker extends Interface {
         if (cursor !== this.lastCursor) {
             this.lastCursor = cursor;
 
-            Stage.css({ cursor });
+            this.css({ cursor });
         }
     }
 
