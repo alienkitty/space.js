@@ -111,8 +111,8 @@ export class HeaderInfo extends Interface {
     };
 
     onPointerUp = e => {
-        window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
+        window.removeEventListener('pointerup', this.onPointerUp);
 
         this.onPointerMove(e);
 

@@ -418,8 +418,8 @@ export class ColorPicker extends Interface {
     };
 
     onPointerUp = e => {
-        window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
+        window.removeEventListener('pointerup', this.onPointerUp);
 
         if (!this.isOpen) {
             return;
