@@ -21,6 +21,7 @@ export class RadialGraph extends Interface {
         start = 0,
         graphHeight = 50,
         resolution = 80,
+        tension = 6,
         precision = 0,
         lookupPrecision = 0,
         range = 1,
@@ -36,6 +37,7 @@ export class RadialGraph extends Interface {
         this.start = start;
         this.graphHeight = graphHeight;
         this.resolution = resolution;
+        this.tension = tension;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.range = range;
@@ -592,11 +594,11 @@ export class RadialGraph extends Interface {
                 const p2 = this.points[i + 1];
                 const p3 = this.points[i + 2];
 
-                const cp1x = p1.x + (p2.x - p0.x) / 6;
-                const cp1y = p1.y + (p2.y - p0.y) / 6;
+                const cp1x = p1.x + (p2.x - p0.x) / this.tension;
+                const cp1y = p1.y + (p2.y - p0.y) / this.tension;
 
-                const cp2x = p2.x - (p3.x - p1.x) / 6;
-                const cp2y = p2.y - (p3.y - p1.y) / 6;
+                const cp2x = p2.x - (p3.x - p1.x) / this.tension;
+                const cp2y = p2.y - (p3.y - p1.y) / this.tension;
 
                 this.pathData += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${p2.x} ${p2.y}`;
             }
@@ -656,11 +658,11 @@ export class RadialGraph extends Interface {
                 const p2 = this.points[i + 1];
                 const p3 = this.points[i + 2];
 
-                const cp1x = p1.x + (p2.x - p0.x) / 6;
-                const cp1y = p1.y + (p2.y - p0.y) / 6;
+                const cp1x = p1.x + (p2.x - p0.x) / this.tension;
+                const cp1y = p1.y + (p2.y - p0.y) / this.tension;
 
-                const cp2x = p2.x - (p3.x - p1.x) / 6;
-                const cp2y = p2.y - (p3.y - p1.y) / 6;
+                const cp2x = p2.x - (p3.x - p1.x) / this.tension;
+                const cp2y = p2.y - (p3.y - p1.y) / this.tension;
 
                 this.context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
             }

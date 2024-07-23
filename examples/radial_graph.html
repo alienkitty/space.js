@@ -12,9 +12,16 @@
 
     <style>
         body {
+            position: unset;
+            height: unset;
+            min-height: 100%;
+            max-width: 1205px;
+            margin: 0 auto;
+            padding: 55px 0px;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
             gap: 67px;
         }
     </style>
@@ -44,11 +51,33 @@
         // Radial graph with ghost value
         const graph3 = new RadialGraph({
             resolution: 311,
+            tension: 100,
             precision: 2,
             ghost: true
         });
         graph3.animateIn();
         document.body.appendChild(graph3.element);
+
+        // Radial graph with angular tension
+        const graph4 = new RadialGraph({
+            value: Array.from({ length: 10 }, () => Math.random()),
+            tension: 100,
+            precision: 2,
+            lookupPrecision: 200
+        });
+        graph4.animateIn();
+        document.body.appendChild(graph4.element);
+
+        // Radial graph with angular tension and ghost
+        const graph5 = new RadialGraph({
+            value: Array.from({ length: 10 }, () => Math.random()),
+            tension: 100,
+            precision: 2,
+            lookupPrecision: 200
+        });
+        graph5.setGhostArray(Array.from({ length: 10 }, () => Math.random()));
+        graph5.animateIn();
+        document.body.appendChild(graph5.element);
 
         // animation
 
@@ -62,6 +91,9 @@
 
             const y = 0.5 + 0.5 * Math.sin(counter++ / 9) * 0.5;
             graph3.update(y);
+
+            graph4.update();
+            graph5.update();
         }
 
         requestAnimationFrame(animate);
