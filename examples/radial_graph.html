@@ -34,19 +34,19 @@
 
         // Radial graph
         const graph = new RadialGraph({
-            value: Array.from({ length: 10 }, () => Math.random()),
             precision: 2,
-            lookupPrecision: 200
+            lookupPrecision: 200,
+            value: Array.from({ length: 10 }, () => Math.random())
         });
         graph.animateIn();
         document.body.appendChild(graph.element);
 
         // Radial graph with ghost
         const graph2 = new RadialGraph({
-            value: Array.from({ length: 10 }, () => Math.random()),
             precision: 2,
             lookupPrecision: 200
         });
+        graph2.setArray(Array.from({ length: 10 }, () => Math.random()));
         graph2.setGhostArray(Array.from({ length: 10 }, () => Math.random()));
         graph2.animateIn();
         document.body.appendChild(graph2.element);
@@ -61,27 +61,16 @@
         graph3.animateIn();
         document.body.appendChild(graph3.element);
 
-        // Radial graph with angular tension
+        // Radial graph with start angle and ghost
         const graph4 = new RadialGraph({
-            value: Array.from({ length: 10 }, () => Math.random()),
-            tension: 100,
+            start: -90,
             precision: 2,
-            lookupPrecision: 200
+            lookupPrecision: 200,
+            value: Array.from({ length: 13 }, () => Math.random()),
+            ghost: Array.from({ length: 13 }, () => Math.random())
         });
         graph4.animateIn();
         document.body.appendChild(graph4.element);
-
-        // Radial graph with start angle, angular tension and ghost
-        const graph5 = new RadialGraph({
-            value: Array.from({ length: 10 }, () => Math.random()),
-            start: -90,
-            tension: 100,
-            precision: 2,
-            lookupPrecision: 200
-        });
-        graph5.setGhostArray(Array.from({ length: 10 }, () => Math.random()));
-        graph5.animateIn();
-        document.body.appendChild(graph5.element);
 
         // animation
 
@@ -97,7 +86,6 @@
             graph3.update(y);
 
             graph4.update();
-            graph5.update();
         }
 
         requestAnimationFrame(animate);
