@@ -11,7 +11,14 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
         body {
+            position: unset;
+            min-height: 100%;
+            padding: 55px 0px;
             display: flex;
             flex-direction: column;
             justify-content: center;
