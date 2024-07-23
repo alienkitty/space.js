@@ -71,9 +71,10 @@
         graph4.animateIn();
         document.body.appendChild(graph4.element);
 
-        // Radial graph with angular tension and ghost
+        // Radial graph with start angle, angular tension and ghost
         const graph5 = new RadialGraph({
             value: Array.from({ length: 10 }, () => Math.random()),
+            start: -90,
             tension: 100,
             precision: 2,
             lookupPrecision: 200

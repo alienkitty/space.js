@@ -154,7 +154,12 @@ export class RadialGraph extends Interface {
             const point = this.graph.path.element.getPointAtLength(i * this.length);
             const x = point.x - this.middle;
             const y = point.y - this.middle;
-            const angle = Math.atan2(-y, -x) + Math.PI;
+
+            let angle = -this.startAngle + Math.atan2(y, x);
+
+            if (angle < 0) {
+                angle += TwoPI;
+            }
 
             this.lookup.push({
                 x: point.x,
@@ -460,13 +465,19 @@ export class RadialGraph extends Interface {
                 this.graphNeedsUpdate = false;
             }
 
-            const value = this.array[Math.floor(this.mouseAngle * this.array.length)];
-            const angle = this.mouseAngle * TwoPI;
+            let angle = -this.startAngle + Math.atan2(this.offset.y, this.offset.x);
+
+            if (angle < 0) {
+                angle += TwoPI;
+            }
+
+            const mouseAngle = angle / TwoPI;
+            const value = this.array[Math.floor(mouseAngle * this.array.length)];
 
             let radius;
 
             if (this.lookupPrecision) {
-                const point = this.getCurvePoint(this.mouseAngle);
+                const point = this.getCurvePoint(mouseAngle);
                 const x = point.x - this.middle;
                 const y = point.y - this.middle;
                 const distance = Math.sqrt(x * x + y * y);
@@ -487,6 +498,8 @@ export class RadialGraph extends Interface {
             } else if (this.mouseAngle >= 0.75 && this.mouseAngle < 1) {
                 infoOffset = mapLinear(this.mouseAngle, 0.75, 1, 10, 18);
             }
+
+            angle = this.mouseAngle * TwoPI;
 
             const c = Math.cos(angle);
             const s = Math.sin(angle);
