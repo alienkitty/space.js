@@ -52,6 +52,7 @@ export class RadialGraph extends Interface {
         this.startTime = performance.now();
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
+        this.distance = this.radius - this.graphHeight;
         this.startAngle = degToRad(this.start);
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
@@ -262,7 +263,7 @@ export class RadialGraph extends Interface {
 
         const distance = this.offset.length();
 
-        if (distance > this.radius && distance < this.middle) {
+        if (distance > this.distance && distance < this.middle) {
             const angle = this.offset.angle();
 
             this.mouseAngle = angle / TwoPI;
