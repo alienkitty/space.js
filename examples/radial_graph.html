@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Standalone Radial Graph — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 67px;
+        }
+    </style>
+
+    <script type="module">
+        import { RadialGraph } from '../src/index.js';
+
+        // Radial graph
+        const graph = new RadialGraph({
+            value: Array.from({ length: 10 }, () => Math.random()),
+            precision: 2,
+            lookupPrecision: 200
+        });
+        graph.animateIn();
+        document.body.appendChild(graph.element);
+
+        // Radial graph with ghost
+        const graph2 = new RadialGraph({
+            value: Array.from({ length: 10 }, () => Math.random()),
+            precision: 2,
+            lookupPrecision: 200
+        });
+        graph2.setGhostArray(Array.from({ length: 10 }, () => Math.random()));
+        graph2.animateIn();
+        document.body.appendChild(graph2.element);
+
+        // Radial graph with ghost value
+        const graph3 = new RadialGraph({
+            resolution: 311,
+            precision: 2,
+            ghost: true
+        });
+        graph3.animateIn();
+        document.body.appendChild(graph3.element);
+
+        // animation
+
+        let counter = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            graph.update();
+            graph2.update();
+
+            const y = 0.5 + 0.5 * Math.sin(counter++ / 9) * 0.5;
+            graph3.update(y);
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</head>
+<body>
+</body>
+</html>
