@@ -26,6 +26,8 @@ export class Panel extends Interface {
         };
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.items = [];
         this.animatedIn = false;
         this.openColor = null;
@@ -156,7 +158,7 @@ export class Panel extends Interface {
     }
 
     update() {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
     }

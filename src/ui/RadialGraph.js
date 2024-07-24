@@ -52,6 +52,8 @@ export class RadialGraph extends Interface {
         }
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
         this.distance = this.radius - this.graphHeight;
@@ -383,7 +385,7 @@ export class RadialGraph extends Interface {
     }
 
     update(value) {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
 

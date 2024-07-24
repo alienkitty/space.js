@@ -47,6 +47,8 @@ export class GraphSegments extends Interface {
         }
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.ghostArray = [];
@@ -344,7 +346,7 @@ export class GraphSegments extends Interface {
     }
 
     update(value) {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
 
