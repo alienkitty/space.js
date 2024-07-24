@@ -476,10 +476,11 @@ export class PanelGraph extends Interface {
             }
 
             if (this.props.handleAlpha < 0.001) {
-                this.props.handleAlpha = 0;
+                this.context.globalAlpha = 0;
+            } else {
+                this.context.globalAlpha = this.props.handleAlpha;
             }
 
-            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 

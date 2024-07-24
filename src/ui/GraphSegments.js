@@ -381,10 +381,11 @@ export class GraphSegments extends Interface {
         const h = this.height - 1;
 
         if (this.props.alpha < 0.001) {
-            this.props.alpha = 0;
+            this.context.globalAlpha = 0;
+        } else {
+            this.context.globalAlpha = this.props.alpha;
         }
 
-        this.context.globalAlpha = this.props.alpha;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
@@ -458,10 +459,11 @@ export class GraphSegments extends Interface {
             }
 
             if (this.props.handleAlpha < 0.001) {
-                this.props.handleAlpha = 0;
+                this.context.globalAlpha = 0;
+            } else {
+                this.context.globalAlpha = this.props.handleAlpha;
             }
 
-            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
