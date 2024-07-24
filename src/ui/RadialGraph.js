@@ -241,7 +241,6 @@ export class RadialGraph extends Interface {
         if (!this.noHover) {
             window.addEventListener('pointerdown', this.onPointerDown);
             window.addEventListener('pointermove', this.onPointerMove);
-            window.addEventListener('pointerup', this.onPointerUp);
         }
     }
 
@@ -249,7 +248,6 @@ export class RadialGraph extends Interface {
         if (!this.noHover) {
             window.removeEventListener('pointerdown', this.onPointerDown);
             window.removeEventListener('pointermove', this.onPointerMove);
-            window.removeEventListener('pointerup', this.onPointerUp);
         }
     }
 
@@ -263,30 +261,29 @@ export class RadialGraph extends Interface {
         this.onPointerMove(e);
     };
 
-    onPointerMove = ({ clientX, clientY }) => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.offset.x = clientX - (this.bounds.left + this.middle);
-        this.offset.y = clientY - (this.bounds.top + this.middle);
+    onPointerMove = e => {
+        if (this.element.contains(e.target)) {
+            this.bounds = this.element.getBoundingClientRect();
+            this.offset.x = e.clientX - (this.bounds.left + this.middle);
+            this.offset.y = e.clientY - (this.bounds.top + this.middle);
 
-        const distance = this.offset.length();
+            const distance = this.offset.length();
 
-        if (distance > this.distance && distance < this.middle) {
-            const angle = this.offset.angle();
+            if (distance > this.distance && distance < this.middle) {
+                const angle = this.offset.angle();
 
-            this.mouseAngle = angle / TwoPI;
+                this.mouseAngle = angle / TwoPI;
 
-            this.setHover('over');
-            this.setCursor('crosshair');
-        } else if (this.hoveredIn) {
+                this.setHover('over');
+                this.setCursor('crosshair');
+            } else {
+                this.setHover();
+                this.setCursor();
+            }
+        } else {
             this.setHover();
             this.setCursor();
         }
-    };
-
-    onPointerUp = e => {
-        this.onPointerMove(e);
-
-        this.setHover();
     };
 
     // Public methods
