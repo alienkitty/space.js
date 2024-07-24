@@ -526,8 +526,8 @@ export class PanelGraph extends Interface {
             const y1 = h - array[i + 1] * this.rangeHeight;
             const mx = (x0 + x1) / 2;
             const my = (y0 + y1) / 2;
-            const cpx1 = (mx + x0) / 2;
-            const cpx2 = (mx + x1) / 2;
+            const cpx0 = (mx + x0) / 2;
+            const cpx1 = (mx + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
@@ -538,11 +538,11 @@ export class PanelGraph extends Interface {
             }
 
             if (this.graphNeedsUpdate && !ghost) {
-                this.pathData += ` Q ${cpx1} ${y0} ${mx} ${my} Q ${cpx2} ${y1} ${x1} ${y1}`;
+                this.pathData += ` Q ${cpx0} ${y0} ${mx} ${my} Q ${cpx1} ${y1} ${x1} ${y1}`;
             }
 
-            this.context.quadraticCurveTo(cpx1, y0, mx, my);
-            this.context.quadraticCurveTo(cpx2, y1, x1, y1);
+            this.context.quadraticCurveTo(cpx0, y0, mx, my);
+            this.context.quadraticCurveTo(cpx1, y1, x1, y1);
         }
 
         this.context.stroke();

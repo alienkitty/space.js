@@ -457,8 +457,8 @@ export class Graph extends Interface {
             const y1 = array[i + 1] * this.rangeHeight;
             const mx = (x0 + x1) / 2;
             const my = (y0 + y1) / 2;
-            const cpx1 = (mx + x0) / 2;
-            const cpx2 = (mx + x1) / 2;
+            const cpx0 = (mx + x0) / 2;
+            const cpx1 = (mx + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
@@ -471,12 +471,12 @@ export class Graph extends Interface {
             }
 
             if (this.graphNeedsUpdate && !ghost) {
-                this.pathData += ` Q ${cpx1} ${h - y0} ${mx} ${h - my} Q ${cpx2} ${h - y1} ${x1} ${h - y1}`;
+                this.pathData += ` Q ${cpx0} ${h - y0} ${mx} ${h - my} Q ${cpx1} ${h - y1} ${x1} ${h - y1}`;
             }
 
             if (this.props.progress === 1) {
-                this.context.quadraticCurveTo(cpx1, h - y0 * this.props.yMultiplier, mx, h - my * this.props.yMultiplier);
-                this.context.quadraticCurveTo(cpx2, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
+                this.context.quadraticCurveTo(cpx0, h - y0 * this.props.yMultiplier, mx, h - my * this.props.yMultiplier);
+                this.context.quadraticCurveTo(cpx1, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
             }
         }
 
