@@ -432,7 +432,7 @@ export class RadialGraph extends Interface {
         this.context.lineWidth = 1;
         this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
         this.context.beginPath();
-        this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + degToRad(360 * this.props.progress));
+        this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + TwoPI * this.props.progress);
         this.context.stroke();
 
         // Draw start line
@@ -530,7 +530,7 @@ export class RadialGraph extends Interface {
             this.context.stroke();
 
             this.context.beginPath();
-            this.context.arc(x3, y3, 2.5, 0, Math.PI * 2);
+            this.context.arc(x3, y3, 2.5, 0, TwoPI);
             this.context.stroke();
 
             this.info.css({ left: x0, top: y0 });
@@ -564,7 +564,7 @@ export class RadialGraph extends Interface {
                 const radius = this.middle - (this.graphHeight - array[i] * this.rangeHeight);
 
                 if (i === 0) {
-                    const rad0 = this.startAngle + degToRad(360 * ((i - 1) / (l - 1)));
+                    const rad0 = this.startAngle + TwoPI * ((i - 1) / (l - 1));
                     const rad1 = this.startAngle;
 
                     this.points[i] = {
@@ -577,15 +577,15 @@ export class RadialGraph extends Interface {
                         y: this.middle + radius * Math.sin(rad1)
                     };
                 } else if (i !== l - 1) {
-                    const rad = this.startAngle + degToRad(360 * (i / (l - 1)));
+                    const rad = this.startAngle + TwoPI * (i / (l - 1));
 
                     this.points[i + 1] = {
                         x: this.middle + radius * Math.cos(rad),
                         y: this.middle + radius * Math.sin(rad)
                     };
                 } else if (i === l - 1) {
-                    const rad0 = this.startAngle + degToRad(360);
-                    const rad1 = this.startAngle + degToRad(360 * ((i + 1) / (l - 1)));
+                    const rad0 = this.startAngle + TwoPI;
+                    const rad1 = this.startAngle + TwoPI * ((i + 1) / (l - 1));
 
                     this.points[i + 1] = {
                         x: this.middle + radius * Math.cos(rad0),
@@ -624,7 +624,7 @@ export class RadialGraph extends Interface {
             const radius = this.middle - (h - array[i] * this.rangeHeight * this.props.yMultiplier);
 
             if (i === 0) {
-                const rad0 = this.startAngle + degToRad(360 * ((i - 1) / (l - 1)));
+                const rad0 = this.startAngle + TwoPI * ((i - 1) / (l - 1));
                 const rad1 = this.startAngle;
 
                 this.points[i] = {
@@ -637,15 +637,15 @@ export class RadialGraph extends Interface {
                     y: this.middle + radius * Math.sin(rad1)
                 };
             } else if (i !== l - 1) {
-                const rad = this.startAngle + degToRad(360 * (i / (l - 1)));
+                const rad = this.startAngle + TwoPI * (i / (l - 1));
 
                 this.points[i + 1] = {
                     x: this.middle + radius * Math.cos(rad),
                     y: this.middle + radius * Math.sin(rad)
                 };
             } else if (i === l - 1) {
-                const rad0 = this.startAngle + degToRad(360);
-                const rad1 = this.startAngle + degToRad(360 * ((i + 1) / (l - 1)));
+                const rad0 = this.startAngle + TwoPI;
+                const rad1 = this.startAngle + TwoPI * ((i + 1) / (l - 1));
 
                 this.points[i + 1] = {
                     x: this.middle + radius * Math.cos(rad0),
@@ -680,7 +680,7 @@ export class RadialGraph extends Interface {
                 this.context.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
             }
         } else {
-            this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + degToRad(360 * this.props.progress));
+            this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + TwoPI * this.props.progress);
         }
 
         this.context.stroke();
@@ -688,7 +688,7 @@ export class RadialGraph extends Interface {
         // Draw radial gradient fill
         if (!this.noGradient && this.props.progress === 1) {
             this.context.shadowBlur = 0;
-            this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + degToRad(360), true); // Inner circle hole
+            this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + TwoPI, true); // Inner circle hole
             this.context.fill();
         }
     }
