@@ -47,7 +47,7 @@ export class PanelGraph extends Interface {
         this.array = [];
         this.ghostArray = [];
         this.pathData = '';
-        this.total = 0;
+        this.length = 0;
         this.lookup = [];
         this.bounds = null;
         this.mouseX = 0;
@@ -87,7 +87,7 @@ export class PanelGraph extends Interface {
         this.init();
         this.initCanvas();
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.initGraph();
         }
 
@@ -104,7 +104,8 @@ export class PanelGraph extends Interface {
         this.css({
             position: 'relative',
             width: this.width,
-            height: this.height
+            height: this.height,
+            cursor: 'crosshair'
         });
 
         this.container = new Interface('.container');
@@ -179,13 +180,13 @@ export class PanelGraph extends Interface {
     }
 
     calculateLookup() {
-        this.total = this.graph.path.element.getTotalLength();
+        this.length = this.graph.path.element.getTotalLength();
         this.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(this.graph.path.element.getPointAtLength(this.total * i));
+            this.lookup.push(this.graph.path.element.getPointAtLength(i * this.length));
 
             i += 1 / this.lookupPrecision;
         }
@@ -195,7 +196,7 @@ export class PanelGraph extends Interface {
         const x = mouseX * this.width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
             if (this.lookup[i].x > x) {
@@ -210,7 +211,7 @@ export class PanelGraph extends Interface {
         const lower = this.lookup[i - 1];
         const upper = this.lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
-        const diff = (upper.y - lower.y);
+        const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
 
         return y;
@@ -231,10 +232,10 @@ export class PanelGraph extends Interface {
         this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
     }
 
-    createGradient(x1, y1, x2, y2, alpha = 1) {
+    createGradient(x0, y0, x1, y1, alpha = 1) {
         this.alpha = alpha;
 
-        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
 
         let offset = 0;
 
@@ -278,7 +279,7 @@ export class PanelGraph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 2) / range;
+        return (this.height - 4) / range;
     }
 
     // Event handlers
@@ -385,7 +386,7 @@ export class PanelGraph extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
@@ -448,7 +449,7 @@ export class PanelGraph extends Interface {
         this.context.lineTo(this.width, h);
         this.context.stroke();
 
-        // Draw graph line and gradient fill
+        // Draw graph line and linear gradient fill
         if (this.ghostArray.length) {
             this.drawPath(h, this.ghostArray, true);
         }
@@ -468,17 +469,18 @@ export class PanelGraph extends Interface {
 
             let y;
 
-            if (this.lookupPrecision > 0) {
+            if (this.lookupPrecision) {
                 y = this.getCurveY(this.mouseX);
             } else {
                 y = h - value * this.rangeHeight;
             }
 
             if (this.props.handleAlpha < 0.001) {
-                this.props.handleAlpha = 0;
+                this.context.globalAlpha = 0;
+            } else {
+                this.context.globalAlpha = this.props.handleAlpha;
             }
 
-            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
@@ -488,7 +490,7 @@ export class PanelGraph extends Interface {
             this.context.stroke();
 
             this.context.beginPath();
-            this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
+            this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
             this.info.css({ left: x });
@@ -517,35 +519,35 @@ export class PanelGraph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = h - array[i] * this.rangeHeight;
-            const y2 = h - array[i + 1] * this.rangeHeight;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        for (let i = 0, l = array.length; i < l - 1; i++) {
+            const x0 = (i / (l - 1)) * this.width;
+            const x1 = ((i + 1) / (l - 1)) * this.width;
+            const y0 = h - array[i] * this.rangeHeight;
+            const y1 = h - array[i + 1] * this.rangeHeight;
+            const mx = (x0 + x1) / 2;
+            const my = (y0 + y1) / 2;
+            const cpx0 = (mx + x0) / 2;
+            const cpx1 = (mx + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x1} ${y1}`;
+                    this.pathData += `M ${x0} ${y0}`;
                 }
 
-                this.context.moveTo(x1, y1);
-            } else {
-                if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${y1} ${xMid} ${yMid} Q ${cpX2} ${y2} ${x2} ${y2}`;
-                }
-
-                this.context.quadraticCurveTo(cpX1, y1, xMid, yMid);
-                this.context.quadraticCurveTo(cpX2, y2, x2, y2);
+                this.context.moveTo(x0, y0);
             }
+
+            if (this.graphNeedsUpdate && !ghost) {
+                this.pathData += ` Q ${cpx0} ${y0} ${mx} ${my} Q ${cpx1} ${y1} ${x1} ${y1}`;
+            }
+
+            this.context.quadraticCurveTo(cpx0, y0, mx, my);
+            this.context.quadraticCurveTo(cpx1, y1, x1, y1);
         }
 
         this.context.stroke();
 
-        // Draw gradient fill
+        // Draw linear gradient fill
         if (!this.noGradient) {
             this.context.shadowBlur = 0;
             this.context.lineTo(this.width, this.height);

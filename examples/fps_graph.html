@@ -40,14 +40,14 @@
                 name: 'MS',
                 range: 150,
                 value: performance.now(),
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('MS callback:', value);
 
                     const time = performance.now();
                     const ms = time - value;
 
-                    panel.update(ms);
-                    panel.setValue(ms);
+                    item.update(ms);
+                    item.setValue(ms);
 
                     // The return value is passed back in the next frame
                     return time;
@@ -61,13 +61,13 @@
                 name: 'MEM',
                 range: 100,
                 value: performance.memory,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('MEM callback:', value);
 
                     const mem = value.usedJSHeapSize / Math.pow(1000, 2);
 
-                    panel.update(mem);
-                    panel.setValue(mem);
+                    item.update(mem);
+                    item.setValue(mem);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -84,11 +84,11 @@
                 noText: true,
                 noHover: true,
                 noGradient: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Sine callback:', value);
 
                     const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
-                    panel.update(y);
+                    item.update(y);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -105,11 +105,11 @@
                 noText: true,
                 noHover: true,
                 noGradient: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Clip callback:', value);
 
                     const y = 0.5 + 0.5 * Math.sin(value++ / 9);
-                    panel.update(y);
+                    item.update(y);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -124,11 +124,11 @@
                 precision: 2,
                 value: -13,
                 noText: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Sine callback:', value);
 
                     const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
-                    panel.update(y);
+                    item.update(y);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -143,11 +143,11 @@
                 precision: 2,
                 value: -13,
                 noText: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Clip callback:', value);
 
                     const y = 0.5 + 0.5 * Math.sin(value++ / 9);
-                    panel.update(y);
+                    item.update(y);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -164,11 +164,11 @@
                 value: -13,
                 ghost: true,
                 noText: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Ghost callback:', value);
 
                     const y = 0.5 + 0.5 * Math.sin(value++ / 9) * 0.5;
-                    panel.update(y);
+                    item.update(y);
 
                     // The return value is passed back in the next frame
                     return value;
@@ -194,7 +194,7 @@
                 lookupPrecision: 50,
                 value: performance.now() - 1000,
                 noText: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Random callback:', value);
 
                     const time = performance.now();
@@ -203,11 +203,11 @@
                     if (time - 1000 > value) {
                         value = time;
 
-                        // Passing an array to panel.update() will update the entire graph
+                        // Passing an array to item.update() will update the entire graph
                         const array = Array.from({ length: 10 }, () => Math.random());
-                        panel.update(array);
+                        item.update(array);
                     } else {
-                        panel.update();
+                        item.update();
                     }
 
                     // The return value is passed back in the next frame
@@ -224,18 +224,18 @@
                 lookupPrecision: 50,
                 value: Array.from({ length: 10 }, () => Math.random()),
                 noText: true,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     // console.log('Graph callback:', value);
 
                     if (needsUpdate) {
                         needsUpdate = false;
 
-                        // Passing an array to panel.update() will update the entire graph
+                        // Passing an array to item.update() will update the entire graph
                         value = Array.from({ length: 10 }, () => Math.random());
-                        panel.update(value);
+                        item.update(value);
                     }
 
-                    panel.update();
+                    item.update();
 
                     // The return value is passed back in the next frame
                     return value;

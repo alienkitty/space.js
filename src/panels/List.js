@@ -76,6 +76,10 @@ export class List extends Interface {
 
     // Public methods
 
+    hasContent() {
+        return !!this.group;
+    }
+
     setContent(content) {
         content.events.on('update', this.onUpdate);
 

@@ -45,11 +45,13 @@ export class Graph extends Interface {
         }
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.ghostArray = [];
         this.pathData = '';
-        this.total = 0;
+        this.length = 0;
         this.lookup = [];
         this.bounds = null;
         this.mouseX = 0;
@@ -73,13 +75,13 @@ export class Graph extends Interface {
             alpha: 0,
             handleAlpha: 0,
             yMultiplier: 0,
-            widthMultiplier: 0
+            progress: 0
         };
 
         this.init();
         this.initCanvas();
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.initGraph();
         }
 
@@ -98,6 +100,7 @@ export class Graph extends Interface {
             position: 'relative',
             width: this.width,
             height: this.height,
+            cursor: 'crosshair',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'
@@ -129,13 +132,13 @@ export class Graph extends Interface {
     }
 
     calculateLookup() {
-        this.total = this.graph.path.element.getTotalLength();
+        this.length = this.graph.path.element.getTotalLength();
         this.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(this.graph.path.element.getPointAtLength(this.total * i));
+            this.lookup.push(this.graph.path.element.getPointAtLength(i * this.length));
 
             i += 1 / this.lookupPrecision;
         }
@@ -145,7 +148,7 @@ export class Graph extends Interface {
         const x = mouseX * this.width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
             if (this.lookup[i].x > x) {
@@ -160,7 +163,7 @@ export class Graph extends Interface {
         const lower = this.lookup[i - 1];
         const upper = this.lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
-        const diff = (upper.y - lower.y);
+        const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
 
         return y;
@@ -178,10 +181,10 @@ export class Graph extends Interface {
         this.add(this.canvas);
     }
 
-    createGradient(x1, y1, x2, y2, alpha = 1) {
+    createGradient(x0, y0, x1, y1, alpha = 1) {
         this.alpha = alpha;
 
-        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
 
         let offset = 0;
 
@@ -221,7 +224,7 @@ export class Graph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 2) / range;
+        return (this.height - 4) / range;
     }
 
     // Event handlers
@@ -285,7 +288,7 @@ export class Graph extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
@@ -316,7 +319,7 @@ export class Graph extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
@@ -325,7 +328,7 @@ export class Graph extends Interface {
     }
 
     update(value) {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
 
@@ -358,14 +361,15 @@ export class Graph extends Interface {
     }
 
     drawGraph() {
-        const w = this.width * this.props.widthMultiplier;
+        const w = this.width * this.props.progress;
         const h = this.height - 1;
 
         if (this.props.alpha < 0.001) {
-            this.props.alpha = 0;
+            this.context.globalAlpha = 0;
+        } else {
+            this.context.globalAlpha = this.props.alpha;
         }
 
-        this.context.globalAlpha = this.props.alpha;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
@@ -376,7 +380,7 @@ export class Graph extends Interface {
         this.context.lineTo(w, h);
         this.context.stroke();
 
-        // Draw graph line and gradient fill
+        // Draw graph line and linear gradient fill
         if (this.ghostArray.length) {
             this.drawPath(w, h, this.ghostArray, true);
         }
@@ -396,17 +400,18 @@ export class Graph extends Interface {
 
             let y;
 
-            if (this.lookupPrecision > 0) {
+            if (this.lookupPrecision) {
                 y = this.getCurveY(this.mouseX);
             } else {
                 y = h - value * this.rangeHeight;
             }
 
             if (this.props.handleAlpha < 0.001) {
-                this.props.handleAlpha = 0;
+                this.context.globalAlpha = 0;
+            } else {
+                this.context.globalAlpha = this.props.handleAlpha;
             }
 
-            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
@@ -416,7 +421,7 @@ export class Graph extends Interface {
             this.context.stroke();
 
             this.context.beginPath();
-            this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
+            this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
             this.info.css({ left: x });
@@ -445,45 +450,45 @@ export class Graph extends Interface {
 
         this.context.beginPath();
 
-        for (let i = 0, l = array.length - 1; i < l; i++) {
-            const x1 = (i / l) * this.width;
-            const x2 = ((i + 1) / l) * this.width;
-            const y1 = array[i] * this.rangeHeight;
-            const y2 = array[i + 1] * this.rangeHeight;
-            const xMid = (x1 + x2) / 2;
-            const yMid = (y1 + y2) / 2;
-            const cpX1 = (xMid + x1) / 2;
-            const cpX2 = (xMid + x2) / 2;
+        for (let i = 0, l = array.length; i < l - 1; i++) {
+            const x0 = (i / (l - 1)) * this.width;
+            const x1 = ((i + 1) / (l - 1)) * this.width;
+            const y0 = array[i] * this.rangeHeight;
+            const y1 = array[i + 1] * this.rangeHeight;
+            const mx = (x0 + x1) / 2;
+            const my = (y0 + y1) / 2;
+            const cpx0 = (mx + x0) / 2;
+            const cpx1 = (mx + x1) / 2;
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x1} ${h - y1}`;
+                    this.pathData += `M ${x0} ${h - y0}`;
                 }
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.moveTo(x1, h - y1 * this.props.yMultiplier);
+                if (this.props.progress === 1) {
+                    this.context.moveTo(x0, h - y0 * this.props.yMultiplier);
                 }
-            } else {
-                if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
-                }
+            }
 
-                if (this.props.widthMultiplier === 1) {
-                    this.context.quadraticCurveTo(cpX1, h - y1 * this.props.yMultiplier, xMid, h - yMid * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(cpX2, h - y2 * this.props.yMultiplier, x2, h - y2 * this.props.yMultiplier);
-                }
+            if (this.graphNeedsUpdate && !ghost) {
+                this.pathData += ` Q ${cpx0} ${h - y0} ${mx} ${h - my} Q ${cpx1} ${h - y1} ${x1} ${h - y1}`;
+            }
+
+            if (this.props.progress === 1) {
+                this.context.quadraticCurveTo(cpx0, h - y0 * this.props.yMultiplier, mx, h - my * this.props.yMultiplier);
+                this.context.quadraticCurveTo(cpx1, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
             }
         }
 
-        if (this.props.widthMultiplier < 1) {
+        if (this.props.progress < 1) {
             this.context.moveTo(0, h);
             this.context.lineTo(w, h);
         }
 
         this.context.stroke();
 
-        // Draw gradient fill
-        if (!this.noGradient && this.props.widthMultiplier === 1) {
+        // Draw linear gradient fill
+        if (!this.noGradient && this.props.progress === 1) {
             this.context.shadowBlur = 0;
             this.context.lineTo(this.width, this.height);
             this.context.lineTo(0, this.height);
@@ -532,7 +537,7 @@ export class Graph extends Interface {
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
-        tween(this.props, { widthMultiplier: 1 }, 500, 'easeInOutCubic', () => {
+        tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
             tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
                 this.animatedIn = true;
 

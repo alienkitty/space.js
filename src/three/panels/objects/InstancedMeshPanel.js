@@ -32,7 +32,7 @@ export class InstancedMeshPanel extends Panel {
                 name: 'Instance',
                 list: InstanceOptions,
                 value: 'Mesh',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     if (InstanceOptions[value]) {
                         mesh.getColorAt(point.instances[0].index, color);
 
@@ -63,7 +63,7 @@ export class InstancedMeshPanel extends Panel {
                             instancePanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(instancePanel);
+                        item.setContent(instancePanel);
                     } else {
                         const materialPanel = new Panel();
                         materialPanel.animateIn(true);
@@ -72,7 +72,7 @@ export class InstancedMeshPanel extends Panel {
                             materialPanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(materialPanel);
+                        item.setContent(materialPanel);
                     }
                 }
             }

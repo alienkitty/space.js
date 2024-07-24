@@ -75,8 +75,8 @@ export class DirectionalLightPanel extends Panel {
                 name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
-                callback: (value, panel) => {
-                    if (!panel.group) {
+                callback: (value, item) => {
+                    if (!item.hasContent()) {
                         const lightPanel = new Panel();
                         lightPanel.animateIn(true);
 
@@ -84,15 +84,15 @@ export class DirectionalLightPanel extends Panel {
                             lightPanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(lightPanel);
+                        item.setContent(lightPanel);
                     }
 
                     light.visible = VisibleOptions[value];
 
                     if (light.visible) {
-                        panel.toggleContent(true);
+                        item.toggleContent(true);
                     } else {
-                        panel.toggleContent(false);
+                        item.toggleContent(false);
                     }
 
                     if (light.helper) {

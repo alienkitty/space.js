@@ -90,13 +90,13 @@ export class LightPanelController {
                 name: 'Light',
                 list: lightOptions,
                 value: Object.keys(lightOptions)[0],
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const [light, LightPanel] = lightOptions[value];
 
                     const lightPanel = new LightPanel(this, light);
                     lightPanel.animateIn(true);
 
-                    panel.setContent(lightPanel);
+                    item.setContent(lightPanel);
                 }
             }
         ];

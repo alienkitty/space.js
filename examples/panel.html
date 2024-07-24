@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-        .ui {
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,14 +19,11 @@
     </style>
 
     <script type="module">
-        import { Panel, PanelItem, UI, brightness, getKeyByValue } from '../src/index.js';
-
-        const ui = new UI();
-        document.body.appendChild(ui.element);
+        import { Panel, PanelItem, brightness, getKeyByValue } from '../src/index.js';
 
         const panel = new Panel();
         panel.animateIn();
-        ui.add(panel);
+        document.body.appendChild(panel.element);
 
         const backgroundColor = getComputedStyle(document.querySelector(':root')).getPropertyValue('--bg-color').trim();
 
@@ -62,7 +59,7 @@
                     document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                     // Light colour is inverted
-                    ui.invert(brightness(value) > 0.6);
+                    panel.invert(brightness(value) > 0.6);
                 }
             },
             {
@@ -108,7 +105,7 @@
                 name: 'List Content',
                 list: contentOptions,
                 value: 'Content A',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     console.log('ListSelect with content callback:', value);
 
                     switch (value) {
@@ -128,15 +125,15 @@
                                         document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                         // Light colour is inverted
-                                        ui.invert(brightness(value) > 0.6);
+                                        panel.invert(brightness(value) > 0.6);
                                     }
                                 }
                             ].forEach(data => {
                                 nestedPanel.add(new PanelItem(data));
                             });
 
-                            panel.setContent(nestedPanel);
-                            panel.toggleContent(true);
+                            item.setContent(nestedPanel);
+                            item.toggleContent(true);
                             break;
                         }
                         case 'Content B': {
@@ -162,12 +159,12 @@
                                 nestedPanel.add(new PanelItem(data));
                             });
 
-                            panel.setContent(nestedPanel);
-                            panel.toggleContent(true);
+                            item.setContent(nestedPanel);
+                            item.toggleContent(true);
                             break;
                         }
                         default: {
-                            panel.toggleContent(false);
+                            item.toggleContent(false);
                             break;
                         }
                     }
@@ -183,10 +180,10 @@
                 max: 1,
                 step: 0.01,
                 value: 0,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     console.log('Slider with content callback:', value);
 
-                    if (!panel.group) {
+                    if (!item.hasContent()) {
                         const nestedPanel = new Panel();
                         nestedPanel.animateIn(true);
 
@@ -202,20 +199,20 @@
                                     document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                     // Light colour is inverted
-                                    ui.invert(brightness(value) > 0.6);
+                                    panel.invert(brightness(value) > 0.6);
                                 }
                             }
                         ].forEach(data => {
                             nestedPanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(nestedPanel);
+                        item.setContent(nestedPanel);
                     }
 
                     if (value > 0) {
-                        panel.toggleContent(true);
+                        item.toggleContent(true);
                     } else {
-                        panel.toggleContent(false);
+                        item.toggleContent(false);
                     }
                 }
             },
@@ -224,7 +221,7 @@
             },
             {
                 type: 'content',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const nestedPanel = new Panel();
                     nestedPanel.animateIn(true);
 
@@ -237,14 +234,14 @@
                                 document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                 // Light colour is inverted
-                                ui.invert(brightness(value) > 0.6);
+                                panel.invert(brightness(value) > 0.6);
                             }
                         }
                     ].forEach(data => {
                         nestedPanel.add(new PanelItem(data));
                     });
 
-                    panel.setContent(nestedPanel);
+                    item.setContent(nestedPanel);
                 }
             },
             {
@@ -291,7 +288,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            ui.update();
+            panel.update();
         }
 
         requestAnimationFrame(animate);

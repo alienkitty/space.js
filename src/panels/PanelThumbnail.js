@@ -207,8 +207,8 @@ export class PanelThumbnail extends Interface {
     };
 
     onPointerUp = e => {
-        window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('pointermove', this.onPointerMove);
+        window.removeEventListener('pointerup', this.onPointerUp);
 
         this.onPointerMove(e);
 
@@ -249,8 +249,8 @@ export class PanelThumbnail extends Interface {
     onKeyUp = e => {
         if (e.keyCode === 27) { // Esc
             if (this.isDragging) {
-                window.removeEventListener('pointerup', this.onPointerUp);
                 window.removeEventListener('pointermove', this.onPointerMove);
+                window.removeEventListener('pointerup', this.onPointerUp);
 
                 this.wrapper.css({ left: 0, top: 0 });
                 this.isDragging = false;
@@ -292,6 +292,10 @@ export class PanelThumbnail extends Interface {
     };
 
     // Public methods
+
+    hasContent() {
+        return !!this.group;
+    }
 
     setContent(content) {
         content.events.on('update', this.onUpdate);

@@ -23,8 +23,8 @@ export class MuteButton extends Interface {
         this.needsUpdate = false;
 
         this.props = {
-            progress: 0,
-            yMultiplier: this.sound ? 1 : 0
+            yMultiplier: this.sound ? 1 : 0,
+            progress: 0
         };
 
         this.init();
@@ -155,7 +155,7 @@ export class MuteButton extends Interface {
 
         let counter = 0;
         let x = 0;
-        let y = 0;
+        let y = height;
 
         for (let i = -4; i < width; i++) {
             if (progress >= i) {

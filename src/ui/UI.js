@@ -45,6 +45,8 @@ export class UI extends Interface {
         };
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.buttons = [];
         this.isDetailsOpen = false;
         this.animatedIn = false;
@@ -296,7 +298,7 @@ export class UI extends Interface {
     }
 
     update() {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
 

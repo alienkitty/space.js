@@ -47,6 +47,8 @@ export class GraphSegments extends Interface {
         }
 
         this.startTime = performance.now();
+        this.frame = 0;
+
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.ghostArray = [];
@@ -73,13 +75,13 @@ export class GraphSegments extends Interface {
             alpha: 0,
             handleAlpha: 0,
             yMultiplier: 0,
-            widthMultiplier: 0
+            progress: 0
         };
 
         this.init();
         this.initCanvas();
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.initGraphs();
         }
 
@@ -98,6 +100,7 @@ export class GraphSegments extends Interface {
             position: 'relative',
             width: this.width,
             height: this.height,
+            cursor: 'crosshair',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
             userSelect: 'none'
@@ -129,7 +132,7 @@ export class GraphSegments extends Interface {
             graph.add(graph.path);
 
             graph.pathData = '';
-            graph.total = 0;
+            graph.length = 0;
             graph.lookup = [];
 
             return graph;
@@ -137,13 +140,13 @@ export class GraphSegments extends Interface {
     }
 
     calculateLookup(graph) {
-        graph.total = graph.path.element.getTotalLength();
+        graph.length = graph.path.element.getTotalLength();
         graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            graph.lookup.push(graph.path.element.getPointAtLength(graph.total * i));
+            graph.lookup.push(graph.path.element.getPointAtLength(i * graph.length));
 
             i += 1 / this.lookupPrecision;
         }
@@ -153,7 +156,7 @@ export class GraphSegments extends Interface {
         const x = mouseX * width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
             if (graph.lookup[i].x > x) {
@@ -168,7 +171,7 @@ export class GraphSegments extends Interface {
         const lower = graph.lookup[i - 1];
         const upper = graph.lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
-        const diff = (upper.y - lower.y);
+        const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
 
         return y;
@@ -186,10 +189,10 @@ export class GraphSegments extends Interface {
         this.add(this.canvas);
     }
 
-    createGradient(x1, y1, x2, y2, alpha = 1) {
+    createGradient(x0, y0, x1, y1, alpha = 1) {
         this.alpha = alpha;
 
-        const gradient = this.context.createLinearGradient(x1, y1, x2, y2);
+        const gradient = this.context.createLinearGradient(x0, y0, x1, y1);
 
         let offset = 0;
 
@@ -230,9 +233,9 @@ export class GraphSegments extends Interface {
 
     getRangeHeight(range) {
         if (Array.isArray(range)) {
-            return range.map(range => (this.height - 2) / range);
+            return range.map(range => (this.height - 4) / range);
         } else {
-            return new Array(this.segments.length).fill((this.height - 2) / range);
+            return new Array(this.segments.length).fill((this.height - 4) / range);
         }
     }
 
@@ -297,7 +300,7 @@ export class GraphSegments extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.graphs.forEach(graph => {
                 graph.pathData = '';
             });
@@ -331,7 +334,7 @@ export class GraphSegments extends Interface {
 
         this.needsUpdate = true;
 
-        if (!this.noHover && this.lookupPrecision > 0) {
+        if (!this.noHover && this.lookupPrecision) {
             this.graphs.forEach(graph => {
                 graph.pathData = '';
             });
@@ -343,7 +346,7 @@ export class GraphSegments extends Interface {
     }
 
     update(value) {
-        if (!ticker.isAnimating) {
+        if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
         }
 
@@ -376,14 +379,15 @@ export class GraphSegments extends Interface {
     }
 
     drawGraph() {
-        const w = this.width * this.props.widthMultiplier;
+        const w = this.width * this.props.progress;
         const h = this.height - 1;
 
         if (this.props.alpha < 0.001) {
-            this.props.alpha = 0;
+            this.context.globalAlpha = 0;
+        } else {
+            this.context.globalAlpha = this.props.alpha;
         }
 
-        this.context.globalAlpha = this.props.alpha;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
         // Draw bottom line
@@ -408,7 +412,7 @@ export class GraphSegments extends Interface {
             this.context.stroke();
         }
 
-        // Draw graph line and gradient fill
+        // Draw graph line and linear gradient fill
         if (this.ghostArray.length) {
             this.drawPath(w, h, this.ghostArray, true);
         }
@@ -448,7 +452,7 @@ export class GraphSegments extends Interface {
 
             let y;
 
-            if (this.lookupPrecision > 0) {
+            if (this.lookupPrecision) {
                 const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
 
                 y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
@@ -457,10 +461,11 @@ export class GraphSegments extends Interface {
             }
 
             if (this.props.handleAlpha < 0.001) {
-                this.props.handleAlpha = 0;
+                this.context.globalAlpha = 0;
+            } else {
+                this.context.globalAlpha = this.props.handleAlpha;
             }
 
-            this.context.globalAlpha = this.props.handleAlpha;
             this.context.lineWidth = 1;
             this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
@@ -470,7 +475,7 @@ export class GraphSegments extends Interface {
             this.context.stroke();
 
             this.context.beginPath();
-            this.context.arc(x, y, 2.5, 0, 2 * Math.PI);
+            this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
             this.info.css({ left: x });
@@ -500,7 +505,7 @@ export class GraphSegments extends Interface {
         let end = 0;
 
         for (let i = 0, l = array.length, il = this.graphs.length; i < il; i++) {
-            if (this.props.widthMultiplier === 1) {
+            if (this.props.progress === 1) {
                 this.context.beginPath();
             }
 
@@ -511,40 +516,40 @@ export class GraphSegments extends Interface {
             const endX = (end / l) * this.width;
             const segmentWidth = (this.segments[i] / l) * this.width;
 
-            for (let j = 0, jl = this.segments[i] - 1; j < jl; j++) {
-                const x1 = (j / jl) * segmentWidth;
-                const x2 = ((j + 1) / jl) * segmentWidth;
-                const y1 = array[start + j] * this.rangeHeight[i];
-                const y2 = array[start + j + 1] * this.rangeHeight[i];
-                const xMid = (x1 + x2) / 2;
-                const yMid = (y1 + y2) / 2;
-                const cpX1 = (xMid + x1) / 2;
-                const cpX2 = (xMid + x2) / 2;
+            for (let j = 0, jl = this.segments[i]; j < jl - 1; j++) {
+                const x0 = (j / (jl - 1)) * segmentWidth;
+                const x1 = ((j + 1) / (jl - 1)) * segmentWidth;
+                const y0 = array[start + j] * this.rangeHeight[i];
+                const y1 = array[start + j + 1] * this.rangeHeight[i];
+                const mx = (x0 + x1) / 2;
+                const my = (y0 + y1) / 2;
+                const cpx0 = (mx + x0) / 2;
+                const cpx1 = (mx + x1) / 2;
 
                 if (j === 0) {
                     if (this.graphNeedsUpdate && !ghost) {
-                        this.graphs[i].pathData += `M ${x1} ${h - y1}`;
+                        this.graphs[i].pathData += `M ${x0} ${h - y0}`;
                     }
 
-                    if (this.props.widthMultiplier === 1) {
-                        this.context.moveTo(startX + x1, h - y1 * this.props.yMultiplier);
+                    if (this.props.progress === 1) {
+                        this.context.moveTo(startX + x0, h - y0 * this.props.yMultiplier);
                     }
-                } else {
-                    if (this.graphNeedsUpdate && !ghost) {
-                        this.graphs[i].pathData += ` Q ${cpX1} ${h - y1} ${xMid} ${h - yMid} Q ${cpX2} ${h - y2} ${x2} ${h - y2}`;
-                    }
+                }
 
-                    if (this.props.widthMultiplier === 1) {
-                        this.context.quadraticCurveTo(startX + cpX1, h - y1 * this.props.yMultiplier, startX + xMid, h - yMid * this.props.yMultiplier);
-                        this.context.quadraticCurveTo(startX + cpX2, h - y2 * this.props.yMultiplier, startX + x2, h - y2 * this.props.yMultiplier);
-                    }
+                if (this.graphNeedsUpdate && !ghost) {
+                    this.graphs[i].pathData += ` Q ${cpx0} ${h - y0} ${mx} ${h - my} Q ${cpx1} ${h - y1} ${x1} ${h - y1}`;
+                }
+
+                if (this.props.progress === 1) {
+                    this.context.quadraticCurveTo(startX + cpx0, h - y0 * this.props.yMultiplier, startX + mx, h - my * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(startX + cpx1, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
                 }
             }
 
-            if (this.props.widthMultiplier === 1) {
+            if (this.props.progress === 1) {
                 this.context.stroke();
 
-                // Draw gradient fill
+                // Draw linear gradient fill
                 if (!this.noGradient) {
                     this.context.shadowBlur = 0;
                     this.context.lineTo(endX, this.height);
@@ -554,7 +559,7 @@ export class GraphSegments extends Interface {
             }
         }
 
-        if (this.props.widthMultiplier < 1) {
+        if (this.props.progress < 1) {
             this.context.beginPath();
             this.context.moveTo(0, h);
             this.context.lineTo(w, h);
@@ -603,7 +608,7 @@ export class GraphSegments extends Interface {
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
-        tween(this.props, { widthMultiplier: 1 }, 500, 'easeInOutCubic', () => {
+        tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
             tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
                 this.animatedIn = true;
 

@@ -49,10 +49,10 @@ export class Line extends Component {
         }
 
         if (this.props.alpha < 0.001) {
-            this.props.alpha = 0;
+            this.context.globalAlpha = 0;
+        } else {
+            this.context.globalAlpha = this.props.alpha;
         }
-
-        this.context.globalAlpha = this.props.alpha;
 
         const length = this.start.distanceTo(this.end);
         const dash = length * this.props.progress;
