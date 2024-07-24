@@ -146,7 +146,7 @@ export class Graph extends Interface {
         const x = mouseX * this.width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
             if (this.lookup[i].x > x) {

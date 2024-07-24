@@ -154,7 +154,7 @@ export class GraphSegments extends Interface {
         const x = mouseX * width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(0, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
 
         for (; i < this.lookupPrecision; i++) {
             if (graph.lookup[i].x > x) {
