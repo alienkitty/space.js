@@ -144,6 +144,10 @@ export class Slider extends Interface {
 
     // Public methods
 
+    hasContent() {
+        return !!this.group;
+    }
+
     setContent(content) {
         if (!this.group) {
             this.group = new Interface('.group');

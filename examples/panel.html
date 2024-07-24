@@ -186,7 +186,7 @@
                 callback: (value, item) => {
                     console.log('Slider with content callback:', value);
 
-                    if (!item.group) {
+                    if (!item.hasContent()) {
                         const nestedPanel = new Panel();
                         nestedPanel.animateIn(true);
 

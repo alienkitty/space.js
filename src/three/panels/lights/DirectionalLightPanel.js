@@ -76,7 +76,7 @@ export class DirectionalLightPanel extends Panel {
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, light.visible),
                 callback: (value, item) => {
-                    if (!item.group) {
+                    if (!item.hasContent()) {
                         const lightPanel = new Panel();
                         lightPanel.animateIn(true);
 

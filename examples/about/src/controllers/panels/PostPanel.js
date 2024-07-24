@@ -173,7 +173,7 @@ export class PostPanel extends Panel {
                 list: postOptions,
                 value: getKeyByValue(postOptions, RenderManager.enabled),
                 callback: (value, item) => {
-                    if (!item.group) {
+                    if (!item.hasContent()) {
                         const postPanel = new Panel();
                         postPanel.animateIn(true);
 

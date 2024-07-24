@@ -222,7 +222,7 @@ export class MaterialPanelController {
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, mesh.visible),
                 callback: (value, item) => {
-                    if (!item.group) {
+                    if (!item.hasContent()) {
                         const materialPanel = new Panel();
                         materialPanel.animateIn(true);
 

@@ -110,7 +110,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                 list: subsurfaceOptions,
                 value: getKeyByValue(subsurfaceOptions, mesh.userData.subsurface),
                 callback: (value, item) => {
-                    if (!item.group) {
+                    if (!item.hasContent()) {
                         const subsurfacePanel = new Panel();
                         subsurfacePanel.animateIn(true);
 
