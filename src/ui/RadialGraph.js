@@ -155,7 +155,7 @@ export class RadialGraph extends Interface {
             const x = point.x - this.middle;
             const y = point.y - this.middle;
 
-            let angle = -this.startAngle + Math.atan2(y, x);
+            let angle = (-this.startAngle + Math.atan2(y, x)) % TwoPI;
 
             if (angle < 0) {
                 angle += TwoPI;
@@ -465,7 +465,7 @@ export class RadialGraph extends Interface {
                 this.graphNeedsUpdate = false;
             }
 
-            let angle = -this.startAngle + Math.atan2(this.offset.y, this.offset.x);
+            let angle = (-this.startAngle + Math.atan2(this.offset.y, this.offset.x)) % TwoPI;
 
             if (angle < 0) {
                 angle += TwoPI;
