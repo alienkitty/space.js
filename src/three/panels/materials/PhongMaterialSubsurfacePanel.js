@@ -109,8 +109,8 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                 name: 'Subsurface Scattering',
                 list: subsurfaceOptions,
                 value: getKeyByValue(subsurfaceOptions, mesh.userData.subsurface),
-                callback: (value, panel) => {
-                    if (!panel.group) {
+                callback: (value, item) => {
+                    if (!item.group) {
                         const subsurfacePanel = new Panel();
                         subsurfacePanel.animateIn(true);
 
@@ -118,7 +118,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                             subsurfacePanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(subsurfacePanel);
+                        item.setContent(subsurfacePanel);
                     }
 
                     mesh.userData.subsurface = subsurfaceOptions[value];
@@ -126,11 +126,11 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                     if (mesh.userData.subsurface) {
                         mesh.material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
 
-                        panel.toggleContent(true);
+                        item.toggleContent(true);
                     } else {
                         delete mesh.material.userData.onBeforeCompile.subsurface;
 
-                        panel.toggleContent(false);
+                        item.toggleContent(false);
                     }
 
                     mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');

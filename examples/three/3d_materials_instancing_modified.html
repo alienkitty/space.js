@@ -156,7 +156,7 @@
                         name: 'Instance',
                         list: InstanceOptions,
                         value: 'Mesh',
-                        callback: (value, panel) => {
+                        callback: (value, item) => {
                             if (InstanceOptions[value]) {
                                 const index = point.instances[0].index;
 
@@ -193,7 +193,7 @@
                                     instancePanel.add(new PanelItem(data));
                                 });
 
-                                panel.setContent(instancePanel);
+                                item.setContent(instancePanel);
                             } else {
                                 const materialPanel = new Panel();
                                 materialPanel.animateIn(true);
@@ -202,7 +202,7 @@
                                     materialPanel.add(new PanelItem(data));
                                 });
 
-                                panel.setContent(materialPanel);
+                                item.setContent(materialPanel);
                             }
                         }
                     }

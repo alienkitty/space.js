@@ -38,17 +38,17 @@ export class MapPanel extends Panel {
                 flipY: true,
                 data: mesh.material[key] || {},
                 value: mesh.material[key] && mesh.material[key].source.data,
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const mapItems = [];
 
-                    if (panel.data.isTexture && panel.data.userData.uv && !mesh.userData.uv) {
+                    if (item.data.isTexture && item.data.userData.uv && !mesh.userData.uv) {
                         mesh.userData.uv = true;
                         point.toggleUVHelper(true);
                     }
 
                     if (point.uvTexture) {
                         if (value) {
-                            if (mesh.material[key] && panel.data.isTexture && !panel.data.userData.uv) {
+                            if (mesh.material[key] && item.data.isTexture && !item.data.userData.uv) {
                                 mesh.userData.uv = false;
                                 point.toggleUVHelper(false);
                             }
@@ -57,8 +57,8 @@ export class MapPanel extends Panel {
                             point.toggleUVHelper(false);
 
                             if (mesh.material[key] && mesh.material[key].source.data) {
-                                panel.setData(mesh.material[key]);
-                                panel.setValue(mesh.material[key].source.data);
+                                item.setData(mesh.material[key]);
+                                item.setValue(mesh.material[key].source.data);
                                 return;
                             }
                         }
@@ -66,11 +66,11 @@ export class MapPanel extends Panel {
                         if (mesh.material[key]) {
                             mesh.material[key].dispose();
                             mesh.material[key] = new Texture(value);
-                            mesh.material[key].colorSpace = panel.data.colorSpace;
-                            mesh.material[key].anisotropy = panel.data.anisotropy;
-                            mesh.material[key].wrapS = panel.data.wrapS;
-                            mesh.material[key].wrapT = panel.data.wrapT;
-                            mesh.material[key].repeat.copy(panel.data.repeat);
+                            mesh.material[key].colorSpace = item.data.colorSpace;
+                            mesh.material[key].anisotropy = item.data.anisotropy;
+                            mesh.material[key].wrapS = item.data.wrapS;
+                            mesh.material[key].wrapT = item.data.wrapT;
+                            mesh.material[key].repeat.copy(item.data.repeat);
                         } else {
                             mesh.material[key] = new Texture(value);
 
@@ -89,7 +89,7 @@ export class MapPanel extends Panel {
                         mesh.material.needsUpdate = true;
                     }
 
-                    panel.setData(mesh.material[key] || {});
+                    item.setData(mesh.material[key] || {});
 
                     if (mesh.material[key]) {
                         mapItems.push(
@@ -163,7 +163,7 @@ export class MapPanel extends Panel {
                         mapPanel.add(new PanelItem(data));
                     });
 
-                    panel.setContent(mapPanel);
+                    item.setContent(mapPanel);
                 }
             }
         ];

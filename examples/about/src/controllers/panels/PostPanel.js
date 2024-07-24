@@ -172,8 +172,8 @@ export class PostPanel extends Panel {
                 name: 'Post',
                 list: postOptions,
                 value: getKeyByValue(postOptions, RenderManager.enabled),
-                callback: (value, panel) => {
-                    if (!panel.group) {
+                callback: (value, item) => {
+                    if (!item.group) {
                         const postPanel = new Panel();
                         postPanel.animateIn(true);
 
@@ -181,15 +181,15 @@ export class PostPanel extends Panel {
                             postPanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(postPanel);
+                        item.setContent(postPanel);
                     }
 
                     RenderManager.enabled = postOptions[value];
 
                     if (RenderManager.enabled) {
-                        panel.toggleContent(true);
+                        item.toggleContent(true);
                     } else {
-                        panel.toggleContent(false);
+                        item.toggleContent(false);
                     }
                 }
             }

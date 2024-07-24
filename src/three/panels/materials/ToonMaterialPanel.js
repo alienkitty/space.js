@@ -59,13 +59,13 @@ export class ToonMaterialPanel extends Panel {
                 name: 'Toon',
                 list: ToonMaterialOptions,
                 value: 'Common',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const MaterialPanel = ToonMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
-                    panel.setContent(materialPanel);
+                    item.setContent(materialPanel);
                 }
             }
         ];
@@ -76,13 +76,13 @@ export class ToonMaterialPanel extends Panel {
             items.push(
                 {
                     type: 'content',
-                    callback: (value, panel) => {
+                    callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
                         const materialPanel = new InstancedMeshPanel(mesh, materialItems);
                         materialPanel.animateIn(true);
 
-                        panel.setContent(materialPanel);
+                        item.setContent(materialPanel);
                     }
                 }
             );

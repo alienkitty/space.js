@@ -81,13 +81,13 @@ export class StandardMaterialPanel extends Panel {
                 name: 'Standard',
                 list: StandardMaterialOptions,
                 value: 'Common',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const MaterialPanel = StandardMaterialOptions[value];
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
-                    panel.setContent(materialPanel);
+                    item.setContent(materialPanel);
                 }
             }
         ];
@@ -98,13 +98,13 @@ export class StandardMaterialPanel extends Panel {
             items.push(
                 {
                     type: 'content',
-                    callback: (value, panel) => {
+                    callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
                         const materialPanel = new InstancedMeshPanel(mesh, materialItems);
                         materialPanel.animateIn(true);
 
-                        panel.setContent(materialPanel);
+                        item.setContent(materialPanel);
                     }
                 }
             );

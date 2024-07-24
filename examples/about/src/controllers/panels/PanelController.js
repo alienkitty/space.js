@@ -164,7 +164,7 @@ export class PanelController {
                 type: 'list',
                 list: sceneOptions,
                 value: 'Post',
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     switch (value) {
                         case 'Post':
                         case 'Env': {
@@ -173,7 +173,7 @@ export class PanelController {
                             const scenePanel = new ScenePanel(scene);
                             scenePanel.animateIn(true);
 
-                            panel.setContent(scenePanel);
+                            item.setContent(scenePanel);
                             break;
                         }
                         case 'Grid': {
@@ -182,7 +182,7 @@ export class PanelController {
                             const scenePanel = new ScenePanel(this.view.floor.gridHelper);
                             scenePanel.animateIn(true);
 
-                            panel.setContent(scenePanel);
+                            item.setContent(scenePanel);
                             break;
                         }
                         default: {
@@ -191,7 +191,7 @@ export class PanelController {
                             const lightPanel = new LightPanel(LightPanelController, light);
                             lightPanel.animateIn(true);
 
-                            panel.setContent(lightPanel);
+                            item.setContent(lightPanel);
                             break;
                         }
                     }

@@ -100,7 +100,7 @@ export class MaterialPanelController {
                 name: 'Material',
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, mesh.material),
-                callback: (value, panel) => {
+                callback: (value, item) => {
                     const [Material, MaterialPanel] = materialOptions[value];
 
                     const currentMaterialPanel = this.lastMaterialPanel || MaterialPanel;
@@ -205,7 +205,7 @@ export class MaterialPanelController {
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);
 
-                    panel.setContent(materialPanel);
+                    item.setContent(materialPanel);
 
                     this.lastMaterialPanel = MaterialPanel;
                 }
@@ -221,8 +221,8 @@ export class MaterialPanelController {
                 name: 'Visible',
                 list: VisibleOptions,
                 value: getKeyByValue(VisibleOptions, mesh.visible),
-                callback: (value, panel) => {
-                    if (!panel.group) {
+                callback: (value, item) => {
+                    if (!item.group) {
                         const materialPanel = new Panel();
                         materialPanel.animateIn(true);
 
@@ -230,15 +230,15 @@ export class MaterialPanelController {
                             materialPanel.add(new PanelItem(data));
                         });
 
-                        panel.setContent(materialPanel);
+                        item.setContent(materialPanel);
                     }
 
                     mesh.visible = VisibleOptions[value];
 
                     if (mesh.visible) {
-                        panel.toggleContent(true);
+                        item.toggleContent(true);
                     } else {
-                        panel.toggleContent(false);
+                        item.toggleContent(false);
                     }
                 }
             }
