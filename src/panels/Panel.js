@@ -5,10 +5,27 @@
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
+import { ticker } from '../tween/Ticker.js';
+
 export class Panel extends Interface {
     constructor() {
         super('.panel');
 
+        if (!Stage.root) {
+            Stage.root = document.querySelector(':root');
+            Stage.rootStyle = getComputedStyle(Stage.root);
+        }
+
+        this.invertColors = {
+            light: Stage.rootStyle.getPropertyValue('--ui-invert-light-color').trim(),
+            lightTriplet: Stage.rootStyle.getPropertyValue('--ui-invert-light-color-triplet').trim(),
+            lightLine: Stage.rootStyle.getPropertyValue('--ui-invert-light-color-line').trim(),
+            dark: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color').trim(),
+            darkTriplet: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color-triplet').trim(),
+            darkLine: Stage.rootStyle.getPropertyValue('--ui-invert-dark-color-line').trim()
+        };
+
+        this.startTime = performance.now();
         this.items = [];
         this.animatedIn = false;
         this.openColor = null;
@@ -128,6 +145,20 @@ export class Panel extends Interface {
                 view.group.children[0].setPanelValue(name, value, path);
             }
         });
+    }
+
+    invert(isInverted) {
+        Stage.root.style.setProperty('--ui-color', isInverted ? this.invertColors.light : this.invertColors.dark);
+        Stage.root.style.setProperty('--ui-color-triplet', isInverted ? this.invertColors.lightTriplet : this.invertColors.darkTriplet);
+        Stage.root.style.setProperty('--ui-color-line', isInverted ? this.invertColors.lightLine : this.invertColors.darkLine);
+
+        Stage.events.emit('invert', { invert: isInverted });
+    }
+
+    update() {
+        if (!ticker.isAnimating) {
+            ticker.onTick(performance.now() - this.startTime);
+        }
     }
 
     animateIn(fast) {

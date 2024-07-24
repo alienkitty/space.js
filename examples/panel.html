@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-        .ui {
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,14 +19,11 @@
     </style>
 
     <script type="module">
-        import { Panel, PanelItem, UI, brightness, getKeyByValue } from '../src/index.js';
-
-        const ui = new UI();
-        document.body.appendChild(ui.element);
+        import { Panel, PanelItem, brightness, getKeyByValue } from '../src/index.js';
 
         const panel = new Panel();
         panel.animateIn();
-        ui.add(panel);
+        document.body.appendChild(panel.element);
 
         const backgroundColor = getComputedStyle(document.querySelector(':root')).getPropertyValue('--bg-color').trim();
 
@@ -62,7 +59,7 @@
                     document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                     // Light colour is inverted
-                    ui.invert(brightness(value) > 0.6);
+                    panel.invert(brightness(value) > 0.6);
                 }
             },
             {
@@ -128,7 +125,7 @@
                                         document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                         // Light colour is inverted
-                                        ui.invert(brightness(value) > 0.6);
+                                        panel.invert(brightness(value) > 0.6);
                                     }
                                 }
                             ].forEach(data => {
@@ -202,7 +199,7 @@
                                     document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                     // Light colour is inverted
-                                    ui.invert(brightness(value) > 0.6);
+                                    panel.invert(brightness(value) > 0.6);
                                 }
                             }
                         ].forEach(data => {
@@ -237,7 +234,7 @@
                                 document.body.style.backgroundColor = `#${value.getHexString()}`;
 
                                 // Light colour is inverted
-                                ui.invert(brightness(value) > 0.6);
+                                panel.invert(brightness(value) > 0.6);
                             }
                         }
                     ].forEach(data => {
@@ -291,7 +288,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            ui.update();
+            panel.update();
         }
 
         requestAnimationFrame(animate);
