@@ -687,8 +687,13 @@ export class RadialGraph extends Interface {
 
         // Draw radial gradient fill
         if (!this.noGradient && this.props.progress === 1) {
+            const radius = this.middle - h;
+            const x = this.middle + radius * Math.cos(this.startAngle);
+            const y = this.middle + radius * Math.sin(this.startAngle);
+
             this.context.shadowBlur = 0;
-            this.context.arc(this.middle, this.middle, this.middle - h, this.startAngle, this.startAngle + TwoPI, true); // Inner circle hole
+            this.context.moveTo(x, y);
+            this.context.arc(this.middle, this.middle, radius, 0, TwoPI, true); // Inner circle hole
             this.context.fill();
         }
     }
