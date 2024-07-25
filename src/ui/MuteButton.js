@@ -155,7 +155,7 @@ export class MuteButton extends Interface {
 
         let counter = 0;
         let x = 0;
-        let y = 0;
+        let y = height;
 
         for (let i = -4; i < width; i++) {
             if (progress >= i) {
