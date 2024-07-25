@@ -24,7 +24,7 @@ export class RadialGraph extends Interface {
         tension = 6,
         precision = 0,
         lookupPrecision = 0,
-        textDistanceX = 18,
+        textDistanceX = 20,
         textDistanceY = 10,
         range = 1,
         value,
