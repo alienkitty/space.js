@@ -24,6 +24,8 @@ export class RadialGraph extends Interface {
         tension = 6,
         precision = 0,
         lookupPrecision = 0,
+        textDistanceX = 20,
+        textDistanceY = 10,
         range = 1,
         value,
         ghost,
@@ -40,6 +42,8 @@ export class RadialGraph extends Interface {
         this.tension = tension;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
+        this.textDistanceX = textDistanceX;
+        this.textDistanceY = textDistanceY;
         this.range = range;
         this.value = value;
         this.ghost = ghost;
@@ -490,13 +494,13 @@ export class RadialGraph extends Interface {
             let infoOffset;
 
             if (this.mouseAngle >= 0 && this.mouseAngle < 0.25) {
-                infoOffset = mapLinear(this.mouseAngle, 0, 0.25, 18, 10);
+                infoOffset = mapLinear(this.mouseAngle, 0, 0.25, this.textDistanceX, this.textDistanceY);
             } else if (this.mouseAngle >= 0.25 && this.mouseAngle < 0.5) {
-                infoOffset = mapLinear(this.mouseAngle, 0.25, 0.5, 10, 18);
+                infoOffset = mapLinear(this.mouseAngle, 0.25, 0.5, this.textDistanceY, this.textDistanceX);
             } else if (this.mouseAngle >= 0.5 && this.mouseAngle < 0.75) {
-                infoOffset = mapLinear(this.mouseAngle, 0.5, 0.75, 18, 10);
+                infoOffset = mapLinear(this.mouseAngle, 0.5, 0.75, this.textDistanceX, this.textDistanceY);
             } else if (this.mouseAngle >= 0.75 && this.mouseAngle < 1) {
-                infoOffset = mapLinear(this.mouseAngle, 0.75, 1, 10, 18);
+                infoOffset = mapLinear(this.mouseAngle, 0.75, 1, this.textDistanceY, this.textDistanceX);
             }
 
             angle = this.mouseAngle * TwoPI;
