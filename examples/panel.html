@@ -283,7 +283,8 @@
             panel.add(new PanelItem(data));
         });
 
-        // animation
+        // Call after adding
+        panel.animateIn();
 
         function animate() {
             requestAnimationFrame(animate);
