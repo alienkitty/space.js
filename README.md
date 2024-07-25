@@ -27,10 +27,23 @@ Math classes:
 import { Color, Vector2 } from '@alienkitty/space.js';
 ```
 
-UI and Panel components:
+Panel components:
 
 ```js
-import { Panel, PanelItem, UI } from '@alienkitty/space.js';
+import { Panel, PanelItem } from '@alienkitty/space.js';
+
+const panel = new Panel();
+panel.add(new PanelItem({ type: 'color' }));
+panel.animateIn();
+document.body.appendChild(panel.element);
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    panel.update();
+}
+
+requestAnimationFrame(animate);
 ```
 
 HUD (heads-up display) components:
