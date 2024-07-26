@@ -71,6 +71,8 @@ export class LineCanvas extends Component {
     animateIn(reverse) {
         clearTween(this.props);
 
+        this.props.alpha = 0;
+
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
         if (reverse) {
