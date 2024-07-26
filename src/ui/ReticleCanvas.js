@@ -89,7 +89,7 @@ export class ReticleCanvas extends Interface {
     update() {
         this.position.lerp(this.target, this.lerpSpeed);
 
-        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
+        this.css({ left: this.position.x, top: this.position.y });
 
         if (this.needsUpdate) {
             this.context.clearRect(0, 0, this.center.element.width, this.center.element.height);

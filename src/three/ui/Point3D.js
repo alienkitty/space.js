@@ -872,7 +872,7 @@ export class Point3D extends Group {
                     ui.point.origin.x += 28;
                     ui.point.originPosition.x += 28;
 
-                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeOutCubic');
                 }
             });
         }
@@ -901,7 +901,7 @@ export class Point3D extends Group {
                     ui.point.origin.x -= 28;
                     ui.point.originPosition.x -= 28;
 
-                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeInCubic', 100);
                 }
             });
         }
@@ -1191,7 +1191,7 @@ export class Point3D extends Group {
         this.point.origin.sub(this.snapPosition); // Subtract delta
         this.point.originPosition.copy(this.snapTarget);
 
-        this.point.css({ left: Math.round(this.point.originPosition.x), top: Math.round(this.point.originPosition.y) });
+        this.point.css({ left: this.point.originPosition.x, top: this.point.originPosition.y });
 
         this.snappedLeft = snappedLeft;
         this.snappedRight = snappedRight;

@@ -361,8 +361,8 @@
 
                 // Line
                 const bounds = this.items[7].element.getBoundingClientRect();
-                const left = Math.round(bounds.left - containerBounds.left);
-                const top = Math.round(bounds.top - containerBounds.top);
+                const left = bounds.left - containerBounds.left;
+                const top = bounds.top - containerBounds.top;
 
                 this.line.setStartPoint(new Vector2(left + 1, top + 91));
                 this.line.setEndPoint(new Vector2(left + 91, top + 1));
