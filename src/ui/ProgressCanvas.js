@@ -10,10 +10,10 @@ import { clearTween, tween } from '../tween/Tween.js';
 import { degToRad } from '../utils/Utils.js';
 
 export class ProgressCanvas extends Interface {
-    constructor() {
+    constructor({
+        size = 32
+    } = {}) {
         super(null, 'canvas');
-
-        const size = 32;
 
         this.width = size;
         this.height = size;
@@ -25,6 +25,9 @@ export class ProgressCanvas extends Interface {
         this.needsUpdate = false;
 
         this.initCanvas();
+
+        this.addListeners();
+        this.resize();
     }
 
     initCanvas() {
@@ -93,12 +96,11 @@ export class ProgressCanvas extends Interface {
     }
 
     animateIn() {
-        this.addListeners();
-        this.resize();
+        this.clearTween().css({ scale: 1, opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic');
     }
 
-    animateOut() {
-        this.tween({ scale: 1.1, opacity: 0 }, 400, 'easeInCubic');
+    animateOut(callback) {
+        this.clearTween().tween({ scale: 1.1, opacity: 0 }, 400, 'easeInCubic', callback);
     }
 
     destroy() {

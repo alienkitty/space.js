@@ -386,9 +386,6 @@
             }
 
             static initViews() {
-                this.components = new Components();
-                document.body.appendChild(this.components.element);
-
                 this.ui = new UI({
                     instructions: {
                         content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} each component to toggle`
@@ -396,6 +393,9 @@
                 });
                 this.ui.instructions.animateIn();
                 document.body.appendChild(this.ui.element);
+
+                this.components = new Components();
+                document.body.appendChild(this.components.element);
             }
 
             static addListeners() {
