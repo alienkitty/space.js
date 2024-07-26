@@ -8,20 +8,16 @@ import { clamp, euclideanModulo, lerp } from '../utils/Utils.js';
 
 export class Color {
     constructor(r, g, b) {
+        this.isColor = true;
+
         this.r = 1;
         this.g = 1;
         this.b = 1;
 
-        this.isColor = true;
-
         this.hslA = { h: 0, s: 0, l: 0 };
         this.hslB = { h: 0, s: 0, l: 0 };
 
-        if (g === undefined && b === undefined) {
-            this.set(r);
-        } else {
-            this.setRGB(r, g, b);
-        }
+        this.set(r, g, b);
     }
 
     hue2rgb(p, q, t) {
@@ -33,13 +29,19 @@ export class Color {
         return p;
     }
 
-    set(value) {
-        if (value && value.isColor) {
-            this.copy(value);
-        } else if (typeof value === 'number') {
-            this.setHex(value);
-        } else if (typeof value === 'string') {
-            this.setStyle(value);
+    set(r, g, b) {
+        if (g === undefined && b === undefined) {
+            const value = r;
+
+            if (value && value.isColor) {
+                this.copy(value);
+            } else if (typeof value === 'number') {
+                this.setHex(value);
+            } else if (typeof value === 'string') {
+                this.setStyle(value);
+            }
+        } else {
+            this.setRGB(r, g, b);
         }
 
         return this;
@@ -98,13 +100,13 @@ export class Color {
             const size = string.length;
 
             if (size === 3) {
-                this.r = parseInt(string.charAt(0) + string.charAt(0), 16) / 255;
-                this.g = parseInt(string.charAt(1) + string.charAt(1), 16) / 255;
-                this.b = parseInt(string.charAt(2) + string.charAt(2), 16) / 255;
+                return this.setRGB(
+                    parseInt(string.charAt(0), 16) / 15,
+                    parseInt(string.charAt(1), 16) / 15,
+                    parseInt(string.charAt(2), 16) / 15
+                );
             } else if (size === 6) {
-                this.r = parseInt(string.charAt(0) + string.charAt(1), 16) / 255;
-                this.g = parseInt(string.charAt(2) + string.charAt(3), 16) / 255;
-                this.b = parseInt(string.charAt(4) + string.charAt(5), 16) / 255;
+                return this.setHex(parseInt(string, 16));
             }
         }
 
@@ -124,7 +126,7 @@ export class Color {
     }
 
     getHex() {
-        return this.r * 255 << 16 ^ this.g * 255 << 8 ^ this.b * 255 << 0;
+        return Math.round(clamp(this.r * 255, 0, 255)) * 65536 + Math.round(clamp(this.g * 255, 0, 255)) * 256 + Math.round(clamp(this.b * 255, 0, 255));
     }
 
     getHexString() {
@@ -166,16 +168,18 @@ export class Color {
         return target;
     }
 
+    getRGB(target) {
+        target.r = this.r;
+        target.g = this.g;
+        target.b = this.b;
+
+        return target;
+    }
+
     offsetHSL(h, s, l) {
         this.getHSL(this.hslA);
 
-        this.hslA.h += h;
-        this.hslA.s += s;
-        this.hslA.l += l;
-
-        this.setHSL(this.hslA.h, this.hslA.s, this.hslA.l);
-
-        return this;
+        return this.setHSL(this.hslA.h + h, this.hslA.s + s, this.hslA.l + l);
     }
 
     add(color) {
@@ -273,5 +277,9 @@ export class Color {
         array[offset + 2] = this.b;
 
         return array;
+    }
+
+    random() {
+        return this.setHex(Math.random() * 0xffffff);
     }
 }
