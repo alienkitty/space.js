@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { DetailsButton, Interface, Line, Link, MuteButton, NavLink, Point, Reticle, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
+        import { DetailsButton, Interface, Line, Link, MuteButton, NavLink, Point, Reticle, ReticleCanvas, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
 
         class ComponentItem extends Interface {
             constructor(view, index) {
@@ -186,6 +186,8 @@
 
                 // Reticle
                 const reticle = new Reticle();
+                reticle.target.set(halfWidth, halfHeight);
+                reticle.update();
 
                 // Reticle with text
                 const reticle2 = new Reticle();
@@ -193,6 +195,22 @@
                     primary: '127.0.0.1',
                     secondary: 'localhost'
                 });
+                reticle2.target.set(halfWidth, halfHeight);
+                reticle2.update();
+
+                // Reticle canvas
+                const reticle3 = new ReticleCanvas();
+                reticle3.target.set(halfWidth, halfHeight);
+                reticle3.update();
+
+                // Reticle canvas with text
+                const reticle4 = new ReticleCanvas();
+                reticle4.setData({
+                    primary: '127.0.0.1',
+                    secondary: 'localhost'
+                });
+                reticle4.target.set(halfWidth, halfHeight);
+                reticle4.update();
 
                 // Tracker
                 const tracker = new Tracker();
@@ -277,6 +295,8 @@
                 [
                     reticle,
                     reticle2,
+                    reticle3,
+                    reticle4,
                     tracker,
                     tracker2,
                     number,
@@ -340,7 +360,7 @@
                 this.context.scale(dpr, dpr);
 
                 // Line
-                const bounds = this.items[5].element.getBoundingClientRect();
+                const bounds = this.items[7].element.getBoundingClientRect();
                 const left = Math.round(bounds.left - containerBounds.left);
                 const top = Math.round(bounds.top - containerBounds.top);
 
