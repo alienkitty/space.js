@@ -86,6 +86,7 @@ export { Tracker } from './ui/Tracker.js';
 export { Point } from './ui/Point.js';
 export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
+export { Progress } from './ui/Progress.js';
 export { ProgressCanvas } from './ui/ProgressCanvas.js';
 export { Point3D } from './three/ui/Point3D.js';
 
