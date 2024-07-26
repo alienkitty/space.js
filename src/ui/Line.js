@@ -17,6 +17,9 @@ export class Line extends Component {
         this.start = new Vector2();
         this.end = new Vector2();
 
+        this.lineWidth = 1.5;
+        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
+
         this.props = {
             alpha: 0,
             start: 0,
@@ -32,14 +35,6 @@ export class Line extends Component {
 
     setEndPoint(position) {
         this.end.copy(position);
-    }
-
-    resize() {
-        // Context properties need to be reassigned after resize
-        this.context.lineWidth = 1.5;
-        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
-
-        this.update();
     }
 
     update() {
@@ -58,13 +53,19 @@ export class Line extends Component {
         const gap = length - dash;
         const offset = -length * this.props.start;
 
+        this.context.save();
+
         this.context.setLineDash([dash, gap]);
         this.context.lineDashOffset = offset;
+        this.context.lineWidth = this.lineWidth;
+        this.context.strokeStyle = this.strokeStyle;
 
         this.context.beginPath();
         this.context.moveTo(this.start.x, this.start.y);
         this.context.lineTo(this.end.x, this.end.y);
         this.context.stroke();
+
+        this.context.restore();
     }
 
     animateIn(reverse) {

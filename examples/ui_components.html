@@ -134,6 +134,10 @@
             constructor() {
                 super('.components');
 
+                this.itemWidth = 90;
+                this.itemHeight = 90;
+                this.itemHalfWidth = Math.round(this.itemWidth / 2);
+                this.itemHalfHeight = Math.round(this.itemHeight / 2);
                 this.items = [];
 
                 this.init();
@@ -179,10 +183,10 @@
             }
 
             initViews() {
-                const width = 90;
-                const height = 90;
-                const halfWidth = Math.round(width / 2);
-                const halfHeight = Math.round(height / 2);
+                const width = this.itemWidth;
+                const height = this.itemHeight;
+                const halfWidth = this.itemHalfWidth;
+                const halfHeight = this.itemHalfHeight;
 
                 // Reticle
                 const reticle = new Reticle();
@@ -199,18 +203,7 @@
                 reticle2.update();
 
                 // Reticle canvas
-                const reticle3 = new ReticleCanvas();
-                reticle3.target.set(halfWidth, halfHeight);
-                reticle3.update();
-
-                // Reticle canvas with text
-                const reticle4 = new ReticleCanvas();
-                reticle4.setData({
-                    primary: '127.0.0.1',
-                    secondary: 'localhost'
-                });
-                reticle4.target.set(halfWidth, halfHeight);
-                reticle4.update();
+                const reticle3 = new ReticleCanvas(this.context);
 
                 // Tracker
                 const tracker = new Tracker();
@@ -240,7 +233,7 @@
                 const number = new TargetNumber();
                 number.setData({ targetNumber: 1 });
 
-                // Line (canvas)
+                // Line canvas
                 const line = new Line(this.context);
 
                 // Point
@@ -296,7 +289,6 @@
                     reticle,
                     reticle2,
                     reticle3,
-                    reticle4,
                     tracker,
                     tracker2,
                     number,
@@ -318,6 +310,7 @@
                 });
 
                 // Public properties
+                this.reticle3 = reticle3;
                 this.line = line;
                 this.detailsButton = detailsButton;
                 this.detailsButton2 = detailsButton2;
@@ -359,14 +352,20 @@
                 this.canvas.element.style.height = `${height}px`;
                 this.context.scale(dpr, dpr);
 
-                // Line
-                const bounds = this.items[7].element.getBoundingClientRect();
-                const left = bounds.left - containerBounds.left;
-                const top = bounds.top - containerBounds.top;
+                // Reticle
+                const reticleBounds = this.items[2].element.getBoundingClientRect();
+                const reticleLeft = reticleBounds.left - containerBounds.left;
+                const reticleTop = reticleBounds.top - containerBounds.top;
 
-                this.line.setStartPoint(new Vector2(left + 1, top + 91));
-                this.line.setEndPoint(new Vector2(left + 91, top + 1));
-                this.line.resize();
+                this.reticle3.target.set(reticleLeft + this.itemHalfWidth, reticleTop + this.itemHalfHeight);
+
+                // Line
+                const lineBounds = this.items[6].element.getBoundingClientRect();
+                const lineLeft = lineBounds.left - containerBounds.left;
+                const lineTop = lineBounds.top - containerBounds.top;
+
+                this.line.setStartPoint(new Vector2(lineLeft + 1, lineTop + this.itemHeight + 1));
+                this.line.setEndPoint(new Vector2(lineLeft + this.itemWidth + 1, lineTop + 1));
 
                 // Buttons
                 this.detailsButton.resize();
@@ -382,6 +381,7 @@
             onUpdate = () => {
                 this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
+                this.reticle3.update();
                 this.line.update();
                 this.detailsButton.update();
                 this.detailsButton2.update();
