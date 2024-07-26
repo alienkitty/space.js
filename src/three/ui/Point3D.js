@@ -440,21 +440,20 @@ export class Point3D extends Group {
         this.camera = Point3D.camera;
         this.halfScreen = Point3D.halfScreen;
 
+        this.instances = [];
         this.center = new Vector2();
         this.size = new Vector2();
         this.selected = false;
         this.animatedIn = false;
-
         this.currentMaterialMap = null;
         this.uvTexture = null;
-
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.snappedLeft = false;
         this.snappedRight = false;
         this.snapped = false;
 
-        this.instances = [];
+        this.v = new Vector2();
         this.matrix = new Matrix4();
 
         this.initMesh();
@@ -763,8 +762,19 @@ export class Point3D extends Group {
     }
 
     update() {
-        this.line.setStartPoint(this.reticle.position);
-        this.line.setEndPoint(this.point.position);
+        const p0 = this.reticle.position;
+        const p1 = this.point.position;
+
+        const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+        const radius = 3;
+
+        const x = p0.x + radius * Math.cos(angle);
+        const y = p0.y + radius * Math.sin(angle);
+
+        this.v.set(x, y);
+
+        this.line.setStartPoint(this.v);
+        this.line.setEndPoint(p1);
         this.line.update();
         this.reticle.update();
         this.point.update();

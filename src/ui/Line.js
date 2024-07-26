@@ -20,15 +20,14 @@ export class Line extends Component {
         this.props = {
             alpha: 0,
             start: 0,
-            offset: 0,
             progress: 0
         };
     }
 
     // Public methods
 
-    setStartPoint({ x, y }) {
-        this.start.set(x + 3, y - 3);
+    setStartPoint(position) {
+        this.start.copy(position);
     }
 
     setEndPoint(position) {
@@ -57,7 +56,7 @@ export class Line extends Component {
         const length = this.start.distanceTo(this.end);
         const dash = length * this.props.progress;
         const gap = length - dash;
-        const offset = -length * (this.props.start + this.props.offset);
+        const offset = -length * this.props.start;
 
         this.context.setLineDash([dash, gap]);
         this.context.lineDashOffset = offset;
