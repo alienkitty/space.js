@@ -86,6 +86,7 @@
                     tween(this.circle, { progress: 1 }, 1000, 'easeOutCubic', () => {
                         tween(this.circle, { start: 1 }, 1000, 'easeInOutCubic', () => {
                             this.circle.start = 0;
+
                             delayedCall(500, () => {
                                 if (this.animatedIn) {
                                     start();
