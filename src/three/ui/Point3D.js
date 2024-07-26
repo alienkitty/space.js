@@ -9,7 +9,7 @@ import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.
 import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
 import { Stage } from '../../utils/Stage.js';
-import { Line } from '../../ui/Line.js';
+import { LineCanvas } from '../../ui/LineCanvas.js';
 import { Reticle } from '../../ui/Reticle.js';
 import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
@@ -497,7 +497,7 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
-        this.line = new Line(context);
+        this.line = new LineCanvas(context);
         this.element.add(this.line);
 
         this.reticle = new Reticle();

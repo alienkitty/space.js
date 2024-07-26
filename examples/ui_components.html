@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { DetailsButton, Interface, Line, Link, MuteButton, NavLink, Point, Reticle, ReticleCanvas, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
+        import { DetailsButton, Interface, LineCanvas, Link, MuteButton, NavLink, Point, Reticle, ReticleCanvas, TargetNumber, Tracker, UI, Vector2, defer, getConstructor, ticker } from '../src/index.js';
 
         class ComponentItem extends Interface {
             constructor(view, index) {
@@ -234,7 +234,7 @@
                 number.setData({ targetNumber: 1 });
 
                 // Line canvas
-                const line = new Line(this.context);
+                const line = new LineCanvas(this.context);
 
                 // Point
                 const point = new Point();

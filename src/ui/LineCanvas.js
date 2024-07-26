@@ -8,7 +8,7 @@ import { Component } from '../utils/Component.js';
 
 import { clearTween, tween } from '../tween/Tween.js';
 
-export class Line extends Component {
+export class LineCanvas extends Component {
     constructor(context) {
         super();
 
