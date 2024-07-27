@@ -17,14 +17,13 @@ export class LineCanvas extends Component {
         this.start = new Vector2();
         this.end = new Vector2();
 
-        this.lineWidth = 1.5;
-        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
-
         this.props = {
             alpha: 0,
             start: 0,
             progress: 0
         };
+
+        this.theme();
     }
 
     // Public methods
@@ -35,6 +34,11 @@ export class LineCanvas extends Component {
 
     setEndPoint(position) {
         this.end.copy(position);
+    }
+
+    theme() {
+        this.lineWidth = 1.5;
+        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
     }
 
     update() {

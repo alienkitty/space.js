@@ -15,28 +15,25 @@ export class ReticleCanvas extends Component {
 
         this.context = context;
 
-        const size = 10;
-
-        this.radius = size * 0.4;
-
+        this.radius = 4;
         this.position = new Vector2();
-        this.target = new Vector2();
-        this.lerpSpeed = 1;
-
-        this.lineWidth = 1.5;
-        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
 
         this.props = {
             scale: 1,
             alpha: 0
         };
+
+        this.theme();
     }
 
     // Public methods
 
-    update() {
-        this.position.lerp(this.target, this.lerpSpeed);
+    theme() {
+        this.lineWidth = 1.5;
+        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
+    }
 
+    update() {
         if (this.props.alpha <= 0) {
             return;
         }

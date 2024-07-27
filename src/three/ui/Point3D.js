@@ -9,8 +9,8 @@ import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.
 import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
 import { Stage } from '../../utils/Stage.js';
+import { ReticleCanvas } from '../../ui/ReticleCanvas.js';
 import { LineCanvas } from '../../ui/LineCanvas.js';
-import { Reticle } from '../../ui/Reticle.js';
 import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
 
@@ -129,7 +129,7 @@ export class Point3D extends Group {
     };
 
     static onInvert = () => {
-        this.invert();
+        this.points.forEach(ui => ui.theme());
     };
 
     static onResize = () => {
@@ -150,8 +150,6 @@ export class Point3D extends Group {
         } else {
             this.windowSnapMargin = 30;
         }
-
-        this.points.forEach(ui => ui.resize());
 
         const snapped = this.getSnappedSorted();
 
@@ -347,10 +345,6 @@ export class Point3D extends Group {
         this.points.forEach((ui, i) => ui.setIndex(i));
     }
 
-    static invert() {
-        this.points.forEach(ui => ui.resize());
-    }
-
     static update(time) {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -497,11 +491,11 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
+        this.reticle = new ReticleCanvas(context);
+        this.element.add(this.reticle);
+
         this.line = new LineCanvas(context);
         this.element.add(this.line);
-
-        this.reticle = new Reticle();
-        this.element.add(this.reticle);
 
         if (!this.noTracker) {
             this.tracker = new Tracker();
@@ -545,12 +539,6 @@ export class Point3D extends Group {
 
     setInitialPosition() {
         this.updateMatrixWorld();
-
-        this.reticle.position.copy(this.reticle.target);
-
-        if (this.tracker) {
-            this.tracker.position.copy(this.tracker.target);
-        }
 
         this.point.position.copy(this.point.target);
     }
@@ -598,7 +586,6 @@ export class Point3D extends Group {
 
             if (!this.animatedIn) {
                 this.setInitialPosition();
-                this.resize();
                 this.animateIn();
             }
         } else {
@@ -757,8 +744,9 @@ export class Point3D extends Group {
         }
     }
 
-    resize() {
-        this.line.resize();
+    theme() {
+        this.reticle.theme();
+        this.line.theme();
     }
 
     update() {
@@ -775,8 +763,9 @@ export class Point3D extends Group {
 
         this.line.setStartPoint(this.v);
         this.line.setEndPoint(p1);
-        this.line.update();
+
         this.reticle.update();
+        this.line.update();
         this.point.update();
     }
 
@@ -795,10 +784,10 @@ export class Point3D extends Group {
         const halfWidth = Math.round(width / 2);
         const halfHeight = Math.round(height / 2);
 
-        this.reticle.target.set(centerX, centerY);
+        this.reticle.position.set(centerX, centerY);
 
         if (this.tracker) {
-            this.tracker.target.set(centerX, centerY);
+            this.tracker.position.set(centerX, centerY);
             this.tracker.update();
             this.tracker.css({
                 width,
@@ -828,7 +817,7 @@ export class Point3D extends Group {
                     const halfWidth = Math.round(width / 2);
                     const halfHeight = Math.round(height / 2);
 
-                    instance.tracker.target.set(centerX, centerY);
+                    instance.tracker.position.set(centerX, centerY);
                     instance.tracker.update();
                     instance.tracker.css({
                         width,
@@ -936,16 +925,16 @@ export class Point3D extends Group {
     }
 
     animateIn(reverse) {
-        this.line.animateIn(reverse);
         this.reticle.animateIn();
+        this.line.animateIn(reverse);
         this.point.animateIn();
 
         this.animatedIn = true;
     }
 
     animateOut(fast, callback) {
-        this.line.animateOut(fast, callback);
         this.reticle.animateOut();
+        this.line.animateOut(fast, callback);
 
         if (this.tracker) {
             this.tracker.animateOut();
@@ -979,7 +968,6 @@ export class Point3D extends Group {
 
                 this.updateMatrixWorld();
 
-                mesh.tracker.position.copy(mesh.tracker.target);
                 mesh.tracker.animateIn();
             } else {
                 if (!multiple) {
@@ -1045,8 +1033,8 @@ export class Point3D extends Group {
 
     togglePanel(show, multiple) {
         if (show) {
-            this.line.animateOut(true);
             this.reticle.animateOut();
+            this.line.animateOut(true);
 
             if (this.tracker) {
                 this.tracker.animateIn(this.isInstanced);
@@ -1071,8 +1059,8 @@ export class Point3D extends Group {
                 Stage.events.emit('color_picker', { open: false, target: this.panel });
             }
         } else {
-            this.line.animateIn(true);
             this.reticle.animateIn();
+            this.line.animateIn(true);
 
             if (this.tracker) {
                 this.tracker.animateOut();

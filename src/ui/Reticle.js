@@ -14,10 +14,7 @@ export class Reticle extends Interface {
 
         this.width = size;
         this.height = size;
-
         this.position = new Vector2();
-        this.target = new Vector2();
-        this.lerpSpeed = 1;
 
         this.init();
     }
@@ -65,8 +62,6 @@ export class Reticle extends Interface {
     }
 
     update() {
-        this.position.lerp(this.target, this.lerpSpeed);
-
         this.css({ left: this.position.x, top: this.position.y });
     }
 

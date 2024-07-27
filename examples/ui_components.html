@@ -190,7 +190,7 @@
 
                 // Reticle
                 const reticle = new Reticle();
-                reticle.target.set(halfWidth, halfHeight);
+                reticle.position.set(halfWidth, halfHeight);
                 reticle.update();
 
                 // Reticle with text
@@ -199,7 +199,7 @@
                     primary: '127.0.0.1',
                     secondary: 'localhost'
                 });
-                reticle2.target.set(halfWidth, halfHeight);
+                reticle2.position.set(halfWidth, halfHeight);
                 reticle2.update();
 
                 // Reticle canvas
@@ -207,7 +207,7 @@
 
                 // Tracker
                 const tracker = new Tracker();
-                tracker.target.set(halfWidth, halfHeight);
+                tracker.position.set(halfWidth, halfHeight);
                 tracker.update();
                 tracker.css({
                     width,
@@ -219,7 +219,7 @@
                 // Tracker with target number
                 const tracker2 = new Tracker();
                 tracker2.setData({ targetNumber: 1 });
-                tracker2.target.set(halfWidth, halfHeight);
+                tracker2.position.set(halfWidth, halfHeight);
                 tracker2.update();
                 tracker2.css({
                     width,
@@ -357,7 +357,7 @@
                 const reticleLeft = reticleBounds.left - containerBounds.left;
                 const reticleTop = reticleBounds.top - containerBounds.top;
 
-                this.reticle3.target.set(reticleLeft + this.itemHalfWidth, reticleTop + this.itemHalfHeight);
+                this.reticle3.position.set(reticleLeft + this.itemHalfWidth, reticleTop + this.itemHalfHeight);
 
                 // Line
                 const lineBounds = this.items[6].element.getBoundingClientRect();

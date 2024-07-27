@@ -13,8 +13,6 @@ export class Tracker extends Interface {
         super('.tracker');
 
         this.position = new Vector2();
-        this.target = new Vector2();
-        this.lerpSpeed = 1;
         this.locked = false;
         this.animatedIn = false;
         this.isInstanced = false;
@@ -106,8 +104,6 @@ export class Tracker extends Interface {
     }
 
     update() {
-        this.position.lerp(this.target, this.lerpSpeed);
-
         this.css({ left: this.position.x, top: this.position.y });
     }
 
