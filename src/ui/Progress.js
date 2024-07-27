@@ -3,35 +3,51 @@
  */
 
 import { Interface } from '../utils/Interface.js';
-import { Stage } from '../utils/Stage.js';
 
 import { ticker } from '../tween/Ticker.js';
 import { clearTween, tween } from '../tween/Tween.js';
-import { degToRad } from '../utils/Utils.js';
 
-export class ProgressCanvas extends Interface {
+export class Progress extends Interface {
     constructor({
         size = 32
     } = {}) {
-        super(null, 'canvas');
+        super(null, 'svg');
 
         this.width = size;
         this.height = size;
         this.x = size / 2;
         this.y = size / 2;
         this.radius = size * 0.4;
-        this.startAngle = degToRad(-90);
+        this.startOffset = -0.25;
         this.progress = 0;
         this.needsUpdate = false;
 
-        this.initCanvas();
+        this.initSVG();
 
         this.addListeners();
-        this.resize();
     }
 
-    initCanvas() {
-        this.context = this.element.getContext('2d');
+    initSVG() {
+        this.attr({
+            width: this.width,
+            height: this.height
+        });
+
+        this.circle = new Interface(null, 'svg', 'circle');
+        this.circle.attr({
+            cx: this.x,
+            cy: this.y,
+            r: this.radius
+        });
+        this.circle.css({
+            fill: 'none',
+            stroke: 'var(--ui-color)',
+            strokeWidth: 1.5
+        });
+        this.circle.start = 0;
+        this.circle.offset = this.startOffset;
+        this.circle.progress = 0;
+        this.add(this.circle);
     }
 
     addListeners() {
@@ -72,27 +88,8 @@ export class ProgressCanvas extends Interface {
 
     // Public methods
 
-    resize() {
-        const dpr = 2; // Always 2
-
-        this.element.width = Math.round(this.width * dpr);
-        this.element.height = Math.round(this.height * dpr);
-        this.element.style.width = `${this.width}px`;
-        this.element.style.height = `${this.height}px`;
-        this.context.scale(dpr, dpr);
-
-        // Context properties need to be reassigned after resize
-        this.context.lineWidth = 1.5;
-        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
-
-        this.update();
-    }
-
     update() {
-        this.context.clearRect(0, 0, this.element.width, this.element.height);
-        this.context.beginPath();
-        this.context.arc(this.x, this.y, this.radius, this.startAngle, this.startAngle + degToRad(360 * this.progress));
-        this.context.stroke();
+        this.circle.drawLine(this.progress);
     }
 
     animateIn() {

@@ -79,13 +79,15 @@ export { Thumbnail } from './ui/Thumbnail.js';
 export { Graph } from './ui/Graph.js';
 export { GraphSegments } from './ui/GraphSegments.js';
 export { RadialGraph } from './ui/RadialGraph.js';
-export { Line } from './ui/Line.js';
+export { LineCanvas } from './ui/LineCanvas.js';
 export { Reticle } from './ui/Reticle.js';
+export { ReticleCanvas } from './ui/ReticleCanvas.js';
 export { ReticleInfo } from './ui/ReticleInfo.js';
 export { Tracker } from './ui/Tracker.js';
 export { Point } from './ui/Point.js';
 export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
+export { Progress } from './ui/Progress.js';
 export { ProgressCanvas } from './ui/ProgressCanvas.js';
 export { Point3D } from './three/ui/Point3D.js';
 

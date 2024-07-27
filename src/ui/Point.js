@@ -155,7 +155,7 @@ export class Point extends Interface {
                 this.bounds = this.info.container.element.getBoundingClientRect();
                 this.ui.snap();
             } else {
-                this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+                this.css({ left: this.originPosition.x, top: this.originPosition.y });
             }
 
             this.isMove = true;
@@ -210,7 +210,7 @@ export class Point extends Interface {
 
         this.position.lerp(this.target, this.lerpSpeed);
 
-        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
+        this.css({ left: this.position.x, top: this.position.y });
     }
 
     lock() {
@@ -239,7 +239,7 @@ export class Point extends Interface {
         this.origin.set(0, 0);
         this.originPosition.copy(this.position);
 
-        this.css({ left: Math.round(this.originPosition.x), top: Math.round(this.originPosition.y) });
+        this.css({ left: this.originPosition.x, top: this.originPosition.y });
 
         this.isOpen = false;
         this.isMove = false;

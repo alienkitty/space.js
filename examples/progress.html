@@ -24,6 +24,7 @@
                 this.x = size / 2;
                 this.y = size / 2;
                 this.radius = size * 0.4;
+                this.startOffset = -0.25;
                 this.progress = 0;
                 this.needsUpdate = false;
 
@@ -50,7 +51,8 @@
                     strokeWidth: 1.5
                 });
                 this.circle.start = 0;
-                this.circle.offset = -0.25;
+                this.circle.offset = this.startOffset;
+                this.circle.progress = 0;
                 this.add(this.circle);
             }
 

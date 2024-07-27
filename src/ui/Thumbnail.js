@@ -318,7 +318,7 @@ export class Thumbnail extends Interface {
         this.snapPosition.sub(this.snapTarget);
         this.origin.sub(this.snapPosition); // Subtract delta
 
-        this.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+        this.css({ left: this.origin.x, top: this.origin.y });
 
         this.snappedTop = snappedTop;
         this.snappedRight = snappedRight;

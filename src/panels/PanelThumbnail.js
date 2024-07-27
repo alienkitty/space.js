@@ -444,7 +444,7 @@ export class PanelThumbnail extends Interface {
         this.snapPosition.sub(this.snapTarget);
         this.origin.sub(this.snapPosition); // Subtract delta
 
-        this.wrapper.css({ left: Math.round(this.origin.x), top: Math.round(this.origin.y) });
+        this.wrapper.css({ left: this.origin.x, top: this.origin.y });
 
         this.snapped = snapped;
 

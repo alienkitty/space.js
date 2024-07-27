@@ -9,8 +9,8 @@ import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.
 import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
 import { Stage } from '../../utils/Stage.js';
-import { Line } from '../../ui/Line.js';
-import { Reticle } from '../../ui/Reticle.js';
+import { ReticleCanvas } from '../../ui/ReticleCanvas.js';
+import { LineCanvas } from '../../ui/LineCanvas.js';
 import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
 
@@ -129,7 +129,7 @@ export class Point3D extends Group {
     };
 
     static onInvert = () => {
-        this.invert();
+        this.points.forEach(ui => ui.theme());
     };
 
     static onResize = () => {
@@ -150,8 +150,6 @@ export class Point3D extends Group {
         } else {
             this.windowSnapMargin = 30;
         }
-
-        this.points.forEach(ui => ui.resize());
 
         const snapped = this.getSnappedSorted();
 
@@ -347,10 +345,6 @@ export class Point3D extends Group {
         this.points.forEach((ui, i) => ui.setIndex(i));
     }
 
-    static invert() {
-        this.points.forEach(ui => ui.resize());
-    }
-
     static update(time) {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -440,21 +434,20 @@ export class Point3D extends Group {
         this.camera = Point3D.camera;
         this.halfScreen = Point3D.halfScreen;
 
+        this.instances = [];
         this.center = new Vector2();
         this.size = new Vector2();
         this.selected = false;
         this.animatedIn = false;
-
         this.currentMaterialMap = null;
         this.uvTexture = null;
-
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
         this.snappedLeft = false;
         this.snappedRight = false;
         this.snapped = false;
 
-        this.instances = [];
+        this.v = new Vector2();
         this.matrix = new Matrix4();
 
         this.initMesh();
@@ -498,11 +491,11 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
-        this.line = new Line(context);
-        this.element.add(this.line);
-
-        this.reticle = new Reticle();
+        this.reticle = new ReticleCanvas(context);
         this.element.add(this.reticle);
+
+        this.line = new LineCanvas(context);
+        this.element.add(this.line);
 
         if (!this.noTracker) {
             this.tracker = new Tracker();
@@ -546,12 +539,6 @@ export class Point3D extends Group {
 
     setInitialPosition() {
         this.updateMatrixWorld();
-
-        this.reticle.position.copy(this.reticle.target);
-
-        if (this.tracker) {
-            this.tracker.position.copy(this.tracker.target);
-        }
 
         this.point.position.copy(this.point.target);
     }
@@ -599,7 +586,6 @@ export class Point3D extends Group {
 
             if (!this.animatedIn) {
                 this.setInitialPosition();
-                this.resize();
                 this.animateIn();
             }
         } else {
@@ -758,15 +744,28 @@ export class Point3D extends Group {
         }
     }
 
-    resize() {
-        this.line.resize();
+    theme() {
+        this.reticle.theme();
+        this.line.theme();
     }
 
     update() {
-        this.line.setStartPoint(this.reticle.position);
-        this.line.setEndPoint(this.point.position);
-        this.line.update();
+        const p0 = this.reticle.position;
+        const p1 = this.point.position;
+
+        const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+        const radius = 3;
+
+        const x = p0.x + radius * Math.cos(angle);
+        const y = p0.y + radius * Math.sin(angle);
+
+        this.v.set(x, y);
+
+        this.line.setStartPoint(this.v);
+        this.line.setEndPoint(p1);
+
         this.reticle.update();
+        this.line.update();
         this.point.update();
     }
 
@@ -785,10 +784,10 @@ export class Point3D extends Group {
         const halfWidth = Math.round(width / 2);
         const halfHeight = Math.round(height / 2);
 
-        this.reticle.target.set(centerX, centerY);
+        this.reticle.position.set(centerX, centerY);
 
         if (this.tracker) {
-            this.tracker.target.set(centerX, centerY);
+            this.tracker.position.set(centerX, centerY);
             this.tracker.update();
             this.tracker.css({
                 width,
@@ -818,7 +817,7 @@ export class Point3D extends Group {
                     const halfWidth = Math.round(width / 2);
                     const halfHeight = Math.round(height / 2);
 
-                    instance.tracker.target.set(centerX, centerY);
+                    instance.tracker.position.set(centerX, centerY);
                     instance.tracker.update();
                     instance.tracker.css({
                         width,
@@ -862,7 +861,7 @@ export class Point3D extends Group {
                     ui.point.origin.x += 28;
                     ui.point.originPosition.x += 28;
 
-                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeOutCubic');
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeOutCubic');
                 }
             });
         }
@@ -891,7 +890,7 @@ export class Point3D extends Group {
                     ui.point.origin.x -= 28;
                     ui.point.originPosition.x -= 28;
 
-                    ui.point.clearTween().tween({ left: Math.round(ui.point.originPosition.x) }, 400, 'easeInCubic', 100);
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeInCubic', 100);
                 }
             });
         }
@@ -926,16 +925,16 @@ export class Point3D extends Group {
     }
 
     animateIn(reverse) {
-        this.line.animateIn(reverse);
         this.reticle.animateIn();
+        this.line.animateIn(reverse);
         this.point.animateIn();
 
         this.animatedIn = true;
     }
 
     animateOut(fast, callback) {
-        this.line.animateOut(fast, callback);
         this.reticle.animateOut();
+        this.line.animateOut(fast, callback);
 
         if (this.tracker) {
             this.tracker.animateOut();
@@ -969,7 +968,6 @@ export class Point3D extends Group {
 
                 this.updateMatrixWorld();
 
-                mesh.tracker.position.copy(mesh.tracker.target);
                 mesh.tracker.animateIn();
             } else {
                 if (!multiple) {
@@ -1035,8 +1033,8 @@ export class Point3D extends Group {
 
     togglePanel(show, multiple) {
         if (show) {
-            this.line.animateOut(true);
             this.reticle.animateOut();
+            this.line.animateOut(true);
 
             if (this.tracker) {
                 this.tracker.animateIn(this.isInstanced);
@@ -1061,8 +1059,8 @@ export class Point3D extends Group {
                 Stage.events.emit('color_picker', { open: false, target: this.panel });
             }
         } else {
-            this.line.animateIn(true);
             this.reticle.animateIn();
+            this.line.animateIn(true);
 
             if (this.tracker) {
                 this.tracker.animateOut();
@@ -1181,7 +1179,7 @@ export class Point3D extends Group {
         this.point.origin.sub(this.snapPosition); // Subtract delta
         this.point.originPosition.copy(this.snapTarget);
 
-        this.point.css({ left: Math.round(this.point.originPosition.x), top: Math.round(this.point.originPosition.y) });
+        this.point.css({ left: this.point.originPosition.x, top: this.point.originPosition.y });
 
         this.snappedLeft = snappedLeft;
         this.snappedRight = snappedRight;

@@ -8,7 +8,7 @@ import { Component } from '../utils/Component.js';
 
 import { clearTween, tween } from '../tween/Tween.js';
 
-export class Line extends Component {
+export class LineCanvas extends Component {
     constructor(context) {
         super();
 
@@ -20,27 +20,25 @@ export class Line extends Component {
         this.props = {
             alpha: 0,
             start: 0,
-            offset: 0,
             progress: 0
         };
+
+        this.theme();
     }
 
     // Public methods
 
-    setStartPoint({ x, y }) {
-        this.start.set(x + 3, y - 3);
+    setStartPoint(position) {
+        this.start.copy(position);
     }
 
     setEndPoint(position) {
         this.end.copy(position);
     }
 
-    resize() {
-        // Context properties need to be reassigned after resize
-        this.context.lineWidth = 1.5;
-        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
-
-        this.update();
+    theme() {
+        this.lineWidth = 1.5;
+        this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
     }
 
     update() {
@@ -57,19 +55,27 @@ export class Line extends Component {
         const length = this.start.distanceTo(this.end);
         const dash = length * this.props.progress;
         const gap = length - dash;
-        const offset = -length * (this.props.start + this.props.offset);
+        const offset = -length * this.props.start;
+
+        this.context.save();
 
         this.context.setLineDash([dash, gap]);
         this.context.lineDashOffset = offset;
+        this.context.lineWidth = this.lineWidth;
+        this.context.strokeStyle = this.strokeStyle;
 
         this.context.beginPath();
         this.context.moveTo(this.start.x, this.start.y);
         this.context.lineTo(this.end.x, this.end.y);
         this.context.stroke();
+
+        this.context.restore();
     }
 
     animateIn(reverse) {
         clearTween(this.props);
+
+        this.props.alpha = 0;
 
         tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 

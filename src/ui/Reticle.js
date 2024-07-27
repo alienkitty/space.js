@@ -14,11 +14,7 @@ export class Reticle extends Interface {
 
         this.width = size;
         this.height = size;
-
         this.position = new Vector2();
-        this.target = new Vector2();
-        this.lerpSpeed = 1;
-        this.animatedIn = false;
 
         this.init();
     }
@@ -27,8 +23,8 @@ export class Reticle extends Interface {
         this.invisible();
         this.css({
             position: 'absolute',
-            left: '50%',
-            top: '50%',
+            left: 0,
+            top: 0,
             width: this.width,
             height: this.height,
             marginLeft: -this.width / 2,
@@ -66,24 +62,18 @@ export class Reticle extends Interface {
     }
 
     update() {
-        this.position.lerp(this.target, this.lerpSpeed);
-
-        this.css({ left: Math.round(this.position.x), top: Math.round(this.position.y) });
+        this.css({ left: this.position.x, top: this.position.y });
     }
 
     animateIn() {
         this.clearTween();
         this.visible();
         this.css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
-
-        this.animatedIn = true;
     }
 
     animateOut(callback) {
         this.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.invisible();
-
-            this.animatedIn = false;
 
             if (callback) {
                 callback();

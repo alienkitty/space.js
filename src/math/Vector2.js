@@ -4,12 +4,14 @@
  * Based on https://github.com/mrdoob/three.js/blob/dev/src/math/Vector2.js
  */
 
+import { clamp } from '../utils/Utils.js';
+
 export class Vector2 {
     constructor(x = 0, y = 0) {
+        this.isVector2 = true;
+
         this.x = x;
         this.y = y;
-
-        this.isVector2 = true;
     }
 
     set(x, y) {
@@ -123,6 +125,68 @@ export class Vector2 {
         return this.multiplyScalar(1 / scalar);
     }
 
+    min(v) {
+        this.x = Math.min(this.x, v.x);
+        this.y = Math.min(this.y, v.y);
+
+        return this;
+    }
+
+    max(v) {
+        this.x = Math.max(this.x, v.x);
+        this.y = Math.max(this.y, v.y);
+
+        return this;
+    }
+
+    clamp(min, max) {
+        this.x = Math.max(min.x, Math.min(max.x, this.x));
+        this.y = Math.max(min.y, Math.min(max.y, this.y));
+
+        return this;
+    }
+
+    clampScalar(minVal, maxVal) {
+        this.x = Math.max(minVal, Math.min(maxVal, this.x));
+        this.y = Math.max(minVal, Math.min(maxVal, this.y));
+
+        return this;
+    }
+
+    clampLength(min, max) {
+        const length = this.length();
+
+        return this.divideScalar(length || 1).multiplyScalar(clamp(length, min, max));
+    }
+
+    floor() {
+        this.x = Math.floor(this.x);
+        this.y = Math.floor(this.y);
+
+        return this;
+    }
+
+    ceil() {
+        this.x = Math.ceil(this.x);
+        this.y = Math.ceil(this.y);
+
+        return this;
+    }
+
+    round() {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+
+        return this;
+    }
+
+    roundToZero() {
+        this.x = Math.trunc(this.x);
+        this.y = Math.trunc(this.y);
+
+        return this;
+    }
+
     negate() {
         this.x = -this.x;
         this.y = -this.y;
@@ -146,12 +210,28 @@ export class Vector2 {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    manhattanLength() {
+        return Math.abs(this.x) + Math.abs(this.y);
+    }
+
     normalize() {
         return this.divideScalar(this.length() || 1);
     }
 
     angle() {
         return Math.atan2(-this.y, -this.x) + Math.PI;
+    }
+
+    angleTo(v) {
+        const denominator = Math.sqrt(this.lengthSq() * v.lengthSq());
+
+        if (denominator === 0) {
+            return Math.PI / 2;
+        }
+
+        const theta = this.dot(v) / denominator;
+
+        return Math.acos(clamp(theta, -1, 1));
     }
 
     distanceTo(v) {
@@ -163,6 +243,10 @@ export class Vector2 {
         const dy = this.y - v.y;
 
         return dx * dx + dy * dy;
+    }
+
+    manhattanDistanceTo(v) {
+        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
     }
 
     setLength(length) {
@@ -199,5 +283,25 @@ export class Vector2 {
         array[offset + 1] = this.y;
 
         return array;
+    }
+
+    rotateAround(center, angle) {
+        const c = Math.cos(angle);
+        const s = Math.sin(angle);
+
+        const x = this.x - center.x;
+        const y = this.y - center.y;
+
+        this.x = x * c - y * s + center.x;
+        this.y = x * s + y * c + center.y;
+
+        return this;
+    }
+
+    random() {
+        this.x = Math.random();
+        this.y = Math.random();
+
+        return this;
     }
 }

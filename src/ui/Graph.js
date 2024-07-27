@@ -60,6 +60,12 @@ export class Graph extends Interface {
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
 
+        this.lineColors = {
+            graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
+            bottom: Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim(),
+            handle: Stage.rootStyle.getPropertyValue('--ui-color').trim()
+        };
+
         this.colorRange = [
             new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-1').trim()),
             new Color(Stage.rootStyle.getPropertyValue('--ui-color-range-2').trim()),
@@ -374,7 +380,8 @@ export class Graph extends Interface {
 
         // Draw bottom line
         this.context.lineWidth = 1;
-        this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim();
+        this.context.strokeStyle = this.lineColors.bottom;
+
         this.context.beginPath();
         this.context.moveTo(0, h);
         this.context.lineTo(w, h);
@@ -413,7 +420,7 @@ export class Graph extends Interface {
             }
 
             this.context.lineWidth = 1;
-            this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
+            this.context.strokeStyle = this.lineColors.handle;
 
             this.context.beginPath();
             this.context.moveTo(x, this.height - 0.5);
@@ -440,7 +447,7 @@ export class Graph extends Interface {
         this.context.lineWidth = 1.5;
 
         if (this.noGradient) {
-            this.context.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color-line').trim();
+            this.context.strokeStyle = this.lineColors.graph;
         } else {
             this.context.strokeStyle = this.strokeStyle;
             this.context.fillStyle = this.fillStyle;
