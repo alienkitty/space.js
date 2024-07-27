@@ -209,7 +209,7 @@ environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture
 
 ### Getting started
 
-Clone this repository and run the examples:
+Clone this repository and open the examples:
 
 ```sh
 git clone https://github.com/alienkitty/space.js
