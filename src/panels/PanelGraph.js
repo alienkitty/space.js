@@ -471,7 +471,13 @@ export class PanelGraph extends Interface {
                 this.graphNeedsUpdate = false;
             }
 
-            const value = this.array[Math.floor(this.mouseX * (this.array.length - 1))];
+            let index = Math.floor(this.mouseX * this.array.length);
+
+            if (index === this.array.length) {
+                index = this.array.length - 1;
+            }
+
+            const value = this.array[index];
             const x = this.mouseX * this.width;
 
             let y;
