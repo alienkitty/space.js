@@ -408,7 +408,7 @@ export class GraphSegments extends Interface {
         // Draw segment lines
         let end = 0;
 
-        for (let i = 0, l = this.array.length, il = this.graphs.length - 1; i < il; i++) {
+        for (let i = 0, l = this.array.length, il = this.segments.length - 1; i < il; i++) {
             end += this.segments[i] / l;
 
             const x = end * this.width;
@@ -445,7 +445,7 @@ export class GraphSegments extends Interface {
             let width = 0;
             let end = 0;
 
-            for (let l = this.graphs.length; i < l; i++) {
+            for (let l = this.segments.length; i < l; i++) {
                 start = end;
                 width = this.segments[i] / length;
                 end += width;
@@ -464,7 +464,7 @@ export class GraphSegments extends Interface {
 
                 y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
             } else {
-                y = h - value * this.rangeHeight;
+                y = h - value * this.rangeHeight[i];
             }
 
             if (this.props.handleAlpha < 0.001) {
@@ -511,7 +511,7 @@ export class GraphSegments extends Interface {
 
         let end = 0;
 
-        for (let i = 0, l = array.length, il = this.graphs.length; i < il; i++) {
+        for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
             if (this.props.progress === 1) {
                 this.context.beginPath();
             }
