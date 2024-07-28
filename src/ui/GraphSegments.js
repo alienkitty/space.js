@@ -438,14 +438,13 @@ export class GraphSegments extends Interface {
             }
 
             const length = this.array.length;
-            const x = this.mouseX * this.width;
 
             let i = 0;
             let start = 0;
             let width = 0;
             let end = 0;
 
-            for (let l = this.segments.length; i < l; i++) {
+            for (let il = this.segments.length; i < il; i++) {
                 start = end;
                 width = this.segments[i] / length;
                 end += width;
@@ -455,13 +454,19 @@ export class GraphSegments extends Interface {
                 }
             }
 
-            const value = this.array[Math.floor(start + this.mouseX * (length - 1))];
+            const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
+            let index = Math.floor(start * length + mouseX * this.segments[i]);
+
+            if (index === length) {
+                index = length - 1;
+            }
+
+            const value = this.array[index];
+            const x = this.mouseX * this.width;
 
             let y;
 
             if (this.lookupPrecision) {
-                const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
-
                 y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
             } else {
                 y = h - value * this.rangeHeight[i];
