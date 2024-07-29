@@ -28,11 +28,10 @@ export class Router {
     }
 
     static replacePage({ object, data }) {
+        window.scrollTo(0, 0);
+
         const page = new object(data);
-
         if (page instanceof Interface) {
-            window.scrollTo(0, 0);
-
             this.page.replace(this.page, page);
         }
 
@@ -44,12 +43,12 @@ export class Router {
 
         this.lastPage = this.page;
 
+        if (page.animateIn) {
+            page.animateIn();
+        }
+
         if (this.transition) {
             this.transition.animateOut(() => {
-                if (page.animateIn) {
-                    page.animateIn();
-                }
-
                 this.isTransitioning = false;
             });
         } else {
