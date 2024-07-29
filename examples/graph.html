@@ -51,7 +51,7 @@
         const graph2 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5] // length of each segment (minimum length of 3)
+            segments: [5, 5] // length of each segment (minimum length of 2)
         });
         graph2.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph2.setArray(Array.from({ length: 10 }, () => Math.random()));
@@ -62,7 +62,7 @@
         const graph3 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 5] // length of each segment (minimum length of 3)
+            segments: [5, 5, 5] // length of each segment (minimum length of 2)
         });
         graph3.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph3.setArray(Array.from({ length: 15 }, () => Math.random()));
@@ -94,7 +94,7 @@
         const graph6 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 3], // length of each segment (minimum length of 3)
+            segments: [5, 5, 3], // length of each segment (minimum length of 2)
             value: Array.from({ length: 13 }, () => Math.random()),
             ghost: Array.from({ length: 13 }, () => Math.random())
         });
