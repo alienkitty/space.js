@@ -438,13 +438,14 @@ export class GraphSegments extends Interface {
             }
 
             const length = this.array.length;
+            const segmentsLength = this.segments.length;
 
             let i = 0;
             let start = 0;
             let width = 0;
             let end = 0;
 
-            for (let il = this.segments.length; i < il; i++) {
+            for (; i < segmentsLength; i++) {
                 start = end;
                 width = this.segments[i] / length;
                 end += width;
@@ -452,6 +453,10 @@ export class GraphSegments extends Interface {
                 if (this.mouseX >= start && this.mouseX <= end) {
                     break;
                 }
+            }
+
+            if (i === segmentsLength) {
+                i = segmentsLength - 1;
             }
 
             const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
