@@ -79,6 +79,7 @@ export { Thumbnail } from './ui/Thumbnail.js';
 export { Graph } from './ui/Graph.js';
 export { GraphSegments } from './ui/GraphSegments.js';
 export { RadialGraph } from './ui/RadialGraph.js';
+export { RadialGraphSegments } from './ui/RadialGraphSegments.js';
 export { LineCanvas } from './ui/LineCanvas.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleCanvas } from './ui/ReticleCanvas.js';
