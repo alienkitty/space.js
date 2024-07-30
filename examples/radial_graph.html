@@ -30,7 +30,7 @@
     </style>
 
     <script type="module">
-        import { RadialGraph } from '../src/index.js';
+        import { RadialGraph, RadialGraphSegments } from '../src/index.js';
 
         // Radial graph
         const graph = new RadialGraph({
@@ -72,6 +72,29 @@
         graph4.animateIn();
         document.body.appendChild(graph4.element);
 
+        // Radial graph with 2 segments
+        const graph5 = new RadialGraphSegments({
+            start: -90,
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5] // length of each segment (minimum length of 2)
+        });
+        graph5.setArray(Array.from({ length: 10 }, () => Math.random()));
+        graph5.animateIn();
+        document.body.appendChild(graph5.element);
+
+        // Radial graph with 3 segments and ghost
+        const graph6 = new RadialGraphSegments({
+            start: -90,
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5, 5], // length of each segment (minimum length of 2)
+            value: Array.from({ length: 15 }, () => Math.random()),
+            ghost: Array.from({ length: 15 }, () => Math.random())
+        });
+        graph6.animateIn();
+        document.body.appendChild(graph6.element);
+
         // animation
 
         let counter = 0;
@@ -86,6 +109,8 @@
             graph3.update(y);
 
             graph4.update();
+            graph5.update();
+            graph6.update();
         }
 
         requestAnimationFrame(animate);
