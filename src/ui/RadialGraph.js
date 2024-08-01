@@ -273,25 +273,19 @@ export class RadialGraph extends Interface {
         this.onPointerMove(e);
     };
 
-    onPointerMove = e => {
-        if (this.element.contains(e.target)) {
-            this.bounds = this.element.getBoundingClientRect();
-            this.offset.x = e.clientX - (this.bounds.left + this.middle);
-            this.offset.y = e.clientY - (this.bounds.top + this.middle);
+    onPointerMove = ({ clientX, clientY }) => {
+        this.bounds = this.element.getBoundingClientRect();
+        this.offset.x = clientX - (this.bounds.left + this.middle);
+        this.offset.y = clientY - (this.bounds.top + this.middle);
 
-            const distance = this.offset.length();
+        const distance = this.offset.length();
+        const angle = this.offset.angle();
 
-            if (distance > this.distance && distance < this.middle) {
-                const angle = this.offset.angle();
+        this.mouseAngle = angle / TwoPI;
 
-                this.mouseAngle = angle / TwoPI;
-
-                this.setHover('over');
-                this.setCursor('crosshair');
-            } else {
-                this.setHover();
-                this.setCursor();
-            }
+        if (distance > this.distance && distance < this.middle) {
+            this.setHover('over');
+            this.setCursor('crosshair');
         } else {
             this.setHover();
             this.setCursor();
