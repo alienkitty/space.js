@@ -235,7 +235,11 @@ export class Graph extends Interface {
         }
 
         if (!this.noMarker) {
-            this.element.addEventListener('click', this.onClick);
+            if (navigator.maxTouchPoints) {
+                this.element.addEventListener('contextmenu', this.onContextMenu);
+            } else {
+                this.element.addEventListener('click', this.onClick);
+            }
         }
     }
 
@@ -248,7 +252,11 @@ export class Graph extends Interface {
         }
 
         if (!this.noMarker) {
-            this.element.removeEventListener('click', this.onClick);
+            if (navigator.maxTouchPoints) {
+                this.element.removeEventListener('contextmenu', this.onContextMenu);
+            } else {
+                this.element.removeEventListener('click', this.onClick);
+            }
         }
     }
 
@@ -292,6 +300,12 @@ export class Graph extends Interface {
     onPointerMove = ({ clientX }) => {
         this.bounds = this.element.getBoundingClientRect();
         this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
+    };
+
+    onContextMenu = e => {
+        e.preventDefault();
+
+        this.onClick();
     };
 
     onClick = () => {
