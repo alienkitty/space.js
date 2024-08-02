@@ -498,7 +498,7 @@ export class PanelGraph extends Interface {
             this.context.strokeStyle = this.lineColors.handle;
 
             this.context.beginPath();
-            this.context.moveTo(x, this.height - 0.5);
+            this.context.moveTo(x, this.height);
             this.context.lineTo(x, y + 2);
             this.context.stroke();
 

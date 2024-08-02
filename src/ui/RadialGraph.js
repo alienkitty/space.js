@@ -443,8 +443,8 @@ export class RadialGraph extends Interface {
         // Draw start line
         const c = Math.cos(this.startAngle);
         const s = Math.sin(this.startAngle);
-        const r0 = this.middle - h + 0.5;
-        const r1 = this.middle - (h - h * this.props.yMultiplier);
+        const r0 = this.middle - (h - 0.5);
+        const r1 = this.middle - (h - 0.5 - (h - 0.5) * this.props.yMultiplier);
         const x0 = this.middle + r0 * c;
         const y0 = this.middle + r0 * s;
         const x1 = this.middle + r1 * c;
@@ -509,7 +509,7 @@ export class RadialGraph extends Interface {
             const c = Math.cos(angle);
             const s = Math.sin(angle);
             const r0 = this.radius - infoOffset;
-            const r1 = this.radius + 0.5;
+            const r1 = this.radius;
             const r2 = radius - 2;
             const r3 = radius;
             const x0 = this.middle + r0 * c;

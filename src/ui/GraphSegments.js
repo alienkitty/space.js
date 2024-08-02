@@ -415,7 +415,7 @@ export class GraphSegments extends Interface {
 
             this.context.beginPath();
             this.context.moveTo(x, h - 0.5);
-            this.context.lineTo(x, h - h * this.props.yMultiplier);
+            this.context.lineTo(x, h - 0.5 - (h - 0.5) * this.props.yMultiplier);
             this.context.stroke();
         }
 
@@ -487,7 +487,7 @@ export class GraphSegments extends Interface {
             this.context.strokeStyle = this.lineColors.handle;
 
             this.context.beginPath();
-            this.context.moveTo(x, this.height - 0.5);
+            this.context.moveTo(x, this.height);
             this.context.lineTo(x, y + 2);
             this.context.stroke();
 
