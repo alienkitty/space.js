@@ -20,10 +20,12 @@ export class Graph extends Interface {
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
+        markers = [],
         range = 1,
         value,
         ghost,
         noHover = false,
+        noMarker = false,
         noGradient = false
     } = {}) {
         super('.graph');
@@ -33,10 +35,12 @@ export class Graph extends Interface {
         this.resolution = resolution;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
+        this.markers = markers;
         this.range = range;
         this.value = value;
         this.ghost = ghost;
         this.noHover = noHover;
+        this.noMarker = noMarker;
         this.noGradient = noGradient;
 
         if (!Stage.root) {
@@ -55,6 +59,7 @@ export class Graph extends Interface {
         this.lookup = [];
         this.bounds = null;
         this.mouseX = 0;
+        this.items = [];
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -89,6 +94,10 @@ export class Graph extends Interface {
 
         if (!this.noHover && this.lookupPrecision) {
             this.initGraph();
+        }
+
+        if (!this.noMarker) {
+            this.initMarkers();
         }
 
         this.setSize(this.width, this.height);
@@ -211,12 +220,22 @@ export class Graph extends Interface {
         return `rgb(${Math.round(color.r * 255)} ${Math.round(color.g * 255)} ${Math.round(color.b * 255)} / ${alpha * this.alpha})`;
     }
 
+    initMarkers() {
+        this.markers.map(data => {
+            this.addMarker(data, 500);
+        });
+    }
+
     addListeners() {
         if (!this.noHover) {
             this.element.addEventListener('mouseenter', this.onHover);
             this.element.addEventListener('mouseleave', this.onHover);
             window.addEventListener('pointerdown', this.onPointerDown);
             window.addEventListener('pointermove', this.onPointerMove);
+        }
+
+        if (!this.noMarker) {
+            this.element.addEventListener('click', this.onClick);
         }
     }
 
@@ -226,6 +245,10 @@ export class Graph extends Interface {
             this.element.removeEventListener('mouseleave', this.onHover);
             window.removeEventListener('pointerdown', this.onPointerDown);
             window.removeEventListener('pointermove', this.onPointerMove);
+        }
+
+        if (!this.noMarker) {
+            this.element.removeEventListener('click', this.onClick);
         }
     }
 
@@ -271,7 +294,28 @@ export class Graph extends Interface {
         this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
     };
 
+    onClick = () => {
+        if (this.items.find(item => item.x === this.mouseX)) {
+            return;
+        }
+
+        this.addMarker([this.mouseX, this.getMarkerName()]);
+    };
+
     // Public methods
+
+    getMarkerName() {
+        const names = this.items.map(item => item.name);
+
+        let count = 1;
+        let name = `Marker ${count++}`;
+
+        while (names.includes(name)) {
+            name = `Marker ${count++}`;
+        }
+
+        return name;
+    }
 
     setGhostArray(value) {
         if (Array.isArray(value)) {
@@ -331,6 +375,34 @@ export class Graph extends Interface {
         }
 
         this.update();
+    }
+
+    addMarker([x, name], delay = 0) {
+        const item = new Interface('.name');
+        item.css({
+            position: 'absolute',
+            left: 0,
+            top: -21,
+            transform: 'translateX(-50%)',
+            lineHeight: 18,
+            opacity: 0,
+            zIndex: 1,
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none'
+        });
+        item.x = x;
+        item.name = name;
+        item.multiplier = 0;
+        item.html(name);
+        this.add(item);
+
+        this.items.push(item);
+
+        tween(item, { multiplier: 1 }, 400, 'easeOutCubic', delay, null, () => {
+            this.needsUpdate = true;
+
+            item.css({ opacity: item.multiplier });
+        });
     }
 
     update(value) {
@@ -393,6 +465,25 @@ export class Graph extends Interface {
         }
 
         this.drawPath(w, h, this.array);
+
+        // Draw marker lines
+        if (!this.noMarker) {
+            this.context.lineWidth = 1.5;
+            this.context.strokeStyle = this.lineColors.graph;
+
+            for (let i = 0, l = this.items.length; i < l; i++) {
+                const x = this.items[i].x * this.width - 0.5;
+
+                this.context.beginPath();
+                this.context.moveTo(x, h - 0.5);
+                this.context.lineTo(x, h - 0.5 - (h - 0.5) * this.items[i].multiplier * this.props.yMultiplier);
+                this.context.stroke();
+            }
+
+            this.items.forEach(item => {
+                item.css({ left: item.x * this.width - 0.5 });
+            });
+        }
 
         // Draw handle line and circle
         if (!this.noHover) {
@@ -574,6 +665,12 @@ export class Graph extends Interface {
 
         tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', null, () => {
             this.needsUpdate = true;
+
+            if (!this.noMarker) {
+                this.items.forEach(item => {
+                    item.css({ opacity: this.props.yMultiplier });
+                });
+            }
         });
     }
 
