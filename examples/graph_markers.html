@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Graph Markers — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
+        body {
+            position: unset;
+            min-height: 100%;
+            padding: 55px 0px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 67px;
+        }
+
+        body > * {
+            flex-shrink: 0;
+        }
+    </style>
+
+    <script type="module">
+        import { Graph, RadialGraph, UI, clamp, mapLinear, ticker } from '../src/index.js';
+
+        class App {
+            static async init() {
+                this.initViews();
+
+                this.addListeners();
+                this.onResize();
+            }
+
+            static initViews() {
+                this.graph = new RadialGraph({
+                    precision: 2,
+                    lookupPrecision: 200,
+                    markers: [ // An array of normalized positions
+                        [0.5, 'Marker 1'],
+                        [1, 'Drag me']
+                    ],
+                    value: Array.from({ length: 10 }, () => Math.random())
+                });
+                document.body.appendChild(this.graph.element);
+
+                this.graph2 = new Graph({
+                    precision: 2,
+                    lookupPrecision: 200,
+                    markers: [ // An array of normalized positions
+                        [0.5, 'Marker 1'],
+                        [1, 'Drag me']
+                    ],
+                    value: Array.from({ length: 10 }, () => Math.random())
+                });
+                document.body.appendChild(this.graph2.element);
+
+                this.ui = new UI({
+                    instructions: {
+                        content: `${navigator.maxTouchPoints ? 'Long press' : 'Click'} graph to add marker`
+                    }
+                });
+                this.ui.instructions.animateIn();
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                window.addEventListener('resize', this.onResize);
+                window.addEventListener('load', this.onLoad);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static onResize = () => {
+                const width = document.documentElement.clientWidth;
+                const height = document.documentElement.clientHeight;
+
+                this.graph2.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
+            };
+
+            static onUpdate = () => {
+                this.graph.update();
+                this.graph2.update();
+                this.ui.update();
+            };
+
+            static onLoad = () => {
+                this.graph.animateIn();
+                this.graph2.animateIn();
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

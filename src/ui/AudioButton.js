@@ -37,7 +37,8 @@ export class AudioButton extends Interface {
 
     init() {
         this.css({
-            position: 'relative'
+            position: 'relative',
+            opacity: 0
         });
 
         this.container = new Interface('.container');
@@ -48,8 +49,7 @@ export class AudioButton extends Interface {
             cursor: 'pointer',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
-            userSelect: 'none',
-            opacity: 0
+            userSelect: 'none'
         });
         this.add(this.container);
     }
@@ -207,13 +207,13 @@ export class AudioButton extends Interface {
             this.animatedIn = true;
         });
 
-        this.container.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
+        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
     }
 
     animateOut() {
         this.animatedIn = false;
 
-        this.container.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
     }
 
     destroy() {

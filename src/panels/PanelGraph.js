@@ -285,7 +285,7 @@ export class PanelGraph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 4) / range;
+        return (this.height - 5) / range;
     }
 
     // Event handlers
@@ -483,9 +483,9 @@ export class PanelGraph extends Interface {
             let y;
 
             if (this.lookupPrecision) {
-                y = this.getCurveY(this.mouseX);
+                y = this.getCurveY(this.mouseX) - 1;
             } else {
-                y = h - value * this.rangeHeight;
+                y = h - value * this.rangeHeight - 1;
             }
 
             if (this.props.handleAlpha < 0.001) {
@@ -498,7 +498,7 @@ export class PanelGraph extends Interface {
             this.context.strokeStyle = this.lineColors.handle;
 
             this.context.beginPath();
-            this.context.moveTo(x, this.height - 0.5);
+            this.context.moveTo(x, this.height);
             this.context.lineTo(x, y + 2);
             this.context.stroke();
 
@@ -547,15 +547,15 @@ export class PanelGraph extends Interface {
                     this.pathData += `M ${x0} ${y0}`;
                 }
 
-                this.context.moveTo(x0, y0);
+                this.context.moveTo(x0, y0 - 1);
             }
 
             if (this.graphNeedsUpdate && !ghost) {
                 this.pathData += ` Q ${cpx0} ${y0} ${mx} ${my} Q ${cpx1} ${y1} ${x1} ${y1}`;
             }
 
-            this.context.quadraticCurveTo(cpx0, y0, mx, my);
-            this.context.quadraticCurveTo(cpx1, y1, x1, y1);
+            this.context.quadraticCurveTo(cpx0, y0 - 1, mx, my - 1);
+            this.context.quadraticCurveTo(cpx1, y1 - 1, x1, y1 - 1);
         }
 
         this.context.stroke();
