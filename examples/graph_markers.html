@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Standalone Graph Markers — Space.js</title>
+    <title>Graph Markers — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
@@ -32,9 +32,7 @@
     </style>
 
     <script type="module">
-        import { Graph, UI, clamp, mapLinear, ticker } from '../src/index.js';
-
-        // https://halo-5-visualizer.appspot.com/
+        import { Graph, RadialGraph, UI, clamp, mapLinear, ticker } from '../src/index.js';
 
         class App {
             static async init() {
@@ -45,7 +43,7 @@
             }
 
             static initViews() {
-                this.graph = new Graph({
+                this.graph = new RadialGraph({
                     precision: 2,
                     lookupPrecision: 200,
                     markers: [ // An array of normalized positions
@@ -55,6 +53,17 @@
                     value: Array.from({ length: 10 }, () => Math.random())
                 });
                 document.body.appendChild(this.graph.element);
+
+                this.graph2 = new Graph({
+                    precision: 2,
+                    lookupPrecision: 200,
+                    markers: [ // An array of normalized positions
+                        [0.5, 'Marker 1'],
+                        [1, 'Drag me']
+                    ],
+                    value: Array.from({ length: 10 }, () => Math.random())
+                });
+                document.body.appendChild(this.graph2.element);
 
                 this.ui = new UI({
                     instructions: {
@@ -78,16 +87,18 @@
                 const width = document.documentElement.clientWidth;
                 const height = document.documentElement.clientHeight;
 
-                this.graph.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
+                this.graph2.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
             };
 
             static onUpdate = () => {
                 this.graph.update();
+                this.graph2.update();
                 this.ui.update();
             };
 
             static onLoad = () => {
                 this.graph.animateIn();
+                this.graph2.animateIn();
                 this.ui.animateIn();
             };
         }
