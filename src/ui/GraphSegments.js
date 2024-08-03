@@ -270,9 +270,9 @@ export class GraphSegments extends Interface {
 
     getRangeHeight(range) {
         if (Array.isArray(range)) {
-            return range.map(range => (this.height - 4) / range);
+            return range.map(range => (this.height - 5) / range);
         } else {
-            return new Array(this.segments.length).fill((this.height - 4) / range);
+            return new Array(this.segments.length).fill((this.height - 5) / range);
         }
     }
 
@@ -577,9 +577,9 @@ export class GraphSegments extends Interface {
             let y;
 
             if (this.lookupPrecision) {
-                y = this.getCurveY(this.graphs[i], mouseX, width * this.width);
+                y = this.getCurveY(this.graphs[i], mouseX, width * this.width) - 1;
             } else {
-                y = h - value * this.rangeHeight[i];
+                y = h - value * this.rangeHeight[i] - 1;
             }
 
             if (this.props.handleAlpha < 0.001) {
@@ -654,7 +654,7 @@ export class GraphSegments extends Interface {
                     }
 
                     if (this.props.progress === 1) {
-                        this.context.moveTo(startX + x0, h - y0 * this.props.yMultiplier);
+                        this.context.moveTo(startX + x0, h - y0 * this.props.yMultiplier - 1);
                     }
                 }
 
@@ -663,8 +663,8 @@ export class GraphSegments extends Interface {
                 }
 
                 if (this.props.progress === 1) {
-                    this.context.quadraticCurveTo(startX + cpx0, h - y0 * this.props.yMultiplier, startX + mx, h - my * this.props.yMultiplier);
-                    this.context.quadraticCurveTo(startX + cpx1, h - y1 * this.props.yMultiplier, startX + x1, h - y1 * this.props.yMultiplier);
+                    this.context.quadraticCurveTo(startX + cpx0, h - y0 * this.props.yMultiplier - 1, startX + mx, h - my * this.props.yMultiplier - 1);
+                    this.context.quadraticCurveTo(startX + cpx1, h - y1 * this.props.yMultiplier - 1, startX + x1, h - y1 * this.props.yMultiplier - 1);
                 }
             }
 

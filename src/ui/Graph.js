@@ -261,7 +261,7 @@ export class Graph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.height - 4) / range;
+        return (this.height - 5) / range;
     }
 
     // Event handlers
@@ -519,9 +519,9 @@ export class Graph extends Interface {
             let y;
 
             if (this.lookupPrecision) {
-                y = this.getCurveY(this.mouseX);
+                y = this.getCurveY(this.mouseX) - 1;
             } else {
-                y = h - value * this.rangeHeight;
+                y = h - value * this.rangeHeight - 1;
             }
 
             if (this.props.handleAlpha < 0.001) {
@@ -584,7 +584,7 @@ export class Graph extends Interface {
                 }
 
                 if (this.props.progress === 1) {
-                    this.context.moveTo(x0, h - y0 * this.props.yMultiplier);
+                    this.context.moveTo(x0, h - y0 * this.props.yMultiplier - 1);
                 }
             }
 
@@ -593,8 +593,8 @@ export class Graph extends Interface {
             }
 
             if (this.props.progress === 1) {
-                this.context.quadraticCurveTo(cpx0, h - y0 * this.props.yMultiplier, mx, h - my * this.props.yMultiplier);
-                this.context.quadraticCurveTo(cpx1, h - y1 * this.props.yMultiplier, x1, h - y1 * this.props.yMultiplier);
+                this.context.quadraticCurveTo(cpx0, h - y0 * this.props.yMultiplier - 1, mx, h - my * this.props.yMultiplier - 1);
+                this.context.quadraticCurveTo(cpx1, h - y1 * this.props.yMultiplier - 1, x1, h - y1 * this.props.yMultiplier - 1);
             }
         }
 

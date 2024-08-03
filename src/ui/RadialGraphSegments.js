@@ -273,9 +273,9 @@ export class RadialGraphSegments extends Interface {
 
     getRangeHeight(range) {
         if (Array.isArray(range)) {
-            return range.map(range => (this.graphHeight - 4) / range);
+            return range.map(range => (this.graphHeight - 5) / range);
         } else {
-            return new Array(this.segments.length).fill((this.graphHeight - 4) / range);
+            return new Array(this.segments.length).fill((this.graphHeight - 5) / range);
         }
     }
 
@@ -536,9 +536,9 @@ export class RadialGraphSegments extends Interface {
                 const y = point.y - this.middle;
                 const distance = Math.sqrt(x * x + y * y);
 
-                radius = this.middle - (h - (distance - this.radius));
+                radius = this.middle - (h - (distance - this.radius) - 1);
             } else {
-                radius = this.middle - (h - value * this.rangeHeight[i]);
+                radius = this.middle - (h - value * this.rangeHeight[i] - 1);
             }
 
             let infoOffset;
@@ -695,7 +695,7 @@ export class RadialGraphSegments extends Interface {
             const segmentSlice = (this.segments[i] / l) * TwoPI;
 
             for (let j = 0, jl = this.segments[i]; j < jl; j++) {
-                const radius = this.middle - (h - array[start + j] * this.rangeHeight[i] * this.props.yMultiplier);
+                const radius = this.middle - (h - array[start + j] * this.rangeHeight[i] * this.props.yMultiplier - 1);
 
                 if (j === 0) {
                     const rad0 = this.startAngle + startAngle + segmentSlice * ((j - 1) / (jl - 1));

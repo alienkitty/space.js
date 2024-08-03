@@ -264,7 +264,7 @@ export class RadialGraph extends Interface {
     }
 
     getRangeHeight(range) {
-        return (this.graphHeight - 4) / range;
+        return (this.graphHeight - 5) / range;
     }
 
     // Event handlers
@@ -487,9 +487,9 @@ export class RadialGraph extends Interface {
                 const y = point.y - this.middle;
                 const distance = Math.sqrt(x * x + y * y);
 
-                radius = this.middle - (h - (distance - this.radius));
+                radius = this.middle - (h - (distance - this.radius) - 1);
             } else {
-                radius = this.middle - (h - value * this.rangeHeight);
+                radius = this.middle - (h - value * this.rangeHeight - 1);
             }
 
             let infoOffset;
@@ -627,7 +627,7 @@ export class RadialGraph extends Interface {
 
         // Close loop smoothly by repeating the first and last values
         for (let i = 0, l = array.length; i < l; i++) {
-            const radius = this.middle - (h - array[i] * this.rangeHeight * this.props.yMultiplier);
+            const radius = this.middle - (h - array[i] * this.rangeHeight * this.props.yMultiplier - 1);
 
             if (i === 0) {
                 const rad0 = this.startAngle + TwoPI * ((i - 1) / (l - 1));
