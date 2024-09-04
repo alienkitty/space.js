@@ -129,9 +129,9 @@ export class Graph extends Interface {
                 transform: 'translateX(-50%)',
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
-                opacity: 0,
                 zIndex: 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                opacity: 0
             });
             this.add(this.info);
         }
@@ -397,10 +397,9 @@ export class Graph extends Interface {
             top: -21,
             transform: 'translateX(-50%)',
             lineHeight: 18,
-            opacity: 0,
-            zIndex: 1,
             whiteSpace: 'nowrap',
-            pointerEvents: 'none'
+            zIndex: 1,
+            opacity: 0
         });
         item.x = x;
         item.name = name;

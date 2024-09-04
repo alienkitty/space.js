@@ -148,9 +148,9 @@ export class RadialGraphSegments extends Interface {
                 transform: 'translate(-50%, -50%)',
                 fontSize: 'const(--ui-secondary-font-size)',
                 letterSpacing: 'const(--ui-secondary-letter-spacing)',
-                opacity: 0,
                 zIndex: 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                opacity: 0
             });
             this.add(this.info);
         }
@@ -470,15 +470,15 @@ export class RadialGraphSegments extends Interface {
             top: 0,
             transform: 'translate(-50%, -50%)',
             lineHeight: 18,
-            opacity: 0,
-            zIndex: 1,
             whiteSpace: 'nowrap',
-            pointerEvents: 'none'
+            zIndex: 1,
+            pointerEvents: 'none',
+            opacity: 0
         });
         item.angle = angle;
         item.name = name;
         item.multiplier = 0;
-        item.width = 1;
+        item.width = 0;
         item.html(name);
         this.add(item);
 
