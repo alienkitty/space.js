@@ -1,7 +1,5 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Color } from '../math/Color.js';
