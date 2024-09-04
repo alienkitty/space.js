@@ -133,7 +133,7 @@ a:hover, a:focus {
     color: var(--bg-color);
 }
 
-.info, .target, .panel, .number, .name, .type, .primary, .secondary, .details-info {
+.info, .target, .panel, .number, .name, .type, .primary, .secondary, .details-info, .graph-marker {
     font-family: var(--ui-font-family);
     font-weight: var(--ui-font-weight);
     font-size: var(--ui-font-size);

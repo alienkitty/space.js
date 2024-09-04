@@ -67,6 +67,7 @@ export { MenuItem } from './ui/MenuItem.js';
 export { Thumbnail } from './ui/Thumbnail.js';
 export { Graph } from './ui/Graph.js';
 export { GraphSegments } from './ui/GraphSegments.js';
+export { GraphMarker } from './ui/GraphMarker.js';
 export { RadialGraph } from './ui/RadialGraph.js';
 export { RadialGraphSegments } from './ui/RadialGraphSegments.js';
 export { LineCanvas } from './ui/LineCanvas.js';

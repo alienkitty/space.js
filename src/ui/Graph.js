@@ -6,6 +6,7 @@ import { Color } from '../math/Color.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { GraphMarker } from './GraphMarker.js';
 
 import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
@@ -390,21 +391,10 @@ export class Graph extends Interface {
     }
 
     addMarker([x, name], delay = 0) {
-        const item = new Interface('.name');
-        item.css({
-            position: 'absolute',
-            left: 0,
-            top: -21,
-            transform: 'translateX(-50%)',
-            lineHeight: 18,
-            whiteSpace: 'nowrap',
-            zIndex: 1,
-            opacity: 0
-        });
+        const item = new GraphMarker({ name });
+        item.css({ top: -12 });
         item.x = x;
-        item.name = name;
         item.multiplier = 0;
-        item.html(name);
         this.add(item);
 
         this.items.push(item);

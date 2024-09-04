@@ -7,9 +7,10 @@ import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { GraphMarker } from './GraphMarker.js';
 
 import { ticker } from '../tween/Ticker.js';
-import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
+import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { TwoPI, degToRad, mapLinear } from '../utils/Utils.js';
 
 export class RadialGraphSegments extends Interface {
@@ -462,32 +463,13 @@ export class RadialGraphSegments extends Interface {
         this.update();
     }
 
-    async addMarker([angle, name], delay = 0) {
-        const item = new Interface('.name');
-        item.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            transform: 'translate(-50%, -50%)',
-            lineHeight: 18,
-            whiteSpace: 'nowrap',
-            zIndex: 1,
-            pointerEvents: 'none',
-            opacity: 0
-        });
+    addMarker([angle, name], delay = 0) {
+        const item = new GraphMarker({ name });
         item.angle = angle;
-        item.name = name;
         item.multiplier = 0;
-        item.width = 0;
-        item.html(name);
         this.add(item);
 
         this.items.push(item);
-
-        await defer();
-
-        const { width } = item.element.getBoundingClientRect();
-        item.width = width;
 
         tween(item, { multiplier: 1 }, 400, 'easeOutCubic', delay, null, () => {
             this.needsUpdate = true;
