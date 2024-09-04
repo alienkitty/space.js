@@ -33,7 +33,6 @@ export class PanelThumbnail extends Interface {
         this.thumbnails = [];
         this.lastTime = 0;
         this.lastMouse = new Vector2();
-        this.lastOrigin = new Vector2();
         this.isDragging = false;
         this.snapPosition = new Vector2();
         this.snapTarget = new Vector2();
@@ -156,7 +155,6 @@ export class PanelThumbnail extends Interface {
     onPointerDown = e => {
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
-        this.lastOrigin.set(0, 0);
 
         this.onPointerMove(e);
 
@@ -191,7 +189,7 @@ export class PanelThumbnail extends Interface {
                 }
             }
 
-            this.origin.addVectors(this.lastOrigin, this.delta);
+            this.origin.copy(this.delta);
 
             this.bounds = this.element.getBoundingClientRect();
             this.thumbnails = [...document.querySelectorAll('.panel-thumbnail')];
