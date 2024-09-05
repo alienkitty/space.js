@@ -3,6 +3,7 @@
  */
 
 import { Color } from '../math/Color.js';
+import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -57,6 +58,10 @@ export class Graph extends Interface {
         this.length = 0;
         this.lookup = [];
         this.bounds = null;
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.lastTime = 0;
+        this.lastMouse = new Vector2();
         this.mouseX = 0;
         this.items = [];
         this.isDragging = false;
@@ -234,12 +239,8 @@ export class Graph extends Interface {
             window.addEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.addEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.addEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.addEventListener('contextmenu', this.onContextMenu);
         }
     }
 
@@ -251,12 +252,8 @@ export class Graph extends Interface {
             window.removeEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.removeEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.removeEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
 
         this.items.forEach(item => {
@@ -295,16 +292,42 @@ export class Graph extends Interface {
 
     onPointerDown = e => {
         if (this.element.contains(e.target)) {
+            this.lastTime = performance.now();
+            this.lastMouse.set(e.clientX, e.clientY);
+
             this.onPointerMove(e);
+
+            window.addEventListener('pointerup', this.onPointerUp);
+
             this.hoverIn();
         } else {
             this.hoverOut();
         }
     };
 
-    onPointerMove = ({ clientX }) => {
+    onPointerMove = e => {
+        const event = {
+            x: e.clientX,
+            y: e.clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
         this.bounds = this.element.getBoundingClientRect();
-        this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
+        this.mouseX = clamp((this.mouse.x - this.bounds.left) / this.width, 0, 1);
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
+        this.onClick(e);
     };
 
     onContextMenu = e => {

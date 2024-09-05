@@ -74,6 +74,10 @@ export class RadialGraphSegments extends Interface {
         this.graphs = [];
         this.bounds = null;
         this.offset = new Vector2();
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.lastTime = 0;
+        this.lastMouse = new Vector2();
         this.mouseAngle = 0;
         this.lastHover = 'out';
         this.lastCursor = '';
@@ -277,12 +281,8 @@ export class RadialGraphSegments extends Interface {
             window.addEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.addEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.addEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.addEventListener('contextmenu', this.onContextMenu);
         }
     }
 
@@ -292,12 +292,8 @@ export class RadialGraphSegments extends Interface {
             window.removeEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.removeEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.removeEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
 
         this.items.forEach(item => {
@@ -317,13 +313,26 @@ export class RadialGraphSegments extends Interface {
     // Event handlers
 
     onPointerDown = e => {
+        this.lastTime = performance.now();
+        this.lastMouse.set(e.clientX, e.clientY);
+
         this.onPointerMove(e);
+
+        window.addEventListener('pointerup', this.onPointerUp);
     };
 
-    onPointerMove = ({ clientX, clientY }) => {
+    onPointerMove = e => {
+        const event = {
+            x: e.clientX,
+            y: e.clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
         this.bounds = this.element.getBoundingClientRect();
-        this.offset.x = clientX - (this.bounds.left + this.middle);
-        this.offset.y = clientY - (this.bounds.top + this.middle);
+        this.offset.x = this.mouse.x - (this.bounds.left + this.middle);
+        this.offset.y = this.mouse.y - (this.bounds.top + this.middle);
 
         const distance = this.offset.length();
         const angle = this.offset.angle();
@@ -337,6 +346,18 @@ export class RadialGraphSegments extends Interface {
             this.setHover();
             this.setCursor();
         }
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
+        this.onClick(e);
     };
 
     onContextMenu = e => {
