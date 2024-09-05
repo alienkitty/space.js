@@ -1,7 +1,5 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Color } from '../math/Color.js';
@@ -9,9 +7,10 @@ import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { GraphMarker } from './GraphMarker.js';
 
 import { ticker } from '../tween/Ticker.js';
-import { clearTween, defer, delayedCall, tween } from '../tween/Tween.js';
+import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { TwoPI, degToRad, mapLinear } from '../utils/Utils.js';
 
 export class RadialGraph extends Interface {
@@ -75,11 +74,15 @@ export class RadialGraph extends Interface {
         this.lookup = [];
         this.bounds = null;
         this.offset = new Vector2();
-        this.point = null;
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.lastTime = 0;
+        this.lastMouse = new Vector2();
         this.mouseAngle = 0;
         this.lastHover = 'out';
         this.lastCursor = '';
         this.items = [];
+        this.isDragging = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -150,9 +153,9 @@ export class RadialGraph extends Interface {
                 transform: 'translate(-50%, -50%)',
                 fontSize: 'const(--ui-secondary-font-size)',
                 letterSpacing: 'const(--ui-secondary-letter-spacing)',
-                opacity: 0,
                 zIndex: 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                opacity: 0
             });
             this.add(this.info);
         }
@@ -270,12 +273,8 @@ export class RadialGraph extends Interface {
             window.addEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.addEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.addEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.addEventListener('contextmenu', this.onContextMenu);
         }
     }
 
@@ -285,13 +284,14 @@ export class RadialGraph extends Interface {
             window.removeEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.removeEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.removeEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
+
+        this.items.forEach(item => {
+            item.events.off('update', this.onMarkerUpdate);
+            item.events.off('click', this.onMarkerClick);
+        });
     }
 
     getRangeHeight(range) {
@@ -301,40 +301,83 @@ export class RadialGraph extends Interface {
     // Event handlers
 
     onPointerDown = e => {
+        this.lastTime = performance.now();
+        this.lastMouse.set(e.clientX, e.clientY);
+
         this.onPointerMove(e);
+
+        window.addEventListener('pointerup', this.onPointerUp);
     };
 
-    onPointerMove = ({ clientX, clientY }) => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.offset.x = clientX - (this.bounds.left + this.middle);
-        this.offset.y = clientY - (this.bounds.top + this.middle);
+    onPointerMove = e => {
+        const event = {
+            x: e.clientX,
+            y: e.clientY
+        };
 
-        const distance = this.offset.length();
-        const angle = this.offset.angle();
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
 
-        this.mouseAngle = angle / TwoPI;
+        if (this.delta.length()) {
+            this.bounds = this.element.getBoundingClientRect();
+            this.offset.x = this.mouse.x - (this.bounds.left + this.middle);
+            this.offset.y = this.mouse.y - (this.bounds.top + this.middle);
 
-        if (distance > this.distance && distance < this.middle) {
-            this.setHover('over');
-            this.setCursor('crosshair');
-        } else {
-            this.setHover();
-            this.setCursor();
+            const distance = this.offset.length();
+            const angle = this.offset.angle();
+
+            this.mouseAngle = angle / TwoPI;
+
+            if (distance > this.distance && distance < this.middle) {
+                this.setHover('over');
+                this.setCursor('crosshair');
+            } else {
+                this.setHover();
+                this.setCursor();
+            }
         }
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
+        this.onClick(e);
     };
 
     onContextMenu = e => {
         e.preventDefault();
 
-        this.onClick();
+        this.onClick(e);
     };
 
-    onClick = () => {
+    onClick = e => {
+        if (e.target !== this.element) {
+            return;
+        }
+
         if (this.items.find(item => item.angle === this.mouseAngle)) {
             return;
         }
 
         this.addMarker([this.mouseAngle, this.getMarkerName()]);
+    };
+
+    onMarkerUpdate = ({ dragging, target }) => {
+        this.isDragging = dragging;
+
+        if (this.isDragging) {
+            target.angle = this.mouseAngle;
+        }
+    };
+
+    onMarkerClick = e => {
+        console.log('onMarkerClick', e);
     };
 
     // Public methods
@@ -446,32 +489,15 @@ export class RadialGraph extends Interface {
         this.update();
     }
 
-    async addMarker([angle, name], delay = 0) {
-        const item = new Interface('.name');
-        item.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            transform: 'translate(-50%, -50%)',
-            lineHeight: 18,
-            opacity: 0,
-            zIndex: 1,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none'
-        });
+    addMarker([angle, name], delay = 0) {
+        const item = new GraphMarker({ name });
         item.angle = angle;
-        item.name = name;
         item.multiplier = 0;
-        item.width = 1;
-        item.html(name);
+        item.events.on('update', this.onMarkerUpdate);
+        item.events.on('click', this.onMarkerClick);
         this.add(item);
 
         this.items.push(item);
-
-        await defer();
-
-        const { width } = item.element.getBoundingClientRect();
-        item.width = width;
 
         tween(item, { multiplier: 1 }, 400, 'easeOutCubic', delay, null, () => {
             this.needsUpdate = true;
@@ -507,7 +533,7 @@ export class RadialGraph extends Interface {
             }
         }
 
-        if (this.needsUpdate || this.hoveredIn) {
+        if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
         }

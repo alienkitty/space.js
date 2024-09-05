@@ -1,13 +1,13 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Color } from '../math/Color.js';
+import { Vector2 } from '../math/Vector2.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { GraphMarker } from './GraphMarker.js';
 
 import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
@@ -58,8 +58,13 @@ export class Graph extends Interface {
         this.length = 0;
         this.lookup = [];
         this.bounds = null;
+        this.mouse = new Vector2();
+        this.delta = new Vector2();
+        this.lastTime = 0;
+        this.lastMouse = new Vector2();
         this.mouseX = 0;
         this.items = [];
+        this.isDragging = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -131,9 +136,9 @@ export class Graph extends Interface {
                 transform: 'translateX(-50%)',
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
-                opacity: 0,
                 zIndex: 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                opacity: 0
             });
             this.add(this.info);
         }
@@ -234,12 +239,8 @@ export class Graph extends Interface {
             window.addEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.addEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.addEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.addEventListener('contextmenu', this.onContextMenu);
         }
     }
 
@@ -251,13 +252,14 @@ export class Graph extends Interface {
             window.removeEventListener('pointermove', this.onPointerMove);
         }
 
-        if (!this.noMarker) {
-            if (navigator.maxTouchPoints) {
-                this.element.removeEventListener('contextmenu', this.onContextMenu);
-            } else {
-                this.element.removeEventListener('click', this.onClick);
-            }
+        if (!this.noMarker && navigator.maxTouchPoints) {
+            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
+
+        this.items.forEach(item => {
+            item.events.off('update', this.onMarkerUpdate);
+            item.events.off('click', this.onMarkerClick);
+        });
     }
 
     getRangeHeight(range) {
@@ -290,30 +292,74 @@ export class Graph extends Interface {
 
     onPointerDown = e => {
         if (this.element.contains(e.target)) {
+            this.lastTime = performance.now();
+            this.lastMouse.set(e.clientX, e.clientY);
+
             this.onPointerMove(e);
+
+            window.addEventListener('pointerup', this.onPointerUp);
+
             this.hoverIn();
         } else {
             this.hoverOut();
         }
     };
 
-    onPointerMove = ({ clientX }) => {
-        this.bounds = this.element.getBoundingClientRect();
-        this.mouseX = clamp((clientX - this.bounds.left) / this.width, 0, 1);
+    onPointerMove = e => {
+        const event = {
+            x: e.clientX,
+            y: e.clientY
+        };
+
+        this.mouse.copy(event);
+        this.delta.subVectors(this.mouse, this.lastMouse);
+
+        if (this.delta.length()) {
+            this.bounds = this.element.getBoundingClientRect();
+            this.mouseX = clamp((this.mouse.x - this.bounds.left) / this.width, 0, 1);
+        }
+    };
+
+    onPointerUp = e => {
+        window.removeEventListener('pointerup', this.onPointerUp);
+
+        this.onPointerMove(e);
+
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+            return;
+        }
+
+        this.onClick(e);
     };
 
     onContextMenu = e => {
         e.preventDefault();
 
-        this.onClick();
+        this.onClick(e);
     };
 
-    onClick = () => {
+    onClick = e => {
+        if (e.target !== this.element) {
+            return;
+        }
+
         if (this.items.find(item => item.x === this.mouseX)) {
             return;
         }
 
         this.addMarker([this.mouseX, this.getMarkerName()]);
+    };
+
+    onMarkerUpdate = ({ dragging, target }) => {
+        this.isDragging = dragging;
+
+        if (this.isDragging) {
+            target.x = this.mouseX;
+        }
+    };
+
+    onMarkerClick = e => {
+        console.log('onMarkerClick', e);
     };
 
     // Public methods
@@ -392,22 +438,12 @@ export class Graph extends Interface {
     }
 
     addMarker([x, name], delay = 0) {
-        const item = new Interface('.name');
-        item.css({
-            position: 'absolute',
-            left: 0,
-            top: -21,
-            transform: 'translateX(-50%)',
-            lineHeight: 18,
-            opacity: 0,
-            zIndex: 1,
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none'
-        });
+        const item = new GraphMarker({ name });
+        item.css({ top: -12 });
         item.x = x;
-        item.name = name;
         item.multiplier = 0;
-        item.html(name);
+        item.events.on('update', this.onMarkerUpdate);
+        item.events.on('click', this.onMarkerClick);
         this.add(item);
 
         this.items.push(item);
@@ -446,7 +482,7 @@ export class Graph extends Interface {
             }
         }
 
-        if (this.needsUpdate || this.hoveredIn) {
+        if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
         }
@@ -486,7 +522,7 @@ export class Graph extends Interface {
             this.context.strokeStyle = this.lineColors.graph;
 
             for (let i = 0, l = this.items.length; i < l; i++) {
-                const x = this.items[i].x * this.width - 0.5;
+                const x = clamp(this.items[i].x * this.width, 0.5, this.width - 0.5);
 
                 this.context.beginPath();
                 this.context.moveTo(x, h - 0.5);
@@ -495,7 +531,7 @@ export class Graph extends Interface {
             }
 
             this.items.forEach(item => {
-                item.css({ left: item.x * this.width - 0.5 });
+                item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
             });
         }
 
@@ -514,7 +550,7 @@ export class Graph extends Interface {
             }
 
             const value = this.array[index];
-            const x = this.mouseX * this.width;
+            const x = clamp(this.mouseX * this.width, 0.5, this.width - 0.5);
 
             let y;
 

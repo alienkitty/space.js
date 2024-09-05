@@ -152,9 +152,9 @@ export class PanelGraph extends Interface {
                 marginLeft: 10,
                 fontSize: 'var(--ui-secondary-font-size)',
                 letterSpacing: 'var(--ui-secondary-letter-spacing)',
-                opacity: 0,
                 zIndex: 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                opacity: 0
             });
             this.add(this.info);
         }
@@ -478,7 +478,7 @@ export class PanelGraph extends Interface {
             }
 
             const value = this.array[index];
-            const x = this.mouseX * this.width;
+            const x = clamp(this.mouseX * this.width, 0.5, this.width - 0.5);
 
             let y;
 

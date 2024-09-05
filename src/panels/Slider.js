@@ -32,10 +32,10 @@ export class Slider extends Interface {
         this.value = this.getValue(this.value);
         this.lastValue = this.value;
 
+        this.bounds = null;
         this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.bounds = null;
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
 
