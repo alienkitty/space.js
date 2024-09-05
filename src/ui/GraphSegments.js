@@ -552,7 +552,7 @@ export class GraphSegments extends Interface {
             this.context.strokeStyle = this.lineColors.graph;
 
             for (let i = 0, l = this.items.length; i < l; i++) {
-                const x = this.items[i].x * this.width - 0.5;
+                const x = clamp(this.items[i].x * this.width, 0.5, this.width - 0.5);
 
                 this.context.beginPath();
                 this.context.moveTo(x, h - 0.5);
@@ -561,7 +561,7 @@ export class GraphSegments extends Interface {
             }
 
             this.items.forEach(item => {
-                item.css({ left: item.x * this.width - 0.5 });
+                item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
             });
         }
 
@@ -606,7 +606,7 @@ export class GraphSegments extends Interface {
             }
 
             const value = this.array[index];
-            const x = this.mouseX * this.width;
+            const x = clamp(this.mouseX * this.width, 0.5, this.width - 0.5);
 
             let y;
 
