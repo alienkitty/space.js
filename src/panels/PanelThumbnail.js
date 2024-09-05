@@ -26,10 +26,10 @@ export class PanelThumbnail extends Interface {
         this.diagonal = this.width * 1.414;
         this.lineOffset = -(this.diagonal - this.width) / 2 + 1;
 
+        this.bounds = null;
         this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.bounds = null;
         this.thumbnails = [];
         this.lastTime = 0;
         this.lastMouse = new Vector2();

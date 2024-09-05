@@ -74,7 +74,6 @@ export class RadialGraphSegments extends Interface {
         this.graphs = [];
         this.bounds = null;
         this.offset = new Vector2();
-        this.point = null;
         this.mouseAngle = 0;
         this.lastHover = 'out';
         this.lastCursor = '';
