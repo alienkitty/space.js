@@ -17,13 +17,10 @@ export class GraphMarker extends Interface {
 
         this.width = 0;
 
-        this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
-        this.bounds = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
-        this.lastOrigin = new Vector2();
         this.isDragging = false;
 
         this.init();
@@ -65,7 +62,6 @@ export class GraphMarker extends Interface {
     onPointerDown = e => {
         this.lastTime = performance.now();
         this.lastMouse.set(e.clientX, e.clientY);
-        this.lastOrigin.set(0, 0);
 
         this.onPointerMove(e);
 
@@ -83,15 +79,9 @@ export class GraphMarker extends Interface {
         this.delta.subVectors(this.mouse, this.lastMouse);
 
         if (this.delta.length()) {
-            if (!this.isDragging) {
-                this.isDragging = true;
+            this.isDragging = true;
 
-                console.log('onPointerMove', this.isDragging);
-            }
-
-            this.origin.addVectors(this.lastOrigin, this.delta);
-
-            this.bounds = this.element.getBoundingClientRect();
+            this.events.emit('update', { dragging: this.isDragging, target: this });
         }
     };
 
@@ -103,13 +93,13 @@ export class GraphMarker extends Interface {
 
         this.isDragging = false;
 
-        console.log('onPointerUp', this.isDragging);
+        this.events.emit('update', { dragging: this.isDragging, target: this });
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
         }
 
-        console.log('onPointerUp click');
+        this.events.emit('click', { target: this });
     };
 
     onKeyUp = e => {
@@ -120,7 +110,7 @@ export class GraphMarker extends Interface {
 
                 this.isDragging = false;
 
-                console.log('onKeyUp', this.isDragging);
+                this.events.emit('update', { dragging: this.isDragging, target: this });
             }
         }
     };

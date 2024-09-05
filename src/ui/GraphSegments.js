@@ -59,6 +59,7 @@ export class GraphSegments extends Interface {
         this.bounds = null;
         this.mouseX = 0;
         this.items = [];
+        this.isDragging = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -265,6 +266,11 @@ export class GraphSegments extends Interface {
                 this.element.removeEventListener('click', this.onClick);
             }
         }
+
+        this.items.forEach(item => {
+            item.events.off('update', this.onMarkerUpdate);
+            item.events.off('click', this.onMarkerClick);
+        });
     }
 
     getRangeHeight(range) {
@@ -316,15 +322,31 @@ export class GraphSegments extends Interface {
     onContextMenu = e => {
         e.preventDefault();
 
-        this.onClick();
+        this.onClick(e);
     };
 
-    onClick = () => {
+    onClick = e => {
+        if (e.target !== this.element) {
+            return;
+        }
+
         if (this.items.find(item => item.x === this.mouseX)) {
             return;
         }
 
         this.addMarker([this.mouseX, this.getMarkerName()]);
+    };
+
+    onMarkerUpdate = ({ dragging, target }) => {
+        this.isDragging = dragging;
+
+        if (this.isDragging) {
+            target.x = this.mouseX;
+        }
+    };
+
+    onMarkerClick = e => {
+        console.log('onMarkerClick', e);
     };
 
     // Public methods
@@ -413,6 +435,8 @@ export class GraphSegments extends Interface {
         item.css({ top: -12 });
         item.x = x;
         item.multiplier = 0;
+        item.events.on('update', this.onMarkerUpdate);
+        item.events.on('click', this.onMarkerClick);
         this.add(item);
 
         this.items.push(item);
@@ -451,7 +475,7 @@ export class GraphSegments extends Interface {
             }
         }
 
-        if (this.needsUpdate || this.hoveredIn) {
+        if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
         }

@@ -79,6 +79,7 @@ export class RadialGraphSegments extends Interface {
         this.lastHover = 'out';
         this.lastCursor = '';
         this.items = [];
+        this.isDragging = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -299,6 +300,11 @@ export class RadialGraphSegments extends Interface {
                 this.element.removeEventListener('click', this.onClick);
             }
         }
+
+        this.items.forEach(item => {
+            item.events.off('update', this.onMarkerUpdate);
+            item.events.off('click', this.onMarkerClick);
+        });
     }
 
     getRangeHeight(range) {
@@ -337,15 +343,31 @@ export class RadialGraphSegments extends Interface {
     onContextMenu = e => {
         e.preventDefault();
 
-        this.onClick();
+        this.onClick(e);
     };
 
-    onClick = () => {
+    onClick = e => {
+        if (e.target !== this.element) {
+            return;
+        }
+
         if (this.items.find(item => item.angle === this.mouseAngle)) {
             return;
         }
 
         this.addMarker([this.mouseAngle, this.getMarkerName()]);
+    };
+
+    onMarkerUpdate = ({ dragging, target }) => {
+        this.isDragging = dragging;
+
+        if (this.isDragging) {
+            target.angle = this.mouseAngle;
+        }
+    };
+
+    onMarkerClick = e => {
+        console.log('onMarkerClick', e);
     };
 
     // Public methods
@@ -467,6 +489,8 @@ export class RadialGraphSegments extends Interface {
         const item = new GraphMarker({ name });
         item.angle = angle;
         item.multiplier = 0;
+        item.events.on('update', this.onMarkerUpdate);
+        item.events.on('click', this.onMarkerClick);
         this.add(item);
 
         this.items.push(item);
@@ -505,7 +529,7 @@ export class RadialGraphSegments extends Interface {
             }
         }
 
-        if (this.needsUpdate || this.hoveredIn) {
+        if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
         }
