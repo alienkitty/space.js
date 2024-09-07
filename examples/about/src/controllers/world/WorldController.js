@@ -165,6 +165,11 @@ export class WorldController {
         });
     };
 
+    static ready = () => Promise.all([
+        this.textureLoader.ready(),
+        this.environmentLoader.ready()
+    ]);
+
     // Global handlers
 
     static getTexture = (path, callback) => this.textureLoader.load(path, callback);
