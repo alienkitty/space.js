@@ -170,7 +170,6 @@ export class Point extends Interface {
             return;
         }
 
-        this.onPointerMove(e);
         this.sendToBack();
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {

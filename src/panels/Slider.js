@@ -135,11 +135,9 @@ export class Slider extends Interface {
         this.update();
     };
 
-    onPointerUp = e => {
+    onPointerUp = () => {
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
-
-        this.onPointerMove(e);
     };
 
     // Public methods

@@ -57,9 +57,7 @@ export class Magnetic extends Component {
         }
     };
 
-    onPointerUp = e => {
-        this.onPointerMove(e);
-
+    onPointerUp = () => {
         this.onHover({ type: 'out' });
     };
 

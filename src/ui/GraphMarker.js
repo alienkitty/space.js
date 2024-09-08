@@ -85,11 +85,9 @@ export class GraphMarker extends Interface {
         }
     };
 
-    onPointerUp = e => {
+    onPointerUp = () => {
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
-
-        this.onPointerMove(e);
 
         this.isDragging = false;
 
