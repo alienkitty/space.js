@@ -207,16 +207,16 @@ export class Point3D extends Group {
             if (intersection.length) {
                 this.instanceId = intersection[0].instanceId;
 
-                const ui = this.points[this.objects.indexOf(intersection[0].object)];
+                const object = this.points[this.objects.indexOf(intersection[0].object)];
 
                 if (!this.hover || this.instanceId !== this.lastInstanceId) {
                     this.lastInstanceId = this.instanceId;
-                    this.hover = ui;
+                    this.hover = object;
                     this.hover.onHover({ type: 'over' });
                     this.root.css({ cursor: 'pointer' });
-                } else if (this.hover !== ui) {
+                } else if (this.hover !== object) {
                     this.hover.onHover({ type: 'out' });
-                    this.hover = ui;
+                    this.hover = object;
                     this.hover.onHover({ type: 'over' });
                     this.root.css({ cursor: 'pointer' });
                 }
@@ -238,8 +238,6 @@ export class Point3D extends Group {
         if (!this.enabled) {
             return;
         }
-
-        this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             this.click = null;

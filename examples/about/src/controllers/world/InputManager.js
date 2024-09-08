@@ -181,7 +181,7 @@ export class InputManager {
         this.delta.subVectors(this.mouse, this.lastMouse);
     };
 
-    static onPointerUp = e => {
+    static onPointerUp = () => {
         if (!this.enabled) {
             return;
         }
@@ -196,8 +196,6 @@ export class InputManager {
 
             this.controls.enabled = true;
         }
-
-        this.onPointerMove(e);
 
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             this.click = null;

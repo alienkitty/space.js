@@ -417,7 +417,7 @@ export class ColorPicker extends Interface {
         }
     };
 
-    onPointerUp = e => {
+    onPointerUp = () => {
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
 
@@ -427,8 +427,6 @@ export class ColorPicker extends Interface {
 
         this.isDown = false;
         this.distance = 256;
-
-        this.onPointerMove(e);
     };
 
     // Public methods

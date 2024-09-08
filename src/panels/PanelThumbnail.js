@@ -208,8 +208,6 @@ export class PanelThumbnail extends Interface {
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
 
-        this.onPointerMove(e);
-
         let intersects = false;
 
         this.thumbnails.forEach(({ element }) => {

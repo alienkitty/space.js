@@ -351,8 +351,6 @@ export class RadialGraphSegments extends Interface {
     onPointerUp = e => {
         window.removeEventListener('pointerup', this.onPointerUp);
 
-        this.onPointerMove(e);
-
         if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
         }
