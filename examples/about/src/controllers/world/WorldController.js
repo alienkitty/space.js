@@ -111,17 +111,21 @@ export class WorldController {
         this.polarCameraControls = new OrbitControls(this.polarCamera, this.renderer.domElement);
         this.polarCameraControls.enableDamping = true;
         this.polarCameraControls.maxPolarAngle = 0;
+        this.polarCameraControls.enabled = false;
 
         // Oblique camera controls
         this.obliqueCameraControls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
         this.obliqueCameraControls.enableDamping = true;
+        this.obliqueCameraControls.enabled = false;
 
         // Isometric camera controls
         this.isometricCameraControls = new OrbitControls(this.isometricCamera, this.renderer.domElement);
         this.isometricCameraControls.enableDamping = true;
+        this.isometricCameraControls.enabled = false;
 
         // Output camera controls
         this.controls = this.obliqueCameraControls;
+        this.controls.enabled = true;
     }
 
     static initPhysics() {
@@ -143,6 +147,12 @@ export class WorldController {
     static setCamera = (camera, controls) => {
         this.camera = camera;
         this.controls = controls;
+
+        this.polarCameraControls.enabled = false;
+        this.obliqueCameraControls.enabled = false;
+        this.isometricCameraControls.enabled = false;
+
+        this.controls.enabled = true;
     };
 
     static resize = (width, height, dpr) => {

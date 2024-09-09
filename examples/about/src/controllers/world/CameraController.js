@@ -85,18 +85,6 @@ export class CameraController {
     static setCamera = (camera, controls) => {
         this.camera = camera;
         this.controls = controls;
-
-        this.polarCameraControls.enabled = false;
-        this.obliqueCameraControls.enabled = false;
-        this.isometricCameraControls.enabled = false;
-
-        if (camera === this.polarCamera) {
-            this.polarCameraControls.enabled = true;
-        } else if (camera === this.obliqueCamera) {
-            this.obliqueCameraControls.enabled = true;
-        } else if (camera === this.isometricCamera) {
-            this.isometricCameraControls.enabled = true;
-        }
     };
 
     static resize = (width, height) => {
