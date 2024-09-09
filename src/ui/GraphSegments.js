@@ -15,7 +15,7 @@ import { clamp, mapLinear } from '../utils/Utils.js';
 
 export class GraphSegments extends Interface {
     constructor({
-        width = 150,
+        width = 300,
         height = 50,
         resolution = 80,
         precision = 0,
