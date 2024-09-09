@@ -92,6 +92,12 @@
                 const width = document.documentElement.clientWidth;
                 const height = document.documentElement.clientHeight;
 
+                if (width < height) {
+                    this.graph.setSize(250, 250);
+                } else {
+                    this.graph.setSize(300, 300);
+                }
+
                 this.graph2.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
             };
 
