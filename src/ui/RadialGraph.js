@@ -64,8 +64,8 @@ export class RadialGraph extends Interface {
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
         this.distance = this.radius - this.graphHeight;
-        this.startAngle = degToRad(this.start);
         this.rangeHeight = this.getRangeHeight(this.range);
+        this.startAngle = degToRad(this.start);
         this.array = [];
         this.ghostArray = [];
         this.points = [];
@@ -457,6 +457,9 @@ export class RadialGraph extends Interface {
     setSize(width, height) {
         this.width = width;
         this.height = height;
+        this.middle = this.width / 2;
+        this.radius = this.middle - this.graphHeight;
+        this.distance = this.radius - this.graphHeight;
         this.rangeHeight = this.getRangeHeight(this.range);
 
         this.css({
