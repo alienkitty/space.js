@@ -140,7 +140,8 @@ export class RadialGraph extends Interface {
             height: this.height,
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
+            touchAction: 'none'
         });
 
         if (!this.noHover) {

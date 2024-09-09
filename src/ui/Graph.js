@@ -123,7 +123,8 @@ export class Graph extends Interface {
             cursor: 'crosshair',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
+            touchAction: 'none'
         });
 
         if (!this.noHover) {
