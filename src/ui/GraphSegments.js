@@ -58,6 +58,7 @@ export class GraphSegments extends Interface {
         this.ghostArray = [];
         this.graphs = [];
         this.bounds = null;
+        this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.lastTime = 0;
@@ -65,6 +66,7 @@ export class GraphSegments extends Interface {
         this.mouseX = 0;
         this.items = [];
         this.isDragging = false;
+        this.isDraggingAway = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -282,6 +284,10 @@ export class GraphSegments extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
+        if (this.isDraggingAway) {
+            return;
+        }
+
         if (!this.animatedIn) {
             if (type === 'mouseenter') {
                 this.hoveredIn = true;
@@ -361,10 +367,23 @@ export class GraphSegments extends Interface {
 
     onMarkerUpdate = ({ dragging, target }) => {
         this.isDragging = dragging;
+        this.isDraggingAway = Math.abs(this.delta.y) > 50;
 
-        if (this.isDragging) {
+        if (this.isDragging && this.isDraggingAway) {
+            this.origin.subVectors(this.mouse, this.bounds);
+            target.css({ left: this.origin.x, top: this.origin.y });
+            this.hoverOut();
+        } else if (this.isDragging) {
             target.x = this.mouseX;
+            target.css({ top: -12 });
+            this.hoverIn();
+        } else if (this.isDraggingAway) {
+            this.isDraggingAway = false;
+            this.removeMarker(target);
+            this.hoverOut(true);
         }
+
+        this.needsUpdate = true;
     };
 
     onMarkerClick = e => {
@@ -470,6 +489,15 @@ export class GraphSegments extends Interface {
         });
     }
 
+    removeMarker(item) {
+        const index = this.items.indexOf(item);
+
+        if (~index) {
+            item.destroy();
+            this.items.splice(index, 1);
+        }
+    }
+
     update(value) {
         if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
@@ -559,13 +587,15 @@ export class GraphSegments extends Interface {
                 this.context.stroke();
             }
 
-            this.items.forEach(item => {
-                item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
-            });
+            if (!this.isDraggingAway) {
+                this.items.forEach(item => {
+                    item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
+                });
+            }
         }
 
         // Draw handle line and circle
-        if (!this.noHover) {
+        if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
                 this.graphs.forEach(graph => {
                     graph.path.attr({ d: graph.pathData });
@@ -740,7 +770,7 @@ export class GraphSegments extends Interface {
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
-    hoverOut() {
+    hoverOut(fast) {
         if (!this.hoveredIn) {
             return;
         }
@@ -749,13 +779,23 @@ export class GraphSegments extends Interface {
 
         clearTween(this.props);
 
-        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
-            this.needsUpdate = true;
-        });
+        this.info.clearTween();
 
-        this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+        if (fast) {
+            this.props.handleAlpha = 0;
+            this.needsUpdate = true;
+
+            this.info.css({ opacity: 0 });
             this.info.invisible();
-        });
+        } else {
+            tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+                this.needsUpdate = true;
+            });
+
+            this.info.tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+                this.info.invisible();
+            });
+        }
     }
 
     animateIn() {
