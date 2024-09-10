@@ -17,6 +17,7 @@
 
         body {
             position: unset;
+            height: unset;
             min-height: 100%;
             max-width: 1205px;
             margin: 0 auto;
@@ -114,6 +115,31 @@
         }
 
         requestAnimationFrame(animate);
+
+        // resize
+
+        window.addEventListener('resize', onWindowResize);
+        onWindowResize();
+
+        function onWindowResize() {
+            const width = document.documentElement.clientWidth;
+            const height = document.documentElement.clientHeight;
+
+            let size;
+
+            if (width < height) {
+                size = 250;
+            } else {
+                size = 300;
+            }
+
+            graph.setSize(size, size);
+            graph2.setSize(size, size);
+            graph3.setSize(size, size);
+            graph4.setSize(size, size);
+            graph5.setSize(size, size);
+            graph6.setSize(size, size);
+        }
     </script>
 </head>
 <body>

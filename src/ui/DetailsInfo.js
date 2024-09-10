@@ -33,7 +33,6 @@ export class DetailsInfo extends Interface {
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
-            width: 400,
             margin: '10% 10% 6%'
         });
         this.add(this.container);
@@ -56,19 +55,9 @@ export class DetailsInfo extends Interface {
 
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
-            this.css({ display: '' });
-
-            this.container.css({
-                width: '',
-                margin: '24px 20px 0'
-            });
+            this.container.css({ margin: '0 20px 24px' });
         } else {
-            this.css({ display: 'flex' });
-
-            this.container.css({
-                width: 400,
-                margin: '10% 10% 6%'
-            });
+            this.container.css({ margin: '10% 10% 6%' });
         }
     }
 

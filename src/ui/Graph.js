@@ -15,7 +15,7 @@ import { clamp } from '../utils/Utils.js';
 
 export class Graph extends Interface {
     constructor({
-        width = 150,
+        width = 300,
         height = 50,
         resolution = 80,
         precision = 0,
@@ -123,7 +123,8 @@ export class Graph extends Interface {
             cursor: 'crosshair',
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
+            touchAction: 'none'
         });
 
         if (!this.noHover) {
@@ -314,10 +315,8 @@ export class Graph extends Interface {
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
 
-        if (this.delta.length()) {
-            this.bounds = this.element.getBoundingClientRect();
-            this.mouseX = clamp((this.mouse.x - this.bounds.left) / this.width, 0, 1);
-        }
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseX = clamp((this.mouse.x - this.bounds.left) / this.width, 0, 1);
     };
 
     onPointerUp = e => {

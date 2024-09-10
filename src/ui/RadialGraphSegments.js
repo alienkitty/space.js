@@ -66,8 +66,8 @@ export class RadialGraphSegments extends Interface {
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
         this.distance = this.radius - this.graphHeight;
-        this.startAngle = degToRad(this.start);
         this.rangeHeight = this.getRangeHeight(this.range);
+        this.startAngle = degToRad(this.start);
         this.array = [];
         this.ghostArray = [];
         this.points = [];
@@ -140,7 +140,8 @@ export class RadialGraphSegments extends Interface {
             height: this.height,
             pointerEvents: 'auto',
             webkitUserSelect: 'none',
-            userSelect: 'none'
+            userSelect: 'none',
+            touchAction: 'none'
         });
 
         if (!this.noHover) {
@@ -330,23 +331,21 @@ export class RadialGraphSegments extends Interface {
         this.mouse.copy(event);
         this.delta.subVectors(this.mouse, this.lastMouse);
 
-        if (this.delta.length()) {
-            this.bounds = this.element.getBoundingClientRect();
-            this.offset.x = this.mouse.x - (this.bounds.left + this.middle);
-            this.offset.y = this.mouse.y - (this.bounds.top + this.middle);
+        this.bounds = this.element.getBoundingClientRect();
+        this.offset.x = this.mouse.x - (this.bounds.left + this.middle);
+        this.offset.y = this.mouse.y - (this.bounds.top + this.middle);
 
-            const distance = this.offset.length();
-            const angle = this.offset.angle();
+        const distance = this.offset.length();
+        const angle = this.offset.angle();
 
-            this.mouseAngle = angle / TwoPI;
+        this.mouseAngle = angle / TwoPI;
 
-            if (distance > this.distance && distance < this.middle) {
-                this.setHover('over');
-                this.setCursor('crosshair');
-            } else {
-                this.setHover();
-                this.setCursor();
-            }
+        if (distance > this.distance && distance < this.middle) {
+            this.setHover('over');
+            this.setCursor('crosshair');
+        } else {
+            this.setHover();
+            this.setCursor();
         }
     };
 
@@ -474,6 +473,9 @@ export class RadialGraphSegments extends Interface {
     setSize(width, height) {
         this.width = width;
         this.height = height;
+        this.middle = this.width / 2;
+        this.radius = this.middle - this.graphHeight;
+        this.distance = this.radius - this.graphHeight;
         this.rangeHeight = this.getRangeHeight(this.range);
 
         this.css({
