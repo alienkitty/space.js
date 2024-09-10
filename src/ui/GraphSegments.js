@@ -727,9 +727,9 @@ export class GraphSegments extends Interface {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = true;
+
+        clearTween(this.props);
 
         tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
@@ -745,9 +745,9 @@ export class GraphSegments extends Interface {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = false;
+
+        clearTween(this.props);
 
         tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
