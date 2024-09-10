@@ -74,6 +74,7 @@ export class RadialGraph extends Interface {
         this.lookup = [];
         this.bounds = null;
         this.offset = new Vector2();
+        this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.lastTime = 0;
@@ -83,6 +84,7 @@ export class RadialGraph extends Interface {
         this.lastCursor = '';
         this.items = [];
         this.isDragging = false;
+        this.isDraggingAway = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -367,10 +369,22 @@ export class RadialGraph extends Interface {
 
     onMarkerUpdate = ({ dragging, target }) => {
         this.isDragging = dragging;
+        this.isDraggingAway = this.offset.length() > this.middle + 50;
 
-        if (this.isDragging) {
+        if (this.isDragging && this.isDraggingAway) {
+            this.origin.subVectors(this.mouse, this.bounds);
+            target.css({ left: this.origin.x, top: this.origin.y });
+            this.hoverOut();
+        } else if (this.isDragging) {
             target.angle = this.mouseAngle;
+            this.hoverIn();
+        } else if (this.isDraggingAway) {
+            this.isDraggingAway = false;
+            this.removeMarker(target);
+            this.hoverOut(true);
         }
+
+        this.needsUpdate = true;
     };
 
     onMarkerClick = e => {
@@ -393,6 +407,10 @@ export class RadialGraph extends Interface {
     }
 
     setHover(type = 'out') {
+        if (this.isDraggingAway) {
+            return;
+        }
+
         if (type !== this.lastHover) {
             this.lastHover = type;
 
@@ -504,6 +522,15 @@ export class RadialGraph extends Interface {
 
             item.css({ opacity: item.multiplier });
         });
+    }
+
+    removeMarker(item) {
+        const index = this.items.indexOf(item);
+
+        if (~index) {
+            item.destroy();
+            this.items.splice(index, 1);
+        }
     }
 
     update(value) {
@@ -619,12 +646,14 @@ export class RadialGraph extends Interface {
                 this.context.lineTo(x1, y1);
                 this.context.stroke();
 
-                this.items[i].css({ left: x2, top: y2 });
+                if (!this.isDraggingAway) {
+                    this.items[i].css({ left: x2, top: y2 });
+                }
             }
         }
 
         // Draw handle line and circle
-        if (!this.noHover) {
+        if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
                 this.graph.path.attr({ d: this.pathData });
                 this.calculateLookup();
@@ -870,9 +899,9 @@ export class RadialGraph extends Interface {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = true;
+
+        clearTween(this.props);
 
         tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
@@ -883,22 +912,32 @@ export class RadialGraph extends Interface {
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
-    hoverOut() {
+    hoverOut(fast) {
         if (!this.hoveredIn) {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = false;
 
-        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
-            this.needsUpdate = true;
-        });
+        clearTween(this.props);
 
-        this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+        this.info.clearTween();
+
+        if (fast) {
+            this.props.handleAlpha = 0;
+            this.needsUpdate = true;
+
+            this.info.css({ opacity: 0 });
             this.info.invisible();
-        });
+        } else {
+            tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+                this.needsUpdate = true;
+            });
+
+            this.info.tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+                this.info.invisible();
+            });
+        }
     }
 
     animateIn() {

@@ -58,6 +58,7 @@ export class Graph extends Interface {
         this.length = 0;
         this.lookup = [];
         this.bounds = null;
+        this.origin = new Vector2();
         this.mouse = new Vector2();
         this.delta = new Vector2();
         this.lastTime = 0;
@@ -65,6 +66,7 @@ export class Graph extends Interface {
         this.mouseX = 0;
         this.items = [];
         this.isDragging = false;
+        this.isDraggingAway = false;
         this.animatedIn = false;
         this.hoveredIn = false;
         this.needsUpdate = false;
@@ -270,6 +272,10 @@ export class Graph extends Interface {
     // Event handlers
 
     onHover = ({ type }) => {
+        if (this.isDraggingAway) {
+            return;
+        }
+
         if (!this.animatedIn) {
             if (type === 'mouseenter') {
                 this.hoveredIn = true;
@@ -349,10 +355,23 @@ export class Graph extends Interface {
 
     onMarkerUpdate = ({ dragging, target }) => {
         this.isDragging = dragging;
+        this.isDraggingAway = Math.abs(this.delta.y) > 50;
 
-        if (this.isDragging) {
+        if (this.isDragging && this.isDraggingAway) {
+            this.origin.subVectors(this.mouse, this.bounds);
+            target.css({ left: this.origin.x, top: this.origin.y });
+            this.hoverOut();
+        } else if (this.isDragging) {
             target.x = this.mouseX;
+            target.css({ top: -12 });
+            this.hoverIn();
+        } else if (this.isDraggingAway) {
+            this.isDraggingAway = false;
+            this.removeMarker(target);
+            this.hoverOut(true);
         }
+
+        this.needsUpdate = true;
     };
 
     onMarkerClick = e => {
@@ -452,6 +471,15 @@ export class Graph extends Interface {
         });
     }
 
+    removeMarker(item) {
+        const index = this.items.indexOf(item);
+
+        if (~index) {
+            item.destroy();
+            this.items.splice(index, 1);
+        }
+    }
+
     update(value) {
         if (!ticker.isAnimating && ++this.frame > ticker.frame) {
             ticker.onTick(performance.now() - this.startTime);
@@ -527,13 +555,15 @@ export class Graph extends Interface {
                 this.context.stroke();
             }
 
-            this.items.forEach(item => {
-                item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
-            });
+            if (!this.isDraggingAway) {
+                this.items.forEach(item => {
+                    item.css({ left: clamp(item.x * this.width, 0.5, this.width - 0.5) });
+                });
+            }
         }
 
         // Draw handle line and circle
-        if (!this.noHover) {
+        if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
                 this.graph.path.attr({ d: this.pathData });
                 this.calculateLookup();
@@ -652,9 +682,9 @@ export class Graph extends Interface {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = true;
+
+        clearTween(this.props);
 
         tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
@@ -665,22 +695,32 @@ export class Graph extends Interface {
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
     }
 
-    hoverOut() {
+    hoverOut(fast) {
         if (!this.hoveredIn) {
             return;
         }
 
-        clearTween(this.props);
-
         this.hoveredIn = false;
 
-        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
-            this.needsUpdate = true;
-        });
+        clearTween(this.props);
 
-        this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+        this.info.clearTween();
+
+        if (fast) {
+            this.props.handleAlpha = 0;
+            this.needsUpdate = true;
+
+            this.info.css({ opacity: 0 });
             this.info.invisible();
-        });
+        } else {
+            tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+                this.needsUpdate = true;
+            });
+
+            this.info.tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+                this.info.invisible();
+            });
+        }
     }
 
     animateIn() {
