@@ -33,6 +33,7 @@
                     cursor: 'pointer',
                     webkitUserSelect: 'none',
                     userSelect: 'none',
+                    scale: 0.96,
                     opacity: 0
                 });
 
@@ -101,7 +102,7 @@
             // Public methods
 
             animateIn = () => {
-                this.tween({ opacity: 1 }, 600, 'easeInOutSine');
+                this.tween({ scale: 1, opacity: 1 }, 2000, 'easeOutCubic');
             };
 
             destroy = () => {
