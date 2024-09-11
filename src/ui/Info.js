@@ -51,9 +51,13 @@ export class Info extends Interface {
         this.content.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);
     }
 
-    animateOut() {
+    animateOut(callback) {
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
+
+            if (callback) {
+                callback();
+            }
         });
     }
 }
