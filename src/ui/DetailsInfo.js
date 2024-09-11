@@ -53,6 +53,10 @@ export class DetailsInfo extends Interface {
 
     // Public methods
 
+    setContent(content) {
+        this.content.html(content);
+    }
+
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.container.css({ margin: '0 20px 24px' });

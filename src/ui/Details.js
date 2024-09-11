@@ -98,6 +98,10 @@ export class Details extends Interface {
 
     // Public methods
 
+    setContent(content) {
+        this.content.html(content);
+    }
+
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.css({ display: '' });

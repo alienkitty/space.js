@@ -94,7 +94,7 @@
                 if (e.type === 'add') {
                     if (this.instructionsCounter === 0) {
                         this.ui.instructions.animateOut(() => {
-                            this.ui.instructions.content.html('Drag away marker to remove');
+                            this.ui.instructions.setContent('Drag away marker to remove');
                             this.ui.instructions.animateIn();
                         });
 
