@@ -34,10 +34,12 @@
     </style>
 
     <script type="module">
-        import { Graph, RadialGraph, UI, clamp, mapLinear, ticker } from '../src/index.js';
+        import { Graph, RadialGraph, Stage, UI, clamp, mapLinear, ticker } from '../src/index.js';
 
         class App {
             static async init() {
+                this.instructionsCounter = 0;
+
                 this.initViews();
 
                 this.addListeners();
@@ -77,6 +79,7 @@
             }
 
             static addListeners() {
+                Stage.events.on('marker', this.onMarker);
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('load', this.onLoad);
                 ticker.add(this.onUpdate);
@@ -84,6 +87,26 @@
             }
 
             // Event handlers
+
+            static onMarker = e => {
+                console.log('Marker event:', e);
+
+                if (e.type === 'add') {
+                    if (this.instructionsCounter === 0) {
+                        this.ui.instructions.animateOut(() => {
+                            this.ui.instructions.setContent('Drag away marker to remove');
+                            this.ui.instructions.animateIn();
+                        });
+
+                        this.instructionsCounter++;
+                    }
+                } else {
+                    if (this.instructionsCounter === 1) {
+                        this.ui.instructions.animateOut();
+                        this.instructionsCounter++;
+                    }
+                }
+            };
 
             static onResize = () => {
                 const width = document.documentElement.clientWidth;

@@ -89,6 +89,7 @@ export class RadialGraphSegments extends Interface {
         this.hoveredIn = false;
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
+        this.initialized = false;
 
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
@@ -540,14 +541,21 @@ export class RadialGraphSegments extends Interface {
 
             item.css({ opacity: item.multiplier });
         });
+
+        if (this.initialized) {
+            Stage.events.emit('marker', { type: 'add', item, target: this });
+        }
     }
 
-    removeMarker(item) {
-        const index = this.items.indexOf(item);
+    removeMarker(marker) {
+        const index = this.items.indexOf(marker);
 
         if (~index) {
+            const item = this.items.splice(index, 1)[0];
+
+            Stage.events.emit('marker', { type: 'remove', item, target: this });
+
             item.destroy();
-            this.items.splice(index, 1);
         }
     }
 
@@ -581,6 +589,10 @@ export class RadialGraphSegments extends Interface {
         if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
+        }
+
+        if (!this.initialized) {
+            this.initialized = true;
         }
     }
 

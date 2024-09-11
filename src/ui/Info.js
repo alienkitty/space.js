@@ -45,15 +45,23 @@ export class Info extends Interface {
 
     // Public methods
 
+    setContent(content) {
+        this.content.html(content);
+    }
+
     animateIn(delay) {
         this.visible();
         this.tween({ opacity: 1 }, 800, 'easeInOutSine', delay);
         this.content.css({ y: 10 }).tween({ y: 0 }, 1200, 'easeOutCubic', delay);
     }
 
-    animateOut() {
+    animateOut(callback) {
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
+
+            if (callback) {
+                callback();
+            }
         });
     }
 }

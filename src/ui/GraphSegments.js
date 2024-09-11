@@ -44,6 +44,7 @@ export class GraphSegments extends Interface {
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noGradient = noGradient;
+        this.initialized = false;
 
         if (!Stage.root) {
             Stage.root = document.querySelector(':root');
@@ -487,14 +488,21 @@ export class GraphSegments extends Interface {
 
             item.css({ opacity: item.multiplier });
         });
+
+        if (this.initialized) {
+            Stage.events.emit('marker', { type: 'add', item, target: this });
+        }
     }
 
-    removeMarker(item) {
-        const index = this.items.indexOf(item);
+    removeMarker(marker) {
+        const index = this.items.indexOf(marker);
 
         if (~index) {
+            const item = this.items.splice(index, 1)[0];
+
+            Stage.events.emit('marker', { type: 'remove', item, target: this });
+
             item.destroy();
-            this.items.splice(index, 1);
         }
     }
 
@@ -528,6 +536,10 @@ export class GraphSegments extends Interface {
         if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
+        }
+
+        if (!this.initialized) {
+            this.initialized = true;
         }
     }
 
