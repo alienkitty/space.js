@@ -80,6 +80,7 @@
 
             static addListeners() {
                 Stage.events.on('marker', this.onMarker);
+                document.addEventListener('dblclick', this.preventZoom);
                 window.addEventListener('resize', this.onResize);
                 window.addEventListener('load', this.onLoad);
                 ticker.add(this.onUpdate);
@@ -87,6 +88,10 @@
             }
 
             // Event handlers
+
+            static preventZoom = e => {
+                e.preventDefault();
+            };
 
             static onMarker = e => {
                 console.log('Marker event:', e);
