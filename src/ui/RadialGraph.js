@@ -83,6 +83,7 @@ export class RadialGraph extends Interface {
         this.lastHover = 'out';
         this.lastCursor = '';
         this.items = [];
+        this.mobileOffset = navigator.maxTouchPoints ? -50 : 0; // Position above finger
         this.isDragging = false;
         this.isDraggingAway = false;
         this.animatedIn = false;
@@ -374,7 +375,7 @@ export class RadialGraph extends Interface {
 
         if (this.isDragging && this.isDraggingAway) {
             this.origin.subVectors(this.mouse, this.bounds);
-            target.css({ left: this.origin.x, top: this.origin.y });
+            target.css({ left: this.origin.x, top: this.origin.y + this.mobileOffset });
             this.hoverOut();
         } else if (this.isDragging) {
             target.angle = this.mouseAngle;
