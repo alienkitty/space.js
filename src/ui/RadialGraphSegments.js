@@ -83,6 +83,7 @@ export class RadialGraphSegments extends Interface {
         this.lastHover = 'out';
         this.lastCursor = '';
         this.items = [];
+        this.mobileOffset = navigator.maxTouchPoints ? -50 : 0; // Position above finger
         this.isDragging = false;
         this.isDraggingAway = false;
         this.animatedIn = false;
@@ -284,20 +285,12 @@ export class RadialGraphSegments extends Interface {
             window.addEventListener('pointerdown', this.onPointerDown);
             window.addEventListener('pointermove', this.onPointerMove);
         }
-
-        if (!this.noMarker && navigator.maxTouchPoints) {
-            this.element.addEventListener('contextmenu', this.onContextMenu);
-        }
     }
 
     removeListeners() {
         if (!this.noHover) {
             window.removeEventListener('pointerdown', this.onPointerDown);
             window.removeEventListener('pointermove', this.onPointerMove);
-        }
-
-        if (!this.noMarker && navigator.maxTouchPoints) {
-            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
 
         this.items.forEach(item => {
@@ -359,16 +352,6 @@ export class RadialGraphSegments extends Interface {
             return;
         }
 
-        this.onClick(e);
-    };
-
-    onContextMenu = e => {
-        e.preventDefault();
-
-        this.onClick(e);
-    };
-
-    onClick = e => {
         if (e.target !== this.element) {
             return;
         }
@@ -386,7 +369,7 @@ export class RadialGraphSegments extends Interface {
 
         if (this.isDragging && this.isDraggingAway) {
             this.origin.subVectors(this.mouse, this.bounds);
-            target.css({ left: this.origin.x, top: this.origin.y });
+            target.css({ left: this.origin.x, top: this.origin.y + this.mobileOffset });
             this.hoverOut();
         } else if (this.isDragging) {
             target.angle = this.mouseAngle;
