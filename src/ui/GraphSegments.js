@@ -251,10 +251,6 @@ export class GraphSegments extends Interface {
             window.addEventListener('pointerdown', this.onPointerDown);
             window.addEventListener('pointermove', this.onPointerMove);
         }
-
-        if (!this.noMarker && navigator.maxTouchPoints) {
-            this.element.addEventListener('contextmenu', this.onContextMenu);
-        }
     }
 
     removeListeners() {
@@ -263,10 +259,6 @@ export class GraphSegments extends Interface {
             this.element.removeEventListener('mouseleave', this.onHover);
             window.removeEventListener('pointerdown', this.onPointerDown);
             window.removeEventListener('pointermove', this.onPointerMove);
-        }
-
-        if (!this.noMarker && navigator.maxTouchPoints) {
-            this.element.removeEventListener('contextmenu', this.onContextMenu);
         }
 
         this.items.forEach(item => {
@@ -346,16 +338,6 @@ export class GraphSegments extends Interface {
             return;
         }
 
-        this.onClick(e);
-    };
-
-    onContextMenu = e => {
-        e.preventDefault();
-
-        this.onClick(e);
-    };
-
-    onClick = e => {
         if (e.target !== this.element) {
             return;
         }
