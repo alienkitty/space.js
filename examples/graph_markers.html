@@ -21,10 +21,10 @@
             min-height: 100%;
             padding: 55px 0px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            gap: 67px;
+            align-content: center;
+            flex-wrap: wrap;
+            gap: 67px 150px;
         }
 
         .ui > .info {
@@ -58,7 +58,20 @@
                 });
                 document.body.appendChild(this.graph.element);
 
-                this.graph2 = new Graph({
+                this.graph2 = new RadialGraph({
+                    precision: 2,
+                    lookupPrecision: 200,
+                    markers: [ // An array of normalized positions
+                        [0.5, 'Not me'],
+                        [1, 'Marker 2']
+                    ],
+                    value: Array.from({ length: 10 }, () => Math.random()),
+                    // noMarker: true,
+                    noMarkerDrag: true
+                });
+                document.body.appendChild(this.graph2.element);
+
+                this.graph3 = new Graph({
                     precision: 2,
                     lookupPrecision: 200,
                     markers: [ // An array of normalized positions
@@ -67,7 +80,7 @@
                     ],
                     value: Array.from({ length: 10 }, () => Math.random())
                 });
-                document.body.appendChild(this.graph2.element);
+                document.body.appendChild(this.graph3.element);
 
                 this.ui = new UI({
                     instructions: {
@@ -123,18 +136,26 @@
                     this.graph.setSize(300, 300);
                 }
 
-                this.graph2.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
+                if (width < height) {
+                    this.graph2.setSize(250, 250);
+                } else {
+                    this.graph2.setSize(300, 300);
+                }
+
+                this.graph3.setSize(width * 0.74, clamp(mapLinear(height, 600, 1000, 40, 80), 40, 80));
             };
 
             static onUpdate = () => {
                 this.graph.update();
                 this.graph2.update();
+                this.graph3.update();
                 this.ui.update();
             };
 
             static onLoad = () => {
                 this.graph.animateIn();
                 this.graph2.animateIn();
+                this.graph3.animateIn();
                 this.ui.animateIn();
             };
         }

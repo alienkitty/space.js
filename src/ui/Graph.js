@@ -26,6 +26,7 @@ export class Graph extends Interface {
         ghost,
         noHover = false,
         noMarker = false,
+        noMarkerDrag = false,
         noGradient = false
     } = {}) {
         super('.graph');
@@ -41,6 +42,7 @@ export class Graph extends Interface {
         this.ghost = ghost;
         this.noHover = noHover;
         this.noMarker = noMarker;
+        this.noMarkerDrag = noMarkerDrag;
         this.noGradient = noGradient;
 
         if (!Stage.root) {
@@ -334,7 +336,7 @@ export class Graph extends Interface {
             return;
         }
 
-        if (!this.noMarker) {
+        if (!this.noMarker && !this.noMarkerDrag) {
             this.addMarker([this.mouseX, this.getMarkerName()]);
         }
     };
@@ -440,7 +442,7 @@ export class Graph extends Interface {
     }
 
     addMarker([x, name], delay = 0) {
-        const item = new GraphMarker({ name });
+        const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.css({ top: -12 });
         item.x = x;
         item.multiplier = 0;
