@@ -334,7 +334,9 @@ export class Graph extends Interface {
             return;
         }
 
-        this.addMarker([this.mouseX, this.getMarkerName()]);
+        if (!this.noMarker) {
+            this.addMarker([this.mouseX, this.getMarkerName()]);
+        }
     };
 
     onMarkerUpdate = ({ dragging, target }) => {

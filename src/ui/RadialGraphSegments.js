@@ -360,7 +360,9 @@ export class RadialGraphSegments extends Interface {
             return;
         }
 
-        this.addMarker([this.mouseAngle, this.getMarkerName()]);
+        if (!this.noMarker) {
+            this.addMarker([this.mouseAngle, this.getMarkerName()]);
+        }
     };
 
     onMarkerUpdate = ({ dragging, target }) => {
