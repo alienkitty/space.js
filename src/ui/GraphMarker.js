@@ -9,11 +9,13 @@ import { defer } from '../tween/Tween.js';
 
 export class GraphMarker extends Interface {
     constructor({
-        name
+        name,
+        noDrag = false
     }) {
         super('.graph-marker');
 
         this.name = name;
+        this.noDrag = noDrag;
 
         this.width = 0;
 
@@ -36,11 +38,14 @@ export class GraphMarker extends Interface {
             transform: 'translate(-50%, -50%)',
             lineHeight: 18,
             whiteSpace: 'nowrap',
-            cursor: 'move',
             zIndex: 1,
             opacity: 0
         });
         this.html(this.name);
+
+        if (!this.noDrag) {
+            this.css({ cursor: 'move' });
+        }
 
         await defer();
 
@@ -48,13 +53,17 @@ export class GraphMarker extends Interface {
     }
 
     addListeners() {
-        this.element.addEventListener('pointerdown', this.onPointerDown);
-        window.addEventListener('keyup', this.onKeyUp);
+        if (!this.noDrag) {
+            this.element.addEventListener('pointerdown', this.onPointerDown);
+            window.addEventListener('keyup', this.onKeyUp);
+        }
     }
 
     removeListeners() {
-        this.element.removeEventListener('pointerdown', this.onPointerDown);
-        window.removeEventListener('keyup', this.onKeyUp);
+        if (!this.noDrag) {
+            this.element.removeEventListener('pointerdown', this.onPointerDown);
+            window.removeEventListener('keyup', this.onKeyUp);
+        }
     }
 
     // Event handlers

@@ -31,6 +31,7 @@ export class RadialGraph extends Interface {
         ghost,
         noHover = false,
         noMarker = false,
+        noMarkerDrag = false,
         noGradient = false
     } = {}) {
         super('.radial-graph');
@@ -51,6 +52,7 @@ export class RadialGraph extends Interface {
         this.ghost = ghost;
         this.noHover = noHover;
         this.noMarker = noMarker;
+        this.noMarkerDrag = noMarkerDrag;
         this.noGradient = noGradient;
 
         if (!Stage.root) {
@@ -348,7 +350,9 @@ export class RadialGraph extends Interface {
             return;
         }
 
-        this.addMarker([this.mouseAngle, this.getMarkerName()]);
+        if (!this.noMarker && !this.noMarkerDrag) {
+            this.addMarker([this.mouseAngle, this.getMarkerName()]);
+        }
     };
 
     onMarkerUpdate = ({ dragging, target }) => {
@@ -492,7 +496,7 @@ export class RadialGraph extends Interface {
     }
 
     addMarker([angle, name], delay = 0) {
-        const item = new GraphMarker({ name });
+        const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.angle = angle;
         item.multiplier = 0;
         item.events.on('update', this.onMarkerUpdate);
