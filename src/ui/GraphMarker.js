@@ -12,7 +12,7 @@ export class GraphMarker extends Interface {
         name,
         noDrag = false
     }) {
-        super('.graph-marker');
+        super('.marker');
 
         this.name = name;
         this.noDrag = noDrag;
