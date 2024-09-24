@@ -82,6 +82,7 @@ export { Progress } from './ui/Progress.js';
 export { ProgressCanvas } from './ui/ProgressCanvas.js';
 export { Input } from './ui/Input.js';
 export { InputField } from './ui/InputField.js';
+export { InputTotal } from './ui/InputTotal.js';
 
 // Extras
 export { Smooth } from './extras/Smooth.js';

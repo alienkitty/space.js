@@ -4,11 +4,16 @@
 
 import { Interface } from '../utils/Interface.js';
 import { InputField } from './InputField.js';
+import { InputTotal } from './InputTotal.js';
 
 export class Input extends Interface {
-    constructor(data) {
+    constructor({
+        noTotal = false,
+        ...data
+    } = {}) {
         super('.input');
 
+        this.noTotal = noTotal;
         this.data = data;
 
         this.isComplete = false;
@@ -22,7 +27,7 @@ export class Input extends Interface {
     init() {
         this.invisible();
         this.css({
-            height: 19,
+            height: this.data.maxlength ? 45 : 19,
             zIndex: 99999,
             opacity: 0
         });
@@ -31,15 +36,22 @@ export class Input extends Interface {
     initViews() {
         this.input = new InputField(this.data);
         this.add(this.input);
+
+        if (this.data.maxlength && !this.noTotal) {
+            this.total = new InputTotal(this.data);
+            this.add(this.total);
+        }
     }
 
     addListeners() {
         this.input.events.on('hover', this.onHover);
+        this.input.events.on('typing', this.onTyping);
         this.input.events.on('complete', this.onComplete);
     }
 
     removeListeners() {
         this.input.events.off('hover', this.onHover);
+        this.input.events.off('typing', this.onTyping);
         this.input.events.off('complete', this.onComplete);
     }
 
@@ -48,18 +60,42 @@ export class Input extends Interface {
     onHover = ({ type }) => {
         if (type === 'mouseenter') {
             this.input.tween({ opacity: 1 }, 200, 'easeOutSine');
+
+            if (this.total) {
+                this.total.animateIn();
+            }
         } else {
             this.input.tween({ opacity: 0.7 }, 200, 'easeOutSine');
+
+            if (this.total) {
+                this.total.animateOut();
+            }
         }
+    };
+
+    onTyping = ({ text }) => {
+        if (this.total) {
+            this.total.setValue(text);
+        }
+
+        this.events.emit('update', { value: text, target: this });
     };
 
     onComplete = () => {
         this.isComplete = true;
 
-        this.events.emit('complete');
+        this.events.emit('complete', { target: this });
     };
 
     // Public methods
+
+    setValue(value) {
+        this.input.setValue(value);
+
+        if (this.total) {
+            this.total.setValue(value);
+        }
+    }
 
     focus() {
         this.input.focus();

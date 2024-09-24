@@ -8,12 +8,14 @@ export class InputField extends Interface {
     constructor({
         placeholder = '',
         maxlength = '',
+        noLine = false,
         forceFocus = false
     }) {
         super('.field');
 
         this.placeholder = placeholder;
         this.maxlength = maxlength;
+        this.noLine = noLine;
         this.forceFocus = forceFocus;
 
         this.lastValue = '';
@@ -28,7 +30,7 @@ export class InputField extends Interface {
     init() {
         this.css({
             position: 'relative',
-            height: 19,
+            height: this.maxlength && !this.noLine ? 26 : 19,
             pointerEvents: 'none',
             opacity: 0.7
         });
@@ -36,13 +38,29 @@ export class InputField extends Interface {
         this.input = new Interface(null, 'input');
         this.input.css({
             width: '100%',
-            height: 19,
+            height: this.maxlength && !this.noLine ? 25 : 19,
             backgroundColor: 'transparent',
             lineHeight: 'normal',
             color: 'var(--ui-color)',
             resize: 'none'
         });
         this.add(this.input);
+
+        if (this.maxlength && !this.noLine) {
+            this.line = new Interface('.line');
+            this.line.css({
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 1,
+                backgroundColor: 'var(--ui-color)',
+                transformOrigin: 'left center',
+                scaleX: 0,
+                opacity: 0
+            });
+            this.add(this.line);
+        }
     }
 
     setAttributes() {
@@ -117,6 +135,18 @@ export class InputField extends Interface {
     onHover = e => {
         if (this.isFocused) {
             return;
+        }
+
+        if (this.line) {
+            this.line.clearTween();
+
+            if (e.type === 'mouseenter') {
+                this.line.tween({ scaleX: 1, opacity: 0.3 }, 800, 'easeOutQuint');
+            } else {
+                this.line.tween({ opacity: 0 }, 200, 'easeInOutSine', () => {
+                    this.line.css({ scaleX: 0 });
+                });
+            }
         }
 
         this.events.emit('hover', e);
