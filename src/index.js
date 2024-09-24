@@ -80,6 +80,8 @@ export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
 export { Progress } from './ui/Progress.js';
 export { ProgressCanvas } from './ui/ProgressCanvas.js';
+export { Input } from './ui/Input.js';
+export { InputField } from './ui/InputField.js';
 
 // Extras
 export { Smooth } from './extras/Smooth.js';
