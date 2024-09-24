@@ -232,7 +232,7 @@ npx eslint examples/*.html
 
 #### v1.0
 
-* [x] Initial release based on the UI components from [Multiuser Blocks](https://multiuser-blocks.glitch.me/)
+* [x] Initial release based on the UI components from [Multiuser Blocks](https://multiuser-blocks.glitch.me/) and [Multiuser Fluid](https://multiuser-fluid.glitch.me/)
 
 #### v1.1
 
