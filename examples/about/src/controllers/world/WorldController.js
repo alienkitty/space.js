@@ -23,14 +23,14 @@ export class WorldController {
             antialias: true
         });
 
-        // Disable color management
-        ColorManagement.enabled = false;
-        this.renderer.outputColorSpace = LinearSRGBColorSpace;
-
         // Output canvas
         // this.element = this.renderer.domElement;
         this.element = new Interface(this.renderer.domElement);
         this.element.css({ opacity: 0 });
+
+        // Disable color management
+        ColorManagement.enabled = false;
+        this.renderer.outputColorSpace = LinearSRGBColorSpace;
 
         // Shadows
         // this.renderer.shadowMap.enabled = true;
@@ -92,7 +92,8 @@ export class WorldController {
 
     static initLoaders() {
         this.textureLoader = new TextureLoader();
-        /* this.textureLoader.setOptions({
+        /* this.textureLoader.setPath('/');
+        this.textureLoader.setOptions({
             preserveData: true
         });
         this.textureLoader.cache = true; */
