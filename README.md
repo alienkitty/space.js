@@ -117,10 +117,10 @@ Web Audio engine:
 ```js
 import { BufferLoader, WebAudio } from '@alienkitty/space.js';
 
-const bufferLoader = new BufferLoader();
-await bufferLoader.loadAllAsync(['assets/sounds/gong.mp3']);
+const loader = new BufferLoader();
+await loader.loadAllAsync(['assets/sounds/gong.mp3']);
 WebAudio.init({ sampleRate: 48000 });
-WebAudio.load(bufferLoader.files);
+WebAudio.load(loader.files);
 
 const gong = WebAudio.get('gong');
 gong.gain.set(0.5);
