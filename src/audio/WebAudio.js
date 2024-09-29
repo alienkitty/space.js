@@ -196,6 +196,11 @@ export class WebAudio {
 
     static resume() {
         this.context.resume();
+
+        if (this.gain.value) {
+            this.gain.set(0);
+            this.gain.fade(1, 500);
+        }
     }
 
     static getPath(path) {
