@@ -28,7 +28,7 @@ export class WebAudio {
         return this.context.state === 'running';
     }
 
-    static load(files = {}) {
+    static load(files) {
         for (const path in files) {
             this.add(this, basename(path), files[path]);
         }

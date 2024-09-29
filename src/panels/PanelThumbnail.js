@@ -10,7 +10,7 @@ export class PanelThumbnail extends Interface {
     constructor({
         name,
         flipY = false,
-        data = {},
+        data,
         value,
         callback
     }) {
