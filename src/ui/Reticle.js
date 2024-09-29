@@ -15,6 +15,7 @@ export class Reticle extends Interface {
         this.width = size;
         this.height = size;
         this.position = new Vector2();
+        this.animatedIn = false;
 
         this.init();
     }
@@ -69,11 +70,15 @@ export class Reticle extends Interface {
         this.clearTween();
         this.visible();
         this.css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
+
+        this.animatedIn = true;
     }
 
     animateOut(callback) {
         this.clearTween().tween({ scale: 0, opacity: 0 }, 500, 'easeInCubic', () => {
             this.invisible();
+
+            this.animatedIn = false;
 
             if (callback) {
                 callback();
