@@ -66,6 +66,7 @@ export class InputField extends Interface {
     }
 
     setAttributes() {
+        this.input.element.setAttribute('name', 'inputField');
         this.input.element.setAttribute('autocomplete', 'off');
         this.input.element.setAttribute('autocapitalize', 'off');
         this.input.element.setAttribute('autocorrect', 'off');
