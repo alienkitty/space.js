@@ -27,7 +27,7 @@ export class Input extends Interface {
     init() {
         this.invisible();
         this.css({
-            height: this.data.maxlength ? 45 : 19,
+            height: this.data.maxlength ? 45 : 20,
             zIndex: 99999,
             opacity: 0
         });

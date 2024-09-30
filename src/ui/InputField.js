@@ -30,7 +30,7 @@ export class InputField extends Interface {
     init() {
         this.css({
             position: 'relative',
-            height: this.maxlength && !this.noLine ? 26 : 19,
+            height: this.maxlength && !this.noLine ? 26 : 20,
             pointerEvents: 'none',
             opacity: 0.7
         });
@@ -38,7 +38,7 @@ export class InputField extends Interface {
         this.input = new Interface(null, 'input');
         this.input.css({
             width: '100%',
-            height: this.maxlength && !this.noLine ? 25 : 19,
+            height: this.maxlength && !this.noLine ? 25 : 20,
             backgroundColor: 'transparent',
             fontSize: 'var(--ui-title-font-size)',
             lineHeight: 'normal',
