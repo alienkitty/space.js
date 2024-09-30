@@ -66,9 +66,7 @@ export class UI extends Interface {
             width: '100%',
             height: '100%',
             color: 'var(--ui-color)',
-            pointerEvents: 'none',
-            webkitUserSelect: 'none',
-            userSelect: 'none'
+            pointerEvents: 'none'
         });
     }
 

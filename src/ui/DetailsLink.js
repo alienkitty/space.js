@@ -20,9 +20,7 @@ export class DetailsLink extends Interface {
         this.css({
             width: 'fit-content',
             whiteSpace: 'nowrap',
-            pointerEvents: 'auto',
-            webkitUserSelect: 'none',
-            userSelect: 'none'
+            pointerEvents: 'auto'
         });
         this.attr({ href: this.link });
 
