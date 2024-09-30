@@ -24,6 +24,7 @@ export class Info extends Interface {
             left: '50%',
             width: 300,
             marginLeft: -300 / 2,
+            pointerEvents: 'auto',
             opacity: 0
         });
 

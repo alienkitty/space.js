@@ -19,8 +19,7 @@ export class DetailsLink extends Interface {
     init() {
         this.css({
             width: 'fit-content',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'auto'
+            whiteSpace: 'nowrap'
         });
         this.attr({ href: this.link });
 

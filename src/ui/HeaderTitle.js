@@ -25,18 +25,12 @@ export class HeaderTitle extends Interface {
         this.css({
             cssFloat: 'left',
             padding: 10,
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            pointerEvents: 'auto'
         });
 
         if (this.link) {
-            this.css({
-                cursor: 'pointer',
-                pointerEvents: 'auto'
-            });
-        } else {
-            this.css({
-                pointerEvents: 'none'
-            });
+            this.css({ cursor: 'pointer' });
         }
 
         if (this.data.name) {
@@ -94,15 +88,9 @@ export class HeaderTitle extends Interface {
         this.target = data.target;
 
         if (this.link) {
-            this.css({
-                cursor: 'pointer',
-                pointerEvents: 'auto'
-            });
+            this.css({ cursor: 'pointer' });
         } else {
-            this.css({
-                cursor: '',
-                pointerEvents: 'none'
-            });
+            this.css({ cursor: '' });
         }
     }
 
