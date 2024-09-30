@@ -63,6 +63,10 @@ export class PanelItem extends Interface {
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'graph') {
+            this.container.css({
+                margin: '0 0 6px'
+            });
+
             this.graph = new PanelGraph(this.data);
             this.container.add(this.graph);
         } else if (this.data.type === 'list') {
