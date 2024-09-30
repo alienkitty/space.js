@@ -143,7 +143,6 @@ export class DetailsButton extends Interface {
                 left: 34,
                 top: 12,
                 fontVariantNumeric: 'tabular-nums',
-                fontSize: 'var(--ui-title-font-size)',
                 letterSpacing: 'var(--ui-title-letter-spacing)'
             });
             this.number.text(data.count);
