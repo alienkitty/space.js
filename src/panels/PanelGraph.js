@@ -137,7 +137,7 @@ export class PanelGraph extends Interface {
             this.number.css({
                 cssFloat: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                letterSpacing: 1
+                letterSpacing: 'var(--ui-title-letter-spacing)'
             });
             this.container.add(this.number);
         }

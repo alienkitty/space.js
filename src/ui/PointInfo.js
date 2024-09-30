@@ -33,7 +33,7 @@ export class PointInfo extends Interface {
 
         this.name = new Interface('.name');
         this.name.css({
-            lineHeight: 18,
+            lineHeight: 'var(--ui-title-line-height)',
             whiteSpace: 'nowrap'
         });
         this.container.add(this.name);

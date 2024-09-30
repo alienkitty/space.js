@@ -141,7 +141,10 @@ export class DetailsButton extends Interface {
             this.number.css({
                 position: 'absolute',
                 left: 34,
-                top: 12
+                top: 12,
+                fontVariantNumeric: 'tabular-nums',
+                fontSize: 'var(--ui-title-font-size)',
+                letterSpacing: 'var(--ui-title-letter-spacing)'
             });
             this.number.text(data.count);
             this.add(this.number);

@@ -40,7 +40,9 @@ export class InputField extends Interface {
             width: '100%',
             height: this.maxlength && !this.noLine ? 25 : 19,
             backgroundColor: 'transparent',
+            fontSize: 'var(--ui-title-font-size)',
             lineHeight: 'normal',
+            letterSpacing: 'var(--ui-title-letter-spacing)',
             color: 'var(--ui-color)',
             resize: 'none'
         });
