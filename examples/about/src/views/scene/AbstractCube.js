@@ -63,4 +63,6 @@ export class AbstractCube extends Group {
 
         this.rotation.y -= 0.005;
     };
+
+    ready = () => this.initMesh();
 }

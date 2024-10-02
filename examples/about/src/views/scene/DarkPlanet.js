@@ -70,4 +70,6 @@ export class DarkPlanet extends Group {
         // Counter clockwise rotation
         this.mesh.rotation.y += 0.005;
     };
+
+    ready = () => this.initMesh();
 }

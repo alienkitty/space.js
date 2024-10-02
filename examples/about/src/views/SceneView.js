@@ -58,8 +58,8 @@ export class SceneView extends Group {
     };
 
     ready = () => Promise.all([
-        this.darkPlanet.initMesh(),
-        this.floatingCrystal.initMesh(),
-        this.abstractCube.initMesh()
+        this.darkPlanet.ready(),
+        this.floatingCrystal.ready(),
+        this.abstractCube.ready()
     ]);
 }

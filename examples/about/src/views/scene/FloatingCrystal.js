@@ -71,4 +71,6 @@ export class FloatingCrystal extends Group {
         this.position.y = 0.7 + Math.sin(time) * 0.1;
         this.rotation.y += 0.01;
     };
+
+    ready = () => this.initMesh();
 }
