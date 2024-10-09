@@ -2,81 +2,92 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Interface } from './Interface.js';
-
 export class Router {
-    static path = '';
-    static routes = new Map();
+    constructor() {
+        this.routes = new Map();
 
-    static init({
-        path = '',
-        page,
-        transition
-    } = {}) {
-        this.path = path;
-        this.page = page;
-        this.transition = transition;
+        this.path = null;
+        this.page = null;
+        this.transition = null;
 
-        this.lastPage = null;
+        this.firstPage = true;
         this.nextPage = null;
         this.isTransitioning = false;
-
-        history.scrollRestoration = 'manual';
-
-        this.addListeners();
-        this.onPopState();
     }
 
-    static replacePage({ object, data }) {
-        window.scrollTo(0, 0);
+    replacePage({ object, data }) {
+        if ('prototype' in object) {
+            if (history.scrollRestoration === 'manual') {
+                window.scrollTo(0, 0);
+            }
 
-        const page = new object(data);
-        if (page instanceof Interface) {
-            this.page.replace(this.page, page);
-        }
+            const page = new object(data);
 
-        this.page = page;
+            if (this.page) {
+                if (this.page.parent && this.page.parent.replace) {
+                    this.page.parent.replace(this.page, page);
+                } else if (this.page.element && this.page.element.parentNode) {
+                    if (page.element) {
+                        this.page.element.parentNode.replaceChild(page.element, this.page.element);
+                    } else if (page.nodeName) {
+                        this.page.element.parentNode.replaceChild(page, this.page.element);
+                    }
+                } else if (this.page.nodeName && this.page.parentNode) {
+                    if (page.element) {
+                        this.page.parentNode.replaceChild(page.element, this.page);
+                    } else if (page.nodeName) {
+                        this.page.parentNode.replaceChild(page, this.page);
+                    }
+                }
 
-        if (this.lastPage && this.lastPage.destroy) {
-            this.lastPage.destroy();
-        }
+                if (this.page.destroy) {
+                    this.page.destroy();
+                }
+            }
 
-        this.lastPage = this.page;
+            this.page = page;
 
-        if (page.animateIn) {
-            page.animateIn();
-        }
+            if (this.page.animateIn) {
+                this.page.animateIn();
+            }
 
-        if (this.transition) {
-            this.transition.animateOut(() => {
+            if (this.transition) {
+                this.transition.animateOut(() => {
+                    this.isTransitioning = false;
+                });
+            } else {
                 this.isTransitioning = false;
-            });
+            }
         } else {
-            this.isTransitioning = false;
+            object(data);
         }
     }
 
-    static transitionPage() {
-        if (this.lastPage && this.transition) {
-            if (this.lastPage.animateOut) {
-                this.lastPage.animateOut();
+    transitionPage() {
+        if (!this.firstPage && this.transition) {
+            if (this.page.animateOut) {
+                this.page.animateOut();
             }
 
             this.transition.animateIn(() => {
                 this.replacePage(this.nextPage);
             });
         } else {
+            if (this.firstPage) {
+                this.firstPage = false;
+            }
+
             this.replacePage(this.nextPage);
         }
     }
 
-    static addListeners() {
+    addListeners() {
         window.addEventListener('popstate', this.onPopState);
     }
 
     // Event handlers
 
-    static onPopState = () => {
+    onPopState = () => {
         const value = this.get(location.pathname);
 
         if (value) {
@@ -92,11 +103,27 @@ export class Router {
 
     // Public methods
 
-    static add(path, object, data) {
+    init({
+        path = '',
+        page,
+        transition,
+        scrollRestoration = 'manual'
+    } = {}) {
+        this.path = path;
+        this.page = page;
+        this.transition = transition;
+
+        history.scrollRestoration = scrollRestoration;
+
+        this.addListeners();
+        this.onPopState();
+    }
+
+    add(path, object, data) {
         this.routes.set(path, { object, data });
     }
 
-    static get(path) {
+    get(path) {
         let value = this.routes.get(`/${path.replace(this.path, '').split('/')[1]}`);
 
         if (!value) {
@@ -106,11 +133,11 @@ export class Router {
         return value;
     }
 
-    static getPath(path) {
+    getPath(path) {
         return this.path + path;
     }
 
-    static setPath(path) {
+    setPath(path) {
         if (path === location.pathname) {
             return;
         }
@@ -121,3 +148,5 @@ export class Router {
         window.dispatchEvent(event);
     }
 }
+
+export const router = new Router();
