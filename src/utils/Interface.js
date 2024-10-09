@@ -339,6 +339,17 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
+    inView() {
+        if (!this.element) {
+            return;
+        }
+
+        const bounds = this.element.getBoundingClientRect();
+        const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+
+        return !(bounds.bottom < 0 || bounds.top - viewHeight >= 0);
+    }
+
     atPoint(p) {
         if (!this.element) {
             return;
