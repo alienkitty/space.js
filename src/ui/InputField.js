@@ -41,10 +41,8 @@ export class InputField extends Interface {
             height: this.maxlength && !this.noLine ? 25 : 20,
             backgroundColor: 'transparent',
             fontSize: 'var(--ui-title-font-size)',
-            lineHeight: 'normal',
             letterSpacing: 'var(--ui-title-letter-spacing)',
-            color: 'var(--ui-color)',
-            resize: 'none'
+            color: 'var(--ui-color)'
         });
         this.add(this.input);
 
