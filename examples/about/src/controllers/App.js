@@ -1,4 +1,4 @@
-import { ImageBitmapLoaderThread, Stage, Thread, UI, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, UI, ticker, wait } from '@alienkitty/space.js/three';
 
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
@@ -32,8 +32,6 @@ export class App {
 
     static initThread() {
         ImageBitmapLoaderThread.init();
-
-        Thread.shared();
     }
 
     static initWorld() {
