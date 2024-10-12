@@ -158,15 +158,15 @@ npm i three @alienkitty/space.js
 import { EnvironmentTextureLoader } from '@alienkitty/space.js/three';
 
 // ...
-const environmentLoader = new EnvironmentTextureLoader(renderer);
-environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture => {
+const loader = new EnvironmentTextureLoader(renderer);
+loader.load('assets/textures/env/jewelry_black_contrast.jpg', texture => {
     scene.environment = texture;
     scene.environmentIntensity = 1.2;
 });
 
 // ...
-const environmentLoader = new EnvironmentTextureLoader(renderer);
-scene.environment = await environmentLoader.loadAsync('assets/textures/env/jewelry_black_contrast.jpg');
+const loader = new EnvironmentTextureLoader(renderer);
+scene.environment = await loader.loadAsync('assets/textures/env/jewelry_black_contrast.jpg');
 scene.environmentIntensity = 1.2;
 ```
 

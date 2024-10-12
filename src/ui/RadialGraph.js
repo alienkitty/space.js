@@ -13,6 +13,25 @@ import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { TwoPI, degToRad, mapLinear } from '../utils/Utils.js';
 
+/**
+ * Radial graph.
+ * @example
+ * const graph = new RadialGraph({
+ *     value: Array.from({ length: 10 }, () => Math.random()),
+ *     precision: 2,
+ *     lookupPrecision: 200
+ * });
+ * graph.animateIn();
+ * document.body.appendChild(graph.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     graph.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class RadialGraph extends Interface {
     constructor({
         width = 300,

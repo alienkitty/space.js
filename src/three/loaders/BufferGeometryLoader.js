@@ -8,6 +8,13 @@ import { Thread } from '../../utils/Thread.js';
 import { BufferGeometryLoaderThread } from './BufferGeometryLoaderThread.js';
 import { Loader } from '../../loaders/Loader.js';
 
+/**
+ * Creates a buffer geometry from a given source with worker support.
+ * @example
+ * const loader = new BufferGeometryLoader();
+ * const buffers = await loader.loadAsync('assets/geometry/cube.json');
+ * console.log(buffers);
+ */
 export class BufferGeometryLoader extends Loader {
     load(path, callback) {
         let promise;

@@ -8,6 +8,33 @@ import { Sound } from './Sound.js';
 import { tween } from '../tween/Tween.js';
 import { basename } from '../utils/Utils.js';
 
+/**
+ * Web Audio engine with stream support.
+ * @example
+ * const loader = new BufferLoader();
+ * await loader.loadAllAsync(['assets/sounds/gong.mp3']);
+ * WebAudio.init({ sampleRate: 48000 });
+ * WebAudio.load(loader.files);
+ *
+ * const gong = WebAudio.get('gong');
+ * gong.gain.set(0.5);
+ *
+ * document.addEventListener('pointerdown', () => {
+ *     gong.play();
+ * });
+ * @example
+ * WebAudio.init({ sampleRate: 48000 });
+ *
+ * // Shoutcast streams append a semicolon (;) to the URL
+ * WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
+ *
+ * const protonradio = WebAudio.get('protonradio');
+ * protonradio.gain.set(1);
+ *
+ * document.addEventListener('pointerdown', () => {
+ *     protonradio.play();
+ * });
+ */
 export class WebAudio {
     static path = '';
     static crossOrigin = 'anonymous';

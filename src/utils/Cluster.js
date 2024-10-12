@@ -2,6 +2,9 @@
  * @author pschroen / https://ufo.ai/
  */
 
+/**
+ * A cluster of objects created from a given constructor.
+ */
 export class Cluster {
     constructor(type, num = 10) {
         this.type = type;
