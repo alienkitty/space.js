@@ -13,6 +13,25 @@ import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp } from '../utils/Utils.js';
 
+/**
+ * Graph.
+ * @example
+ * const graph = new Graph({
+ *     value: Array.from({ length: 10 }, () => Math.random()),
+ *     precision: 2,
+ *     lookupPrecision: 100
+ * });
+ * graph.animateIn();
+ * document.body.appendChild(graph.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     graph.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class Graph extends Interface {
     constructor({
         width = 300,

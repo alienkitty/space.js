@@ -6,6 +6,9 @@ import { EventEmitter } from './EventEmitter.js';
 
 import { clearTween, tween } from '../tween/Tween.js';
 
+/**
+ * A base class for components with tween and destroy methods.
+ */
 export class Component {
     constructor() {
         this.events = new EventEmitter();

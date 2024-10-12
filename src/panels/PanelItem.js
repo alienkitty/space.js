@@ -11,6 +11,24 @@ import { Slider } from './Slider.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
 
+/**
+ * A panel item for various components.
+ * @example
+ * // ...
+ * const item = new PanelItem({
+ *     name: 'FPS'
+ *     // type: 'spacer'
+ *     // type: 'divider'
+ *     // type: 'link'
+ *     // type: 'thumbnail'
+ *     // type: 'graph'
+ *     // type: 'list'
+ *     // type: 'slider'
+ *     // type: 'content'
+ *     // type: 'color'
+ * });
+ * ui.addPanel(item);
+ */
 export class PanelItem extends Interface {
     constructor(data) {
         super('.panel-item');

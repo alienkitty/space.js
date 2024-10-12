@@ -7,6 +7,22 @@ import { Group, MathUtils, Quaternion, Vector3 } from 'three';
 import { WebAudio } from '../../audio/WebAudio.js';
 import { WebAudioParam } from '../../audio/WebAudioParam.js';
 
+/**
+ * A fast 3D audio object based on camera position.
+ * @example
+ * const loader = new BufferLoader();
+ * await loader.loadAllAsync(['assets/sounds/metal_monk_loop.mp3']);
+ * WebAudio.init({ sampleRate: 48000 });
+ * WebAudio.load(loader.files);
+ *
+ * // ...
+ * const ambient = new Sound3D(camera, 'metal_monk_loop');
+ * group.add(ambient);
+ *
+ * ambient.sound.gain.set(0.5);
+ * ambient.sound.loop = true;
+ * ambient.sound.play();
+ */
 export class Sound3D extends Group {
     constructor(camera, id, buffer) {
         super();

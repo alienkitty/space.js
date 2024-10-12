@@ -13,6 +13,38 @@ const Filters = ['blur', 'brightness', 'contrast', 'grayscale', 'hue', 'invert',
 const Numeric = ['opacity', 'zIndex', 'fontWeight', 'strokeWidth', 'strokeDashoffset', 'stopOpacity'];
 const Lacuna1 = ['opacity', 'brightness', 'contrast', 'saturate', 'scale', 'stopOpacity'];
 
+/**
+ * A base class for HTML elements with tween and destroy methods,
+ * plus helper methods for common utilities.
+ * @example
+ * const logo = new Interface('.logo');
+ * logo.css({
+ *     position: 'absolute',
+ *     left: '50%',
+ *     top: '50%',
+ *     width: 90,
+ *     height: 86,
+ *     marginLeft: -90 / 2,
+ *     marginTop: -86 / 2,
+ *     webkitUserSelect: 'none',
+ *     userSelect: 'none',
+ *     scale: 0.96,
+ *     opacity: 0
+ * });
+ * document.body.appendChild(logo.element);
+ *
+ * const image = new Interface(null, 'img');
+ * image.attr({
+ *     src: 'assets/images/alienkitty.svg'
+ * });
+ * image.css({
+ *     width: '100%',
+ *     height: 'auto'
+ * });
+ * logo.add(image);
+ *
+ * logo.tween({ scale: 1, opacity: 1 }, 2000, 'easeOutCubic');
+*/
 export class Interface {
     constructor(name, type = 'div', qualifiedName) {
         this.events = new EventEmitter();

@@ -2,6 +2,44 @@
  * @author pschroen / https://ufo.ai/
  */
 
+/**
+ * A page transition router with pages created from a given constructor,
+ * or function.
+ * @example
+ * // ...
+ * router.add('/', Home);
+ * router.add('/about', About);
+ * router.add('/projects', Article);
+ * router.add('404', NotFound);
+ *
+ * router.init({
+ *     path: basePath,
+ *     page: document.querySelector('main'),
+ *     transition: new Transition()
+ * });
+ *
+ * // ...
+ * router.setPath('/about');
+ * @example
+ * // ...
+ * router.add(path, object, data);
+ *
+ * router.init({
+ *     path: basePath,
+ *     scrollRestoration: 'auto'
+ * });
+ * @example
+ * router.add('/test_router.html', onPage, { title: 'Home' });
+ *
+ * router.init({
+ *     path: '/examples',
+ *     scrollRestoration: 'auto'
+ * });
+ *
+ * function onPage({ title }) {
+ *     document.title = `${title} — Alien Kitty`;
+ * }
+ */
 export class Router {
     constructor() {
         this.routes = new Map();
