@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Ticker — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { ticker } from '@alienkitty/space.js';
+
+        ticker.add(onUpdate);
+        ticker.start();
+
+        function onUpdate(time, delta, frame) {
+            console.log(time, delta, frame);
+        }
+
+        setTimeout(() => {
+            ticker.remove(onUpdate);
+        }, 1000);
+    </script>
+</head>
+<body>
+</body>
+</html>
