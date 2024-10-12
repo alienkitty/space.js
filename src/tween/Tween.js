@@ -94,7 +94,6 @@ export class Tween {
 /**
  * Defers a function by the specified duration.
  *
- * @export
  * @param {number} duration Time to wait in milliseconds.
  * @param {function} complete Callback function.
  * @returns {Tween}
@@ -116,7 +115,6 @@ export function delayedCall(duration, complete) {
 /**
  * Defers by the specified duration.
  *
- * @export
  * @param {number} [duration=0] Time to wait in milliseconds.
  * @returns {Promise}
  * @example
@@ -129,7 +127,6 @@ export function wait(duration = 0) {
 /**
  * Defers to the next tick.
  *
- * @export
  * @param {function} [complete] Callback function.
  * @returns {Promise}
  * @example
@@ -155,7 +152,6 @@ export function defer(complete) {
  * See the Easing Functions Cheat Sheet for examples by name.
  * https://easings.net/
  *
- * @export
  * @param {object} object Target object.
  * @param {object} props Tween properties.
  * @param {number} duration Time in milliseconds.
@@ -190,7 +186,6 @@ export function tween(object, props, duration, ease, delay = 0, complete, update
 /**
  * Immediately clears all delayedCalls and tweens of the specified object.
  *
- * @export
  * @param {object} object Target object.
  * @returns {void}
  * @example
