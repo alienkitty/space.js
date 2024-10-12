@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Router — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { router } from '@alienkitty/space.js';
+
+        router.add('/test_router.html', onPage, { title: 'Home' });
+
+        router.init({
+            path: '/examples',
+            scrollRestoration: 'auto'
+        });
+
+        function onPage({ title }) {
+            document.title = `${title} — Alien Kitty`;
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
