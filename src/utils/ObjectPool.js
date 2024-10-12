@@ -2,6 +2,9 @@
  * @author pschroen / https://ufo.ai/
  */
 
+/**
+ * A pool of objects.
+ */
 export class ObjectPool {
     constructor(type, num = 10) {
         this.type = type;

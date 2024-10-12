@@ -4,6 +4,9 @@
  * Based on https://developer.mozilla.org/en-US/docs/Web/API/EventTarget#simple_implementation_of_eventtarget
  */
 
+/**
+ * A simple implementation of EventTarget with event parameter spread.
+ */
 export class EventEmitter {
     constructor() {
         this.callbacks = {};

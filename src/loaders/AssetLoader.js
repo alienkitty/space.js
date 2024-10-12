@@ -6,6 +6,31 @@ import { Loader } from './Loader.js';
 
 import { guid } from '../utils/Utils.js';
 
+/**
+ * Creates various objects based on the file extension of a given source,
+ * plus helper methods for loading images and data.
+ * @example
+ * const assetLoader = new AssetLoader();
+ * assetLoader.setPath('/');
+ * assetLoader.cache = true;
+ * assetLoader.loadAll([
+ *     'assets/images/alienkitty.svg',
+ *     'assets/sounds/gong.mp3'
+ * ]);
+ *
+ * await assetLoader.ready();
+ * console.log(assetLoader.filter(path => /sounds/.test(path)));
+ * @example
+ * const assetLoader = new AssetLoader();
+ *
+ * const image = await assetLoader.loadImage('assets/images/alienkitty.svg');
+ * console.log(image);
+ * @example
+ * const assetLoader = new AssetLoader();
+ *
+ * const data = await assetLoader.loadData('assets/data/data.json');
+ * console.log(data);
+ */
 export class AssetLoader extends Loader {
     load(path, callback) {
         const cached = this.files[path];

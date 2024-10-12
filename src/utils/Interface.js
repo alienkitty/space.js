@@ -13,6 +13,42 @@ const Filters = ['blur', 'brightness', 'contrast', 'grayscale', 'hue', 'invert',
 const Numeric = ['opacity', 'zIndex', 'fontWeight', 'strokeWidth', 'strokeDashoffset', 'stopOpacity'];
 const Lacuna1 = ['opacity', 'brightness', 'contrast', 'saturate', 'scale', 'stopOpacity'];
 
+/**
+ * A base class for groups of HTML elements with tween and destroy methods,
+ * plus helper methods for common utilities.
+ * @example
+ * // ...
+ * const image = new Interface(null, 'img');
+ * image.attr({
+ *     src: 'assets/images/alienkitty.svg'
+ * });
+ * image.css({
+ *     width: '100%',
+ *     height: 'auto'
+ * });
+ * group.add(image);
+ * @example
+ * // ...
+ * const canvas = new Interface(null, 'canvas');
+ * const context = canvas.element.getContext('2d');
+ * canvas.css({
+ *     position: 'absolute',
+ *     left: 0,
+ *     top: 0,
+ *     pointerEvents: 'none'
+ * });
+ * group.add(canvas);
+ * @example
+ * // ...
+ * const content = new Interface('.content');
+ * content.css({
+ *     position: 'absolute',
+ *     width: '100%',
+ *     height: '100%'
+ * });
+ * content.text('Alien Kitty');
+ * group.add(content);
+ */
 export class Interface {
     constructor(name, type = 'div', qualifiedName) {
         this.events = new EventEmitter();

@@ -7,6 +7,9 @@
 
 import { EventEmitter } from '../utils/EventEmitter.js';
 
+/**
+ * The base class for all loader types.
+ */
 export class Loader {
     constructor() {
         this.events = new EventEmitter();

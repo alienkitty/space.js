@@ -8,6 +8,14 @@ import { Thread } from '../utils/Thread.js';
 import { ImageBitmapLoaderThread } from './ImageBitmapLoaderThread.js';
 import { Loader } from './Loader.js';
 
+/**
+ * Creates a bitmap from a given source with worker support.
+ * @example
+ * const imageBitmapLoader = new ImageBitmapLoader();
+ *
+ * const image = await imageBitmapLoader.loadAsync(path, options, params);
+ * console.log(image);
+ */
 export class ImageBitmapLoader extends Loader {
     constructor() {
         super();

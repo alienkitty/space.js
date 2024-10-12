@@ -11,6 +11,19 @@ import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
 import { Loader } from '../../loaders/Loader.js';
 
+/**
+ * Creates a texture from a given source with worker support.
+ * @example
+ * const textureLoader = new TextureLoader();
+ * textureLoader.setPath('/');
+ * textureLoader.setOptions({
+ *     preserveData: true
+ * });
+ * textureLoader.cache = true;
+ *
+ * const map = await textureLoader.loadAsync('assets/textures/cubemap.jpg');
+ * console.log(map);
+ */
 export class TextureLoader extends Loader {
     constructor() {
         super();
