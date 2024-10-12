@@ -161,7 +161,13 @@ import { EnvironmentTextureLoader } from '@alienkitty/space.js/three';
 const environmentLoader = new EnvironmentTextureLoader(renderer);
 environmentLoader.load('assets/textures/env/jewelry_black_contrast.jpg', texture => {
     scene.environment = texture;
+    scene.environmentIntensity = 1.2;
 });
+
+// ...
+const environmentLoader = new EnvironmentTextureLoader(renderer);
+scene.environment = await environmentLoader.loadAsync('assets/textures/env/jewelry_black_contrast.jpg');
+scene.environmentIntensity = 1.2;
 ```
 
 ### Examples
