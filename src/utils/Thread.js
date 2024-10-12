@@ -26,7 +26,7 @@ export class Thread extends EventEmitter {
             this.threads = new Cluster(Thread, this.count);
         }
 
-        return !params ? this.threads.get() : this.threads;
+        return this.threads.get();
     }
 
     constructor({
