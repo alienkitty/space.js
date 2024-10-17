@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { Interface, ticker } from '../src/index.js';
+        import { Interface } from '../src/index.js';
 
         class Logo extends Interface {
             constructor() {
@@ -126,7 +126,6 @@
 
             static addListeners() {
                 window.addEventListener('load', this.onLoad);
-                ticker.start();
             }
 
             // Event handlers

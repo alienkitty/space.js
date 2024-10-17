@@ -4,6 +4,7 @@
 
 import { EventEmitter } from './EventEmitter.js';
 
+import { ticker } from '../tween/Ticker.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/transform
@@ -430,14 +431,18 @@ export class Interface {
     }
 
     tween(props, duration, ease, delay = 0, complete, update) {
-        if (!this.element) {
-            return;
-        }
-
         if (typeof delay !== 'number') {
             update = complete;
             complete = delay;
             delay = 0;
+        }
+
+        if (!ticker.isAnimating) {
+            ticker.start();
+        }
+
+        if (!this.element) {
+            return;
         }
 
         const style = getComputedStyle(this.element);

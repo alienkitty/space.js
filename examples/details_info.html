@@ -28,7 +28,7 @@
     </style>
 
     <script type="module">
-        import { UI, ticker } from '../src/index.js';
+        import { UI } from '../src/index.js';
 
         class App {
             static async init() {
@@ -59,7 +59,6 @@ Distance from Sun: 230 million km
             static addListeners() {
                 document.body.addEventListener('click', this.onClick);
                 window.addEventListener('load', this.onLoad);
-                ticker.start();
             }
 
             // Event handlers
