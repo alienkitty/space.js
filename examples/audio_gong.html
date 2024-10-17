@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { BufferLoader, UI, WebAudio, clamp, delayedCall, guid, ticker } from '../src/index.js';
+        import { BufferLoader, UI, WebAudio, clamp, delayedCall, guid } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -62,8 +62,6 @@
                 this.initLoader();
                 this.initViews();
 
-                this.addListeners();
-
                 await this.loader.ready();
 
                 this.initAudio();
@@ -88,10 +86,6 @@
                 WebAudio.load(this.loader.files);
 
                 AudioController.init(this.ui.instructions);
-            }
-
-            static addListeners() {
-                ticker.start();
             }
         }
 

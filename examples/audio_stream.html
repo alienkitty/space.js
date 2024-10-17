@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { Panel, PanelItem, UI, WebAudio, ticker } from '../src/index.js';
+        import { Panel, PanelItem, UI, WebAudio } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -105,9 +105,6 @@
         class App {
             static async init() {
                 this.initViews();
-
-                this.addListeners();
-
                 this.initAudio();
                 this.initPanel();
             }
@@ -139,10 +136,6 @@
 
             static initPanel() {
                 PanelController.init(this.ui);
-            }
-
-            static addListeners() {
-                ticker.start();
             }
         }
 

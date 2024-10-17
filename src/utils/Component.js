@@ -4,6 +4,7 @@
 
 import { EventEmitter } from './EventEmitter.js';
 
+import { ticker } from '../tween/Ticker.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 /**
@@ -40,6 +41,10 @@ export class Component {
     }
 
     tween(props, duration, ease, delay, complete, update) {
+        if (!ticker.isAnimating) {
+            ticker.start();
+        }
+
         return tween(this, props, duration, ease, delay, complete, update);
     }
 

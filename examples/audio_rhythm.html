@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails, ticker } from '../src/index.js';
+        import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -517,8 +517,6 @@
                 this.initLoader();
                 this.initViews();
 
-                this.addListeners();
-
                 await this.loader.ready();
 
                 this.initAudio();
@@ -563,10 +561,6 @@
 
             static initPanel() {
                 PanelController.init(this.panels.container);
-            }
-
-            static addListeners() {
-                ticker.start();
             }
 
             // Public methods
