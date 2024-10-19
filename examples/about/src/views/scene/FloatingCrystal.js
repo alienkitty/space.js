@@ -1,5 +1,4 @@
 import { Color, Group, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three';
-
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
 import { WorldController } from '../../controllers/world/WorldController.js';

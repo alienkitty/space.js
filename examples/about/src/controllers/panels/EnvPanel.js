@@ -1,5 +1,4 @@
 import { MathUtils } from 'three';
-
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 export class EnvPanel extends Panel {

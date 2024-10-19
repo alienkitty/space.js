@@ -1,5 +1,4 @@
 import { BoxGeometry, Color, Group, Mesh } from 'three';
-
 import { Stage, clearTween, tween } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';

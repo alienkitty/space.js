@@ -1,5 +1,4 @@
 import { Vector3 } from 'three';
-
 import { MaterialPanelController, Point3D } from '@alienkitty/space.js/three';
 
 import { CameraController } from '../world/CameraController.js';

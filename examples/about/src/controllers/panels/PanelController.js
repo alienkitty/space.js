@@ -1,5 +1,4 @@
 import { Vector3 } from 'three';
-
 import { DisplayOptions, LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';

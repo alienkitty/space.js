@@ -1,5 +1,4 @@
 import { Color, Group, MathUtils, Mesh, MeshStandardMaterial } from 'three';
-
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
