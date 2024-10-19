@@ -1,5 +1,4 @@
 import { Mesh, MeshBasicMaterial, Raycaster, Vector2 } from 'three';
-
 import { Stage } from '@alienkitty/space.js/three';
 import { RigidBodyConfig, RigidBodyType, SphericalJointConfig } from '@alienkitty/alien.js/three/oimophysics';
 

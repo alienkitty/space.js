@@ -1,5 +1,4 @@
 import { AdditiveBlending, Color, MathUtils, Mesh, MeshBasicMaterial, MeshMatcapMaterial, NoBlending, OrthographicCamera, Vector2, WebGLRenderTarget } from 'three';
-
 import { DisplayOptions } from '@alienkitty/space.js/three';
 import { BloomCompositeMaterial, DepthMaterial, LuminosityMaterial, MotionBlur, MotionBlurCompositeMaterial, NormalMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
 
