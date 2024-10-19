@@ -113,9 +113,9 @@ export class PostPanel extends Panel {
                 min: 0,
                 max: 10,
                 step: 0.1,
-                value: compositeMaterial.uniforms.uRGBStrength.value,
+                value: compositeMaterial.uniforms.uRGBAmount.value,
                 callback: value => {
-                    compositeMaterial.uniforms.uRGBStrength.value = value;
+                    compositeMaterial.uniforms.uRGBAmount.value = value;
                 }
             },
             {
