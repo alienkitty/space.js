@@ -26,7 +26,7 @@ uniform sampler2D tScene;
 uniform sampler2D tBloom;
 uniform sampler2D tLensDirt;
 uniform sampler2D tLensDirtTiles;
-uniform float uRGBStrength;
+uniform float uRGBAmount;
 uniform bool uLensDirt;
 uniform bool uToneMapping;
 uniform float uExposure;
@@ -47,7 +47,7 @@ void main() {
     float dist = length(dir);
     dist = clamp(smoothstep(0.2, 0.7, dist), 0.0, 1.0);
     float angle = atan(dir.y, dir.x);
-    float amount = 0.002 * dist * uRGBStrength;
+    float amount = 0.002 * dist * uRGBAmount;
 
     vec4 bloom = getRGB(tBloom, vUv, angle, amount);
 
@@ -59,7 +59,7 @@ void main() {
         distortion = smoothstep(0.5, 0.7, distortion);
 
         vec2 sceneUv = vUv;
-        sceneUv.xy += smoothstep(0.0, 0.4, bloom.rg) * distortion * dir * 0.005 * dist * uRGBStrength;
+        sceneUv.xy += smoothstep(0.0, 0.4, bloom.rg) * distortion * dir * 0.005 * dist * uRGBAmount;
 
         vec2 dirtUv = vUv;
 
@@ -78,11 +78,11 @@ void main() {
             dirtUv.y += 0.5 * (1.0 - heightRatio);
         }
 
-        dirtUv.xy += distortion * dir * 0.05 * dist * uRGBStrength;
+        dirtUv.xy += distortion * dir * 0.05 * dist * uRGBAmount;
 
         FragColor = texture(tScene, sceneUv);
         FragColor.rgb += bloom.rgb;
-        FragColor.rgb += smoothstep(0.0, 0.4, bloom.rgb) * texture(tLensDirt, dirtUv).rgb * dist * uRGBStrength;
+        FragColor.rgb += smoothstep(0.0, 0.4, bloom.rgb) * texture(tLensDirt, dirtUv).rgb * dist * uRGBAmount;
     } else {
         FragColor = texture(tScene, vUv);
         FragColor.rgb += bloom.rgb;
@@ -123,7 +123,7 @@ export class CompositeMaterial extends RawShaderMaterial {
                 tBloom: { value: null },
                 tLensDirt: { value: lensDirtMap },
                 tLensDirtTiles: { value: lensDirtTilesMap },
-                uRGBStrength: { value: 2.2 },
+                uRGBAmount: { value: 2.2 },
                 uLensDirt: { value: true },
                 uToneMapping: { value: false },
                 uExposure: { value: 1 },

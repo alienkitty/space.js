@@ -104,7 +104,7 @@ export class RenderManager {
 
         // Composite material
         this.compositeMaterial = new CompositeMaterial();
-        this.compositeMaterial.uniforms.uRGBStrength.value = this.bloomDistortion;
+        this.compositeMaterial.uniforms.uRGBAmount.value = this.bloomDistortion;
 
         // Debug materials
         this.blackoutMaterial = new MeshBasicMaterial({ color: 0x000000 });
