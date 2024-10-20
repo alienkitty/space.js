@@ -54,13 +54,6 @@ export function getFrustum(camera, offsetZ = 0) {
     return { width, height };
 }
 
-export function getFrustumFromHeight(camera, height, offsetZ = 0) {
-    const distance = camera.position.z - offsetZ;
-    const fov = MathUtils.radToDeg(2 * Math.atan(height / (2 * distance)));
-
-    return fov;
-}
-
 export function lerpCameras(camera1, camera2, alpha) {
     if (camera1.fov !== camera2.fov || camera1.zoom !== camera2.zoom) {
         if (camera1.fov !== camera2.fov) {
