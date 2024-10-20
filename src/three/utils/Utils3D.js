@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector3, WebGLRenderTarget } from 'three';
+import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector2, Vector3, WebGLRenderTarget } from 'three';
 
 export function getFullscreenTriangle() {
     const geometry = new BufferGeometry();
@@ -45,13 +45,11 @@ export function getScreenSpaceBox(mesh, camera) {
     return new Box2(min, max);
 }
 
-export function getFrustum(camera, offsetZ = 0) {
+export function getViewSize(camera, offsetZ = 0) {
     const distance = camera.position.z - offsetZ;
-    const fov = MathUtils.degToRad(camera.fov);
-    const height = 2 * Math.tan(fov / 2) * distance;
-    const width = height * camera.aspect;
+    const target = new Vector2();
 
-    return { width, height };
+    return camera.getViewSize(distance, target);
 }
 
 export function lerpCameras(camera1, camera2, alpha) {
