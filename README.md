@@ -175,6 +175,7 @@ scene.environmentIntensity = 1.2;
 #### ui
 
 [logo](https://space.js.org/examples/logo.html) (interface)  
+[alienkitty](https://space.js.org/examples/alienkitty.html) (interface)  
 [ui](https://space.js.org/examples/ui.html) (hud)  
 [components](https://space.js.org/examples/ui_components.html) (ui)  
 [audio](https://space.js.org/examples/ui_audio.html) (ui)  
