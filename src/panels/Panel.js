@@ -102,9 +102,9 @@ export class Panel extends Interface {
     add(item) {
         item.events.on('update', this.onUpdate);
 
-        super.add(item);
-
         this.items.push(item);
+
+        return super.add(item);
     }
 
     setPanelIndex(name, index, path = []) {
