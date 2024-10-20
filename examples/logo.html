@@ -113,14 +113,14 @@
 
         class App {
             static async init() {
-                this.initViews();
+                this.initView();
 
                 this.addListeners();
             }
 
-            static initViews() {
-                this.logo = new Logo();
-                document.body.appendChild(this.logo.element);
+            static initView() {
+                this.view = new Logo();
+                document.body.appendChild(this.view.element);
             }
 
             static addListeners() {
@@ -130,7 +130,7 @@
             // Event handlers
 
             static onLoad = () => {
-                this.logo.animateIn();
+                this.view.animateIn();
             };
         }
 
