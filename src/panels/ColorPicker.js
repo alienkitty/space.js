@@ -18,6 +18,7 @@ export class ColorPicker extends Interface {
     constructor({
         name,
         value,
+        noSwatch = false,
         noText = false,
         callback
     }) {
@@ -25,6 +26,7 @@ export class ColorPicker extends Interface {
 
         this.name = name;
         this.value = new Color(value);
+        this.noSwatch = noSwatch;
         this.noText = noText;
         this.callback = callback;
 
@@ -65,33 +67,37 @@ export class ColorPicker extends Interface {
             height: this.height
         });
 
-        this.container = new Interface('.container');
-        this.container.css({
-            height: this.height,
-            lineHeight: this.height,
-            whiteSpace: 'nowrap',
-            cursor: 'pointer'
-        });
-        this.add(this.container);
-
-        this.swatch = new Interface('.swatch');
-        this.swatch.css({
-            cssFloat: 'left',
-            boxSizing: 'border-box',
-            width: this.height,
-            height: this.height,
-            backgroundColor: 'var(--ui-bg-color)',
-            border: '1px solid var(--ui-color-divider-line)',
-            cursor: 'pointer'
-        });
-        this.container.add(this.swatch);
-
-        if (!this.noText) {
-            this.content = new Interface('.content');
-            this.content.css({
-                cssFloat: 'right'
+        if (!this.noSwatch || !this.noText) {
+            this.container = new Interface('.container');
+            this.container.css({
+                height: this.height,
+                lineHeight: this.height,
+                whiteSpace: 'nowrap',
+                cursor: 'pointer'
             });
-            this.container.add(this.content);
+            this.add(this.container);
+
+            if (!this.noSwatch) {
+                this.swatch = new Interface('.swatch');
+                this.swatch.css({
+                    cssFloat: 'left',
+                    boxSizing: 'border-box',
+                    width: this.height,
+                    height: this.height,
+                    backgroundColor: 'var(--ui-bg-color)',
+                    border: '1px solid var(--ui-color-divider-line)',
+                    cursor: 'pointer'
+                });
+                this.container.add(this.swatch);
+            }
+
+            if (!this.noText) {
+                this.content = new Interface('.content');
+                this.content.css({
+                    cssFloat: 'right'
+                });
+                this.container.add(this.content);
+            }
         }
     }
 
@@ -283,13 +289,21 @@ export class ColorPicker extends Interface {
 
     addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
-        this.container.element.addEventListener('click', this.onClick);
+
+        if (!this.noSwatch || !this.noText) {
+            this.container.element.addEventListener('click', this.onClick);
+        }
+
         this.element.addEventListener('pointerdown', this.onPointerDown);
     }
 
     removeListeners() {
         Stage.events.off('color_picker', this.onColorPicker);
-        this.container.element.removeEventListener('click', this.onClick);
+
+        if (!this.noSwatch || !this.noText) {
+            this.container.element.removeEventListener('click', this.onClick);
+        }
+
         this.element.removeEventListener('pointerdown', this.onPointerDown);
     }
 
@@ -470,9 +484,11 @@ export class ColorPicker extends Interface {
     update() {
         this.moveMarkers();
 
-        this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
+        if (this.swatch) {
+            this.swatch.css({ backgroundColor: `#${this.value.getHexString()}` });
+        }
 
-        if (!this.noText) {
+        if (this.content) {
             this.content.text(`0x${this.value.getHexString().toUpperCase()}`);
         }
 
