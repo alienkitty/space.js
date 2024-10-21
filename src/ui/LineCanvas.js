@@ -95,20 +95,20 @@ export class LineCanvas extends Component {
     }
 
     animateOut(fast, callback) {
-        let time;
+        let duration;
         let ease;
 
         if (fast) {
-            time = 400;
+            duration = 400;
             ease = 'easeOutCubic';
         } else {
-            time = 500;
+            duration = 500;
             ease = 'easeInCubic';
         }
 
         clearTween(this.props);
 
-        tween(this.props, { start: 1 }, time, ease, () => {
+        tween(this.props, { start: 1 }, duration, ease, () => {
             this.props.alpha = 0;
             this.props.start = 0;
 
