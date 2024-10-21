@@ -459,7 +459,7 @@ export class ColorPicker extends Interface {
         this.parent.css({ height });
     }
 
-    setValue(value) {
+    setValue(value, notify = true) {
         if (value && value.isColor) {
             this.value.copy(value);
         } else {
@@ -468,20 +468,20 @@ export class ColorPicker extends Interface {
 
         this.value.getHSL(this);
 
-        this.update();
+        this.update(notify);
     }
 
-    setHSL(h, s, l) {
+    setHSL(h, s, l, notify = true) {
         this.value.setHSL(h, s, l);
 
         this.h = h;
         this.s = s;
         this.l = l;
 
-        this.update();
+        this.update(notify);
     }
 
-    update() {
+    update(notify = true) {
         this.moveMarkers();
 
         if (this.swatch) {
@@ -492,10 +492,12 @@ export class ColorPicker extends Interface {
             this.content.text(`0x${this.value.getHexString().toUpperCase()}`);
         }
 
-        this.events.emit('update', { path: [], value: this.value, target: this });
+        if (notify) {
+            this.events.emit('update', { path: [], value: this.value, target: this });
 
-        if (this.callback) {
-            this.callback(this.value, this);
+            if (this.callback) {
+                this.callback(this.value, this);
+            }
         }
     }
 
