@@ -40,8 +40,7 @@ export class Details extends Interface {
                 position: 'absolute',
                 width: '100%',
                 height: '100%',
-                backgroundColor: '#000',
-                opacity: 0
+                backgroundColor: '#000'
             });
             this.add(this.bg);
         }
@@ -132,7 +131,7 @@ export class Details extends Interface {
         const stagger = 175;
 
         if (this.bg) {
-            this.bg.clearTween().tween({ opacity: 0.35 }, duration, 'easeOutSine');
+            this.bg.clearTween().css({ opacity: 0 }).tween({ opacity: 0.35 }, duration, 'easeOutSine');
         }
 
         this.container.children.forEach((child, i) => {
@@ -147,10 +146,6 @@ export class Details extends Interface {
     animateOut(callback) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
-
-        if (this.bg) {
-            this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
-        }
 
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
