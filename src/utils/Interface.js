@@ -26,7 +26,7 @@ const Lacuna1 = ['opacity', 'brightness', 'contrast', 'saturate', 'scale', 'stop
  *     width: 90,
  *     height: 86,
  *     marginLeft: -90 / 2,
- *     marginTop: -86 / 2,
+ *     marginTop: -86 / 2 - 65,
  *     webkitUserSelect: 'none',
  *     userSelect: 'none',
  *     scale: 0.96,
