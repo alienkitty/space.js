@@ -74,12 +74,12 @@ export class TextureLoader extends Loader {
                 }
             }
 
-            promise.then(image => {
-                if (image.error) {
-                    throw new Error(image.error);
+            promise.then(bitmap => {
+                if (bitmap.error) {
+                    throw new Error(bitmap.error);
                 }
 
-                texture.image = image;
+                texture.image = bitmap;
 
                 if (ColorManagement.enabled) {
                     texture.colorSpace = SRGBColorSpace;
@@ -88,8 +88,8 @@ export class TextureLoader extends Loader {
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
-                    if (image.close && !this.options.preserveData) {
-                        image.close();
+                    if (!this.options.preserveData) {
+                        bitmap.close();
                     }
 
                     texture.onUpdate = null;
