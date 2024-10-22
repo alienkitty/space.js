@@ -23,6 +23,14 @@ import { Loader } from '../../loaders/Loader.js';
  *
  * const map = await loader.loadAsync('assets/textures/cubemap.jpg');
  * console.log(map);
+ * @example
+ * const loader = new TextureLoader();
+ * const loadTexture = path => loader.loadAsync(path);
+ *
+ * // ...
+ * const map = await loadTexture('assets/images/alienkitty.svg');
+ * map.minFilter = LinearFilter;
+ * map.generateMipmaps = false;
  */
 export class TextureLoader extends Loader {
     constructor() {

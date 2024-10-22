@@ -28,6 +28,13 @@ import { guid } from '../utils/Utils.js';
  * const loader = new AssetLoader();
  * const data = await loader.loadData('assets/data/data.json');
  * console.log(data);
+ * @example
+ * const loader = new AssetLoader();
+ * const loadImage = path => loader.loadImage(path);
+ *
+ * // ...
+ * const image = await loadImage('assets/images/alienkitty.svg');
+ * console.log(image);
  */
 export class AssetLoader extends Loader {
     load(path, callback) {
