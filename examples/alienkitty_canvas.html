@@ -25,7 +25,14 @@
                 this.needsUpdate = false;
                 this.isLoaded = false;
 
+                this.init();
                 this.initCanvas();
+            }
+
+            init() {
+                this.css({
+                    opacity: 0
+                });
             }
 
             initCanvas() {
@@ -138,8 +145,8 @@
 
                 this.element.width = Math.round(this.width * dpr);
                 this.element.height = Math.round(this.height * dpr);
-                this.element.style.width = this.width + 'px';
-                this.element.style.height = this.height + 'px';
+                this.element.style.width = `${this.width}px`;
+                this.element.style.height = `${this.height}px`;
                 this.context.scale(dpr, dpr);
 
                 if (this.isLoaded) {
@@ -159,6 +166,12 @@
                 this.addListeners();
                 this.resize();
                 this.blink();
+
+                this.tween({ opacity: 1 }, 1000, 'easeOutSine');
+            };
+
+            animateOut = callback => {
+                this.tween({ opacity: 0 }, 500, 'easeInOutQuad', callback);
             };
 
             ready = () => this.initImages();
