@@ -20,14 +20,29 @@ export class ScenePanel extends Panel {
         const scene = this.scene;
 
         const items = [
-            {
-                type: 'divider'
-            }
             // TODO: Texture thumbnails
         ];
 
+        if (scene.background && scene.background.isColor) {
+            items.push(
+                {
+                    type: 'divider'
+                },
+                {
+                    type: 'color',
+                    value: scene.background,
+                    callback: value => {
+                        scene.background.copy(value);
+                    }
+                }
+            );
+        }
+
         if (scene.environment) {
             items.push(
+                {
+                    type: 'divider'
+                },
                 {
                     type: 'slider',
                     name: 'Rotate X',
