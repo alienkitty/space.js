@@ -1,12 +1,11 @@
 import { Vector3 } from 'three';
-import { DisplayOptions, LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
+import { DisplayOptions, EnvPanel, LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
 import { PhysicsController } from '../world/PhysicsController.js';
 import { RenderManager } from '../world/RenderManager.js';
 import { ScenePanelController } from './ScenePanelController.js';
 import { PostPanel } from './PostPanel.js';
-import { EnvPanel } from './EnvPanel.js';
 import { GridPanel } from './GridPanel.js';
 
 import { params } from '../../config/Config.js';

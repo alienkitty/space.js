@@ -1,5 +1,11 @@
+/**
+ * @author pschroen / https://ufo.ai/
+ */
+
 import { MathUtils } from 'three';
-import { Panel, PanelItem } from '@alienkitty/space.js/three';
+
+import { Panel } from '../../../panels/Panel.js';
+import { PanelItem } from '../../../panels/PanelItem.js';
 
 export class EnvPanel extends Panel {
     constructor(scene) {
