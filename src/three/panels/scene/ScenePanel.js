@@ -7,13 +7,19 @@ import { MathUtils } from 'three';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
+import { brightness } from '../../../utils/Utils.js';
+
 export class ScenePanel extends Panel {
-    constructor(scene) {
+    constructor(scene, ui) {
         super();
 
         this.scene = scene;
+        this.ui = ui;
+
+        this.lastInvert = null;
 
         this.initPanel();
+        this.setInvert(this.scene.background);
     }
 
     initPanel() {
@@ -33,6 +39,8 @@ export class ScenePanel extends Panel {
                     value: scene.background,
                     callback: value => {
                         scene.background.copy(value);
+
+                        this.setInvert(value);
                     }
                 }
             );
@@ -97,4 +105,21 @@ export class ScenePanel extends Panel {
             this.add(new PanelItem(data));
         });
     }
+
+    // Public methods
+
+    setInvert = value => {
+        if (!this.ui) {
+            return;
+        }
+
+        // Light colour is inverted
+        const invert = brightness(value) > 0.6;
+
+        if (invert !== this.lastInvert) {
+            this.lastInvert = invert;
+
+            this.ui.invert(invert);
+        }
+    };
 }
