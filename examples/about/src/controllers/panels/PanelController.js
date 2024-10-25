@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { DisplayOptions, EnvPanel, LightOptions, LightPanelController, PanelItem, Point3D, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
+import { DisplayOptions, LightOptions, LightPanelController, PanelItem, Point3D, ScenePanel, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
 import { PhysicsController } from '../world/PhysicsController.js';
@@ -63,8 +63,8 @@ export class PanelController {
         };
 
         const sceneOptions = {
-            Post: PostPanel,
-            Env: EnvPanel
+            Scene: ScenePanel,
+            Post: PostPanel
         };
 
         scene.traverse(object => {
@@ -161,11 +161,11 @@ export class PanelController {
             {
                 type: 'list',
                 list: sceneOptions,
-                value: 'Post',
+                value: 'Scene',
                 callback: (value, item) => {
                     switch (value) {
-                        case 'Post':
-                        case 'Env': {
+                        case 'Scene':
+                        case 'Post': {
                             const ScenePanel = sceneOptions[value];
 
                             const scenePanel = new ScenePanel(scene);

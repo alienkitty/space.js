@@ -7,7 +7,7 @@ import { MathUtils } from 'three';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-export class EnvPanel extends Panel {
+export class ScenePanel extends Panel {
     constructor(scene) {
         super();
 
