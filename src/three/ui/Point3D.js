@@ -1066,7 +1066,9 @@ export class Point3D extends Group {
             } else {
                 this.point.open();
 
-                Stage.events.emit('color_picker', { open: false, target: this.panel });
+                if (this.panel) {
+                    Stage.events.emit('color_picker', { open: false, target: this.panel });
+                }
             }
         } else {
             this.reticle.animateIn();
