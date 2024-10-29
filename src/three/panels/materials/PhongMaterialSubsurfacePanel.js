@@ -33,6 +33,16 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             };
         }
 
+        if (!mesh.material.userData.onBeforeCompile) {
+            mesh.material.userData.onBeforeCompile = {};
+
+            mesh.material.onBeforeCompile = shader => {
+                for (const key in mesh.material.userData.onBeforeCompile) {
+                    mesh.material.userData.onBeforeCompile[key](shader, mesh);
+                }
+            };
+        }
+
         const subsurfaceOptions = {
             Off: false,
             On: true
