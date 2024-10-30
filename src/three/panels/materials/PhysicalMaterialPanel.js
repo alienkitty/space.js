@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 import { StandardMaterialPatches } from '../Patches.js';
 
@@ -35,47 +36,13 @@ export const PhysicalMaterialOptions = {
 };
 
 export class PhysicalMaterialPanel extends Panel {
-    static type = [
-        'common',
-        'standard',
-        'physical'
-    ];
+    static type = 'Physical';
 
-    static properties = {
-        common: [
-            'color',
-            'emissive',
-            'flatShading',
-            'wireframe',
-            'toneMapped'
-        ],
-        standard: [
-            'roughness',
-            'metalness',
-            'envMapRotation',
-            'envMapIntensity'
-        ],
-        physical: [
-            'specularColor',
-            'specularIntensity',
-            'ior',
-            'reflectivity',
-            'transmission',
-            'thickness',
-            'attenuationColor',
-            'attenuationDistance',
-            'clearcoat',
-            'clearcoatRoughness',
-            'iridescence',
-            'iridescenceIOR',
-            'iridescenceThicknessRange',
-            'anisotropy',
-            'anisotropyRotation',
-            'sheen',
-            'sheenRoughness',
-            'sheenColor'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Standard,
+        ...MaterialProperties.Physical
+    ];
 
     constructor(mesh) {
         super();

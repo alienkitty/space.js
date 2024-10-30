@@ -94,7 +94,7 @@
         // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
 
-        MaterialPatches.phong = {
+        MaterialPatches.Phong = {
             instanceOpacity(shader) {
                 shader.vertexShader = shader.vertexShader.replace(
                     '#include <color_pars_vertex>',

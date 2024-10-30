@@ -109,82 +109,81 @@ export class MaterialPanelController {
                     materialProperties.opacity = mesh.material.opacity;
                     materialProperties.side = mesh.material.side;
 
-                    currentMaterialPanel.type.forEach(type => {
-                        if (!materialProperties[type]) {
-                            materialProperties[type] = {};
-                        }
+                    currentMaterialPanel.properties.forEach(key => {
+                        if (key in mesh.material) {
+                            const value = mesh.material[key];
 
-                        currentMaterialPanel.properties[type].forEach(key => {
-                            if (key in mesh.material) {
-                                const value = mesh.material[key];
-
-                                if (value && (
-                                    value.isVector2 ||
-                                    value.isVector3 ||
-                                    value.isVector4 ||
-                                    value.isMatrix3 ||
-                                    value.isMatrix4 ||
-                                    value.isColor
-                                )) {
-                                    if (!materialProperties[type][key]) {
-                                        materialProperties[type][key] = value.clone();
-                                    } else {
-                                        materialProperties[type][key].copy(value);
-                                    }
-                                } else if (Array.isArray(value)) {
-                                    materialProperties[type][key] = value.slice();
+                            if (value && (
+                                value.isVector2 ||
+                                value.isVector3 ||
+                                value.isVector4 ||
+                                value.isMatrix3 ||
+                                value.isMatrix4 ||
+                                value.isColor
+                            )) {
+                                if (!materialProperties[key]) {
+                                    materialProperties[key] = value.clone();
                                 } else {
-                                    materialProperties[type][key] = value;
+                                    materialProperties[key].copy(value);
                                 }
+                            } else if (Array.isArray(value)) {
+                                materialProperties[key] = value.slice();
+                            } else {
+                                materialProperties[key] = value;
                             }
-                        });
+                        }
                     });
 
                     materialProperties.map = mesh.material.map;
 
                     mesh.material = new Material();
-                    mesh.material.userData.onBeforeCompile = {};
-
-                    mesh.material.onBeforeCompile = shader => {
-                        for (const key in mesh.material.userData.onBeforeCompile) {
-                            mesh.material.userData.onBeforeCompile[key](shader, mesh);
-                        }
-                    };
 
                     mesh.material.transparent = materialProperties.transparent;
                     mesh.material.opacity = materialProperties.opacity;
                     mesh.material.side = materialProperties.side;
 
-                    MaterialPanel.type.forEach(type => {
-                        if (!materialProperties[type]) {
-                            materialProperties[type] = {};
-                        }
+                    MaterialPanel.properties.forEach(key => {
+                        if (key in mesh.material && key in materialProperties) {
+                            const value = materialProperties[key];
 
-                        MaterialPanel.properties[type].forEach(key => {
-                            if (key in mesh.material && key in materialProperties[type]) {
-                                const value = materialProperties[type][key];
+                            if (key === 'clippingPlanes' && Array.isArray(value)) {
+                                const length = value.length;
+                                const array = new Array(length);
 
-                                if (value && (
-                                    value.isVector2 ||
-                                    value.isVector3 ||
-                                    value.isVector4 ||
-                                    value.isMatrix3 ||
-                                    value.isMatrix4 ||
-                                    value.isColor
-                                )) {
-                                    mesh.material[key].copy(value);
-                                } else {
-                                    mesh.material[key] = value;
+                                for (let i = 0; i < length; i++) {
+                                    array[i] = value[i].clone();
                                 }
-                            }
-                        });
 
-                        if (type in MaterialPatches) {
-                            for (const key in MaterialPatches[type]) {
-                                mesh.material.userData.onBeforeCompile[key] = MaterialPatches[type][key];
+                                mesh.material.clippingPlanes = array;
+                            } else if (key === 'userData') {
+                                mesh.material.userData = value;
+                                mesh.material.userData.onBeforeCompile = {};
+
+                                mesh.material.onBeforeCompile = shader => {
+                                    for (const key in mesh.material.userData.onBeforeCompile) {
+                                        mesh.material.userData.onBeforeCompile[key](shader, mesh);
+                                    }
+                                };
+                            } else if (value && (
+                                value.isVector2 ||
+                                value.isVector3 ||
+                                value.isVector4 ||
+                                value.isMatrix3 ||
+                                value.isMatrix4 ||
+                                value.isColor
+                            )) {
+                                mesh.material[key].copy(value);
+                            } else {
+                                mesh.material[key] = value;
                             }
                         }
                     });
+
+                    if (MaterialPanel.type in MaterialPatches) {
+                        for (const key in MaterialPatches[MaterialPanel.type]) {
+                            mesh.material.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
+                        }
+                    }
 
                     if (ui.uvTexture) {
                         mesh.material.map = ui.uvTexture;

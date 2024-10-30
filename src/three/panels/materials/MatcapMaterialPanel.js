@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
@@ -20,17 +21,12 @@ export const MatcapMaterialOptions = {
 };
 
 export class MatcapMaterialPanel extends Panel {
-    static type = [
-        'common'
-    ];
+    static type = 'Matcap';
 
-    static properties = {
-        common: [
-            'color',
-            'flatShading',
-            'toneMapped'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Matcap
+    ];
 
     constructor(mesh) {
         super();

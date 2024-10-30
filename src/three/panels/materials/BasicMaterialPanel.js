@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
@@ -22,20 +23,12 @@ export const BasicMaterialOptions = {
 };
 
 export class BasicMaterialPanel extends Panel {
-    static type = [
-        'common'
-    ];
+    static type = 'Basic';
 
-    static properties = {
-        common: [
-            'color',
-            'wireframe',
-            'toneMapped',
-            'combine',
-            'reflectivity',
-            'refractionRatio'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Basic
+    ];
 
     constructor(mesh) {
         super();

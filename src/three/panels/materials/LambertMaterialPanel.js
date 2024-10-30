@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
@@ -22,22 +23,12 @@ export const LambertMaterialOptions = {
 };
 
 export class LambertMaterialPanel extends Panel {
-    static type = [
-        'common'
-    ];
+    static type = 'Lambert';
 
-    static properties = {
-        common: [
-            'color',
-            'emissive',
-            'flatShading',
-            'wireframe',
-            'toneMapped',
-            'combine',
-            'reflectivity',
-            'refractionRatio'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Lambert
+    ];
 
     constructor(mesh) {
         super();
