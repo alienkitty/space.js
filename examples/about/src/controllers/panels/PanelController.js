@@ -44,7 +44,7 @@ export class PanelController {
     }
 
     static initPanel() {
-        const { motionBlur } = RenderManager;
+        const { drawBuffers } = RenderManager;
 
         const scene = this.scene;
         const physics = this.physics;
@@ -138,7 +138,7 @@ export class PanelController {
                 value: getKeyByValue(animateOptions, params.animate),
                 callback: value => {
                     params.animate = animateOptions[value];
-                    motionBlur.saveState = params.animate;
+                    drawBuffers.saveState = params.animate;
                 }
             },
             {

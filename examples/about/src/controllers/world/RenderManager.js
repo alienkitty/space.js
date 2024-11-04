@@ -1,6 +1,6 @@
 import { AdditiveBlending, Color, MathUtils, Mesh, MeshBasicMaterial, MeshMatcapMaterial, NoBlending, OrthographicCamera, Vector2, WebGLRenderTarget } from 'three';
 import { DisplayOptions } from '@alienkitty/space.js/three';
-import { BloomCompositeMaterial, DepthMaterial, LuminosityMaterial, MotionBlur, MotionBlurCompositeMaterial, NormalMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
+import { BloomCompositeMaterial, CopyMaterial, DepthMaterial, DrawBuffers, LuminosityMaterial, MotionBlurCompositeMaterial, NormalMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
 
 import { WorldController } from './WorldController.js';
 import { CompositeMaterial } from '../../materials/CompositeMaterial.js';
@@ -70,13 +70,14 @@ export class RenderManager {
 
         this.renderTargetA.depthBuffer = true;
 
-        // Motion blur
-        this.motionBlur = new MotionBlur(this.renderer, this.scene, this.camera, layers.velocity, {
+        // G-Buffer
+        this.drawBuffers = new DrawBuffers(this.renderer, this.scene, this.camera, layers.drawBuffers, {
             interpolateGeometry: 0
         });
 
+        // Motion blur composite material
         this.motionBlurCompositeMaterial = new MotionBlurCompositeMaterial(textureLoader);
-        this.motionBlurCompositeMaterial.uniforms.tVelocity.value = this.motionBlur.renderTarget.texture;
+        this.motionBlurCompositeMaterial.uniforms.tVelocity.value = this.drawBuffers.renderTarget.textures[1];
 
         // Luminosity high pass material
         this.luminosityMaterial = new LuminosityMaterial();
@@ -111,6 +112,7 @@ export class RenderManager {
         this.matcap2Material = new MeshMatcapMaterial({ matcap: getTexture('assets/textures/matcaps/defaultwax.jpg') });
         this.normalMaterial = new NormalMaterial();
         this.depthMaterial = new DepthMaterial();
+        this.copyMaterial = new CopyMaterial();
     }
 
     static bloomFactors() {
@@ -142,7 +144,7 @@ export class RenderManager {
     static setCamera = camera => {
         this.camera = camera;
 
-        this.motionBlur.setCamera(camera);
+        this.drawBuffers.setCamera(camera);
     };
 
     static invert = isInverted => {
@@ -169,7 +171,7 @@ export class RenderManager {
         this.renderTargetA.setSize(width, height);
         this.renderTargetB.setSize(width, height);
 
-        this.motionBlur.setSize(width, height);
+        this.drawBuffers.setSize(width, height);
 
         // Unreal bloom
         width = MathUtils.floorPowerOfTwo(width) / 2;
@@ -208,6 +210,22 @@ export class RenderManager {
 
         // Renderer state
         this.rendererState();
+
+        // G-Buffer layer
+        camera.layers.set(layers.drawBuffers);
+
+        this.drawBuffers.update();
+
+        if (this.display === DisplayOptions.Velocity) {
+            // Debug pass (render to screen)
+            this.copyMaterial.uniforms.tMap.value = this.drawBuffers.renderTarget.textures[1];
+            this.screen.material = this.copyMaterial;
+            renderer.setRenderTarget(null);
+            renderer.clear();
+            renderer.render(this.screen, this.screenCamera);
+            this.restoreRendererState();
+            return;
+        }
 
         // Scene layer
         camera.layers.set(layers.default);
@@ -251,18 +269,7 @@ export class RenderManager {
             return;
         }
 
-        // Motion blur layer
-        camera.layers.set(layers.velocity);
-
-        if (this.display === DisplayOptions.Velocity) {
-            // Debug pass (render to screen)
-            this.motionBlur.update(null);
-            this.restoreRendererState();
-            return;
-        } else {
-            this.motionBlur.update();
-        }
-
+        // Motion blur pass
         this.motionBlurCompositeMaterial.uniforms.tMap.value = renderTargetA.texture;
         this.screen.material = this.motionBlurCompositeMaterial;
         renderer.setRenderTarget(renderTargetB);

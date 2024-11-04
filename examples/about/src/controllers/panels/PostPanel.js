@@ -10,7 +10,7 @@ export class PostPanel extends Panel {
     }
 
     initPanel() {
-        const { motionBlur, luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
+        const { drawBuffers, luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
 
         const postOptions = {
             Off: false,
@@ -42,9 +42,9 @@ export class PostPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: motionBlur.interpolateGeometry,
+                value: drawBuffers.interpolateGeometry,
                 callback: value => {
-                    motionBlur.interpolateGeometry = value;
+                    drawBuffers.interpolateGeometry = value;
                 }
             },
             {
@@ -53,9 +53,9 @@ export class PostPanel extends Panel {
                 min: 0,
                 max: 4,
                 step: 0.02,
-                value: motionBlur.smearIntensity,
+                value: drawBuffers.smearIntensity,
                 callback: value => {
-                    motionBlur.smearIntensity = value;
+                    drawBuffers.smearIntensity = value;
                 }
             },
             {

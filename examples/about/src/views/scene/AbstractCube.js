@@ -31,7 +31,7 @@ export class AbstractCube extends Group {
         const mesh = new Mesh(geometry, material);
         // mesh.castShadow = true;
         // mesh.receiveShadow = true;
-        mesh.layers.enable(layers.velocity);
+        mesh.layers.enable(layers.drawBuffers);
         this.add(mesh);
 
         // Physics
