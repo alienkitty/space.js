@@ -96,7 +96,7 @@ function animate() {
 requestAnimationFrame(animate);
 ```
 
-[Tween](https://github.com/alienkitty/alien.js/wiki/Tween) animation engine:
+[Tween](https://github.com/alienkitty/space.js/wiki/Tween) animation engine:
 
 ```js
 import { ticker, tween } from '@alienkitty/space.js';
@@ -236,58 +236,10 @@ npx eslint examples/three/*.html
 npx eslint examples/*.html
 ```
 
-### Roadmap
-
-#### v1.0
-
-* [x] Initial release based on the UI components from [Multiuser Blocks](https://multiuser-blocks.glitch.me/) and [Multiuser Fluid](https://multiuser-fluid.glitch.me/)
-
-#### v1.1
-
-* [x] Three.js material UI
-* [x] Three.js light UI
-* [x] Three.js UI keyboard support
-
-#### v1.2
-
-* [x] Three.js UI multiple select
-* [x] Export About example UI components
-
-#### v1.3
-
-* [x] Camera perspective toggling
-* [x] Panel snapping
-* [x] Panel thumbnails
-* [ ] Material texture thumbnails
-* [ ] Material texture drag and drop
-* [x] Graphs
-
-#### v1.4
-
-* [ ] Grid snapping
-* [ ] Move objects
-* [ ] GLTF drag and drop
-* [ ] Load/save scene
-
-#### v1.5
-
-* [ ] MIDI support
-
-#### v1.6
-
-* [ ] WebXR version
-
-#### v1.7
-
-* [ ] OGL version
-
-#### v1.8
-
-* [ ] Documentation
-
 ### Resources
 
-* [Tween](https://github.com/alienkitty/alien.js/wiki/Tween)
+* [The Wiki](https://github.com/alienkitty/space.js/wiki)
+* [Tween](https://github.com/alienkitty/space.js/wiki/Tween)
 * [Changelog](https://github.com/alienkitty/space.js/releases)
 
 ### See also
