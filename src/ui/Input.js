@@ -29,6 +29,8 @@ export class Input extends Interface {
         this.css({
             height: this.data.maxlength ? 45 : 20,
             zIndex: 99999,
+            webkitUserSelect: 'none',
+            userSelect: 'none',
             opacity: 0
         });
     }
