@@ -19,7 +19,13 @@ export class ObjectPool {
     }
 
     get() {
-        return this.array.shift() || (this.type ? new this.type() : null);
+        const object = this.array.shift();
+
+        if (object !== undefined) {
+            return object;
+        }
+
+        return this.type ? new this.type() : null;
     }
 
     empty() {
