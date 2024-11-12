@@ -40,7 +40,7 @@ export class Details extends Interface {
                 position: 'absolute',
                 width: '100%',
                 height: '100%',
-                backgroundColor: '#000'
+                backgroundColor: 'var(--bg-color)'
             });
             this.add(this.bg);
         }
