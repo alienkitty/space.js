@@ -71,7 +71,7 @@ export class RenderManager {
         this.renderTargetA.depthBuffer = true;
 
         // G-Buffer
-        this.drawBuffers = new DrawBuffers(this.renderer, this.scene, this.camera, layers.drawBuffers, {
+        this.drawBuffers = new DrawBuffers(this.renderer, this.scene, this.camera, layers.buffers, {
             interpolateGeometry: 0
         });
 
@@ -212,7 +212,7 @@ export class RenderManager {
         this.rendererState();
 
         // G-Buffer layer
-        camera.layers.set(layers.drawBuffers);
+        camera.layers.set(layers.buffers);
 
         this.drawBuffers.update();
 
