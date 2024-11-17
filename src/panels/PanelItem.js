@@ -144,11 +144,11 @@ export class PanelItem extends Interface {
 
     animateOut(index, total, delay, callback) {
         this.clearTween().tween({ y: -10, opacity: 0 }, 500, 'easeInCubic', delay, () => {
-            if (index === 0 && callback) {
-                if (this.graph) {
-                    this.graph.disable();
-                }
+            if (this.graph) {
+                this.graph.disable();
+            }
 
+            if (index === 0 && callback) {
                 callback();
             }
         });
