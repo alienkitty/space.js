@@ -16,7 +16,7 @@ import { clamp } from '../utils/Utils.js';
 export class PanelGraph extends Interface {
     constructor({
         name,
-        height = 50,
+        height = 40,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
