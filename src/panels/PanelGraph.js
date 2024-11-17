@@ -110,8 +110,7 @@ export class PanelGraph extends Interface {
         this.css({
             position: 'relative',
             width: this.width,
-            height: this.height,
-            cursor: 'crosshair'
+            height: this.height
         });
 
         this.container = new Interface('.container');
