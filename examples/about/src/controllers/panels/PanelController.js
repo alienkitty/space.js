@@ -152,6 +152,8 @@ export class PanelController {
                     // scene.background.copy(value);
                     RenderManager.currentBackground.copy(value);
 
+                    Stage.root.style.setProperty('--bg-color', `#${value.getHexString()}`);
+
                     this.setInvert(value);
                 }
             },

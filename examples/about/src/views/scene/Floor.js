@@ -52,12 +52,15 @@ export class Floor extends Group {
     };
 
     toggle = show => {
+        const duration = 400;
+        const ease = 'easeOutCubic';
+
         clearTween(this.gridHelper.material);
 
         if (show) {
-            tween(this.gridHelper.material, { opacity: 1 }, 400, 'easeOutCubic');
+            tween(this.gridHelper.material, { opacity: 1 }, duration, ease);
         } else {
-            tween(this.gridHelper.material, { opacity: 0 }, 400, 'easeOutCubic');
+            tween(this.gridHelper.material, { opacity: 0 }, duration, ease);
         }
     };
 }
