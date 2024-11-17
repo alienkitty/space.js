@@ -77,7 +77,7 @@ export class PanelGraph extends Interface {
         if (this.value === undefined) {
             this.last = performance.now();
             this.time = 0;
-            this.deltaTime = 0;
+            this.delta = 0;
             this.count = 0;
             this.prev = 0;
             this.fps = 0;
@@ -337,7 +337,7 @@ export class PanelGraph extends Interface {
     onUpdate = () => {
         if (this.value === undefined) {
             this.time = performance.now();
-            this.deltaTime = this.time - this.last;
+            this.delta = this.time - this.last;
             this.last = this.time;
 
             if (this.time - 1000 > this.prev) {
@@ -345,9 +345,9 @@ export class PanelGraph extends Interface {
                 this.prev = this.time;
                 this.count = 0;
 
-                if (this.deltaTime < this.refreshRate240) {
+                if (this.delta < this.refreshRate240) {
                     this.rangeHeight = this.getRangeHeight(720);
-                } else if (this.deltaTime < this.refreshRate120) {
+                } else if (this.delta < this.refreshRate120) {
                     this.rangeHeight = this.getRangeHeight(360);
                 } else {
                     this.rangeHeight = this.getRangeHeight(180);
