@@ -275,11 +275,11 @@ export class UI extends Interface {
 
         if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
             if (this.animatedIn) {
+                this.animateOut();
+
                 if (this.isDetailsOpen) {
                     this.toggleDetails(false);
                 }
-
-                this.animateOut();
             } else {
                 this.animateIn();
             }
