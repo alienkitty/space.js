@@ -16,6 +16,7 @@ import { clamp } from '../utils/Utils.js';
 export class PanelGraph extends Interface {
     constructor({
         name,
+        height = 50,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
@@ -30,6 +31,7 @@ export class PanelGraph extends Interface {
         super('.panel-graph');
 
         this.name = name;
+        this.height = height;
         this.resolution = resolution;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
@@ -42,7 +44,6 @@ export class PanelGraph extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = this.width / 2;
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.ghostArray = [];
