@@ -37,7 +37,7 @@ export class RadialGraph extends Interface {
         width = 300,
         height = 300,
         start = 0,
-        graphHeight = 50,
+        graphHeight = 60,
         resolution = 80,
         tension = 6,
         precision = 0,
