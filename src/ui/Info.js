@@ -20,7 +20,7 @@ export class Info extends Interface {
     init() {
         this.invisible();
         this.css({
-            position: 'absolute',
+            position: 'fixed',
             left: '50%',
             width: 300,
             marginLeft: -300 / 2,
