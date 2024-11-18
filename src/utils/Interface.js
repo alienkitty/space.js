@@ -12,7 +12,7 @@ import { clearTween, tween } from '../tween/Tween.js';
 const Transforms = ['x', 'y', 'z', 'skewX', 'skewY', 'rotation', 'rotationX', 'rotationY', 'rotationZ', 'scale', 'scaleX', 'scaleY', 'scaleZ'];
 const Filters = ['blur', 'brightness', 'contrast', 'grayscale', 'hue', 'invert', 'saturate', 'sepia'];
 const Numeric = ['opacity', 'zIndex', 'fontWeight', 'strokeWidth', 'strokeDashoffset', 'stopOpacity', 'flexGrow'];
-const Lacuna1 = ['opacity', 'brightness', 'contrast', 'saturate', 'scale', 'stopOpacity'];
+const Lacuna1 = ['opacity', 'scale', 'brightness', 'contrast', 'saturate', 'stopOpacity'];
 
 /**
  * A base class for HTML elements with tween and destroy methods,
