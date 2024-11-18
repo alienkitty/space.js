@@ -40,7 +40,7 @@ export class Info extends Interface {
         this.content.css({
             textAlign: 'center',
             textTransform: 'uppercase',
-            opacity: 'var(--ui-info-opacity)'
+            color: 'var(--ui-info-color)'
         });
         this.content.html(this.data.content);
         this.add(this.content);

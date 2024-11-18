@@ -42,7 +42,7 @@ export class HeaderTitle extends Interface {
         if (this.data.caption) {
             this.caption = new Interface('.caption');
             this.caption.css({
-                opacity: 'var(--ui-secondary-opacity)'
+                color: 'var(--ui-secondary-color)'
             });
             this.caption.html(this.data.caption);
             this.add(this.caption);
