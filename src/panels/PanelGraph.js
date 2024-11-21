@@ -19,6 +19,7 @@ export class PanelGraph extends Interface {
         precision = 0,
         lookupPrecision = 0,
         range = 1,
+        suffix = '',
         value,
         ghost,
         noText = false,
@@ -34,6 +35,7 @@ export class PanelGraph extends Interface {
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.range = range;
+        this.suffix = suffix;
         this.value = value;
         this.ghost = ghost;
         this.noText = noText;
@@ -429,10 +431,10 @@ export class PanelGraph extends Interface {
                 this.setArray(value);
             } else {
                 if (this.ghost) {
-                    const ghost = this.array.pop();
-                    this.array.unshift(value);
-                    this.ghostArray.pop();
-                    this.ghostArray.unshift(ghost);
+                    const ghost = this.array.shift();
+                    this.array.push(value);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
                 } else {
                     this.array.shift();
                     this.array.push(value);
@@ -514,7 +516,7 @@ export class PanelGraph extends Interface {
             this.context.stroke();
 
             this.info.css({ left: x });
-            this.info.text(value.toFixed(this.precision));
+            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
         }
     }
 

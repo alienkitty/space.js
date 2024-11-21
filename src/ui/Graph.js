@@ -34,6 +34,8 @@ import { clamp } from '../utils/Utils.js';
  */
 export class Graph extends Interface {
     constructor({
+        value,
+        ghost,
         width = 300,
         height = 60,
         resolution = 80,
@@ -41,8 +43,7 @@ export class Graph extends Interface {
         lookupPrecision = 0,
         markers = [],
         range = 1,
-        value,
-        ghost,
+        suffix = '',
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -50,6 +51,8 @@ export class Graph extends Interface {
     } = {}) {
         super('.graph');
 
+        this.value = value;
+        this.ghost = ghost;
         this.width = width;
         this.height = height;
         this.resolution = resolution;
@@ -57,8 +60,7 @@ export class Graph extends Interface {
         this.lookupPrecision = lookupPrecision;
         this.markers = markers;
         this.range = range;
-        this.value = value;
-        this.ghost = ghost;
+        this.suffix = suffix;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -130,12 +132,13 @@ export class Graph extends Interface {
             this.initMarkers();
         }
 
-        this.setSize(this.width, this.height);
         this.setArray(this.value);
 
         if (this.ghost) {
             this.setGhostArray(this.ghost);
         }
+
+        this.setSize(this.width, this.height);
 
         this.addListeners();
     }
@@ -508,10 +511,10 @@ export class Graph extends Interface {
                 this.setArray(value);
             } else {
                 if (this.ghost) {
-                    const ghost = this.array.pop();
-                    this.array.unshift(value);
-                    this.ghostArray.pop();
-                    this.ghostArray.unshift(ghost);
+                    const ghost = this.array.shift();
+                    this.array.push(value);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
                 } else {
                     this.array.shift();
                     this.array.push(value);
@@ -624,7 +627,7 @@ export class Graph extends Interface {
             this.context.stroke();
 
             this.info.css({ left: x });
-            this.info.text(value.toFixed(this.precision));
+            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
         }
     }
 
