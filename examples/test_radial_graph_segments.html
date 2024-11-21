@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Radial Graph Segments — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { RadialGraphSegments } from '@alienkitty/space.js';
+
+        const graph = new RadialGraphSegments({
+            value: Array.from({ length: 10 }, () => Math.random()),
+            precision: 2,
+            lookupPrecision: 100, // per segment
+            segments: [5, 5] // length of each segment (minimum length of 2)
+        });
+        graph.animateIn();
+        document.body.appendChild(graph.element);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            graph.update();
+        }
+
+        requestAnimationFrame(animate);
+    </script>
+</head>
+<body>
+</body>
+</html>
