@@ -45,7 +45,7 @@ const Lacuna1 = ['opacity', 'scale', 'brightness', 'contrast', 'saturate', 'stop
  * logo.add(image);
  *
  * logo.tween({ scale: 1, opacity: 1 }, 2000, 'easeOutCubic');
-*/
+ */
 export class Interface {
     constructor(name, type = 'div', qualifiedName) {
         this.events = new EventEmitter();
@@ -58,7 +58,7 @@ export class Interface {
             this.element = name;
         } else if (type !== null) {
             if (type === 'svg') {
-                this.element = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName || 'svg');
+                this.element = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName || type);
             } else {
                 this.element = document.createElement(type);
             }
@@ -66,8 +66,8 @@ export class Interface {
             if (typeof name === 'string') {
                 if (name.startsWith('.')) {
                     this.element.className = name.slice(1);
-                } else {
-                    this.element.id = name;
+                } else if (name.startsWith('#')) {
+                    this.element.id = name.slice(1);
                 }
             }
         }
