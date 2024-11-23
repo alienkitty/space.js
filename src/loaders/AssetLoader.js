@@ -79,7 +79,7 @@ export class AssetLoader extends Loader {
         this.total++;
     }
 
-    loadImage(path, callback) {
+    loadImage(path) {
         const image = new Image();
 
         image.crossOrigin = this.crossOrigin;
@@ -99,21 +99,13 @@ export class AssetLoader extends Loader {
             };
         });
 
-        if (callback) {
-            promise.then(callback);
-        }
-
         return promise;
     }
 
-    loadData(path, callback) {
+    loadData(path) {
         const promise = fetch(`${this.getPath(path)}?${guid()}`, this.options).then(response => {
             return response.json();
         });
-
-        if (callback) {
-            promise.then(callback);
-        }
 
         return promise;
     }
