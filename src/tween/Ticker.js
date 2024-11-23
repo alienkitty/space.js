@@ -75,7 +75,6 @@ export class Ticker {
                 callback.frame++;
 
                 callback(this.time, delta, callback.frame);
-
                 continue;
             }
 
