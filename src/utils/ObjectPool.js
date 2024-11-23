@@ -18,6 +18,10 @@ export class ObjectPool {
         }
     }
 
+    get length() {
+        return this.array.length;
+    }
+
     get() {
         const object = this.array.shift();
 
@@ -36,8 +40,8 @@ export class ObjectPool {
         this.array.push(...objects);
     }
 
-    length() {
-        return this.array.length;
+    shuffle() {
+        this.array.sort(() => Math.random() - 0.5);
     }
 
     destroy() {
