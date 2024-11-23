@@ -19,6 +19,10 @@ export class Cluster {
         }
     }
 
+    get length() {
+        return this.array.length;
+    }
+
     get() {
         const object = this.array[this.index];
 
@@ -39,8 +43,8 @@ export class Cluster {
         this.array.push(...objects);
     }
 
-    length() {
-        return this.array.length;
+    shuffle() {
+        this.array.sort(() => Math.random() - 0.5);
     }
 
     destroy() {
