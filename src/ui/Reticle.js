@@ -85,4 +85,12 @@ export class Reticle extends Interface {
             }
         });
     }
+
+    activate() {
+        this.clearTween().tween({ opacity: 1 }, 300, 'easeOutSine');
+    }
+
+    deactivate() {
+        this.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
+    }
 }
