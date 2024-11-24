@@ -46,6 +46,7 @@ export class ReticleCanvas extends Component {
         }
 
         this.context.save();
+
         this.context.translate(this.position.x, this.position.y);
         this.context.scale(this.props.scale, this.props.scale);
 
