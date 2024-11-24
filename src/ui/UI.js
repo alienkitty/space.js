@@ -16,6 +16,31 @@ import { AudioButton } from './AudioButton.js';
 
 import { ticker } from '../tween/Ticker.js';
 
+/**
+ * A HUD (heads-up display) container for various components.
+ * @example
+ * const ui = new UI({
+ *     fps: true
+ *     // header
+ *     // menu
+ *     // info
+ *     // details
+ *     // instructions
+ *     // detailsButton
+ *     // muteButton
+ *     // audioButton
+ * });
+ * ui.animateIn();
+ * document.body.appendChild(ui.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     ui.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class UI extends Interface {
     constructor({
         fps = false,
@@ -66,9 +91,7 @@ export class UI extends Interface {
             width: '100%',
             height: '100%',
             color: 'var(--ui-color)',
-            pointerEvents: 'none',
-            webkitUserSelect: 'none',
-            userSelect: 'none'
+            pointerEvents: 'none'
         });
     }
 
@@ -114,7 +137,7 @@ export class UI extends Interface {
         if (this.data.detailsButton) {
             this.detailsButton = new DetailsButton();
             this.detailsButton.css({
-                position: 'absolute',
+                position: 'fixed',
                 left: 19,
                 bottom: 18
             });
@@ -125,7 +148,7 @@ export class UI extends Interface {
         if (this.data.muteButton) {
             this.muteButton = new MuteButton(this.data.muteButton);
             this.muteButton.css({
-                position: 'absolute',
+                position: 'fixed',
                 right: 22,
                 bottom: 20
             });
@@ -136,7 +159,7 @@ export class UI extends Interface {
         if (this.data.audioButton) {
             this.audioButton = new AudioButton(this.data.audioButton);
             this.audioButton.css({
-                position: 'absolute',
+                position: 'fixed',
                 right: 22,
                 bottom: 20
             });
@@ -252,11 +275,11 @@ export class UI extends Interface {
 
         if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
             if (this.animatedIn) {
+                this.animateOut();
+
                 if (this.isDetailsOpen) {
                     this.toggleDetails(false);
                 }
-
-                this.animateOut();
             } else {
                 this.animateIn();
             }

@@ -11,6 +11,27 @@ import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
 import { Loader } from '../../loaders/Loader.js';
 
+/**
+ * Creates a texture from a given source with worker support.
+ * @example
+ * const loader = new TextureLoader();
+ * loader.setPath('/');
+ * loader.setOptions({
+ *     preserveData: true
+ * });
+ * loader.cache = true;
+ *
+ * const map = await loader.loadAsync('assets/textures/cubemap.jpg');
+ * console.log(map);
+ * @example
+ * const loader = new TextureLoader();
+ * const loadTexture = path => loader.loadAsync(path);
+ *
+ * // ...
+ * const map = await loadTexture('assets/images/alienkitty.svg');
+ * map.minFilter = LinearFilter;
+ * map.generateMipmaps = false;
+ */
 export class TextureLoader extends Loader {
     constructor() {
         super();
@@ -61,12 +82,12 @@ export class TextureLoader extends Loader {
                 }
             }
 
-            promise.then(image => {
-                if (image.error) {
-                    throw new Error(image.error);
+            promise.then(bitmap => {
+                if (bitmap.error) {
+                    throw new Error(bitmap.error);
                 }
 
-                texture.image = image;
+                texture.image = bitmap;
 
                 if (ColorManagement.enabled) {
                     texture.colorSpace = SRGBColorSpace;
@@ -75,8 +96,8 @@ export class TextureLoader extends Loader {
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
-                    if (image.close && !this.options.preserveData) {
-                        image.close();
+                    if (!this.options.preserveData) {
+                        bitmap.close();
                     }
 
                     texture.onUpdate = null;

@@ -13,18 +13,39 @@ import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp, mapLinear } from '../utils/Utils.js';
 
+/**
+ * Graph with segments.
+ * @example
+ * const graph = new GraphSegments({
+ *     value: Array.from({ length: 10 }, () => Math.random()),
+ *     precision: 2,
+ *     lookupPrecision: 100, // per segment
+ *     segments: [5, 5] // length of each segment (minimum length of 2)
+ * });
+ * graph.animateIn();
+ * document.body.appendChild(graph.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     graph.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class GraphSegments extends Interface {
     constructor({
+        value,
+        ghost,
         width = 300,
-        height = 50,
+        height = 60,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
         segments = [],
         markers = [],
         range = 1,
-        value,
-        ghost,
+        suffix = '',
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -32,6 +53,8 @@ export class GraphSegments extends Interface {
     } = {}) {
         super('.graph-segments');
 
+        this.value = value;
+        this.ghost = ghost;
         this.width = width;
         this.height = height;
         this.resolution = resolution;
@@ -40,8 +63,7 @@ export class GraphSegments extends Interface {
         this.segments = segments;
         this.markers = markers;
         this.range = range;
-        this.value = value;
-        this.ghost = ghost;
+        this.suffix = suffix;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -111,12 +133,13 @@ export class GraphSegments extends Interface {
             this.initMarkers();
         }
 
-        this.setSize(this.width, this.height);
         this.setArray(this.value);
 
         if (this.ghost) {
             this.setGhostArray(this.ghost);
         }
+
+        this.setSize(this.width, this.height);
 
         this.addListeners();
     }
@@ -507,10 +530,10 @@ export class GraphSegments extends Interface {
                 this.setArray(value);
             } else {
                 if (this.ghost) {
-                    const ghost = this.array.pop();
-                    this.array.unshift(value);
-                    this.ghostArray.pop();
-                    this.ghostArray.unshift(ghost);
+                    const ghost = this.array.shift();
+                    this.array.push(value);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
                 } else {
                     this.array.shift();
                     this.array.push(value);
@@ -663,7 +686,7 @@ export class GraphSegments extends Interface {
             this.context.stroke();
 
             this.info.css({ left: x });
-            this.info.text(value.toFixed(this.precision));
+            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
         }
     }
 

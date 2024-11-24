@@ -10,7 +10,7 @@ export class PanelThumbnail extends Interface {
     constructor({
         name,
         flipY = false,
-        data = {},
+        data,
         value,
         callback
     }) {
@@ -331,7 +331,7 @@ export class PanelThumbnail extends Interface {
         this.data = data;
     }
 
-    setValue(value) {
+    setValue(value, notify = true) {
         if (value instanceof ImageBitmap) {
             this.value = this.imageToCanvas(value);
         } else if (value && value.nodeName) {
@@ -388,14 +388,16 @@ export class PanelThumbnail extends Interface {
             this.input.element.value = '';
         }
 
-        this.update();
+        this.update(notify);
     }
 
-    update() {
-        this.events.emit('update', { path: [], value: this.value, target: this });
+    update(notify = true) {
+        if (notify) {
+            this.events.emit('update', { path: [], value: this.value, target: this });
 
-        if (this.callback) {
-            this.callback(this.value, this);
+            if (this.callback) {
+                this.callback(this.value, this);
+            }
         }
     }
 

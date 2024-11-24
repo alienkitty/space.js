@@ -21,8 +21,13 @@ export class InstancedMeshPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
-        const point = Point3D.getPoint(mesh);
         const materialItems = this.materialItems;
+
+        let point;
+
+        if (Point3D.points) {
+            point = Point3D.getPoint(mesh);
+        }
 
         const color = new Color();
 
@@ -47,9 +52,11 @@ export class InstancedMeshPanel extends Panel {
                                 callback: value => {
                                     color.copy(value);
 
-                                    point.instances.forEach(instance => {
-                                        mesh.setColorAt(instance.index, color);
-                                    });
+                                    if (point) {
+                                        point.instances.forEach(instance => {
+                                            mesh.setColorAt(instance.index, color);
+                                        });
+                                    }
 
                                     mesh.instanceColor.needsUpdate = true;
                                 }

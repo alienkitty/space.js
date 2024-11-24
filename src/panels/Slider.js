@@ -174,23 +174,25 @@ export class Slider extends Interface {
         }
     }
 
-    setValue(value) {
+    setValue(value, notify = true) {
         this.value = typeof value === 'string' ? parseFloat(value) : value;
         this.value = this.getValue(this.value);
 
-        this.update();
+        this.update(notify);
     }
 
-    update() {
+    update(notify = true) {
         const scaleX = (this.value - this.min) / this.range;
 
         this.line.css({ scaleX });
         this.number.text(this.value);
 
-        this.events.emit('update', { path: [], value: this.value, target: this });
+        if (notify) {
+            this.events.emit('update', { path: [], value: this.value, target: this });
 
-        if (this.callback) {
-            this.callback(this.value, this);
+            if (this.callback) {
+                this.callback(this.value, this);
+            }
         }
     }
 

@@ -21,7 +21,7 @@ export class ReticleInfo extends Interface {
         this.primary = new Interface('.primary');
         this.primary.css({
             fontVariantNumeric: 'tabular-nums',
-            lineHeight: 18,
+            lineHeight: 'var(--ui-title-line-height)',
             letterSpacing: 'var(--ui-number-letter-spacing)',
             whiteSpace: 'nowrap'
         });
@@ -31,7 +31,7 @@ export class ReticleInfo extends Interface {
         this.secondary.css({
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
-            opacity: 'var(--ui-secondary-opacity)'
+            color: 'var(--ui-secondary-color)'
         });
         this.add(this.secondary);
     }

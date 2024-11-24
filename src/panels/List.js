@@ -110,33 +110,35 @@ export class List extends Interface {
         }
     }
 
-    setValue(value) {
+    setValue(value, notify = true) {
         this.index = this.values.indexOf(value);
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);
         }
 
-        this.update();
+        this.update(notify);
     }
 
-    setIndex(index) {
+    setIndex(index, notify = true) {
         this.index = index;
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);
         }
 
-        this.update();
+        this.update(notify);
     }
 
-    update() {
-        const value = this.keys[this.index];
+    update(notify = true) {
+        if (notify) {
+            const value = this.keys[this.index];
 
-        this.events.emit('update', { path: [], index: this.index, target: this });
+            this.events.emit('update', { path: [], index: this.index, target: this });
 
-        if (this.callback) {
-            this.callback(value, this);
+            if (this.callback) {
+                this.callback(value, this);
+            }
         }
 
         if (this.keys.length > 2) {

@@ -7,6 +7,9 @@
 
 import { EventEmitter } from '../utils/EventEmitter.js';
 
+/**
+ * A base class for all loader types.
+ */
 export class Loader {
     constructor() {
         this.events = new EventEmitter();
@@ -18,7 +21,12 @@ export class Loader {
         this.fetchOptions;
         this.cache = false;
         this.files = {};
-        this.promise = new Promise(resolve => this.resolve = resolve);
+
+        // Promise with resolvers
+        // this.promise
+        // this.resolve
+        // this.reject
+        Object.assign(this, Promise.withResolvers());
     }
 
     load(/* path, callback */) {}

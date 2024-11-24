@@ -18,7 +18,7 @@
     </style>
 
     <script type="module">
-        import { UI, ticker } from '../src/index.js';
+        import { UI } from '../src/index.js';
 
         class App {
             static async init() {
@@ -30,14 +30,39 @@
             static initViews() {
                 this.ui = new UI({
                     details: {
+                        // background: true,
                         title: 'Mars',
-                        content: /* html */ `
-Mars is the fourth planet and the furthest terrestrial planet from the Sun. The reddish color of its surface is due to finely grained iron(III) oxide dust in the soil, giving it the nickname "the Red Planet". Mars's radius is second smallest among the planets in the Solar System at 3,389.5 km.
-                        `,
+                        /* content: 'Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.',
                         links: [
                             {
                                 title: 'Wikipedia',
                                 link: 'https://en.wikipedia.org/wiki/Mars'
+                            }
+                        ], */
+                        content: [
+                            // 'Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.',
+                            {
+                                content: /* html */ `
+Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.
+                                `,
+                                links: [
+                                    {
+                                        title: 'Wikipedia',
+                                        link: 'https://en.wikipedia.org/wiki/Mars'
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'Distance from Sun',
+                                content: '230 million km'
+                            },
+                            {
+                                title: 'Mass',
+                                content: '0.107 Earths'
+                            },
+                            {
+                                title: 'Surface gravity',
+                                content: '0.3794 Earths'
                             }
                         ]
                     }
@@ -48,7 +73,6 @@ Mars is the fourth planet and the furthest terrestrial planet from the Sun. The 
 
             static addListeners() {
                 window.addEventListener('load', this.onLoad);
-                ticker.start();
             }
 
             // Event handlers

@@ -7,6 +7,22 @@ import { Stage } from '../utils/Stage.js';
 
 import { ticker } from '../tween/Ticker.js';
 
+/**
+ * A panel container for various components.
+ * @example
+ * const panel = new Panel();
+ * panel.add(new PanelItem({ type: 'color' }));
+ * panel.animateIn();
+ * document.body.appendChild(panel.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     panel.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class Panel extends Interface {
     constructor() {
         super('.panel');
@@ -86,9 +102,9 @@ export class Panel extends Interface {
     add(item) {
         item.events.on('update', this.onUpdate);
 
-        super.add(item);
-
         this.items.push(item);
+
+        return super.add(item);
     }
 
     setPanelIndex(name, index, path = []) {

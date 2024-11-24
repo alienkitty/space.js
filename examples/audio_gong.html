@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { BufferLoader, UI, WebAudio, clamp, delayedCall, guid, ticker } from '../src/index.js';
+        import { BufferLoader, UI, WebAudio, clamp, delayedCall, guid } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -62,16 +62,14 @@
                 this.initLoader();
                 this.initViews();
 
-                this.addListeners();
-
-                await this.bufferLoader.ready();
+                await this.loader.ready();
 
                 this.initAudio();
             }
 
             static initLoader() {
-                this.bufferLoader = new BufferLoader();
-                this.bufferLoader.loadAll(['assets/sounds/gong.mp3']);
+                this.loader = new BufferLoader();
+                this.loader.loadAll(['assets/sounds/gong.mp3']);
             }
 
             static initViews() {
@@ -85,13 +83,9 @@
 
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
-                WebAudio.load(this.bufferLoader.files);
+                WebAudio.load(this.loader.files);
 
                 AudioController.init(this.ui.instructions);
-            }
-
-            static addListeners() {
-                ticker.start();
             }
         }
 

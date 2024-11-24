@@ -16,10 +16,12 @@ import { clamp } from '../utils/Utils.js';
 export class PanelGraph extends Interface {
     constructor({
         name,
+        height = 40,
         resolution = 80,
         precision = 0,
         lookupPrecision = 0,
         range = 1,
+        suffix = '',
         value,
         ghost,
         noText = false,
@@ -30,10 +32,12 @@ export class PanelGraph extends Interface {
         super('.panel-graph');
 
         this.name = name;
+        this.height = height;
         this.resolution = resolution;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.range = range;
+        this.suffix = suffix;
         this.value = value;
         this.ghost = ghost;
         this.noText = noText;
@@ -42,7 +46,6 @@ export class PanelGraph extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.height = this.width / 2;
         this.rangeHeight = this.getRangeHeight(this.range);
         this.array = [];
         this.ghostArray = [];
@@ -76,7 +79,7 @@ export class PanelGraph extends Interface {
         if (this.value === undefined) {
             this.last = performance.now();
             this.time = 0;
-            this.deltaTime = 0;
+            this.delta = 0;
             this.count = 0;
             this.prev = 0;
             this.fps = 0;
@@ -110,8 +113,7 @@ export class PanelGraph extends Interface {
         this.css({
             position: 'relative',
             width: this.width,
-            height: this.height,
-            cursor: 'crosshair'
+            height: this.height
         });
 
         this.container = new Interface('.container');
@@ -137,7 +139,7 @@ export class PanelGraph extends Interface {
             this.number.css({
                 cssFloat: 'right',
                 fontVariantNumeric: 'tabular-nums',
-                letterSpacing: 1
+                letterSpacing: 'var(--ui-title-letter-spacing)'
             });
             this.container.add(this.number);
         }
@@ -335,9 +337,9 @@ export class PanelGraph extends Interface {
     };
 
     onUpdate = () => {
-        if (this.value === undefined) {
+        if (!this.callback) {
             this.time = performance.now();
-            this.deltaTime = this.time - this.last;
+            this.delta = this.time - this.last;
             this.last = this.time;
 
             if (this.time - 1000 > this.prev) {
@@ -345,9 +347,9 @@ export class PanelGraph extends Interface {
                 this.prev = this.time;
                 this.count = 0;
 
-                if (this.deltaTime < this.refreshRate240) {
+                if (this.delta < this.refreshRate240) {
                     this.rangeHeight = this.getRangeHeight(720);
-                } else if (this.deltaTime < this.refreshRate120) {
+                } else if (this.delta < this.refreshRate120) {
                     this.rangeHeight = this.getRangeHeight(360);
                 } else {
                     this.rangeHeight = this.getRangeHeight(180);
@@ -358,10 +360,8 @@ export class PanelGraph extends Interface {
 
             this.update(this.fps);
             this.setValue(this.fps);
-        } else if (this.callback) {
-            this.value = this.callback(this.value, this);
         } else {
-            this.update();
+            this.value = this.callback(this.value, this);
         }
     };
 
@@ -399,6 +399,10 @@ export class PanelGraph extends Interface {
     }
 
     setValue(value) {
+        if (!value) {
+            return;
+        }
+
         if (this.number) {
             this.number.text(value.toFixed(this.precision));
         }
@@ -422,10 +426,10 @@ export class PanelGraph extends Interface {
                 this.setArray(value);
             } else {
                 if (this.ghost) {
-                    const ghost = this.array.pop();
-                    this.array.unshift(value);
-                    this.ghostArray.pop();
-                    this.ghostArray.unshift(ghost);
+                    const ghost = this.array.shift();
+                    this.array.push(value);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
                 } else {
                     this.array.shift();
                     this.array.push(value);
@@ -507,7 +511,7 @@ export class PanelGraph extends Interface {
             this.context.stroke();
 
             this.info.css({ left: x });
-            this.info.text(value.toFixed(this.precision));
+            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
         }
     }
 

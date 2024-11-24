@@ -20,10 +20,13 @@ export class Info extends Interface {
     init() {
         this.invisible();
         this.css({
-            position: 'absolute',
+            position: 'fixed',
             left: '50%',
             width: 300,
             marginLeft: -300 / 2,
+            pointerEvents: 'none',
+            webkitUserSelect: 'none',
+            userSelect: 'none',
             opacity: 0
         });
 
@@ -37,7 +40,7 @@ export class Info extends Interface {
         this.content.css({
             textAlign: 'center',
             textTransform: 'uppercase',
-            opacity: 'var(--ui-info-opacity)'
+            color: 'var(--ui-info-color)'
         });
         this.content.html(this.data.content);
         this.add(this.content);

@@ -48,37 +48,37 @@
 
             static initViews() {
                 this.graph = new RadialGraph({
+                    value: Array.from({ length: 10 }, () => Math.random()),
                     precision: 2,
                     lookupPrecision: 200,
                     markers: [ // An array of normalized positions
                         [0.5, 'Marker 1'],
                         [1, 'Drag me']
-                    ],
-                    value: Array.from({ length: 10 }, () => Math.random())
+                    ]
                 });
                 document.body.appendChild(this.graph.element);
 
                 this.graph2 = new RadialGraph({
+                    value: Array.from({ length: 10 }, () => Math.random()),
                     precision: 2,
                     lookupPrecision: 200,
                     markers: [ // An array of normalized positions
                         [0.5, 'Not me'],
                         [1, 'Marker 2']
                     ],
-                    value: Array.from({ length: 10 }, () => Math.random()),
                     // noMarker: true,
                     noMarkerDrag: true
                 });
                 document.body.appendChild(this.graph2.element);
 
                 this.graph3 = new Graph({
+                    value: Array.from({ length: 10 }, () => Math.random()),
                     precision: 2,
                     lookupPrecision: 200,
                     markers: [ // An array of normalized positions
                         [0.5, 'Marker 1'],
                         [1, 'Drag me']
-                    ],
-                    value: Array.from({ length: 10 }, () => Math.random())
+                    ]
                 });
                 document.body.appendChild(this.graph3.element);
 

@@ -12,7 +12,7 @@ export class GraphMarker extends Interface {
         name,
         noDrag = false
     }) {
-        super('.graph-marker');
+        super('.marker');
 
         this.name = name;
         this.noDrag = noDrag;
@@ -36,7 +36,7 @@ export class GraphMarker extends Interface {
             left: 0,
             top: 0,
             transform: 'translate(-50%, -50%)',
-            lineHeight: 18,
+            lineHeight: 'var(--ui-title-line-height)',
             whiteSpace: 'nowrap',
             zIndex: 1,
             opacity: 0

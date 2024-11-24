@@ -7,6 +7,14 @@ import { Cluster } from './Cluster.js';
 
 import { absolute, getConstructor, guid } from './Utils.js';
 
+/**
+ * Creates a shared worker cluster or individual worker with the given methods.
+ * @example
+ * Thread.upload(loadImage);
+ *
+ * const image = await Thread.shared().loadImage({ path, options, params });
+ * console.log(image);
+ */
 export class Thread extends EventEmitter {
     static count = navigator.hardwareConcurrency || 4;
     static params = {};
@@ -26,7 +34,7 @@ export class Thread extends EventEmitter {
             this.threads = new Cluster(Thread, this.count);
         }
 
-        return !params ? this.threads.get() : this.threads;
+        return this.threads.get();
     }
 
     constructor({

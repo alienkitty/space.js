@@ -33,11 +33,11 @@
 
         // Graph
         const graph = new Graph({
+            value: Array.from({ length: 10 }, () => Math.random()),
             width: document.documentElement.clientWidth * 0.74,
             height: clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80),
             precision: 2,
-            lookupPrecision: 200,
-            value: Array.from({ length: 10 }, () => Math.random())
+            lookupPrecision: 200
         });
         graph.animateIn();
         document.body.appendChild(graph.element);
@@ -48,8 +48,8 @@
             lookupPrecision: 100, // per segment
             segments: [5, 5] // length of each segment (minimum length of 2)
         });
-        graph2.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph2.setArray(Array.from({ length: 10 }, () => Math.random()));
+        graph2.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph2.animateIn();
         document.body.appendChild(graph2.element);
 
@@ -59,8 +59,8 @@
             lookupPrecision: 100, // per segment
             segments: [5, 5, 5] // length of each segment (minimum length of 2)
         });
-        graph3.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph3.setArray(Array.from({ length: 15 }, () => Math.random()));
+        graph3.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph3.animateIn();
         document.body.appendChild(graph3.element);
 
@@ -69,9 +69,9 @@
             precision: 2,
             lookupPrecision: 200
         });
-        graph4.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph4.setArray(Array.from({ length: 10 }, () => Math.random()));
         graph4.setGhostArray(Array.from({ length: 10 }, () => Math.random()));
+        graph4.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph4.animateIn();
         document.body.appendChild(graph4.element);
 
@@ -87,11 +87,11 @@
 
         // Graph with uneven segments and ghost
         const graph6 = new GraphSegments({
+            value: Array.from({ length: 13 }, () => Math.random()),
+            ghost: Array.from({ length: 13 }, () => Math.random()),
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 3], // length of each segment (minimum length of 2)
-            value: Array.from({ length: 13 }, () => Math.random()),
-            ghost: Array.from({ length: 13 }, () => Math.random())
+            segments: [5, 5, 3] // length of each segment (minimum length of 2)
         });
         graph6.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph6.animateIn();

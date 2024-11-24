@@ -42,7 +42,7 @@ export class HeaderInfo extends Interface {
         this.number = new Interface('.number');
         this.number.css({
             fontVariantNumeric: 'tabular-nums',
-            letterSpacing: 1
+            letterSpacing: 'var(--ui-title-letter-spacing)'
         });
         this.number.text(this.fps);
         this.add(this.number);

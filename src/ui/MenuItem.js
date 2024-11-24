@@ -25,6 +25,10 @@ export class MenuItem extends Interface {
     init() {
         this.css({
             position: 'relative',
+            cursor: 'pointer',
+            pointerEvents: 'none',
+            webkitUserSelect: 'none',
+            userSelect: 'none',
             y: 10
         });
 
@@ -35,10 +39,6 @@ export class MenuItem extends Interface {
             textAlign: 'center',
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
-            cursor: 'pointer',
-            pointerEvents: 'none',
-            webkitUserSelect: 'none',
-            userSelect: 'none',
             opacity: 0
         });
         this.container.text(this.name);

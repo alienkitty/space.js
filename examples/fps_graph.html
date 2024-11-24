@@ -33,11 +33,9 @@
                 noText: true
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'MS',
+                suffix: 'ms',
                 range: 150,
                 value: performance.now(),
                 callback: (value, item) => {
@@ -54,12 +52,9 @@
                 }
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'MEM',
-                range: 100,
+                range: 300,
                 value: performance.memory,
                 callback: (value, item) => {
                     // console.log('MEM callback:', value);
@@ -74,9 +69,6 @@
                 }
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'Sine',
                 precision: 2,
@@ -93,9 +85,6 @@
                     // The return value is passed back in the next frame
                     return value;
                 }
-            },
-            {
-                type: 'spacer'
             },
             {
                 type: 'graph',
@@ -116,9 +105,6 @@
                 }
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'Sine',
                 precision: 2,
@@ -135,9 +121,6 @@
                 }
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'Clip',
                 precision: 2,
@@ -152,9 +135,6 @@
                     // The return value is passed back in the next frame
                     return value;
                 }
-            },
-            {
-                type: 'spacer'
             },
             {
                 type: 'graph',
@@ -175,17 +155,11 @@
                 }
             },
             {
-                type: 'spacer'
-            },
-            {
                 type: 'graph',
                 name: 'Array',
                 precision: 2,
                 lookupPrecision: 50,
                 value: Array.from({ length: 10 }, () => Math.random())
-            },
-            {
-                type: 'spacer'
             },
             {
                 type: 'graph',
@@ -213,9 +187,6 @@
                     // The return value is passed back in the next frame
                     return value;
                 }
-            },
-            {
-                type: 'spacer'
             },
             {
                 type: 'graph',

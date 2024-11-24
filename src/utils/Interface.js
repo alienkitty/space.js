@@ -4,15 +4,48 @@
 
 import { EventEmitter } from './EventEmitter.js';
 
+import { ticker } from '../tween/Ticker.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 // https://developer.mozilla.org/en-US/docs/Web/CSS/transform
 // https://developer.mozilla.org/en-US/docs/Web/CSS/filter
 const Transforms = ['x', 'y', 'z', 'skewX', 'skewY', 'rotation', 'rotationX', 'rotationY', 'rotationZ', 'scale', 'scaleX', 'scaleY', 'scaleZ'];
 const Filters = ['blur', 'brightness', 'contrast', 'grayscale', 'hue', 'invert', 'saturate', 'sepia'];
-const Numeric = ['opacity', 'zIndex', 'fontWeight', 'strokeWidth', 'strokeDashoffset', 'stopOpacity'];
-const Lacuna1 = ['opacity', 'brightness', 'contrast', 'saturate', 'scale', 'stopOpacity'];
+const Numeric = ['opacity', 'zIndex', 'fontWeight', 'strokeWidth', 'strokeDashoffset', 'stopOpacity', 'flexGrow'];
+const Lacuna1 = ['opacity', 'scale', 'brightness', 'contrast', 'saturate', 'stopOpacity'];
 
+/**
+ * A base class for HTML elements with tween and destroy methods,
+ * plus helper methods for common utilities.
+ * @example
+ * const logo = new Interface('.logo');
+ * logo.css({
+ *     position: 'absolute',
+ *     left: '50%',
+ *     top: '50%',
+ *     width: 90,
+ *     height: 86,
+ *     marginLeft: -90 / 2,
+ *     marginTop: -86 / 2 - 65,
+ *     webkitUserSelect: 'none',
+ *     userSelect: 'none',
+ *     scale: 0.96,
+ *     opacity: 0
+ * });
+ * document.body.appendChild(logo.element);
+ *
+ * const image = new Interface(null, 'img');
+ * image.attr({
+ *     src: 'assets/images/alienkitty.svg'
+ * });
+ * image.css({
+ *     width: '100%',
+ *     height: 'auto'
+ * });
+ * logo.add(image);
+ *
+ * logo.tween({ scale: 1, opacity: 1 }, 2000, 'easeOutCubic');
+ */
 export class Interface {
     constructor(name, type = 'div', qualifiedName) {
         this.events = new EventEmitter();
@@ -25,7 +58,7 @@ export class Interface {
             this.element = name;
         } else if (type !== null) {
             if (type === 'svg') {
-                this.element = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName || 'svg');
+                this.element = document.createElementNS('http://www.w3.org/2000/svg', qualifiedName || type);
             } else {
                 this.element = document.createElement(type);
             }
@@ -33,8 +66,8 @@ export class Interface {
             if (typeof name === 'string') {
                 if (name.startsWith('.')) {
                     this.element.className = name.slice(1);
-                } else {
-                    this.element.id = name;
+                } else if (name.startsWith('#')) {
+                    this.element.id = name.slice(1);
                 }
             }
         }
@@ -339,6 +372,17 @@ export class Interface {
         return this.css({ visibility: '' });
     }
 
+    inView() {
+        if (!this.element) {
+            return;
+        }
+
+        const bounds = this.element.getBoundingClientRect();
+        const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+
+        return !(bounds.bottom < 0 || bounds.top - viewHeight >= 0);
+    }
+
     atPoint(p) {
         if (!this.element) {
             return;
@@ -387,14 +431,18 @@ export class Interface {
     }
 
     tween(props, duration, ease, delay = 0, complete, update) {
-        if (!this.element) {
-            return;
-        }
-
         if (typeof delay !== 'number') {
             update = complete;
             complete = delay;
             delay = 0;
+        }
+
+        if (!ticker.isAnimating) {
+            ticker.start();
+        }
+
+        if (!this.element) {
+            return;
         }
 
         const style = getComputedStyle(this.element);

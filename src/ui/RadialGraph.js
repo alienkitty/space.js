@@ -13,12 +13,33 @@ import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { TwoPI, degToRad, mapLinear } from '../utils/Utils.js';
 
+/**
+ * Radial graph.
+ * @example
+ * const graph = new RadialGraph({
+ *     value: Array.from({ length: 10 }, () => Math.random()),
+ *     precision: 2,
+ *     lookupPrecision: 200
+ * });
+ * graph.animateIn();
+ * document.body.appendChild(graph.element);
+ *
+ * function animate() {
+ *     requestAnimationFrame(animate);
+ *
+ *     graph.update();
+ * }
+ *
+ * requestAnimationFrame(animate);
+ */
 export class RadialGraph extends Interface {
     constructor({
+        value,
+        ghost,
         width = 300,
         height = 300,
         start = 0,
-        graphHeight = 50,
+        graphHeight = 60,
         resolution = 80,
         tension = 6,
         precision = 0,
@@ -27,8 +48,7 @@ export class RadialGraph extends Interface {
         textDistanceY = 10,
         markers = [],
         range = 1,
-        value,
-        ghost,
+        suffix = '',
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -36,6 +56,8 @@ export class RadialGraph extends Interface {
     } = {}) {
         super('.radial-graph');
 
+        this.value = value;
+        this.ghost = ghost;
         this.width = width;
         this.height = height;
         this.start = start;
@@ -48,8 +70,7 @@ export class RadialGraph extends Interface {
         this.textDistanceY = textDistanceY;
         this.markers = markers;
         this.range = range;
-        this.value = value;
-        this.ghost = ghost;
+        this.suffix = suffix;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -129,12 +150,13 @@ export class RadialGraph extends Interface {
             this.initMarkers();
         }
 
-        this.setSize(this.width, this.height);
         this.setArray(this.value);
 
         if (this.ghost) {
             this.setGhostArray(this.ghost);
         }
+
+        this.setSize(this.width, this.height);
 
         this.addListeners();
     }
@@ -547,8 +569,8 @@ export class RadialGraph extends Interface {
                     this.ghostArray.pop();
                     this.ghostArray.unshift(ghost);
                 } else {
-                    this.array.shift();
-                    this.array.push(value);
+                    this.array.pop();
+                    this.array.unshift(value);
                 }
 
                 this.needsUpdate = true;
@@ -729,7 +751,7 @@ export class RadialGraph extends Interface {
             this.context.stroke();
 
             this.info.css({ left: x0, top: y0 });
-            this.info.text(value.toFixed(this.precision));
+            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
         }
     }
 

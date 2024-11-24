@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
@@ -20,16 +21,12 @@ export const ToonMaterialOptions = {
 };
 
 export class ToonMaterialPanel extends Panel {
-    static type = [
-        'common'
-    ];
+    static type = 'Toon';
 
-    static properties = {
-        common: [
-            'color',
-            'toneMapped'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Toon
+    ];
 
     constructor(mesh) {
         super();

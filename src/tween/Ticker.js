@@ -21,6 +21,20 @@ if (typeof window !== 'undefined') {
     CancelFrame = clearTimeout;
 }
 
+/**
+ * A minimal requestAnimationFrame render loop with worker support.
+ * @example
+ * ticker.add(onUpdate);
+ * ticker.start();
+ *
+ * function onUpdate(time, delta, frame) {
+ *     console.log(time, delta, frame);
+ * }
+ *
+ * setTimeout(() => {
+ *     ticker.remove(onUpdate);
+ * }, 1000);
+ */
 export class Ticker {
     constructor() {
         this.callbacks = [];
@@ -61,7 +75,6 @@ export class Ticker {
                 callback.frame++;
 
                 callback(this.time, delta, callback.frame);
-
                 continue;
             }
 

@@ -6,6 +6,14 @@ import { Thread } from '../../utils/Thread.js';
 
 import { absolute } from '../../utils/Utils.js';
 
+/**
+ * Creates arrays for buffer geometry from a given source with a worker.
+ * @example
+ * BufferGeometryLoaderThread.init();
+ *
+ * const buffers = await BufferGeometryLoaderThread.load(path, options);
+ * console.log(buffers);
+ */
 export class BufferGeometryLoaderThread {
     static init() {
         Thread.upload(loadBufferGeometry);

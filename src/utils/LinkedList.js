@@ -2,12 +2,19 @@
  * @author pschroen / https://ufo.ai/
  */
 
+/**
+ * A linked list of objects.
+ */
 export class LinkedList {
     constructor() {
         this.nodes = [];
         this.first = null;
         this.last = null;
         this.current = null;
+    }
+
+    get length() {
+        return this.nodes.length;
     }
 
     push(object) {
@@ -20,7 +27,10 @@ export class LinkedList {
         this.nodes.push(node);
 
         if (!this.first) {
-            node.next = node.prev = this.last = this.first = node;
+            this.first = node;
+            this.last = node;
+            node.prev = node;
+            node.next = node;
         } else {
             node.next = this.first;
             node.prev = this.last;
@@ -83,7 +93,15 @@ export class LinkedList {
 
         this.current = this.current.next;
 
+        if (this.nodes.length === 1 || this.current === this.first) {
+            return;
+        }
+
         return this.current.object;
+    }
+
+    find(callback) {
+        return this.nodes.map(node => node.object).find(callback);
     }
 
     destroy() {

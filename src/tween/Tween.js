@@ -8,6 +8,21 @@ import { ticker } from './Ticker.js';
 
 const Tweens = [];
 
+/**
+ * Tween animation engine.
+ * @see {@link https://github.com/alienkitty/alien.js/wiki/Tween | Documentation}
+ * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
+ * @example
+ * ticker.start();
+ *
+ * const data = {
+ *     radius: 0
+ * };
+ *
+ * tween(data, { radius: 24, spring: 1.2, damping: 0.4 }, 1000, 'easeOutElastic', null, () => {
+ *     console.log(data.radius);
+ * });
+ */
 export class Tween {
     constructor(object, props, duration, ease, delay = 0, complete, update) {
         if (typeof delay !== 'number') {
@@ -92,9 +107,7 @@ export class Tween {
 }
 
 /**
- * Defers a function by the specified duration.
- *
- * @export
+ * Defers a function by the given duration.
  * @param {number} duration Time to wait in milliseconds.
  * @param {function} complete Callback function.
  * @returns {Tween}
@@ -114,9 +127,7 @@ export function delayedCall(duration, complete) {
 }
 
 /**
- * Defers by the specified duration.
- *
- * @export
+ * Defers by the given duration.
  * @param {number} [duration=0] Time to wait in milliseconds.
  * @returns {Promise}
  * @example
@@ -128,8 +139,6 @@ export function wait(duration = 0) {
 
 /**
  * Defers to the next tick.
- *
- * @export
  * @param {function} [complete] Callback function.
  * @returns {Promise}
  * @example
@@ -150,12 +159,8 @@ export function defer(complete) {
 }
 
 /**
- * Tween that animates to the specified destination properties.
- *
- * See the Easing Functions Cheat Sheet for examples by name.
- * https://easings.net/
- *
- * @export
+ * Tween that animates to the given destination properties.
+ * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
  * @param {object} object Target object.
  * @param {object} props Tween properties.
  * @param {number} duration Time in milliseconds.
@@ -188,9 +193,7 @@ export function tween(object, props, duration, ease, delay = 0, complete, update
 }
 
 /**
- * Immediately clears all delayedCalls and tweens of the specified object.
- *
- * @export
+ * Immediately clears all delayedCalls and tweens of a given object.
  * @param {object} object Target object.
  * @returns {void}
  * @example

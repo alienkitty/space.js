@@ -5,6 +5,7 @@
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 import { PhongMaterialPatches } from '../Patches.js';
 
@@ -25,27 +26,12 @@ export const PhongMaterialOptions = {
 };
 
 export class PhongMaterialPanel extends Panel {
-    static type = [
-        'common',
-        'phong'
-    ];
+    static type = 'Phong';
 
-    static properties = {
-        common: [
-            'color',
-            'emissive',
-            'flatShading',
-            'wireframe',
-            'toneMapped',
-            'combine',
-            'reflectivity',
-            'refractionRatio'
-        ],
-        phong: [
-            'specular',
-            'shininess'
-        ]
-    };
+    static properties = [
+        ...MaterialProperties.Common,
+        ...MaterialProperties.Phong
+    ];
 
     constructor(mesh) {
         super();

@@ -7,7 +7,7 @@ import { DetailsTitle } from './DetailsTitle.js';
 
 export class DetailsInfo extends Interface {
     constructor(data) {
-        super('.details-info');
+        super('.details');
 
         this.data = data;
 
@@ -42,19 +42,19 @@ export class DetailsInfo extends Interface {
         this.title = new DetailsTitle(this.data.title);
         this.container.add(this.title);
 
-        this.content = new Interface('.content', 'p');
-        this.content.css({
+        this.info = new Interface('.info', 'p');
+        this.info.css({
             width: 'fit-content',
             textTransform: 'uppercase'
         });
-        this.content.html(this.data.content);
-        this.container.add(this.content);
+        this.info.html(this.data.content);
+        this.container.add(this.info);
     }
 
     // Public methods
 
     setContent(content) {
-        this.content.html(content);
+        this.info.html(content);
     }
 
     resize(width, height, dpr, breakpoint) {

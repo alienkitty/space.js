@@ -21,7 +21,7 @@ export * from './utils/Utils.js';
 export { EventEmitter } from './utils/EventEmitter.js';
 export { Interface } from './utils/Interface.js';
 export { Stage } from './utils/Stage.js';
-export { Router } from './utils/Router.js';
+export * from './utils/Router.js';
 export { Component } from './utils/Component.js';
 export { LinkedList } from './utils/LinkedList.js';
 export { ObjectPool } from './utils/ObjectPool.js';
@@ -50,6 +50,7 @@ export { ColorPicker } from './panels/ColorPicker.js';
 export { UI } from './ui/UI.js';
 export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
+export { HeaderTitle } from './ui/HeaderTitle.js';
 export { NavLink } from './ui/NavLink.js';
 export { Details } from './ui/Details.js';
 export { DetailsInfo } from './ui/DetailsInfo.js';
@@ -80,6 +81,9 @@ export { PointInfo } from './ui/PointInfo.js';
 export { TargetNumber } from './ui/TargetNumber.js';
 export { Progress } from './ui/Progress.js';
 export { ProgressCanvas } from './ui/ProgressCanvas.js';
+export { Input } from './ui/Input.js';
+export { InputField } from './ui/InputField.js';
+export { InputTotal } from './ui/InputTotal.js';
 
 // Extras
 export { Smooth } from './extras/Smooth.js';

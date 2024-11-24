@@ -50,7 +50,7 @@ export class AudioButtonInfo extends Interface {
         const name = new Interface('.name');
         name.css({
             fontVariantNumeric: 'tabular-nums',
-            lineHeight: 18,
+            lineHeight: 'var(--ui-title-line-height)',
             letterSpacing: 'var(--ui-number-letter-spacing)',
             whiteSpace: 'nowrap'
         });
@@ -63,7 +63,7 @@ export class AudioButtonInfo extends Interface {
         title.css({
             fontSize: 'var(--ui-secondary-font-size)',
             letterSpacing: 'var(--ui-secondary-letter-spacing)',
-            opacity: 'var(--ui-secondary-opacity)'
+            color: 'var(--ui-secondary-color)'
         });
 
         if (data.title) {

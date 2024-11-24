@@ -21,7 +21,7 @@
     </style>
 
     <script type="module">
-        import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails, ticker } from '../src/index.js';
+        import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails } from '../src/index.js';
 
         class AudioController {
             static init(instructions) {
@@ -517,9 +517,7 @@
                 this.initLoader();
                 this.initViews();
 
-                this.addListeners();
-
-                await this.bufferLoader.ready();
+                await this.loader.ready();
 
                 this.initAudio();
                 this.initPanel();
@@ -528,8 +526,8 @@
             }
 
             static initLoader() {
-                this.bufferLoader = new BufferLoader();
-                this.bufferLoader.loadAll([
+                this.loader = new BufferLoader();
+                this.loader.loadAll([
                     'assets/sounds/metal_monk_loop.mp3',
                     'assets/sounds/ethereal_bells.mp3',
                     'assets/sounds/accent_transition_1.mp3',
@@ -556,17 +554,13 @@
 
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
-                WebAudio.load(this.bufferLoader.files);
+                WebAudio.load(this.loader.files);
 
                 AudioController.init(this.ui.instructions);
             }
 
             static initPanel() {
                 PanelController.init(this.panels.container);
-            }
-
-            static addListeners() {
-                ticker.start();
             }
 
             // Public methods

@@ -17,6 +17,7 @@ export class ReticleCanvas extends Component {
 
         this.radius = 4;
         this.position = new Vector2();
+        this.animatedIn = false;
 
         this.props = {
             scale: 1,
@@ -45,6 +46,7 @@ export class ReticleCanvas extends Component {
         }
 
         this.context.save();
+
         this.context.translate(this.position.x, this.position.y);
         this.context.scale(this.props.scale, this.props.scale);
 
@@ -65,11 +67,19 @@ export class ReticleCanvas extends Component {
         this.props.alpha = 0;
 
         tween(this.props, { scale: 1, alpha: 1 }, 400, 'easeOutCubic');
+
+        this.animatedIn = true;
     }
 
     animateOut(callback) {
         clearTween(this.props);
 
-        tween(this.props, { scale: 0, alpha: 0 }, 500, 'easeInCubic', callback);
+        tween(this.props, { scale: 0, alpha: 0 }, 500, 'easeInCubic', () => {
+            this.animatedIn = false;
+
+            if (callback) {
+                callback();
+            }
+        });
     }
 }

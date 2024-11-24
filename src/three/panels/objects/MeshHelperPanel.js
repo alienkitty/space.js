@@ -20,7 +20,12 @@ export class MeshHelperPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
-        const point = Point3D.getPoint(mesh);
+
+        let point;
+
+        if (Point3D.points) {
+            point = Point3D.getPoint(mesh);
+        }
 
         // Defaults
         if (mesh.userData.normals === undefined) {
@@ -46,7 +51,10 @@ export class MeshHelperPanel extends Panel {
                 value: getKeyByValue(NormalsHelperOptions, mesh.userData.normals),
                 callback: value => {
                     mesh.userData.normals = NormalsHelperOptions[value];
-                    point.toggleNormalsHelper(mesh.userData.normals);
+
+                    if (point) {
+                        point.toggleNormalsHelper(mesh.userData.normals);
+                    }
                 }
             }
         ];
@@ -60,7 +68,10 @@ export class MeshHelperPanel extends Panel {
                     value: getKeyByValue(TangentsHelperOptions, mesh.userData.tangents),
                     callback: value => {
                         mesh.userData.tangents = TangentsHelperOptions[value];
-                        point.toggleTangentsHelper(mesh.userData.tangents);
+
+                        if (point) {
+                            point.toggleTangentsHelper(mesh.userData.tangents);
+                        }
                     }
                 }
             );

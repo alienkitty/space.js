@@ -17,6 +17,18 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getScreenSpaceBox } from '../utils/Utils3D.js';
 
+/**
+ * A UI and panel container for various components in 3D space,
+ * with object tracking.
+ * @example
+ * // ...
+ * Point3D.init(renderer, scene, camera);
+ *
+ * const point = new Point3D(mesh);
+ * scene.add(point);
+ *
+ * MaterialPanelController.init(mesh, point);
+ */
 export class Point3D extends Group {
     static init(renderer, scene, camera, {
         root = document.body,
@@ -1054,7 +1066,9 @@ export class Point3D extends Group {
             } else {
                 this.point.open();
 
-                Stage.events.emit('color_picker', { open: false, target: this.panel });
+                if (this.panel) {
+                    Stage.events.emit('color_picker', { open: false, target: this.panel });
+                }
             }
         } else {
             this.reticle.animateIn();

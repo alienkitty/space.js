@@ -12,6 +12,7 @@ export class Details extends Interface {
 
         this.data = data;
 
+        this.content = [];
         this.links = [];
 
         this.init();
@@ -23,13 +24,7 @@ export class Details extends Interface {
     init() {
         this.invisible();
         this.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
+            position: 'relative',
             pointerEvents: 'none',
             opacity: 0
         });
@@ -37,11 +32,12 @@ export class Details extends Interface {
         if (this.data.background) {
             this.bg = new Interface('.bg');
             this.bg.css({
-                position: 'absolute',
+                position: 'fixed',
+                left: 0,
+                top: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: '#000',
-                opacity: 0
+                backgroundColor: 'var(--bg-color)'
             });
             this.add(this.bg);
         }
@@ -49,8 +45,9 @@ export class Details extends Interface {
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
-            width: 400,
-            margin: '10% 10% 13%'
+            display: 'flex',
+            flexWrap: 'wrap',
+            padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
         });
         this.add(this.container);
     }
@@ -59,12 +56,57 @@ export class Details extends Interface {
         this.title = new DetailsTitle(this.data.title);
         this.container.add(this.title);
 
-        this.content = new Interface('.content', 'p');
-        this.content.css({
-            width: 'fit-content'
+        if (!Array.isArray(this.data.content)) {
+            this.data.content = [this.data.content];
+        }
+
+        this.data.content.forEach(data => {
+            if (typeof data === 'object') {
+                const container = new Interface('.content');
+                container.css({
+                    flexGrow: 1,
+                    width: data.width
+                });
+
+                if (data.title) {
+                    const info = new Interface('.info', 'h2');
+                    info.css({
+                        width: 'fit-content'
+                    });
+                    info.html(data.title);
+                    container.add(info);
+                }
+
+                const content = new Interface('.content');
+                content.css({
+                    width: 'fit-content'
+                });
+                content.html(data.content);
+                container.add(content);
+
+                if (Array.isArray(data.links)) {
+                    data.links.forEach(data => {
+                        const link = new DetailsLink(data.title, data.link);
+                        link.css({
+                            display: 'block'
+                        });
+                        container.add(link);
+                        this.links.push(link);
+                    });
+                }
+
+                this.container.add(container);
+                this.content.push(container);
+            } else {
+                const content = new Interface('.content');
+                content.css({
+                    width: 'fit-content'
+                });
+                content.html(data);
+                this.container.add(content);
+                this.content.push(content);
+            }
         });
-        this.content.html(this.data.content);
-        this.container.add(this.content);
 
         if (Array.isArray(this.data.links)) {
             this.data.links.forEach(data => {
@@ -98,24 +140,18 @@ export class Details extends Interface {
 
     // Public methods
 
-    setContent(content) {
-        this.content.html(content);
+    setContent(content, index = 0) {
+        this.content[index].html(content);
     }
 
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
-            this.css({ display: '' });
-
             this.container.css({
-                width: '',
-                margin: '80px 20px 40px'
+                padding: '80px 20px 40px'
             });
         } else {
-            this.css({ display: 'flex' });
-
             this.container.css({
-                width: 400,
-                margin: '10% 10% 13%'
+                padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
             });
         }
     }
@@ -132,7 +168,7 @@ export class Details extends Interface {
         const stagger = 175;
 
         if (this.bg) {
-            this.bg.clearTween().tween({ opacity: 0.35 }, duration, 'easeOutSine');
+            this.bg.clearTween().css({ opacity: 0 }).tween({ opacity: 0.35 }, duration, 'easeOutSine');
         }
 
         this.container.children.forEach((child, i) => {
@@ -147,10 +183,6 @@ export class Details extends Interface {
     animateOut(callback) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
-
-        if (this.bg) {
-            this.bg.clearTween().tween({ opacity: 0 }, 1000, 'easeOutSine');
-        }
 
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();

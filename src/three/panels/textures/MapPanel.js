@@ -22,11 +22,14 @@ export class MapPanel extends Panel {
     }
 
     initPanel() {
-        const { anisotropy } = Point3D;
-
         const mesh = this.mesh;
         const key = this.key;
-        const point = Point3D.getPoint(mesh);
+
+        let point;
+
+        if (Point3D.points) {
+            point = Point3D.getPoint(mesh);
+        }
 
         const items = [
             {
@@ -43,10 +46,13 @@ export class MapPanel extends Panel {
 
                     if (item.data.isTexture && item.data.userData.uv && !mesh.userData.uv) {
                         mesh.userData.uv = true;
-                        point.toggleUVHelper(true);
+
+                        if (point) {
+                            point.toggleUVHelper(true);
+                        }
                     }
 
-                    if (point.uvTexture) {
+                    if (point && point.uvTexture) {
                         if (value) {
                             if (mesh.material[key] && item.data.isTexture && !item.data.userData.uv) {
                                 mesh.userData.uv = false;
@@ -78,7 +84,7 @@ export class MapPanel extends Panel {
                                 mesh.material[key].colorSpace = SRGBColorSpace;
                             }
 
-                            mesh.material[key].anisotropy = anisotropy;
+                            mesh.material[key].anisotropy = Point3D.anisotropy;
                         }
 
                         mesh.material[key].needsUpdate = true;

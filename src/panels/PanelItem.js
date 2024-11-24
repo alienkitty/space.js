@@ -11,6 +11,24 @@ import { Slider } from './Slider.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
 
+/**
+ * A panel item for various components.
+ * @example
+ * // ...
+ * const item = new PanelItem({
+ *     name: 'FPS'
+ *     // type: 'spacer'
+ *     // type: 'divider'
+ *     // type: 'link'
+ *     // type: 'thumbnail'
+ *     // type: 'graph'
+ *     // type: 'list'
+ *     // type: 'slider'
+ *     // type: 'content'
+ *     // type: 'color'
+ * });
+ * ui.addPanel(item);
+ */
 export class PanelItem extends Interface {
     constructor(data) {
         super('.panel-item');
@@ -63,6 +81,10 @@ export class PanelItem extends Interface {
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'graph') {
+            this.container.css({
+                margin: '0 0 6px'
+            });
+
             this.graph = new PanelGraph(this.data);
             this.container.add(this.graph);
         } else if (this.data.type === 'list') {
@@ -122,11 +144,11 @@ export class PanelItem extends Interface {
 
     animateOut(index, total, delay, callback) {
         this.clearTween().tween({ y: -10, opacity: 0 }, 500, 'easeInCubic', delay, () => {
-            if (index === 0 && callback) {
-                if (this.graph) {
-                    this.graph.disable();
-                }
+            if (this.graph) {
+                this.graph.disable();
+            }
 
+            if (index === 0 && callback) {
                 callback();
             }
         });

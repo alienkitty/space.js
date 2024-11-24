@@ -2,6 +2,9 @@
  * @author pschroen / https://ufo.ai/
  */
 
+/**
+ * A pool of objects created from a given constructor.
+ */
 export class ObjectPool {
     constructor(type, num = 10) {
         this.type = type;
@@ -15,8 +18,18 @@ export class ObjectPool {
         }
     }
 
+    get length() {
+        return this.array.length;
+    }
+
     get() {
-        return this.array.shift() || (this.type ? new this.type() : null);
+        const object = this.array.shift();
+
+        if (object !== undefined) {
+            return object;
+        }
+
+        return this.type ? new this.type() : null;
     }
 
     empty() {
@@ -27,8 +40,8 @@ export class ObjectPool {
         this.array.push(...objects);
     }
 
-    length() {
-        return this.array.length;
+    shuffle() {
+        this.array.sort(() => Math.random() - 0.5);
     }
 
     destroy() {
