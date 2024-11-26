@@ -7,6 +7,12 @@ import { Cluster } from './Cluster.js';
 
 import { absolute, getConstructor, guid } from './Utils.js';
 
+var hardware;
+
+if (typeof window !== 'undefined') {
+    hardware = navigator.hardwareConcurrency || 4;
+}
+
 /**
  * Creates a shared worker cluster or individual worker with the given methods.
  * @example
@@ -16,7 +22,7 @@ import { absolute, getConstructor, guid } from './Utils.js';
  * console.log(image);
  */
 export class Thread extends EventEmitter {
-    static count = navigator.hardwareConcurrency || 4;
+    static count = Math.max(Math.min(hardware, 8), 4);
     static params = {};
 
     static upload(...objects) {

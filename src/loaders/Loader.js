@@ -22,11 +22,7 @@ export class Loader {
         this.cache = false;
         this.files = {};
 
-        // Promise with resolvers
-        // this.promise
-        // this.resolve
-        // this.reject
-        Object.assign(this, Promise.withResolvers());
+        this.promise = new Promise(resolve => this.resolve = resolve);
     }
 
     load(/* path, callback */) {}
