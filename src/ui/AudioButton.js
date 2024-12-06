@@ -219,7 +219,7 @@ export class AudioButton extends Interface {
     destroy() {
         this.removeListeners();
 
-        clearTween(this);
+        clearTween(this.props);
 
         return super.destroy();
     }

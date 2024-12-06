@@ -861,6 +861,8 @@ export class GraphSegments extends Interface {
     destroy() {
         this.removeListeners();
 
+        clearTween(this.props);
+
         return super.destroy();
     }
 }

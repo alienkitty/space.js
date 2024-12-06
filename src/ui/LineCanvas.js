@@ -122,6 +122,13 @@ export class LineCanvas extends Component {
 
     deactivate() {
         clearTween(this.props);
+
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
+    }
+
+    destroy() {
+        clearTween(this.props);
+
+        return super.destroy();
     }
 }

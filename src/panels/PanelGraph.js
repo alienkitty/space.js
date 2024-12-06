@@ -633,6 +633,8 @@ export class PanelGraph extends Interface {
     destroy() {
         this.disable();
 
+        clearTween(this.props);
+
         return super.destroy();
     }
 }

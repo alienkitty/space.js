@@ -82,4 +82,10 @@ export class ReticleCanvas extends Component {
             }
         });
     }
+
+    destroy() {
+        clearTween(this.props);
+
+        return super.destroy();
+    }
 }

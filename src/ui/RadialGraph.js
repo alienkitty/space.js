@@ -1004,6 +1004,8 @@ export class RadialGraph extends Interface {
     destroy() {
         this.removeListeners();
 
+        clearTween(this.props);
+
         return super.destroy();
     }
 }
