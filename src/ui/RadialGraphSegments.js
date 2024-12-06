@@ -1044,24 +1044,39 @@ export class RadialGraphSegments extends Interface {
         }
     }
 
-    animateIn() {
+    animateIn(fast) {
         clearTween(this.props);
 
-        tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
+        if (fast) {
+            this.props.alpha = 1;
+            this.props.yMultiplier = 1;
+            this.props.progress = 1;
 
-        tween(this.props, { progress: 1 }, 650, 'easeInOutCubic', () => {
-            tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
-                this.animatedIn = true;
+            this.animatedIn = true;
+            this.needsUpdate = true;
 
-                if (this.hoveredIn) {
-                    this.hoverIn(true);
-                }
+            this.update();
+
+            if (this.hoveredIn) {
+                this.hoverIn(true);
+            }
+        } else {
+            tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
+
+            tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
+                tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
+                    this.animatedIn = true;
+
+                    if (this.hoveredIn) {
+                        this.hoverIn(true);
+                    }
+                }, () => {
+                    this.needsUpdate = true;
+                });
             }, () => {
                 this.needsUpdate = true;
             });
-        }, () => {
-            this.needsUpdate = true;
-        });
+        }
     }
 
     animateOut() {

@@ -307,24 +307,40 @@ export class Meter extends Interface {
         this.context.stroke();
     }
 
-    animateIn() {
+    animateIn(fast) {
         clearTween(this.props);
 
-        tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
-            tween(this.props, { xMultiplier: 1 }, 400, 'easeOutCubic', () => {
-                this.animatedIn = true;
+        if (fast) {
+            this.props.xMultiplier = 1;
+            this.props.progress = 1;
 
-                if (this.info) {
-                    this.info.clearTween().tween({ opacity: 1 }, 275, 'easeInOutCubic');
-                }
+            this.animatedIn = true;
+            this.needsUpdate = true;
+
+            this.update();
+
+            if (this.info) {
+                this.info.clearTween().css({ opacity: 1 });
+            }
+
+            this.clearTween().css({ opacity: 1 });
+        } else {
+            tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
+                tween(this.props, { xMultiplier: 1 }, 400, 'easeOutCubic', () => {
+                    this.animatedIn = true;
+
+                    if (this.info) {
+                        this.info.clearTween().tween({ opacity: 1 }, 275, 'easeInOutCubic');
+                    }
+                }, () => {
+                    this.needsUpdate = true;
+                });
             }, () => {
                 this.needsUpdate = true;
             });
-        }, () => {
-            this.needsUpdate = true;
-        });
 
-        this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 500, 'easeOutSine');
+            this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 500, 'easeOutSine');
+        }
     }
 
     animateOut() {
