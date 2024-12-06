@@ -204,9 +204,9 @@
                         // Passing an array to item.update() will update the entire graph
                         value = Array.from({ length: 10 }, () => Math.random());
                         item.update(value);
+                    } else {
+                        item.update();
                     }
-
-                    item.update();
 
                     // The return value is passed back in the next frame
                     return value;
