@@ -196,8 +196,8 @@ export class AudioButton extends Interface {
     animateIn() {
         clearTween(this.props);
 
-        this.props.progress = 0;
         this.props.yMultiplier = this.sound ? 1 : 0;
+        this.props.progress = 0;
 
         this.animatedIn = false;
         this.needsUpdate = true;
