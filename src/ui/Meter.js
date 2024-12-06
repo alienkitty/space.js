@@ -278,7 +278,7 @@ export class Meter extends Interface {
     }
 
     drawGraph() {
-        const y = 19;
+        const y = this.noText ? 7 : 19;
 
         this.context.globalAlpha = 1;
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
