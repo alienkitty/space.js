@@ -83,6 +83,7 @@ export { GraphSegments } from './ui/GraphSegments.js';
 export { GraphMarker } from './ui/GraphMarker.js';
 export { RadialGraph } from './ui/RadialGraph.js';
 export { RadialGraphSegments } from './ui/RadialGraphSegments.js';
+export { Meter } from './ui/Meter.js';
 export { LineCanvas } from './ui/LineCanvas.js';
 export { Reticle } from './ui/Reticle.js';
 export { ReticleCanvas } from './ui/ReticleCanvas.js';
