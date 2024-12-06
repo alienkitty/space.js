@@ -25,7 +25,7 @@ export class Slider extends Interface {
         this.max = max;
         this.step = step;
         this.precision = this.getPrecision(this.step);
-        this.value = typeof value === 'string' ? parseFloat(value) : value;
+        this.value = value;
         this.callback = callback;
 
         this.range = this.max - this.min;
@@ -175,8 +175,7 @@ export class Slider extends Interface {
     }
 
     setValue(value, notify = true) {
-        this.value = typeof value === 'string' ? parseFloat(value) : value;
-        this.value = this.getValue(this.value);
+        this.value = this.getValue(value);
 
         this.update(notify);
     }
