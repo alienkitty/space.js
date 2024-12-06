@@ -191,6 +191,7 @@ scene.environmentIntensity = 1.2;
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
 [fps graph](https://space.js.org/examples/fps_graph.html)  
+[fps meter](https://space.js.org/examples/fps_meter.html)  
 [panel](https://space.js.org/examples/panel.html) (standalone)  
 [graph](https://space.js.org/examples/graph.html) (standalone)  
 [radial graph](https://space.js.org/examples/radial_graph.html) (standalone)  
