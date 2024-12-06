@@ -196,6 +196,7 @@ scene.environmentIntensity = 1.2;
 [graph](https://space.js.org/examples/graph.html) (standalone)  
 [radial graph](https://space.js.org/examples/radial_graph.html) (standalone)  
 [graph markers](https://space.js.org/examples/graph_markers.html)  
+[meter](https://space.js.org/examples/meter.html) (standalone)  
 [thumbnail](https://space.js.org/examples/thumbnail.html)  
 [ufo](https://ufo.ai/) (2d scene, smooth scroll with skew effect)  
 
