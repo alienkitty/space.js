@@ -74,7 +74,7 @@ function animate() {
 requestAnimationFrame(animate);
 ```
 
-Graph components:
+Graph and meter components:
 
 ```js
 import { Graph } from '@alienkitty/space.js';
@@ -91,6 +91,45 @@ function animate() {
     requestAnimationFrame(animate);
 
     graph.update();
+}
+
+requestAnimationFrame(animate);
+```
+
+```js
+import { RadialGraph } from '@alienkitty/space.js';
+
+const graph = new RadialGraph({
+    value: Array.from({ length: 10 }, () => Math.random()),
+    precision: 2,
+    lookupPrecision: 200
+});
+graph.animateIn();
+document.body.appendChild(graph.element);
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    graph.update();
+}
+
+requestAnimationFrame(animate);
+```
+
+```js
+import { Meter } from '@alienkitty/space.js';
+
+const meter = new Meter({
+    value: Math.random(),
+    precision: 2
+});
+meter.animateIn();
+document.body.appendChild(meter.element);
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    meter.update();
 }
 
 requestAnimationFrame(animate);
