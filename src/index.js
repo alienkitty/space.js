@@ -39,6 +39,7 @@ export { PanelItem } from './panels/PanelItem.js';
 export { PanelLink } from './panels/PanelLink.js';
 export { PanelThumbnail } from './panels/PanelThumbnail.js';
 export { PanelGraph } from './panels/PanelGraph.js';
+export { PanelMeter } from './panels/PanelMeter.js';
 export { List } from './panels/List.js';
 export { ListToggle } from './panels/ListToggle.js';
 export { ListSelect } from './panels/ListSelect.js';
