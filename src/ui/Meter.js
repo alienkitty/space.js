@@ -36,6 +36,7 @@ export class Meter extends Interface {
         precision = 0,
         range = 1,
         suffix = '',
+        noRange = false,
         noText = false,
         noGradient = false
     } = {}) {
@@ -47,6 +48,7 @@ export class Meter extends Interface {
         this.precision = precision;
         this.range = range;
         this.suffix = suffix;
+        this.noRange = noRange;
         this.noText = noText;
         this.noGradient = noGradient;
 
@@ -58,7 +60,7 @@ export class Meter extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.height = this.noText ? 20 : 40;
+        this.height = this.noRange ? 20 : this.noText ? 15 : 40;
         this.rangeWidth = this.getRangeWidth(this.range);
         this.animatedIn = false;
         this.needsUpdate = false;
@@ -98,7 +100,7 @@ export class Meter extends Interface {
             height: this.height
         });
 
-        if (!this.noText) {
+        if (!this.noRange || !this.noText) {
             this.container = new Interface('.container');
             this.container.css({
                 position: 'relative',
@@ -107,33 +109,47 @@ export class Meter extends Interface {
             });
             this.add(this.container);
 
-            this.number = new Interface('.number');
-            this.number.css({
-                cssFloat: 'right',
-                fontSize: 'var(--ui-secondary-font-size)',
-                letterSpacing: 'var(--ui-secondary-letter-spacing)'
-            });
-            this.container.add(this.number);
+            if (!this.noRange && !this.noText) {
+                this.number = new Interface('.number');
+                this.number.css({
+                    cssFloat: 'right',
+                    fontSize: 'var(--ui-secondary-font-size)',
+                    letterSpacing: 'var(--ui-secondary-letter-spacing)'
+                });
+                this.container.add(this.number);
+            }
 
-            this.info = new Interface('.info');
-            this.info.css({
-                position: 'absolute',
-                right: 0,
-                bottom: 3,
-                fontSize: 'var(--ui-secondary-font-size)',
-                letterSpacing: 'var(--ui-secondary-letter-spacing)',
-                zIndex: 1,
-                pointerEvents: 'none',
-                opacity: 0
-            });
-            this.info.text(`${Number(0).toFixed(this.precision)}${this.suffix}`); // Min value
-            this.info.width = 0;
-            this.add(this.info);
+            if (!this.noText) {
+                if (this.noRange) {
+                    this.info = new Interface('.info');
+                    this.info.css({
+                        cssFloat: 'left',
+                        fontSize: 'var(--ui-secondary-font-size)',
+                        letterSpacing: 'var(--ui-secondary-letter-spacing)'
+                    });
+                    this.container.add(this.info);
+                } else {
+                    this.info = new Interface('.info');
+                    this.info.css({
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 3,
+                        fontSize: 'var(--ui-secondary-font-size)',
+                        letterSpacing: 'var(--ui-secondary-letter-spacing)',
+                        zIndex: 1,
+                        pointerEvents: 'none',
+                        opacity: 0
+                    });
+                    this.info.text(`${Number(0).toFixed(this.precision)}${this.suffix}`); // Min value
+                    this.info.width = 0;
+                    this.add(this.info);
 
-            await defer();
+                    await defer();
 
-            this.info.width = this.info.element.getBoundingClientRect().width;
-            this.update(this.value);
+                    this.info.width = this.info.element.getBoundingClientRect().width;
+                    this.update(this.value);
+                }
+            }
         }
     }
 
@@ -206,13 +222,16 @@ export class Meter extends Interface {
         this.value = value;
 
         if (this.info) {
-            let x = this.width - this.value * this.rangeWidth;
+            if (!this.noRange) {
+                let x = this.width - this.value * this.rangeWidth;
 
-            if (x + this.info.width > this.width) {
-                x = this.width - this.info.width;
+                if (x + this.info.width > this.width) {
+                    x = this.width - this.info.width;
+                }
+
+                this.info.css({ right: x });
             }
 
-            this.info.css({ right: x });
             this.info.text(`${this.value.toFixed(this.precision)}${this.suffix}`);
         }
 

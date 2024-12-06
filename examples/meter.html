@@ -60,14 +60,14 @@
         meter3.animateIn();
         document.body.appendChild(meter3.element);
 
-        // Meter with ghost
+        // Meter with ghost and no range text
         const meter4 = new Meter({
             suffix: 'ms',
             range: 150,
             value: 150 * Math.random(),
             ghost: 150 * Math.random(),
             width: 200,
-            noText: true
+            noRange: true
         });
         meter4.animateIn();
         document.body.appendChild(meter4.element);
