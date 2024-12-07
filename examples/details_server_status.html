@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Details Server Status — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@500;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
+        body {
+            position: unset;
+            -moz-osx-font-smoothing: auto;
+            -webkit-font-smoothing: auto;
+        }
+    </style>
+
+    <script type="module">
+        import { UI } from '../src/index.js';
+
+        class App {
+            static async init() {
+                this.initViews();
+
+                this.addListeners();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    details: {
+                        title: 'server-status'.replace(/[\s.-]+/g, '_'),
+                        content: [
+                            {
+                                content: /* html */ `
+A simple status API endpoint built on Express, like the Apache status page.
+                                `,
+                                links: [
+                                    {
+                                        title: 'Source code',
+                                        link: 'https://github.com/pschroen/hello-websockets-server-status'
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'Server version',
+                                content: 'Node/16.14.2 (Ubuntu)'
+                            },
+                            {
+                                title: 'Uptime',
+                                content: '1 minute 47 seconds'
+                            },
+                            {
+                                title: 'Latency',
+                                meter: {
+                                    suffix: 'ms',
+                                    range: 30,
+                                    value: 20,
+                                    width: 70,
+                                    noRange: true
+                                }
+                            },
+                            {
+                                title: 'Network',
+                                content: /* html */ `
+hello-websockets-server-status.glitch.me
+<br>ec2-34-203-246-207.compute-1.amazonaws.com (34.203.246.207)
+                                `,
+                                width: '100%'
+                            },
+                            {
+                                title: 'Latency',
+                                content: '20 ms (24hr avg)',
+                                width: 200,
+                                meter: {
+                                    range: 30,
+                                    value: 20,
+                                    width: 200,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Processor',
+                                content: 'Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz',
+                                width: '100%'
+                            },
+                            {
+                                title: 'vCPUs',
+                                content: '4',
+                                width: 200
+                            },
+                            {
+                                title: 'Load',
+                                content: '50% (24hr avg)',
+                                width: 200,
+                                meter: {
+                                    range: 100,
+                                    value: 50,
+                                    width: 200,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Mem',
+                                content: '0.12 GiB / 6.14 GiB (2%)',
+                                width: 200,
+                                meter: {
+                                    range: 100,
+                                    value: 2,
+                                    width: 200,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Swap',
+                                content: '0.55 GiB / 2.05 GiB (3%)',
+                                width: 200,
+                                meter: {
+                                    range: 100,
+                                    value: 3,
+                                    width: 200,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Storage',
+                                content: '113 MB / 200 MB (57%)',
+                                width: 200,
+                                meter: {
+                                    range: 100,
+                                    value: 57,
+                                    width: 200,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Webhooks',
+                                content: /* html */ `
+Refresh Access Token for Concrete Instagram API
+<br>(once/month, 25 days remaining)
+                                `,
+                                width: '100%',
+                                meter: {
+                                    range: 31,
+                                    value: 6,
+                                    width: 420,
+                                    noText: true
+                                }
+                            },
+                            {
+                                title: 'Alert thresholds',
+                                content: /* html */ `
+Uptime (on/offline)
+<br>Latency (≥ 30 ms)
+<br>Load (≥ 90%)
+<br>Mem (≥ 90%)
+<br>Swap (≥ 90%)
+<br>Storage (≥ 90%)
+                                `,
+                                width: 200
+                            },
+                            {
+                                title: 'Frequency',
+                                content: /* html */ `
+Every minute (1,440 times/day)
+<br>24hr avg
+<br>24hr avg
+<br>Every minute
+<br>Every minute
+<br>Every minute
+                                `,
+                                width: 200
+                            }
+                        ]
+                    }
+                });
+                this.ui.css({ position: 'static' });
+                this.ui.toggleDetails(true);
+                document.body.appendChild(this.ui.element);
+            }
+
+            static addListeners() {
+                window.addEventListener('load', this.onLoad);
+            }
+
+            // Event handlers
+
+            static onLoad = () => {
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

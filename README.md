@@ -227,6 +227,7 @@ scene.environmentIntensity = 1.2;
 [magnetic](https://space.js.org/examples/magnetic.html) (component, svg)  
 [details](https://space.js.org/examples/details.html)  
 [info](https://space.js.org/examples/details_info.html) (details)  
+[server status](https://space.js.org/examples/details_server_status.html) (details)  
 [fps](https://space.js.org/examples/fps.html)  
 [fps panel](https://space.js.org/examples/fps_panel.html)  
 [fps graph](https://space.js.org/examples/fps_graph.html)  
