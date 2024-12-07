@@ -193,6 +193,8 @@ And the `@alienkitty/space.js/three` entry point for [three.js](https://github.c
 npm i three @alienkitty/space.js
 ```
 
+For example, loader utilities:
+
 ```js
 import { EnvironmentTextureLoader } from '@alienkitty/space.js/three';
 
