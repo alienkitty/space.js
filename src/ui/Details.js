@@ -5,6 +5,7 @@
 import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
+import { Meter } from './Meter.js';
 
 export class Details extends Interface {
     constructor(data) {
@@ -78,12 +79,20 @@ export class Details extends Interface {
                     container.add(info);
                 }
 
-                const content = new Interface('.content');
-                content.css({
-                    width: 'fit-content'
-                });
-                content.html(data.content);
-                container.add(content);
+                if (data.content) {
+                    const content = new Interface('.content');
+                    content.css({
+                        width: 'fit-content'
+                    });
+                    content.html(data.content);
+                    container.add(content);
+                }
+
+                if (data.meter) {
+                    const meter = new Meter(data.meter);
+                    meter.animateIn(true);
+                    container.add(meter);
+                }
 
                 if (Array.isArray(data.links)) {
                     data.links.forEach(data => {
