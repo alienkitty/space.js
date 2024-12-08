@@ -73,6 +73,10 @@ export class PanelMeter extends Interface {
         this.setRange(this.range);
         this.setValue(this.value);
 
+        if (this.ghost !== undefined) {
+            this.setGhostValue(this.ghost);
+        }
+
         this.resize();
     }
 
@@ -225,7 +229,11 @@ export class PanelMeter extends Interface {
     }
 
     setGhostValue(value) {
-        this.ghost = value;
+        if (!isNaN(value)) {
+            this.ghost = value;
+        } else {
+            this.ghost = this.value;
+        }
 
         this.needsUpdate = true;
 
@@ -267,6 +275,10 @@ export class PanelMeter extends Interface {
 
     update(value) {
         if (value !== undefined) {
+            if (this.ghost !== undefined) {
+                this.ghost = this.value;
+            }
+
             this.setValue(value);
         }
 
