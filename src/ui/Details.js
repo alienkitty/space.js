@@ -5,6 +5,7 @@
 import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
+import { Graph } from './Graph.js';
 import { Meter } from './Meter.js';
 
 export class Details extends Interface {
@@ -86,6 +87,12 @@ export class Details extends Interface {
                     });
                     content.html(data.content);
                     container.add(content);
+                }
+
+                if (data.graph !== undefined) {
+                    const graph = new Graph(data.graph);
+                    graph.animateIn(true);
+                    container.add(graph);
                 }
 
                 if (data.meter !== undefined) {
