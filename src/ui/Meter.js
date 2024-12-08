@@ -90,6 +90,11 @@ export class Meter extends Interface {
         this.initCanvas();
         this.setRange(this.range);
         this.setValue(this.value);
+
+        if (this.ghost !== undefined) {
+            this.setGhostValue(this.ghost);
+        }
+
         this.setWidth(this.width);
     }
 
@@ -207,7 +212,11 @@ export class Meter extends Interface {
     }
 
     setGhostValue(value) {
-        this.ghost = value;
+        if (!isNaN(value)) {
+            this.ghost = value;
+        } else {
+            this.ghost = this.value;
+        }
 
         this.needsUpdate = true;
 
@@ -268,6 +277,10 @@ export class Meter extends Interface {
         }
 
         if (value !== undefined) {
+            if (this.ghost !== undefined) {
+                this.ghost = this.value;
+            }
+
             this.setValue(value);
         }
 
