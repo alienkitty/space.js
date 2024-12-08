@@ -100,7 +100,7 @@ export class PanelGraph extends Interface {
 
         this.setArray(this.value);
 
-        if (this.ghost) {
+        if (this.ghost !== undefined) {
             this.setGhostArray(this.ghost);
         }
 
@@ -430,7 +430,7 @@ export class PanelGraph extends Interface {
             if (Array.isArray(value)) {
                 this.setArray(value);
             } else {
-                if (this.ghost) {
+                if (this.ghost !== undefined) {
                     const ghost = this.array.shift();
                     this.array.push(value);
                     this.ghostArray.shift();
@@ -470,7 +470,9 @@ export class PanelGraph extends Interface {
             this.drawPath(h, this.ghostArray, true);
         }
 
-        this.drawPath(h, this.array);
+        if (this.array.length) {
+            this.drawPath(h, this.array);
+        }
 
         // Draw handle line and circle
         if (!this.noHover) {
