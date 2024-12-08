@@ -63,7 +63,57 @@ export class Details extends Interface {
         }
 
         this.data.content.forEach(data => {
-            if (typeof data === 'object') {
+            this.addContent(this.container, data);
+        });
+
+        if (Array.isArray(this.data.links)) {
+            this.data.links.forEach(data => {
+                const link = new DetailsLink(data.title, data.link);
+                link.css({
+                    display: 'block'
+                });
+                this.container.add(link);
+                this.links.push(link);
+            });
+        }
+    }
+
+    addListeners() {
+        if (this.bg) {
+            this.bg.element.addEventListener('click', this.onClick);
+        }
+    }
+
+    removeListeners() {
+        if (this.bg) {
+            this.bg.element.removeEventListener('click', this.onClick);
+        }
+    }
+
+    // Event handlers
+
+    onClick = () => {
+        this.events.emit('click', { target: this });
+    };
+
+    // Public methods
+
+    addContent(target, data) {
+        if (typeof data === 'object') {
+            if (data.group !== undefined) {
+                const container = new Interface('.content');
+                container.css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    width: data.width
+                });
+
+                data.group.forEach(data => {
+                    this.addContent(container, data);
+                });
+
+                target.add(container);
+            } else {
                 const container = new Interface('.content');
                 container.css({
                     flexGrow: 1,
@@ -112,50 +162,19 @@ export class Details extends Interface {
                     });
                 }
 
-                this.container.add(container);
+                target.add(container);
                 this.content.push(container);
-            } else {
-                const content = new Interface('.content');
-                content.css({
-                    width: 'fit-content'
-                });
-                content.html(data);
-                this.container.add(content);
-                this.content.push(content);
             }
-        });
-
-        if (Array.isArray(this.data.links)) {
-            this.data.links.forEach(data => {
-                const link = new DetailsLink(data.title, data.link);
-                link.css({
-                    display: 'block'
-                });
-                this.container.add(link);
-                this.links.push(link);
+        } else {
+            const content = new Interface('.content');
+            content.css({
+                width: 'fit-content'
             });
+            content.html(data);
+            target.add(content);
+            this.content.push(content);
         }
     }
-
-    addListeners() {
-        if (this.bg) {
-            this.bg.element.addEventListener('click', this.onClick);
-        }
-    }
-
-    removeListeners() {
-        if (this.bg) {
-            this.bg.element.removeEventListener('click', this.onClick);
-        }
-    }
-
-    // Event handlers
-
-    onClick = () => {
-        this.events.emit('click', { target: this });
-    };
-
-    // Public methods
 
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
