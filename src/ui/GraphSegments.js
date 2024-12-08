@@ -135,7 +135,7 @@ export class GraphSegments extends Interface {
 
         this.setArray(this.value);
 
-        if (this.ghost) {
+        if (this.ghost !== undefined) {
             this.setGhostArray(this.ghost);
         }
 
@@ -264,7 +264,7 @@ export class GraphSegments extends Interface {
     }
 
     initMarkers() {
-        this.markers.map(data => {
+        this.markers.forEach(data => {
             this.addMarker(data, 500);
         });
     }
@@ -521,15 +521,11 @@ export class GraphSegments extends Interface {
             ticker.onTick(performance.now() - this.startTime);
         }
 
-        if (!this.array.length) {
-            return;
-        }
-
         if (value !== undefined) {
             if (Array.isArray(value)) {
                 this.setArray(value);
             } else {
-                if (this.ghost) {
+                if (this.ghost !== undefined) {
                     const ghost = this.array.shift();
                     this.array.push(value);
                     this.ghostArray.shift();
@@ -593,7 +589,9 @@ export class GraphSegments extends Interface {
             this.drawPath(w, h, this.ghostArray, true);
         }
 
-        this.drawPath(w, h, this.array);
+        if (this.array.length) {
+            this.drawPath(w, h, this.array);
+        }
 
         // Draw marker lines
         if (!this.noMarker) {
