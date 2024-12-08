@@ -157,10 +157,6 @@ export class Details extends Interface {
 
     // Public methods
 
-    setContent(content, index = 0) {
-        this.content[index].html(content);
-    }
-
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.container.css({
