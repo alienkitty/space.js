@@ -70,7 +70,7 @@ export class Details extends Interface {
                     marginRight: 20
                 });
 
-                if (data.title) {
+                if (data.title !== undefined) {
                     const info = new Interface('.info', 'h2');
                     info.css({
                         width: 'fit-content'
@@ -79,7 +79,7 @@ export class Details extends Interface {
                     container.add(info);
                 }
 
-                if (data.content) {
+                if (data.content !== undefined) {
                     const content = new Interface('.content');
                     content.css({
                         width: 'fit-content'
@@ -88,7 +88,7 @@ export class Details extends Interface {
                     container.add(content);
                 }
 
-                if (data.meter) {
+                if (data.meter !== undefined) {
                     const meter = new Meter(data.meter);
                     meter.animateIn(true);
                     container.add(meter);
