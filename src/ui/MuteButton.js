@@ -175,8 +175,8 @@ export class MuteButton extends Interface {
     animateIn() {
         clearTween(this.props);
 
-        this.props.progress = 0;
         this.props.yMultiplier = this.sound ? 1 : 0;
+        this.props.progress = 0;
 
         this.animatedIn = false;
         this.needsUpdate = true;
@@ -198,7 +198,7 @@ export class MuteButton extends Interface {
     destroy() {
         this.removeListeners();
 
-        clearTween(this);
+        clearTween(this.props);
 
         return super.destroy();
     }

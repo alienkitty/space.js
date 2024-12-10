@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Linked List — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { LinkedList } from '@alienkitty/space.js';
+
+        const list = new LinkedList();
+
+        for (let i = 0; i < 4; i++) {
+            list.push(i);
+        }
+
+        console.log(list.length); // 4
+
+        let object = list.start();
+        console.log(object); // 0
+
+        while (object !== undefined) {
+            console.log(object); // 0, 1, 2, 3
+
+            object = list.next();
+        }
+
+        object = list.find(object => object === 1);
+        console.log(object); // 1
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
         body {
+            position: unset;
             -moz-osx-font-smoothing: auto;
             -webkit-font-smoothing: auto;
         }
@@ -67,6 +72,7 @@ Mars is the fourth planet from the Sun. The surface of Mars is orange-red becaus
                         ]
                     }
                 });
+                this.ui.css({ position: 'static' });
                 this.ui.toggleDetails(true);
                 document.body.appendChild(this.ui.element);
             }

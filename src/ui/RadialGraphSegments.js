@@ -153,7 +153,7 @@ export class RadialGraphSegments extends Interface {
 
         this.setArray(this.value);
 
-        if (this.ghost) {
+        if (this.ghost !== undefined) {
             this.setGhostArray(this.ghost);
         }
 
@@ -300,7 +300,7 @@ export class RadialGraphSegments extends Interface {
     }
 
     initMarkers() {
-        this.markers.map(data => {
+        this.markers.forEach(data => {
             this.addMarker(data, 650);
         });
     }
@@ -574,15 +574,11 @@ export class RadialGraphSegments extends Interface {
             ticker.onTick(performance.now() - this.startTime);
         }
 
-        if (!this.array.length) {
-            return;
-        }
-
         if (value !== undefined) {
             if (Array.isArray(value)) {
                 this.setArray(value);
             } else {
-                if (this.ghost) {
+                if (this.ghost !== undefined) {
                     const ghost = this.array.pop();
                     this.array.unshift(value);
                     this.ghostArray.pop();
@@ -652,7 +648,9 @@ export class RadialGraphSegments extends Interface {
             this.drawPath(h, this.ghostArray, true);
         }
 
-        this.drawPath(h, this.array);
+        if (this.array.length) {
+            this.drawPath(h, this.array);
+        }
 
         // Draw marker lines
         if (!this.noMarker) {
@@ -1044,24 +1042,39 @@ export class RadialGraphSegments extends Interface {
         }
     }
 
-    animateIn() {
+    animateIn(fast) {
         clearTween(this.props);
 
-        tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
+        if (fast) {
+            this.props.alpha = 1;
+            this.props.yMultiplier = 1;
+            this.props.progress = 1;
 
-        tween(this.props, { progress: 1 }, 650, 'easeInOutCubic', () => {
-            tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
-                this.animatedIn = true;
+            this.animatedIn = true;
+            this.needsUpdate = true;
 
-                if (this.hoveredIn) {
-                    this.hoverIn(true);
-                }
+            this.update();
+
+            if (this.hoveredIn) {
+                this.hoverIn(true);
+            }
+        } else {
+            tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
+
+            tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
+                tween(this.props, { yMultiplier: 1 }, 400, 'easeOutCubic', () => {
+                    this.animatedIn = true;
+
+                    if (this.hoveredIn) {
+                        this.hoverIn(true);
+                    }
+                }, () => {
+                    this.needsUpdate = true;
+                });
             }, () => {
                 this.needsUpdate = true;
             });
-        }, () => {
-            this.needsUpdate = true;
-        });
+        }
     }
 
     animateOut() {
@@ -1086,6 +1099,8 @@ export class RadialGraphSegments extends Interface {
 
     destroy() {
         this.removeListeners();
+
+        clearTween(this.props);
 
         return super.destroy();
     }

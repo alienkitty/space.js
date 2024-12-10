@@ -1,7 +1,5 @@
 /**
  * @author pschroen / https://ufo.ai/
- *
- * Based on https://github.com/lo-th/uil
  */
 
 import { Color } from '../math/Color.js';
@@ -102,7 +100,7 @@ export class PanelGraph extends Interface {
 
         this.setArray(this.value);
 
-        if (this.ghost) {
+        if (this.ghost !== undefined) {
             this.setGhostArray(this.ghost);
         }
 
@@ -235,9 +233,6 @@ export class PanelGraph extends Interface {
         });
         this.context = this.canvas.element.getContext('2d');
         this.add(this.canvas);
-
-        this.strokeStyle = this.createGradient(0, this.height, 0, 0);
-        this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
     }
 
     createGradient(x0, y0, x1, y1, alpha = 1) {
@@ -348,11 +343,11 @@ export class PanelGraph extends Interface {
                 this.count = 0;
 
                 if (this.delta < this.refreshRate240) {
-                    this.rangeHeight = this.getRangeHeight(720);
+                    this.setRange(720);
                 } else if (this.delta < this.refreshRate120) {
-                    this.rangeHeight = this.getRangeHeight(360);
+                    this.setRange(360);
                 } else {
-                    this.rangeHeight = this.getRangeHeight(180);
+                    this.setRange(180);
                 }
             }
 
@@ -366,6 +361,13 @@ export class PanelGraph extends Interface {
     };
 
     // Public methods
+
+    setRange(range) {
+        this.range = range;
+        this.rangeHeight = this.getRangeHeight(this.range);
+
+        this.needsUpdate = true;
+    }
 
     setGhostArray(value) {
         if (Array.isArray(value)) {
@@ -399,7 +401,7 @@ export class PanelGraph extends Interface {
     }
 
     setValue(value) {
-        if (!value) {
+        if (value === undefined) {
             return;
         }
 
@@ -417,6 +419,9 @@ export class PanelGraph extends Interface {
         this.canvas.element.style.height = `${this.height}px`;
         this.context.scale(dpr, dpr);
 
+        this.strokeStyle = this.createGradient(0, this.height, 0, 0);
+        this.fillStyle = this.createGradient(0, this.height, 0, 0, 0.07);
+
         this.update();
     }
 
@@ -425,7 +430,7 @@ export class PanelGraph extends Interface {
             if (Array.isArray(value)) {
                 this.setArray(value);
             } else {
-                if (this.ghost) {
+                if (this.ghost !== undefined) {
                     const ghost = this.array.shift();
                     this.array.push(value);
                     this.ghostArray.shift();
@@ -465,7 +470,9 @@ export class PanelGraph extends Interface {
             this.drawPath(h, this.ghostArray, true);
         }
 
-        this.drawPath(h, this.array);
+        if (this.array.length) {
+            this.drawPath(h, this.array);
+        }
 
         // Draw handle line and circle
         if (!this.noHover) {
@@ -610,19 +617,25 @@ export class PanelGraph extends Interface {
     }
 
     enable() {
-        this.addListeners();
+        if (this.callback || (this.value === undefined && !this.callback)) {
+            this.addListeners();
+        }
 
         this.animatedIn = true;
     }
 
     disable() {
-        this.removeListeners();
+        if (this.callback || (this.value === undefined && !this.callback)) {
+            this.removeListeners();
+        }
 
         this.animatedIn = false;
     }
 
     destroy() {
         this.disable();
+
+        clearTween(this.props);
 
         return super.destroy();
     }

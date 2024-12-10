@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Object Pool — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { ObjectPool } from '@alienkitty/space.js';
+
+        //
+
+        const pool = new ObjectPool();
+
+        for (let i = 0; i < 4; i++) {
+            pool.put(i);
+        }
+
+        console.log(pool.length); // 4
+
+        let object = pool.get();
+        console.log(object, pool.length); // 0 3
+
+        object = pool.get();
+        console.log(object, pool.length); // 1 2
+
+        object = pool.get();
+        console.log(object, pool.length); // 2 1
+
+        object = pool.get();
+        console.log(object, pool.length); // 3 0
+
+        object = pool.get();
+        console.log(object, pool.length); // null 0
+
+        pool.put(object);
+        console.log(pool.length); // 1
+
+        //
+
+        const pool2 = new ObjectPool();
+        pool2.put(0, 1, 2, 3);
+        console.log(pool2.length); // 4
+
+        const object2 = pool2.get();
+        console.log(object2, pool2.length); // 0 3
+
+        pool2.put(object2);
+        console.log(pool2.length); // 4
+    </script>
+</head>
+<body>
+</body>
+</html>

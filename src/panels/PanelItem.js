@@ -6,6 +6,7 @@ import { Interface } from '../utils/Interface.js';
 import { PanelLink } from './PanelLink.js';
 import { PanelThumbnail } from './PanelThumbnail.js';
 import { PanelGraph } from './PanelGraph.js';
+import { PanelMeter } from './PanelMeter.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
 import { Content } from './Content.js';
@@ -22,6 +23,7 @@ import { ColorPicker } from './ColorPicker.js';
  *     // type: 'link'
  *     // type: 'thumbnail'
  *     // type: 'graph'
+ *     // type: 'meter'
  *     // type: 'list'
  *     // type: 'slider'
  *     // type: 'content'
@@ -86,6 +88,13 @@ export class PanelItem extends Interface {
             });
 
             this.graph = new PanelGraph(this.data);
+            this.container.add(this.graph);
+        } else if (this.data.type === 'meter') {
+            this.container.css({
+                margin: '0 0 6px'
+            });
+
+            this.graph = new PanelMeter(this.data);
             this.container.add(this.graph);
         } else if (this.data.type === 'list') {
             this.container.css({

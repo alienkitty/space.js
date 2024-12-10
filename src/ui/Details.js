@@ -5,6 +5,8 @@
 import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
+import { Graph } from './Graph.js';
+import { Meter } from './Meter.js';
 
 export class Details extends Interface {
     constructor(data) {
@@ -61,51 +63,7 @@ export class Details extends Interface {
         }
 
         this.data.content.forEach(data => {
-            if (typeof data === 'object') {
-                const container = new Interface('.content');
-                container.css({
-                    flexGrow: 1,
-                    width: data.width
-                });
-
-                if (data.title) {
-                    const info = new Interface('.info', 'h2');
-                    info.css({
-                        width: 'fit-content'
-                    });
-                    info.html(data.title);
-                    container.add(info);
-                }
-
-                const content = new Interface('.content');
-                content.css({
-                    width: 'fit-content'
-                });
-                content.html(data.content);
-                container.add(content);
-
-                if (Array.isArray(data.links)) {
-                    data.links.forEach(data => {
-                        const link = new DetailsLink(data.title, data.link);
-                        link.css({
-                            display: 'block'
-                        });
-                        container.add(link);
-                        this.links.push(link);
-                    });
-                }
-
-                this.container.add(container);
-                this.content.push(container);
-            } else {
-                const content = new Interface('.content');
-                content.css({
-                    width: 'fit-content'
-                });
-                content.html(data);
-                this.container.add(content);
-                this.content.push(content);
-            }
+            this.addContent(this.container, data);
         });
 
         if (Array.isArray(this.data.links)) {
@@ -140,14 +98,88 @@ export class Details extends Interface {
 
     // Public methods
 
-    setContent(content, index = 0) {
-        this.content[index].html(content);
+    addContent(target, data) {
+        if (typeof data === 'object') {
+            if (data.group !== undefined) {
+                const container = new Interface('.content');
+                container.css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    width: data.width
+                });
+
+                data.group.forEach(data => {
+                    this.addContent(container, data);
+                });
+
+                target.add(container);
+            } else {
+                const container = new Interface('.content');
+                container.css({
+                    flexGrow: 1,
+                    width: data.width,
+                    marginRight: 20
+                });
+
+                if (data.title !== undefined) {
+                    const info = new Interface('.info', 'h2');
+                    info.css({
+                        width: 'fit-content'
+                    });
+                    info.html(data.title);
+                    container.add(info);
+                }
+
+                if (data.content !== undefined) {
+                    const content = new Interface('.content');
+                    content.css({
+                        width: 'fit-content'
+                    });
+                    content.html(data.content);
+                    container.add(content);
+                }
+
+                if (data.graph !== undefined) {
+                    const graph = new Graph(data.graph);
+                    graph.animateIn(true);
+                    container.add(graph);
+                }
+
+                if (data.meter !== undefined) {
+                    const meter = new Meter(data.meter);
+                    meter.animateIn(true);
+                    container.add(meter);
+                }
+
+                if (Array.isArray(data.links)) {
+                    data.links.forEach(data => {
+                        const link = new DetailsLink(data.title, data.link);
+                        link.css({
+                            display: 'block'
+                        });
+                        container.add(link);
+                        this.links.push(link);
+                    });
+                }
+
+                target.add(container);
+                this.content.push(container);
+            }
+        } else {
+            const content = new Interface('.content');
+            content.css({
+                width: 'fit-content'
+            });
+            content.html(data);
+            target.add(content);
+            this.content.push(content);
+        }
     }
 
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
             this.container.css({
-                padding: '80px 20px 40px'
+                padding: '80px 20px 60px'
             });
         } else {
             this.container.css({

@@ -28,7 +28,7 @@ export class Menu extends Interface {
 
     init() {
         this.css({
-            position: 'absolute',
+            position: 'fixed',
             left: 20,
             top: 20,
             right: 20,

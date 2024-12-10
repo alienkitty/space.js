@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Details Server Status — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@500;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        *, :after, :before {
+            touch-action: unset;
+        }
+
+        body {
+            position: unset;
+            -moz-osx-font-smoothing: auto;
+            -webkit-font-smoothing: auto;
+        }
+    </style>
+
+    <script type="module">
+        import { EventEmitter, UI, ticker } from '../src/index.js';
+
+        class Socket extends EventEmitter {
+            constructor(server) {
+                super();
+
+                this.server = server;
+
+                // Used for calculating the average
+                this.latencyArray = [];
+
+                this.connected = false;
+
+                this.connect();
+            }
+
+            addListeners() {
+                this.socket.addEventListener('open', this.onOpen);
+                this.socket.addEventListener('close', this.onClose);
+                this.socket.addEventListener('message', this.onMessage);
+            }
+
+            removeListeners() {
+                this.socket.removeEventListener('open', this.onOpen);
+                this.socket.removeEventListener('close', this.onClose);
+                this.socket.removeEventListener('message', this.onMessage);
+            }
+
+            // Event handlers
+
+            onOpen = () => {
+                this.connected = true;
+
+                const event = 'subscribe';
+                const message = {
+                    subscription: {
+                        name: 'server-status',
+                        time: 86400 // Past day in seconds
+                    }
+                };
+
+                console.log('send', event, message);
+                this.send({ event, message });
+            };
+
+            onClose = () => {
+                this.connected = false;
+            };
+
+            onMessage = ({ data }) => {
+                const { event, message } = JSON.parse(data);
+                console.log('message', event, message);
+
+                switch (event) {
+                    case 'heartbeat':
+                        this.send({ event, message });
+                        break;
+                    case 'server-details': {
+                        const { details/* , latency */ } = message;
+
+                        const {
+                            // packageVersion,
+                            projectDomain,
+                            networkName,
+                            serverVersion,
+                            processorName,
+                            numProcessingUnits,
+                            memTotal,
+                            memFree,
+                            swapTotal,
+                            swapFree,
+                            storageTotal,
+                            storageAvailable,
+                            numClients
+                        } = details;
+
+                        const memUsed = memTotal - memFree;
+
+                        let memUsedFormatted = memUsed / 1024 / 1024 / 1024;
+                        memUsedFormatted = `${Math.round((memUsedFormatted + Number.EPSILON) * 100) / 100} GiB`;
+
+                        let memTotalFormatted = memTotal / 1024 / 1024 / 1024;
+                        memTotalFormatted = `${Math.round((memTotalFormatted + Number.EPSILON) * 100) / 100} GiB`;
+
+                        let memUsedPercentage = (memUsed / memTotal) * 100;
+                        memUsedPercentage = Math.round((memUsedPercentage + Number.EPSILON) * 100) / 100;
+
+                        const swapUsed = swapTotal - swapFree;
+
+                        let swapUsedFormatted = swapUsed / 1024 / 1024 / 1024;
+                        swapUsedFormatted = `${Math.round((swapUsedFormatted + Number.EPSILON) * 100) / 100} GiB`;
+
+                        let swapTotalFormatted = swapTotal / 1024 / 1024 / 1024;
+                        swapTotalFormatted = `${Math.round((swapTotalFormatted + Number.EPSILON) * 100) / 100} GiB`;
+
+                        let swapUsedPercentage = (swapUsed / swapTotal) * 100;
+                        swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+
+                        const storageUsed = storageTotal - storageAvailable;
+
+                        let storageUsedFormatted;
+                        let storageTotalFormatted;
+
+                        if (storageTotal < 1e9) {
+                            storageUsedFormatted = storageUsed / 1000 / 1000;
+                            storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} MB`;
+
+                            storageTotalFormatted = storageTotal / 1000 / 1000;
+                            storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} MB`;
+                        } else {
+                            storageUsedFormatted = storageUsed / 1000 / 1000 / 1000;
+                            storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} GB`;
+
+                            storageTotalFormatted = storageTotal / 1000 / 1000 / 1000;
+                            storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} GB`;
+                        }
+
+                        let storageUsedPercentage = (storageUsed / storageTotal) * 100;
+                        storageUsedPercentage = Math.round((storageUsedPercentage + Number.EPSILON) * 100) / 100;
+
+                        this.emit('details', {
+                            projectDomain,
+                            networkName,
+                            serverVersion,
+                            processorName,
+                            numProcessingUnits,
+                            memUsed: memUsedFormatted,
+                            memTotal: memTotalFormatted,
+                            memUsedPercentage,
+                            swapUsed: swapUsedFormatted,
+                            swapTotal: swapTotalFormatted,
+                            swapUsedPercentage,
+                            storageUsed: storageUsedFormatted,
+                            storageTotal: storageTotalFormatted,
+                            storageUsedPercentage,
+                            numClients: numClients > 0 ? numClients : 1
+                        });
+                        break;
+                    }
+                    case 'server-status': {
+                        const { status, latency } = message;
+
+                        let data = status;
+
+                        if (data.length > 3) {
+                            // Separate last status update from array as new update
+                            const last = data.pop();
+
+                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
+                            this.emit('array', data.slice(-320).map(data => data[2] * 100)); // percentage
+
+                            data = last;
+                        }
+
+                        if (latency !== undefined) {
+                            this.latencyArray.push(latency);
+                        }
+
+                        let serverUptime = data[1];
+
+                        // https://stackoverflow.com/questions/36098913/convert-seconds-to-days-hours-minutes-and-seconds/52387803#52387803
+                        const days = Math.floor(serverUptime / (3600 * 24));
+                        const hours = Math.floor(serverUptime % (3600 * 24) / 3600);
+                        const minutes = Math.floor(serverUptime % 3600 / 60);
+                        const seconds = Math.floor(serverUptime % 60);
+
+                        const daysFormatted = days > 0 ? days + (days === 1 ? ' day ' : ' days ') : '';
+                        const hoursFormatted = hours > 0 ? hours + (hours === 1 ? ' hour ' : ' hours ') : '';
+                        const minutesFormatted = minutes > 0 ? minutes + (minutes === 1 ? ' minute ' : ' minutes ') : '';
+                        const secondsFormatted = seconds > 0 ? seconds + (seconds === 1 ? ' second' : ' seconds') : '';
+
+                        serverUptime = daysFormatted + hoursFormatted + minutesFormatted + secondsFormatted;
+
+                        let latencyAvg;
+
+                        if (this.latencyArray.length) {
+                            latencyAvg = this.latencyArray.reduce((a, b) => a + b, 0) / this.latencyArray.length;
+                            latencyAvg = Math.round(latencyAvg);
+                        }
+
+                        let loadAvg = data[2] * 100; // percentage
+                        loadAvg = Math.round(loadAvg);
+
+                        this.emit('status', { serverUptime, latency, latencyAvg, loadAvg });
+                        break;
+                    }
+                }
+            };
+
+            // Public methods
+
+            send = data => {
+                if (!this.connected) {
+                    return;
+                }
+
+                this.socket.send(JSON.stringify(data));
+            };
+
+            connect = () => {
+                if (this.socket) {
+                    this.close();
+                }
+
+                this.socket = new WebSocket(this.server, ['permessage-deflate']);
+
+                this.addListeners();
+            };
+
+            close = () => {
+                this.removeListeners();
+
+                this.socket.close();
+            };
+        }
+
+        class App {
+            static async init() {
+                this.initSocket();
+
+                this.addListeners();
+            }
+
+            static initSocket() {
+                this.socket = new Socket('wss://hello-websockets-server-status.glitch.me');
+            }
+
+            static addListeners() {
+                this.socket.on('details', this.onDetails);
+                this.socket.on('array', this.onArray);
+                this.socket.on('status', this.onStatus);
+            }
+
+            // Event handlers
+
+            static onDetails = ({
+                projectDomain,
+                networkName,
+                serverVersion,
+                processorName,
+                numProcessingUnits,
+                memUsed,
+                memTotal,
+                memUsedPercentage,
+                swapUsed,
+                swapTotal,
+                swapUsedPercentage,
+                storageUsed,
+                storageTotal,
+                storageUsedPercentage,
+                numClients
+            }) => {
+                if (!this.ui) {
+                    this.ui = new UI({
+                        details: {
+                            title: 'server-status'.replace(/[\s.-]+/g, '_'),
+                            content: [
+                                {
+                                    content: 'A simple status API endpoint built on Express, like the Apache status page.',
+                                    links: [
+                                        {
+                                            title: 'Source code',
+                                            link: 'https://github.com/pschroen/hello-websockets-server-status'
+                                        }
+                                    ],
+                                    width: '100%'
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Server version',
+                                            content: serverVersion,
+                                            width: 110
+                                        },
+                                        {
+                                            title: 'Uptime',
+                                            content: '',
+                                            width: 200
+                                        },
+                                        {
+                                            title: 'Latency',
+                                            meter: {
+                                                suffix: 'ms',
+                                                range: 150,
+                                                value: 0,
+                                                width: 70,
+                                                noRange: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Network',
+                                            content: `${projectDomain}<br>${networkName}`,
+                                            width: 330
+                                        },
+                                        {
+                                            title: 'Clients',
+                                            content: numClients,
+                                            width: 70
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Latency',
+                                            content: '0ms (avg)',
+                                            width: 200,
+                                            meter: {
+                                                range: 150,
+                                                value: 0,
+                                                width: 200,
+                                                ghost: true,
+                                                noText: true
+                                            }
+                                        },
+                                        {
+                                            title: '',
+                                            graph: {
+                                                suffix: 'ms',
+                                                resolution: 160,
+                                                range: 300,
+                                                width: 200,
+                                                height: 48,
+                                                ghost: true,
+                                                noMarker: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Processor',
+                                            content: processorName,
+                                            width: 330
+                                        },
+                                        {
+                                            title: 'vCPUs',
+                                            content: numProcessingUnits,
+                                            width: 70
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Load',
+                                            content: '0% (1min avg)',
+                                            width: 200,
+                                            meter: {
+                                                range: 100,
+                                                value: 0,
+                                                width: 200,
+                                                ghost: true,
+                                                noText: true
+                                            }
+                                        },
+                                        {
+                                            title: '',
+                                            graph: {
+                                                suffix: '%',
+                                                value: this.array,
+                                                ghost: this.ghostArray,
+                                                resolution: 160,
+                                                range: 400,
+                                                width: 200,
+                                                height: 48,
+                                                noMarker: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Mem',
+                                            content: `${memUsed} / ${memTotal} (${memUsedPercentage}%)`,
+                                            width: 200,
+                                            meter: {
+                                                range: 100,
+                                                value: memUsedPercentage,
+                                                width: 200,
+                                                noText: true
+                                            }
+                                        },
+                                        {
+                                            title: 'Swap',
+                                            content: `${swapUsed} / ${swapTotal} (${swapUsedPercentage}%)`,
+                                            width: 200,
+                                            meter: {
+                                                range: 100,
+                                                value: swapUsedPercentage,
+                                                width: 200,
+                                                noText: true
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    group: [
+                                        {
+                                            title: 'Storage',
+                                            content: `${storageUsed} / ${storageTotal} (${storageUsedPercentage}%)`,
+                                            width: 200,
+                                            meter: {
+                                                range: 100,
+                                                value: storageUsedPercentage,
+                                                width: 200,
+                                                noText: true
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    });
+                    this.ui.css({ position: 'static' });
+                    this.ui.toggleDetails(true);
+                    this.ui.animateIn();
+                    document.body.appendChild(this.ui.element);
+
+                    this.ui.detailsUptime = this.ui.details.content[2].children[1];
+                    this.ui.detailsLatencyMeter = this.ui.details.content[3].children[1];
+
+                    this.ui.detailsNumClients = this.ui.details.content[5].children[1];
+
+                    this.ui.detailsLatencyAvg = this.ui.details.content[6].children[1];
+                    this.ui.detailsLatencyAvgMeter = this.ui.details.content[6].children[2];
+                    this.ui.detailsLatencyGraph = this.ui.details.content[7].children[1];
+
+                    this.ui.detailsLoadAvg = this.ui.details.content[10].children[1];
+                    this.ui.detailsLoadAvgMeter = this.ui.details.content[10].children[2];
+                    this.ui.detailsLoadAvgGraph = this.ui.details.content[11].children[1];
+
+                    this.ui.detailsMem = this.ui.details.content[12].children[1];
+                    this.ui.detailsMemMeter = this.ui.details.content[12].children[2];
+
+                    this.ui.detailsSwap = this.ui.details.content[13].children[1];
+                    this.ui.detailsSwapMeter = this.ui.details.content[13].children[2];
+
+                    this.ui.detailsStorage = this.ui.details.content[14].children[1];
+                    this.ui.detailsStorageMeter = this.ui.details.content[14].children[2];
+
+                    ticker.add(this.onUpdate);
+                    ticker.start();
+                } else {
+                    this.ui.detailsNumClients.html(numClients);
+
+                    this.ui.detailsMem.html(`${memUsed} / ${memTotal} (${memUsedPercentage}%)`);
+                    this.ui.detailsMemMeter.update(memUsedPercentage);
+
+                    this.ui.detailsSwap.html(`${swapUsed} / ${swapTotal} (${swapUsedPercentage}%)`);
+                    this.ui.detailsSwapMeter.update(swapUsedPercentage);
+
+                    this.ui.detailsStorage.html(`${storageUsed} / ${storageTotal} (${storageUsedPercentage}%)`);
+                    this.ui.detailsStorageMeter.update(storageUsedPercentage);
+                }
+            };
+
+            static onArray = array => {
+                this.ghostArray = array.slice(0, 80);
+                this.array = array.slice(-80);
+
+                if (this.ui) {
+                    this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
+                    this.ui.detailsLoadAvgGraph.setArray(this.array);
+                }
+            };
+
+            static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
+                if (this.ui) {
+                    if (serverUptime !== undefined) {
+                        this.ui.detailsUptime.html(serverUptime);
+                    }
+
+                    if (latency !== undefined) {
+                        this.ui.detailsLatencyMeter.update(latency);
+                        this.ui.detailsLatencyGraph.update(latency);
+                    }
+
+                    if (latencyAvg !== undefined) {
+                        this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
+                        this.ui.detailsLatencyAvgMeter.update(latencyAvg);
+                    }
+
+                    if (loadAvg !== undefined) {
+                        this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
+                        this.ui.detailsLoadAvgMeter.update(loadAvg);
+                        this.ui.detailsLoadAvgGraph.update(loadAvg);
+                    }
+                }
+            };
+
+            static onUpdate = () => {
+                this.ui.update();
+                this.ui.detailsLatencyGraph.update();
+                this.ui.detailsLoadAvgGraph.update();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

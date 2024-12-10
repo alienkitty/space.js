@@ -63,13 +63,7 @@ export class Title extends Interface {
 
         shuffle(this.letters);
 
-        const underscores = this.letters.filter(letter => letter === '_');
-
-        underscores.forEach((letter, i) => {
-            letter.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', i * 15);
-        });
-
-        const letters = this.letters.filter(letter => letter !== '_').slice(0, 2);
+        const letters = this.letters.filter(letter => letter.text() !== '_').slice(0, 2);
 
         letters.forEach((letter, i) => {
             letter.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 2000, 'easeOutCubic', 100 + i * 15);
