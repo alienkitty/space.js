@@ -39,13 +39,13 @@ export class ReticleCanvas extends Component {
             return;
         }
 
+        this.context.save();
+
         if (this.props.alpha < 0.001) {
             this.context.globalAlpha = 0;
         } else {
             this.context.globalAlpha = this.props.alpha;
         }
-
-        this.context.save();
 
         this.context.translate(this.position.x, this.position.y);
         this.context.scale(this.props.scale, this.props.scale);
