@@ -548,17 +548,15 @@ export class Point3D extends Group {
     }
 
     setInitialPosition() {
-        this.updateMatrixWorld();
-
         this.point.position.copy(this.point.target);
-    }
 
-    addListeners() {
-        this.panel.events.on('update', this.onUpdate);
+        this.updateMatrixWorld();
     }
 
     removeListeners() {
-        this.panel.events.off('update', this.onUpdate);
+        if (this.panel) {
+            this.panel.events.off('update', this.onUpdate);
+        }
     }
 
     // Event handlers
@@ -674,13 +672,20 @@ export class Point3D extends Group {
         }
     }
 
+    setRadialGraph(graph) {
+        if (this.graph) {
+            this.graph.destroy();
+        }
+
+        this.graph = this.element.add(graph);
+    }
+
     addPanel(item) {
         this.point.info.addPanel(item);
 
         if (!this.panel) {
             this.panel = this.point.info.panel;
-
-            this.addListeners();
+            this.panel.events.on('update', this.onUpdate);
         }
     }
 
@@ -760,6 +765,7 @@ export class Point3D extends Group {
     }
 
     update() {
+        // Set line start and end points
         const p0 = this.reticle.position;
         const p1 = this.point.position;
 
@@ -774,9 +780,13 @@ export class Point3D extends Group {
         this.line.setStartPoint(this.v);
         this.line.setEndPoint(p1);
 
+        // Update canvas elements
         this.reticle.update();
         this.line.update();
-        this.point.update();
+
+        if (this.graph) {
+            this.graph.update();
+        }
     }
 
     updateMatrixWorld(force) {
@@ -784,6 +794,7 @@ export class Point3D extends Group {
 
         this.camera.updateMatrixWorld();
 
+        // Get screen space coordinates
         const box = getScreenSpaceBox(this.mesh, this.camera);
         const center = box.getCenter(this.center).multiply(this.halfScreen);
         const size = box.getSize(this.size).multiply(this.halfScreen);
@@ -794,6 +805,7 @@ export class Point3D extends Group {
         const halfWidth = Math.round(width / 2);
         const halfHeight = Math.round(height / 2);
 
+        // Set positions
         this.reticle.position.set(centerX, centerY);
 
         if (this.tracker) {
@@ -807,8 +819,15 @@ export class Point3D extends Group {
             });
         }
 
-        this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+        if (this.graph) {
+            this.graph.position.set(centerX, centerY);
+            this.graph.setSize(width, height);
+        }
 
+        this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+        this.point.update();
+
+        // Update instances and helpers
         if (this.isInstanced) {
             this.instances.forEach(instance => {
                 const { position, quaternion, scale } = instance;
@@ -937,6 +956,11 @@ export class Point3D extends Group {
     animateIn(reverse) {
         this.reticle.animateIn();
         this.line.animateIn(reverse);
+
+        if (this.graph) {
+            this.graph.animateIn();
+        }
+
         this.point.animateIn();
 
         this.animatedIn = true;
@@ -948,6 +972,10 @@ export class Point3D extends Group {
 
         if (this.tracker) {
             this.tracker.animateOut();
+        }
+
+        if (this.graph) {
+            this.graph.animateOut();
         }
 
         this.point.animateOut();
