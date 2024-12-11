@@ -398,6 +398,8 @@ export class PanelGraph extends Interface {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
+
+        this.update();
     }
 
     setValue(value) {

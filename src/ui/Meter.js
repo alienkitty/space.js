@@ -245,6 +245,8 @@ export class Meter extends Interface {
         }
 
         this.needsUpdate = true;
+
+        this.update();
     }
 
     setWidth(width) {
