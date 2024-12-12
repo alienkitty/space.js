@@ -41,7 +41,7 @@ export class EventEmitter {
             return;
         }
 
-        const stack = this.callbacks[type].slice();
+        const stack = Array.from(this.callbacks[type]);
 
         for (let i = 0, l = stack.length; i < l; i++) {
             stack[i].call(this, ...event);

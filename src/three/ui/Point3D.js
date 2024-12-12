@@ -646,9 +646,9 @@ export class Point3D extends Group {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
                     if (index !== undefined) {
-                        ui.setPanelIndex(target.name, index, path.slice());
+                        ui.setPanelIndex(target.name, index, Array.from(path));
                     } else if (value !== undefined) {
-                        ui.setPanelValue(target.name, value, path.slice());
+                        ui.setPanelValue(target.name, value, Array.from(path));
                     }
                 }
             });

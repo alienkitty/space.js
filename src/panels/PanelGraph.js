@@ -386,7 +386,7 @@ export class PanelGraph extends Interface {
             if (!this.callback) {
                 this.array = value;
             } else {
-                this.array = value.slice();
+                this.array = Array.from(value);
             }
         } else {
             this.array = new Array(this.resolution).fill(0);
