@@ -359,6 +359,9 @@ export class Meter extends Interface {
 
             this.clearTween().css({ opacity: 1 });
         } else {
+            this.props.xMultiplier = 0;
+            this.props.progress = 0;
+
             tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
                 tween(this.props, { xMultiplier: 1 }, 400, 'easeOutCubic', () => {
                     this.animatedIn = true;

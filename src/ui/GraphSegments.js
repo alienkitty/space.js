@@ -550,6 +550,10 @@ export class GraphSegments extends Interface {
     }
 
     drawGraph() {
+        if (this.props.alpha <= 0) {
+            return;
+        }
+
         const w = this.width * this.props.progress;
         const h = this.height - 1;
 
@@ -835,6 +839,10 @@ export class GraphSegments extends Interface {
                 this.hoverIn(true);
             }
         } else {
+            this.props.alpha = 0;
+            this.props.yMultiplier = 0;
+            this.props.progress = 0;
+
             tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
             tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
