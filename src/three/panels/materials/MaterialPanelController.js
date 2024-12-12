@@ -127,7 +127,7 @@ export class MaterialPanelController {
                                     materialProperties[key].copy(value);
                                 }
                             } else if (Array.isArray(value)) {
-                                materialProperties[key] = value.slice();
+                                materialProperties[key] = Array.from(value);
                             } else {
                                 materialProperties[key] = value;
                             }
