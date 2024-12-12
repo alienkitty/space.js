@@ -584,6 +584,10 @@ export class RadialGraph extends Interface {
     }
 
     drawGraph() {
+        if (this.props.alpha <= 0) {
+            return;
+        }
+
         const h = this.graphHeight - 1;
 
         if (this.props.alpha < 0.001) {
@@ -976,6 +980,10 @@ export class RadialGraph extends Interface {
                 this.hoverIn(true);
             }
         } else {
+            this.props.alpha = 0;
+            this.props.yMultiplier = 0;
+            this.props.progress = 0;
+
             tween(this.props, { alpha: 1 }, 500, 'easeOutSine');
 
             tween(this.props, { progress: 1 }, 500, 'easeInOutCubic', () => {
