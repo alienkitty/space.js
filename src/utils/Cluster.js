@@ -6,15 +6,15 @@
  * A cluster of objects created from a given constructor.
  */
 export class Cluster {
-    constructor(type, num = 10) {
-        this.type = type;
+    constructor(typeConstructor, num = 10) {
+        this.typeConstructor = typeConstructor;
 
         this.array = [];
         this.index = 0;
 
-        if (type) {
+        if (this.typeConstructor) {
             for (let i = 0; i < num; i++) {
-                this.array.push(new type());
+                this.array.push(new this.typeConstructor());
             }
         }
     }
