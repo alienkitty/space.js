@@ -5,8 +5,9 @@
 import { EventEmitter } from './EventEmitter.js';
 import { Cluster } from './Cluster.js';
 
-import { absolute, getConstructor, guid } from './Utils.js';
+import { absolute, getConstructor } from './Utils.js';
 
+var id = 0;
 var hardware;
 
 if (typeof window !== 'undefined') {
@@ -124,7 +125,7 @@ export class Thread extends EventEmitter {
         message.fn = name;
 
         if (callback) {
-            const id = guid();
+            id++;
 
             message.id = id;
 

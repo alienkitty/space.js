@@ -4,7 +4,7 @@
 
 import { Loader } from './Loader.js';
 
-import { guid } from '../utils/Utils.js';
+var id = 0;
 
 /**
  * Creates various objects based on the file extension of a given source,
@@ -103,7 +103,7 @@ export class AssetLoader extends Loader {
     }
 
     loadData(path) {
-        const promise = fetch(`${this.getPath(path)}?${guid()}`, this.options).then(response => {
+        const promise = fetch(`${this.getPath(path)}?${++id}`, this.options).then(response => {
             return response.json();
         });
 
