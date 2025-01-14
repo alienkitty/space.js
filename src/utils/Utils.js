@@ -126,10 +126,6 @@ export function headsTails(heads, tails) {
     return randInt(0, 1) ? tails : heads;
 }
 
-export function guid() {
-    return (Date.now() + randInt(0, 99999)).toString();
-}
-
 export function brightness(color) {
     return color.r * 0.3 + color.g * 0.59 + color.b * 0.11;
 }

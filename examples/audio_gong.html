@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { BufferLoader, UI, WebAudio, clamp, delayedCall, guid } from '../src/index.js';
+        import { BufferLoader, UI, WebAudio, clamp, delayedCall } from '../src/index.js';
+
+        var id = 0;
 
         class AudioController {
             static init(instructions) {
@@ -45,7 +47,7 @@
                 const pan = clamp(((normalX * 2) - 1) * 0.8, -1, 1);
                 const rate = clamp(0.8 + (1 - normalY) * 0.4, 0.8, 1.2);
 
-                const gong = WebAudio.clone('gong', guid());
+                const gong = WebAudio.clone('gong', ++id);
                 gong.gain.set(0.5);
                 gong.stereoPan.set(pan);
                 gong.playbackRate.set(rate);

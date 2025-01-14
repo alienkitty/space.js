@@ -12,7 +12,9 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
-import { PI, PI60, PI90, Third, TwoPI, brightness, clamp, guid, radToDeg } from '../utils/Utils.js';
+import { PI, PI60, PI90, Third, TwoPI, brightness, clamp, radToDeg } from '../utils/Utils.js';
+
+var id = 0;
 
 export class ColorPicker extends Interface {
     constructor({
@@ -102,8 +104,9 @@ export class ColorPicker extends Interface {
     }
 
     initColorRing() {
+        id++;
+
         const size = 256;
-        const id = guid();
 
         this.colorRing = new Interface(null, 'svg');
         this.colorRing.hide();
