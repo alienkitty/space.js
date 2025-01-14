@@ -8,10 +8,10 @@ import { Cluster } from './Cluster.js';
 import { absolute, getConstructor } from './Utils.js';
 
 var id = 0;
-var hardware;
+var concurrency;
 
 if (typeof window !== 'undefined') {
-    hardware = navigator.hardwareConcurrency || 4;
+    concurrency = navigator.hardwareConcurrency || 4;
 }
 
 /**
@@ -23,7 +23,7 @@ if (typeof window !== 'undefined') {
  * console.log(image);
  */
 export class Thread extends EventEmitter {
-    static count = Math.max(Math.min(hardware, 8), 4);
+    static count = Math.max(Math.min(concurrency, 8), 4);
     static params = {};
 
     static upload(...objects) {
@@ -52,6 +52,12 @@ export class Thread extends EventEmitter {
     } = Thread.params) {
         super();
 
+        this.initWorker(imports, classes, controller, handlers);
+
+        this.addListeners();
+    }
+
+    initWorker(imports, classes, controller, handlers) {
         const array = [];
 
         imports.forEach(bundle => {
@@ -84,8 +90,6 @@ export class Thread extends EventEmitter {
         });
 
         this.worker = new Worker(URL.createObjectURL(new Blob([array.join('\n\n')], { type: 'text/javascript' })), { type: 'module' });
-
-        this.addListeners();
     }
 
     createMethod(name) {
