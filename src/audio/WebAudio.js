@@ -41,7 +41,7 @@ export class WebAudio {
 
     static init(options) {
         this.context = new AudioContext(options);
-        this.sounds = {};
+        this.map = new Map();
 
         this.output = this.context.createGain();
         this.output.connect(this.context.destination);
@@ -87,23 +87,23 @@ export class WebAudio {
             sound = new Sound(parent, id, buffer, bypass);
         }
 
-        this.sounds[id] = sound;
+        this.map.set(id, sound);
 
         return sound;
     }
 
     static get(id) {
-        return this.sounds[id];
+        return this.map.get(id);
     }
 
     static remove(id) {
-        const sound = this.sounds[id];
+        const sound = this.map.get(id);
 
         if (sound) {
             sound.destroy();
         }
 
-        delete this.sounds[id];
+        this.map.delete(id);
     }
 
     static clone(parent, from, to, bypass) {
@@ -114,7 +114,7 @@ export class WebAudio {
             parent = this;
         }
 
-        const sound = this.sounds[from];
+        const sound = this.map.get(from);
 
         if (sound) {
             return this.add(parent, to, sound.buffer, bypass);
@@ -124,7 +124,7 @@ export class WebAudio {
     }
 
     static trigger(id) {
-        const sound = this.sounds[id];
+        const sound = this.map.get(id);
 
         if (sound) {
             sound.play();
@@ -139,7 +139,7 @@ export class WebAudio {
             volume = 1;
         }
 
-        const sound = this.sounds[id];
+        const sound = this.map.get(id);
 
         if (sound) {
             sound.gain.set(volume);
@@ -158,7 +158,7 @@ export class WebAudio {
             delay = 0;
         }
 
-        const sound = this.sounds[id];
+        const sound = this.map.get(id);
 
         if (sound) {
             sound.gain.set(0);
@@ -181,7 +181,7 @@ export class WebAudio {
             delay = 0;
         }
 
-        const sound = this.sounds[id];
+        const sound = this.map.get(id);
 
         if (sound) {
             sound.ready().then(() => {
@@ -247,10 +247,8 @@ export class WebAudio {
     }
 
     static destroy() {
-        for (const id in this.sounds) {
-            if (this.sounds[id] && this.sounds[id].destroy) {
-                this.sounds[id].destroy();
-            }
+        for (const id in this.map) {
+            this.remove(id);
         }
 
         this.context.close();
