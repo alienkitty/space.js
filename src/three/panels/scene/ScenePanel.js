@@ -56,7 +56,7 @@ export class ScenePanel extends Panel {
                     name: 'Rotate X',
                     min: 0,
                     max: 360,
-                    step: 0.3,
+                    step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.x),
                     callback: value => {
                         value = MathUtils.degToRad(value);
@@ -68,7 +68,7 @@ export class ScenePanel extends Panel {
                     name: 'Rotate Y',
                     min: 0,
                     max: 360,
-                    step: 0.3,
+                    step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.y),
                     callback: value => {
                         value = MathUtils.degToRad(value);
@@ -80,7 +80,7 @@ export class ScenePanel extends Panel {
                     name: 'Rotate Z',
                     min: 0,
                     max: 360,
-                    step: 0.3,
+                    step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.z),
                     callback: value => {
                         value = MathUtils.degToRad(value);
