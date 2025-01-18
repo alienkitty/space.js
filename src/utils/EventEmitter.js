@@ -2,6 +2,8 @@
  * @author pschroen / https://ufo.ai/
  *
  * Based on https://developer.mozilla.org/en-US/docs/Web/API/EventTarget#simple_implementation_of_eventtarget
+ * Based on https://github.com/mrdoob/three.js/blob/dev/src/core/EventDispatcher.js
+ * Based on https://github.com/brunosimon/folio-2019/blob/master/src/javascript/Utils/EventEmitter.js
  */
 
 /**
