@@ -17,7 +17,7 @@ export function getSphericalCube(radius, segments) {
     const vertices = geometry.getAttribute('position');
     const normals = geometry.getAttribute('normal');
 
-    for (let i = 0; i < vertices.count; i++) {
+    for (let i = 0, l = vertices.count; i < l; i++) {
         const v = new Vector3().fromArray(vertices.array, i * 3);
         v.normalize();
         normals.setXYZ(i, v.x, v.y, v.z);
@@ -35,7 +35,7 @@ export function getScreenSpaceBox(mesh, camera) {
     const min = new Vector3(1, 1, 1);
     const max = new Vector3(-1, -1, -1);
 
-    for (let i = 0; i < vertices.count; i++) {
+    for (let i = 0, l = vertices.count; i < l; i++) {
         worldPosition.fromArray(vertices.array, i * 3).applyMatrix4(mesh.matrixWorld);
         screenSpacePosition.copy(worldPosition).project(camera);
         min.min(screenSpacePosition);
