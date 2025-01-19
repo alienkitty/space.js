@@ -2,7 +2,17 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector2, Vector3, WebGLRenderTarget } from 'three';
+import {
+    Box2,
+    BoxGeometry,
+    BufferGeometry,
+    Float32BufferAttribute,
+    MathUtils,
+    Sphere,
+    Vector2,
+    Vector3,
+    WebGLRenderTarget
+} from 'three';
 
 export function getFullscreenTriangle() {
     const geometry = new BufferGeometry();
@@ -26,6 +36,12 @@ export function getSphericalCube(radius, segments) {
     }
 
     return geometry;
+}
+
+export function getBoundingSphereWorld(mesh) {
+    mesh.geometry.computeBoundingSphere();
+
+    return new Sphere().copy(mesh.geometry.boundingSphere).applyMatrix4(mesh.matrixWorld);
 }
 
 export function getScreenSpaceBox(mesh, camera) {
