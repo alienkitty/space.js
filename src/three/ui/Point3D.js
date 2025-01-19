@@ -15,7 +15,7 @@ import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
 
 import { clearTween, delayedCall } from '../../tween/Tween.js';
-import { getScreenSpaceBox } from '../utils/Utils3D.js';
+import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -468,11 +468,11 @@ export class Point3D extends Group {
     }
 
     initMesh() {
-        this.object.geometry.computeBoundingSphere();
+        // Get world dimensions
+        this.boundingSphere = getBoundingSphereWorld(this.object);
 
-        const { radius } = this.object.geometry.boundingSphere;
-
-        this.geometry = new SphereGeometry(radius);
+        // Tracker geometry
+        this.geometry = new SphereGeometry(this.boundingSphere.radius);
 
         if (Point3D.debug) {
             this.material = new MeshBasicMaterial({
@@ -521,14 +521,9 @@ export class Point3D extends Group {
     }
 
     createMesh() {
-        const { center } = this.object.geometry.boundingSphere;
-
         const mesh = new Mesh(this.geometry, this.material);
-        mesh.position.copy(this.object.position);
-        mesh.position.x += center.x;
-        mesh.position.y -= center.y; // Y flipped
-        mesh.position.z += center.z;
-        mesh.scale.copy(this.object.scale);
+        this.object.localToWorld(mesh.position);
+        mesh.worldToLocal(mesh.position);
         mesh.layers.set(31); // Last layer
         this.add(mesh);
 
@@ -700,11 +695,7 @@ export class Point3D extends Group {
     toggleNormalsHelper(show) {
         if (show) {
             if (!this.normalsHelper) {
-                this.object.geometry.computeBoundingSphere();
-
-                const { radius } = this.object.geometry.boundingSphere;
-
-                this.normalsHelper = new VertexNormalsHelper(this.object, radius / 5);
+                this.normalsHelper = new VertexNormalsHelper(this.object, this.boundingSphere.radius / 5);
                 Point3D.scene.add(this.normalsHelper);
             }
 
@@ -717,12 +708,9 @@ export class Point3D extends Group {
     toggleTangentsHelper(show) {
         if (show) {
             if (!this.tangentsHelper) {
-                this.object.geometry.computeBoundingSphere();
                 this.object.geometry.computeTangents();
 
-                const { radius } = this.object.geometry.boundingSphere;
-
-                this.tangentsHelper = new VertexTangentsHelper(this.object, radius / 5);
+                this.tangentsHelper = new VertexTangentsHelper(this.object, this.boundingSphere.radius / 5);
                 Point3D.scene.add(this.tangentsHelper);
             }
 
