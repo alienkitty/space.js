@@ -65,17 +65,6 @@ export class Details extends Interface {
         this.data.content.forEach(data => {
             this.addContent(this.container, data);
         });
-
-        if (Array.isArray(this.data.links)) {
-            this.data.links.forEach(data => {
-                const link = new DetailsLink(data.title, data.link);
-                link.css({
-                    display: 'block'
-                });
-                this.container.add(link);
-                this.links.push(link);
-            });
-        }
     }
 
     addListeners() {
