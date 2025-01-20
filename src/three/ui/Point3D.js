@@ -405,6 +405,14 @@ export class Point3D extends Group {
                 ui.deactivate();
             }
         });
+
+        const selected = this.getSelected();
+
+        if (!selected.length && this.hover) {
+            this.hover.onHover({ type: 'out' });
+            this.hover = null;
+            this.root.css({ cursor: '' });
+        }
     }
 
     static destroy() {
