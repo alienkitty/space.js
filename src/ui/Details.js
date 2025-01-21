@@ -16,6 +16,7 @@ export class Details extends Interface {
 
         this.content = [];
         this.links = [];
+        this.animatedIn = false;
 
         this.init();
         this.initViews();
@@ -199,6 +200,8 @@ export class Details extends Interface {
         });
 
         this.title.animateIn();
+
+        this.animatedIn = true;
     }
 
     animateOut(callback) {
@@ -212,6 +215,8 @@ export class Details extends Interface {
                 callback();
             }
         });
+
+        this.animatedIn = false;
     }
 
     destroy() {

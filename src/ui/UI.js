@@ -73,7 +73,6 @@ export class UI extends Interface {
         this.frame = 0;
 
         this.buttons = [];
-        this.isDetailsOpen = false;
         this.animatedIn = false;
 
         this.init();
@@ -277,7 +276,7 @@ export class UI extends Interface {
             if (this.animatedIn) {
                 this.animateOut();
 
-                if (this.isDetailsOpen) {
+                if (this.details.animatedIn) {
                     this.toggleDetails(false);
                 }
             } else {
@@ -289,7 +288,7 @@ export class UI extends Interface {
     };
 
     onDetailsClick = () => {
-        if (this.isDetailsOpen) {
+        if (this.details.animatedIn) {
             this.toggleDetails(false);
         } else {
             this.toggleDetails(true);
@@ -394,7 +393,7 @@ export class UI extends Interface {
 
     toggleDetails(show) {
         if (show) {
-            this.isDetailsOpen = true;
+            this.details.animatedIn = true;
 
             if (this.detailsButton) {
                 this.detailsButton.open();
@@ -402,7 +401,7 @@ export class UI extends Interface {
 
             this.details.animateIn();
         } else {
-            this.isDetailsOpen = false;
+            this.details.animatedIn = false;
 
             this.details.animateOut();
 
@@ -411,7 +410,7 @@ export class UI extends Interface {
             }
         }
 
-        Stage.events.emit('details', { open: this.isDetailsOpen, target: this });
+        Stage.events.emit('details', { open: this.details.animatedIn, target: this });
     }
 
     destroy() {
