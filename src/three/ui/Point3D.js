@@ -509,10 +509,12 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
-        this.reticle = new ReticleCanvas(context);
+        this.reticle = new ReticleCanvas();
+        this.reticle.setContext(context);
         this.element.add(this.reticle);
 
-        this.line = new LineCanvas(context);
+        this.line = new LineCanvas();
+        this.line.setContext(context);
         this.element.add(this.line);
 
         if (!this.noTracker) {
