@@ -116,6 +116,10 @@ export class RadialGraphSegments extends Interface {
         this.graphNeedsUpdate = false;
         this.initialized = false;
 
+        if (this.startAngle < 0) {
+            this.startAngle += TwoPI;
+        }
+
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
             bottom: Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim(),
