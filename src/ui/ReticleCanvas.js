@@ -10,7 +10,9 @@ import { clearTween, tween } from '../tween/Tween.js';
 import { TwoPI } from '../utils/Utils.js';
 
 export class ReticleCanvas extends Component {
-    constructor(context) {
+    constructor({
+        context
+    } = {}) {
         super();
 
         this.context = context;
@@ -28,6 +30,10 @@ export class ReticleCanvas extends Component {
     }
 
     // Public methods
+
+    setContext(context) {
+        this.context = context;
+    }
 
     theme() {
         this.lineWidth = 1.5;

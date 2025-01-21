@@ -9,7 +9,9 @@ import { Component } from '../utils/Component.js';
 import { clearTween, tween } from '../tween/Tween.js';
 
 export class LineCanvas extends Component {
-    constructor(context) {
+    constructor({
+        context
+    } = {}) {
         super();
 
         this.context = context;
@@ -27,6 +29,10 @@ export class LineCanvas extends Component {
     }
 
     // Public methods
+
+    setContext(context) {
+        this.context = context;
+    }
 
     setStartPoint(position) {
         this.start.copy(position);

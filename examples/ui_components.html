@@ -204,7 +204,8 @@
                 reticle2.update();
 
                 // Reticle canvas
-                const reticle3 = new ReticleCanvas(this.context);
+                const reticle3 = new ReticleCanvas();
+                reticle3.setContext(this.context);
 
                 // Tracker
                 const tracker = new Tracker();
@@ -235,7 +236,8 @@
                 number.setData({ targetNumber: 1 });
 
                 // Line canvas
-                const line = new LineCanvas(this.context);
+                const line = new LineCanvas();
+                line.setContext(this.context);
 
                 // Point
                 const point = new Point();
