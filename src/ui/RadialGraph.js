@@ -138,9 +138,12 @@ export class RadialGraph extends Interface {
 
         this.props = {
             alpha: 0,
-            handleAlpha: 0,
             yMultiplier: 0,
             progress: 0
+        };
+
+        this.handleProps = {
+            alpha: 0
         };
 
         this.init();
@@ -161,8 +164,6 @@ export class RadialGraph extends Interface {
         }
 
         this.setSize(this.width, this.height);
-
-        this.addListeners();
     }
 
     init() {
@@ -296,7 +297,7 @@ export class RadialGraph extends Interface {
 
     initMarkers() {
         this.markers.forEach(data => {
-            this.addMarker(data, 650);
+            this.addMarker(data);
         });
     }
 
@@ -305,6 +306,11 @@ export class RadialGraph extends Interface {
             window.addEventListener('pointerdown', this.onPointerDown);
             window.addEventListener('pointermove', this.onPointerMove);
         }
+
+        this.items.forEach(item => {
+            item.events.on('update', this.onMarkerUpdate);
+            item.events.on('click', this.onMarkerClick);
+        });
     }
 
     removeListeners() {
@@ -364,11 +370,11 @@ export class RadialGraph extends Interface {
     onPointerUp = e => {
         window.removeEventListener('pointerup', this.onPointerUp);
 
-        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
+        if (e.target !== this.element) {
             return;
         }
 
-        if (e.target !== this.element) {
+        if (performance.now() - this.lastTime > 250 || this.delta.length() > 50) {
             return;
         }
 
@@ -521,23 +527,24 @@ export class RadialGraph extends Interface {
         this.update();
     }
 
-    addMarker([angle, name], delay = 0) {
+    addMarker([angle, name]) {
         const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.angle = angle;
         item.multiplier = 0;
-        item.events.on('update', this.onMarkerUpdate);
-        item.events.on('click', this.onMarkerClick);
         this.add(item);
 
         this.items.push(item);
 
-        tween(item, { multiplier: 1 }, 400, 'easeOutCubic', delay, null, () => {
-            this.needsUpdate = true;
-
-            item.css({ opacity: item.multiplier });
-        });
-
         if (this.initialized) {
+            item.events.on('update', this.onMarkerUpdate);
+            item.events.on('click', this.onMarkerClick);
+
+            tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
+                this.needsUpdate = true;
+
+                item.css({ opacity: item.multiplier });
+            });
+
             Stage.events.emit('marker', { type: 'add', item, target: this });
         }
     }
@@ -580,10 +587,6 @@ export class RadialGraph extends Interface {
         if (this.needsUpdate || this.hoveredIn || this.isDragging) {
             this.drawGraph();
             this.needsUpdate = false;
-        }
-
-        if (!this.initialized) {
-            this.initialized = true;
         }
     }
 
@@ -738,10 +741,10 @@ export class RadialGraph extends Interface {
             const x3 = this.middle + r3 * c;
             const y3 = this.middle + r3 * s;
 
-            if (this.props.handleAlpha < 0.001) {
+            if (this.handleProps.alpha < 0.001) {
                 this.context.globalAlpha = 0;
             } else {
-                this.context.globalAlpha = this.props.handleAlpha;
+                this.context.globalAlpha = this.handleProps.alpha;
             }
 
             this.context.lineWidth = 1;
@@ -921,43 +924,35 @@ export class RadialGraph extends Interface {
         }
     }
 
-    hoverIn(force) {
-        if (this.hoveredIn && !force) {
-            return;
-        }
+    hoverIn() {
+        clearTween(this.handleProps);
 
-        this.hoveredIn = true;
-
-        clearTween(this.props);
-
-        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
+        tween(this.handleProps, { alpha: 1 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
         });
 
         this.info.clearTween();
         this.info.visible();
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
+
+        this.hoveredIn = true;
     }
 
     hoverOut(fast) {
-        if (!this.hoveredIn) {
-            return;
-        }
+        this.lastHover = 'out';
 
-        this.hoveredIn = false;
-
-        clearTween(this.props);
+        clearTween(this.handleProps);
 
         this.info.clearTween();
 
         if (fast) {
-            this.props.handleAlpha = 0;
+            this.handleProps.alpha = 0;
             this.needsUpdate = true;
 
             this.info.css({ opacity: 0 });
             this.info.invisible();
         } else {
-            tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+            tween(this.handleProps, { alpha: 0 }, 275, 'easeInOutCubic', null, () => {
                 this.needsUpdate = true;
             });
 
@@ -965,10 +960,20 @@ export class RadialGraph extends Interface {
                 this.info.invisible();
             });
         }
+
+        this.hoveredIn = false;
     }
 
     animateIn(fast) {
+        this.addListeners();
+
         clearTween(this.props);
+
+        if (!this.initialized) {
+            this.initialized = true;
+
+            this.update();
+        }
 
         if (fast) {
             this.props.alpha = 1;
@@ -981,7 +986,7 @@ export class RadialGraph extends Interface {
             this.update();
 
             if (this.hoveredIn) {
-                this.hoverIn(true);
+                this.hoverIn();
             }
         } else {
             this.props.alpha = 0;
@@ -995,7 +1000,17 @@ export class RadialGraph extends Interface {
                     this.animatedIn = true;
 
                     if (this.hoveredIn) {
-                        this.hoverIn(true);
+                        this.hoverIn();
+                    }
+
+                    if (!this.noMarker) {
+                        this.items.forEach(item => {
+                            tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
+                                this.needsUpdate = true;
+
+                                item.css({ opacity: item.multiplier });
+                            });
+                        });
                     }
                 }, () => {
                     this.needsUpdate = true;
@@ -1007,9 +1022,14 @@ export class RadialGraph extends Interface {
     }
 
     animateOut() {
+        this.removeListeners();
+
         clearTween(this.props);
 
         this.animatedIn = false;
+
+        this.hoverOut(true);
+        this.setCursor();
 
         tween(this.props, { alpha: 0 }, 300, 'easeOutSine');
 
@@ -1018,12 +1038,12 @@ export class RadialGraph extends Interface {
 
             if (!this.noMarker) {
                 this.items.forEach(item => {
-                    item.css({ opacity: this.props.yMultiplier });
+                    item.multiplier = this.props.yMultiplier;
+
+                    item.css({ opacity: item.multiplier });
                 });
             }
         });
-
-        this.setCursor();
     }
 
     destroy() {
