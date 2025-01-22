@@ -39,6 +39,7 @@ export class GraphMarker extends Interface {
             lineHeight: 'var(--ui-title-line-height)',
             whiteSpace: 'nowrap',
             zIndex: 1,
+            pointerEvents: 'auto',
             opacity: 0
         });
         this.html(this.name);
