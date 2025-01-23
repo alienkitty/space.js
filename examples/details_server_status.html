@@ -88,14 +88,14 @@
                             projectDomain,
                             networkName,
                             serverVersion,
-                            processorName,
-                            numProcessingUnits,
                             memTotal,
                             memFree,
                             swapTotal,
                             swapFree,
                             storageTotal,
                             storageAvailable,
+                            processorName,
+                            numProcessingUnits,
                             numClients
                         } = details;
 
@@ -147,8 +147,6 @@
                             projectDomain,
                             networkName,
                             serverVersion,
-                            processorName,
-                            numProcessingUnits,
                             memUsed: memUsedFormatted,
                             memTotal: memTotalFormatted,
                             memUsedPercentage,
@@ -158,6 +156,8 @@
                             storageUsed: storageUsedFormatted,
                             storageTotal: storageTotalFormatted,
                             storageUsedPercentage,
+                            processorName,
+                            numProcessingUnits,
                             numClients: numClients > 0 ? numClients : 1
                         });
                         break;
@@ -262,8 +262,6 @@
                 projectDomain,
                 networkName,
                 serverVersion,
-                processorName,
-                numProcessingUnits,
                 memUsed,
                 memTotal,
                 memUsedPercentage,
@@ -273,6 +271,8 @@
                 storageUsed,
                 storageTotal,
                 storageUsedPercentage,
+                processorName,
+                numProcessingUnits,
                 numClients
             }) => {
                 if (!this.ui) {

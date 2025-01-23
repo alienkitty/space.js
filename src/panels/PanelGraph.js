@@ -87,8 +87,8 @@ export class PanelGraph extends Interface {
             this.refreshRate240 = 1000 / 180;
         }
 
-        this.props = {
-            handleAlpha: 0
+        this.handleProps = {
+            alpha: 0
         };
 
         this.init();
@@ -386,7 +386,7 @@ export class PanelGraph extends Interface {
             if (!this.callback) {
                 this.array = value;
             } else {
-                this.array = value.slice();
+                this.array = Array.from(value);
             }
         } else {
             this.array = new Array(this.resolution).fill(0);
@@ -398,6 +398,8 @@ export class PanelGraph extends Interface {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
+
+        this.update();
     }
 
     setValue(value) {
@@ -499,10 +501,10 @@ export class PanelGraph extends Interface {
                 y = h - value * this.rangeHeight - 1;
             }
 
-            if (this.props.handleAlpha < 0.001) {
+            if (this.handleProps.alpha < 0.001) {
                 this.context.globalAlpha = 0;
             } else {
-                this.context.globalAlpha = this.props.handleAlpha;
+                this.context.globalAlpha = this.handleProps.alpha;
             }
 
             this.context.lineWidth = 1;
@@ -581,39 +583,31 @@ export class PanelGraph extends Interface {
     }
 
     hoverIn() {
-        if (this.hoveredIn) {
-            return;
-        }
+        clearTween(this.handleProps);
 
-        this.hoveredIn = true;
-
-        clearTween(this.props);
-
-        tween(this.props, { handleAlpha: 1 }, 275, 'easeInOutCubic', null, () => {
+        tween(this.handleProps, { alpha: 1 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
         });
 
         this.info.clearTween();
         this.info.visible();
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
+
+        this.hoveredIn = true;
     }
 
     hoverOut() {
-        if (!this.hoveredIn) {
-            return;
-        }
+        clearTween(this.handleProps);
 
-        this.hoveredIn = false;
-
-        clearTween(this.props);
-
-        tween(this.props, { handleAlpha: 0 }, 275, 'easeInOutCubic', null, () => {
+        tween(this.handleProps, { alpha: 0 }, 275, 'easeInOutCubic', null, () => {
             this.needsUpdate = true;
         });
 
         this.info.clearTween().tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
             this.info.invisible();
         });
+
+        this.hoveredIn = false;
     }
 
     enable() {

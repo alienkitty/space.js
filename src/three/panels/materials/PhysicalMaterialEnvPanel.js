@@ -51,7 +51,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 name: 'Rotate X',
                 min: 0,
                 max: 360,
-                step: 0.3,
+                step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.x),
                 callback: value => {
                     value = MathUtils.degToRad(value);
@@ -63,7 +63,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 name: 'Rotate Y',
                 min: 0,
                 max: 360,
-                step: 0.3,
+                step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.y),
                 callback: value => {
                     value = MathUtils.degToRad(value);
@@ -75,7 +75,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 name: 'Rotate Z',
                 min: 0,
                 max: 360,
-                step: 0.3,
+                step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.z),
                 callback: value => {
                     value = MathUtils.degToRad(value);

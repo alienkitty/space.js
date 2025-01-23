@@ -15,7 +15,7 @@ import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
 
 import { clearTween, delayedCall } from '../../tween/Tween.js';
-import { getScreenSpaceBox } from '../utils/Utils3D.js';
+import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -67,6 +67,7 @@ export class Point3D extends Group {
         this.click = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
+        this.lastCursor = '';
         this.raycastInterval = 1 / 10; // 10 frames per second
         this.lastRaycast = 0;
         this.halfScreen = new Vector2();
@@ -225,22 +226,22 @@ export class Point3D extends Group {
                     this.lastInstanceId = this.instanceId;
                     this.hover = object;
                     this.hover.onHover({ type: 'over' });
-                    this.root.css({ cursor: 'pointer' });
+                    this.setCursor('pointer');
                 } else if (this.hover !== object) {
                     this.hover.onHover({ type: 'out' });
                     this.hover = object;
                     this.hover.onHover({ type: 'over' });
-                    this.root.css({ cursor: 'pointer' });
+                    this.setCursor('pointer');
                 }
             } else if (this.hover) {
                 this.hover.onHover({ type: 'out' });
                 this.hover = null;
-                this.root.css({ cursor: '' });
+                this.setCursor();
             }
         } else if (this.hover) {
             this.hover.onHover({ type: 'out' });
             this.hover = null;
-            this.root.css({ cursor: '' });
+            this.setCursor();
         }
 
         this.delta.subVectors(this.mouse, this.lastMouse);
@@ -256,6 +257,8 @@ export class Point3D extends Group {
             return;
         }
 
+        const ui = this.getCursor();
+
         if (this.click && this.click === this.hover) {
             if (!e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
                 this.points.forEach(ui => {
@@ -269,6 +272,8 @@ export class Point3D extends Group {
             this.click.onClick(e.shiftKey);
         } else if (this.openColor && !this.openColor.element.contains(e.target)) {
             Stage.events.emit('color_picker', { open: false, target: this });
+        } else if (ui && ui.graph) {
+            ui.graph.onPointerUp();
         } else if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
             this.animateOut();
         }
@@ -318,6 +323,10 @@ export class Point3D extends Group {
         return this.points.filter(ui => ui.selected);
     }
 
+    static getCursor() {
+        return this.points.find(ui => ui.lastCursor);
+    }
+
     static getMoved() {
         return this.points.filter(ui => ui.point.isMove);
     }
@@ -355,6 +364,20 @@ export class Point3D extends Group {
         this.points.forEach((ui, i) => ui.setIndex(i));
     }
 
+    static setCursor(cursor = '') {
+        const ui = this.getCursor();
+
+        if (ui && !cursor) {
+            cursor = ui.lastCursor;
+        }
+
+        if (cursor !== this.lastCursor) {
+            this.lastCursor = cursor;
+
+            this.root.css({ cursor });
+        }
+    }
+
     static update(time) {
         this.context.clearRect(0, 0, this.canvas.element.width, this.canvas.element.height);
 
@@ -387,7 +410,7 @@ export class Point3D extends Group {
             if (ui === this.hover) {
                 this.hover.onHover({ type: 'out' });
                 this.hover = null;
-                this.root.css({ cursor: '' });
+                this.setCursor();
             }
         });
 
@@ -405,6 +428,14 @@ export class Point3D extends Group {
                 ui.deactivate();
             }
         });
+
+        const selected = this.getSelected();
+
+        if (!selected.length && this.hover) {
+            this.hover.onHover({ type: 'out' });
+            this.hover = null;
+            this.setCursor();
+        }
     }
 
     static destroy() {
@@ -430,6 +461,7 @@ export class Point3D extends Group {
     constructor(mesh, {
         name = mesh.material.name || mesh.geometry.type,
         type = mesh.material.type,
+        graph = null,
         noTracker = false
     } = {}) {
         super();
@@ -437,6 +469,7 @@ export class Point3D extends Group {
         this.object = mesh;
         this.name = name;
         this.type = type;
+        this.graph = graph;
         this.noTracker = noTracker;
         this.isInstanced = mesh.isInstancedMesh;
         this.isDefault = name === mesh.geometry.type && type === mesh.material.type;
@@ -448,6 +481,7 @@ export class Point3D extends Group {
         this.center = new Vector2();
         this.size = new Vector2();
         this.selected = false;
+        this.lastCursor = '';
         this.animatedIn = false;
         this.currentMaterialMap = null;
         this.uvTexture = null;
@@ -468,11 +502,11 @@ export class Point3D extends Group {
     }
 
     initMesh() {
-        this.object.geometry.computeBoundingSphere();
+        // Get world dimensions
+        this.boundingSphere = getBoundingSphereWorld(this.object);
 
-        const { radius } = this.object.geometry.boundingSphere;
-
-        this.geometry = new SphereGeometry(radius);
+        // Tracker geometry
+        this.geometry = new SphereGeometry(this.boundingSphere.radius);
 
         if (Point3D.debug) {
             this.material = new MeshBasicMaterial({
@@ -501,34 +535,44 @@ export class Point3D extends Group {
     initViews() {
         const { context } = Point3D;
 
-        this.reticle = new ReticleCanvas(context);
-        this.element.add(this.reticle);
+        if (this.graph) {
+            this.graph.events.on('cursor', this.onCursor);
+            this.graph.setContext(context);
+            this.element.add(this.graph);
 
-        this.line = new LineCanvas(context);
-        this.element.add(this.line);
+            this.point = new Point(this, this.graph);
+            this.point.setData({
+                name: this.name,
+                type: this.type
+            });
+            this.element.add(this.point);
+        } else {
+            this.reticle = new ReticleCanvas();
+            this.reticle.setContext(context);
+            this.element.add(this.reticle);
 
-        if (!this.noTracker) {
-            this.tracker = new Tracker();
-            this.element.add(this.tracker);
+            this.line = new LineCanvas();
+            this.line.setContext(context);
+            this.element.add(this.line);
+
+            if (!this.noTracker) {
+                this.tracker = new Tracker();
+                this.element.add(this.tracker);
+            }
+
+            this.point = new Point(this, this.tracker);
+            this.point.setData({
+                name: this.name,
+                type: this.type
+            });
+            this.element.add(this.point);
         }
-
-        this.point = new Point(this, this.tracker);
-        this.point.setData({
-            name: this.name,
-            type: this.type
-        });
-        this.element.add(this.point);
     }
 
     createMesh() {
-        const { center } = this.object.geometry.boundingSphere;
-
         const mesh = new Mesh(this.geometry, this.material);
-        mesh.position.copy(this.object.position);
-        mesh.position.x += center.x;
-        mesh.position.y -= center.y; // Y flipped
-        mesh.position.z += center.z;
-        mesh.scale.copy(this.object.scale);
+        this.object.localToWorld(mesh.position);
+        mesh.worldToLocal(mesh.position);
         mesh.layers.set(31); // Last layer
         this.add(mesh);
 
@@ -548,17 +592,19 @@ export class Point3D extends Group {
     }
 
     setInitialPosition() {
-        this.updateMatrixWorld();
-
         this.point.position.copy(this.point.target);
-    }
 
-    addListeners() {
-        this.panel.events.on('update', this.onUpdate);
+        this.updateMatrixWorld();
     }
 
     removeListeners() {
-        this.panel.events.off('update', this.onUpdate);
+        if (this.graph) {
+            this.graph.events.off('cursor', this.onCursor);
+        }
+
+        if (this.panel) {
+            this.panel.events.off('update', this.onUpdate);
+        }
     }
 
     // Event handlers
@@ -599,9 +645,11 @@ export class Point3D extends Group {
                 this.animateIn();
             }
         } else {
-            this.timeout = delayedCall(2000, () => {
-                this.animateOut();
-            });
+            if (!this.graph) {
+                this.timeout = delayedCall(2000, () => {
+                    this.animateOut();
+                });
+            }
         }
 
         Point3D.events.emit('hover', { type, target: this });
@@ -639,6 +687,16 @@ export class Point3D extends Group {
         Point3D.events.emit('click', { target: this });
     };
 
+    onCursor = ({ cursor }) => {
+        if (cursor !== this.lastCursor) {
+            this.lastCursor = cursor;
+
+            if (cursor || (!cursor && !Point3D.hover)) {
+                Point3D.setCursor(cursor);
+            }
+        }
+    };
+
     onUpdate = ({ path, value, index, target }) => {
         if (this.point.isOpen && !this.point.isMove) {
             this.point.isMove = true;
@@ -648,9 +706,9 @@ export class Point3D extends Group {
             Point3D.multiple.forEach(ui => {
                 if (ui !== this) {
                     if (index !== undefined) {
-                        ui.setPanelIndex(target.name, index, path.slice());
+                        ui.setPanelIndex(target.name, index, Array.from(path));
                     } else if (value !== undefined) {
-                        ui.setPanelValue(target.name, value, path.slice());
+                        ui.setPanelValue(target.name, value, Array.from(path));
                     }
                 }
             });
@@ -679,8 +737,7 @@ export class Point3D extends Group {
 
         if (!this.panel) {
             this.panel = this.point.info.panel;
-
-            this.addListeners();
+            this.panel.events.on('update', this.onUpdate);
         }
     }
 
@@ -695,11 +752,7 @@ export class Point3D extends Group {
     toggleNormalsHelper(show) {
         if (show) {
             if (!this.normalsHelper) {
-                this.object.geometry.computeBoundingSphere();
-
-                const { radius } = this.object.geometry.boundingSphere;
-
-                this.normalsHelper = new VertexNormalsHelper(this.object, radius / 5);
+                this.normalsHelper = new VertexNormalsHelper(this.object, this.boundingSphere.radius / 5);
                 Point3D.scene.add(this.normalsHelper);
             }
 
@@ -712,12 +765,9 @@ export class Point3D extends Group {
     toggleTangentsHelper(show) {
         if (show) {
             if (!this.tangentsHelper) {
-                this.object.geometry.computeBoundingSphere();
                 this.object.geometry.computeTangents();
 
-                const { radius } = this.object.geometry.boundingSphere;
-
-                this.tangentsHelper = new VertexTangentsHelper(this.object, radius / 5);
+                this.tangentsHelper = new VertexTangentsHelper(this.object, this.boundingSphere.radius / 5);
                 Point3D.scene.add(this.tangentsHelper);
             }
 
@@ -755,28 +805,35 @@ export class Point3D extends Group {
     }
 
     theme() {
-        this.reticle.theme();
-        this.line.theme();
+        if (!this.graph) {
+            this.reticle.theme();
+            this.line.theme();
+        }
     }
 
     update() {
-        const p0 = this.reticle.position;
-        const p1 = this.point.position;
+        if (this.graph) {
+            this.graph.update();
+        } else {
+            // Set line start and end points
+            const p0 = this.reticle.position;
+            const p1 = this.point.position;
 
-        const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
-        const radius = 3;
+            const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+            const radius = 3;
 
-        const x = p0.x + radius * Math.cos(angle);
-        const y = p0.y + radius * Math.sin(angle);
+            const x = p0.x + radius * Math.cos(angle);
+            const y = p0.y + radius * Math.sin(angle);
 
-        this.v.set(x, y);
+            this.v.set(x, y);
 
-        this.line.setStartPoint(this.v);
-        this.line.setEndPoint(p1);
+            this.line.setStartPoint(this.v);
+            this.line.setEndPoint(p1);
 
-        this.reticle.update();
-        this.line.update();
-        this.point.update();
+            // Update canvas elements
+            this.reticle.update();
+            this.line.update();
+        }
     }
 
     updateMatrixWorld(force) {
@@ -784,6 +841,7 @@ export class Point3D extends Group {
 
         this.camera.updateMatrixWorld();
 
+        // Get screen space coordinates
         const box = getScreenSpaceBox(this.mesh, this.camera);
         const center = box.getCenter(this.center).multiply(this.halfScreen);
         const size = box.getSize(this.size).multiply(this.halfScreen);
@@ -794,21 +852,29 @@ export class Point3D extends Group {
         const halfWidth = Math.round(width / 2);
         const halfHeight = Math.round(height / 2);
 
-        this.reticle.position.set(centerX, centerY);
+        // Set positions
+        if (this.graph) {
+            this.graph.position.set(centerX, centerY);
+            this.graph.setSize(width, height);
+        } else {
+            this.reticle.position.set(centerX, centerY);
 
-        if (this.tracker) {
-            this.tracker.position.set(centerX, centerY);
-            this.tracker.update();
-            this.tracker.css({
-                width,
-                height,
-                marginLeft: -halfWidth,
-                marginTop: -halfHeight
-            });
+            if (this.tracker) {
+                this.tracker.position.set(centerX, centerY);
+                this.tracker.update();
+                this.tracker.css({
+                    width,
+                    height,
+                    marginLeft: -halfWidth,
+                    marginTop: -halfHeight
+                });
+            }
+
+            this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+            this.point.update();
         }
 
-        this.point.target.set(centerX + halfWidth, centerY - halfHeight);
-
+        // Update instances and helpers
         if (this.isInstanced) {
             this.instances.forEach(instance => {
                 const { position, quaternion, scale } = instance;
@@ -935,22 +1001,31 @@ export class Point3D extends Group {
     }
 
     animateIn(reverse) {
-        this.reticle.animateIn();
-        this.line.animateIn(reverse);
-        this.point.animateIn();
+        if (this.graph) {
+            this.graph.animateIn();
+        } else {
+            this.reticle.animateIn();
+            this.line.animateIn(reverse);
+
+            this.point.animateIn();
+        }
 
         this.animatedIn = true;
     }
 
     animateOut(fast, callback) {
-        this.reticle.animateOut();
-        this.line.animateOut(fast, callback);
+        if (this.graph) {
+            this.graph.animateOut();
+        } else {
+            this.reticle.animateOut();
+            this.line.animateOut(fast, callback);
 
-        if (this.tracker) {
-            this.tracker.animateOut();
+            if (this.tracker) {
+                this.tracker.animateOut();
+            }
+
+            this.point.animateOut();
         }
-
-        this.point.animateOut();
 
         this.animatedIn = false;
     }
@@ -1238,8 +1313,10 @@ export class Point3D extends Group {
         this.snappedRight = false;
         this.snapped = false;
 
-        this.line.deactivate();
-        this.point.deactivate();
+        if (!this.graph) {
+            this.line.deactivate();
+            this.point.deactivate();
+        }
 
         const selected = Point3D.getSelected();
 

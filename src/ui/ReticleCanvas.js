@@ -10,7 +10,9 @@ import { clearTween, tween } from '../tween/Tween.js';
 import { TwoPI } from '../utils/Utils.js';
 
 export class ReticleCanvas extends Component {
-    constructor(context) {
+    constructor({
+        context
+    } = {}) {
         super();
 
         this.context = context;
@@ -29,6 +31,10 @@ export class ReticleCanvas extends Component {
 
     // Public methods
 
+    setContext(context) {
+        this.context = context;
+    }
+
     theme() {
         this.lineWidth = 1.5;
         this.strokeStyle = Stage.rootStyle.getPropertyValue('--ui-color').trim();
@@ -39,13 +45,13 @@ export class ReticleCanvas extends Component {
             return;
         }
 
+        this.context.save();
+
         if (this.props.alpha < 0.001) {
             this.context.globalAlpha = 0;
         } else {
             this.context.globalAlpha = this.props.alpha;
         }
-
-        this.context.save();
 
         this.context.translate(this.position.x, this.position.y);
         this.context.scale(this.props.scale, this.props.scale);

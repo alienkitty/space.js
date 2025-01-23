@@ -91,6 +91,17 @@ export function fract(value) {
     return value - Math.floor(value);
 }
 
+export function median(numbers) {
+    const sorted = numbers.toSorted();
+    const middle = Math.floor(sorted.length / 2);
+
+    if (sorted.length % 2 === 0) {
+        return (sorted[middle - 1] + sorted[middle]) / 2;
+    }
+
+    return sorted[middle];
+}
+
 export function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
@@ -113,10 +124,6 @@ export function headsTails(heads, tails) {
     }
 
     return randInt(0, 1) ? tails : heads;
-}
-
-export function guid() {
-    return (Date.now() + randInt(0, 99999)).toString();
 }
 
 export function brightness(color) {

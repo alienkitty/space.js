@@ -259,6 +259,8 @@ export class PanelMeter extends Interface {
         }
 
         this.needsUpdate = true;
+
+        this.update();
     }
 
     resize() {

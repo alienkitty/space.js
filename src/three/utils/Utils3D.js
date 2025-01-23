@@ -2,7 +2,17 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Box2, BoxGeometry, BufferGeometry, Float32BufferAttribute, MathUtils, Vector2, Vector3, WebGLRenderTarget } from 'three';
+import {
+    Box2,
+    BoxGeometry,
+    BufferGeometry,
+    Float32BufferAttribute,
+    MathUtils,
+    Sphere,
+    Vector2,
+    Vector3,
+    WebGLRenderTarget
+} from 'three';
 
 export function getFullscreenTriangle() {
     const geometry = new BufferGeometry();
@@ -17,7 +27,7 @@ export function getSphericalCube(radius, segments) {
     const vertices = geometry.getAttribute('position');
     const normals = geometry.getAttribute('normal');
 
-    for (let i = 0; i < vertices.count; i++) {
+    for (let i = 0, l = vertices.count; i < l; i++) {
         const v = new Vector3().fromArray(vertices.array, i * 3);
         v.normalize();
         normals.setXYZ(i, v.x, v.y, v.z);
@@ -28,6 +38,12 @@ export function getSphericalCube(radius, segments) {
     return geometry;
 }
 
+export function getBoundingSphereWorld(mesh) {
+    mesh.geometry.computeBoundingSphere();
+
+    return new Sphere().copy(mesh.geometry.boundingSphere).applyMatrix4(mesh.matrixWorld);
+}
+
 export function getScreenSpaceBox(mesh, camera) {
     const vertices = mesh.geometry.getAttribute('position');
     const worldPosition = new Vector3();
@@ -35,7 +51,7 @@ export function getScreenSpaceBox(mesh, camera) {
     const min = new Vector3(1, 1, 1);
     const max = new Vector3(-1, -1, -1);
 
-    for (let i = 0; i < vertices.count; i++) {
+    for (let i = 0, l = vertices.count; i < l; i++) {
         worldPosition.fromArray(vertices.array, i * 3).applyMatrix4(mesh.matrixWorld);
         screenSpacePosition.copy(worldPosition).project(camera);
         min.min(screenSpacePosition);

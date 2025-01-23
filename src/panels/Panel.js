@@ -11,7 +11,20 @@ import { ticker } from '../tween/Ticker.js';
  * A panel container for various components.
  * @example
  * const panel = new Panel();
- * panel.add(new PanelItem({ type: 'color' }));
+ * const item = new PanelItem({
+ *     // name: 'FPS'
+ *     // type: 'spacer'
+ *     // type: 'divider'
+ *     // type: 'link'
+ *     // type: 'thumbnail'
+ *     // type: 'graph'
+ *     // type: 'meter'
+ *     // type: 'list'
+ *     // type: 'slider'
+ *     // type: 'content'
+ *     type: 'color'
+ * });
+ * panel.add(item);
  * panel.animateIn();
  * document.body.appendChild(panel.element);
  *

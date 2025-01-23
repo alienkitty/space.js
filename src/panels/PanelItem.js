@@ -114,7 +114,7 @@ export class PanelItem extends Interface {
             this.container.add(this.view);
         } else if (this.data.type === 'color') {
             this.container.css({
-                margin: '0 0 7px'
+                margin: '6px 0px 4px'
             });
 
             this.view = new ColorPicker(this.data);

@@ -6,14 +6,14 @@
  * A pool of objects created from a given constructor.
  */
 export class ObjectPool {
-    constructor(type, num = 10) {
-        this.type = type;
+    constructor(typeConstructor, num = 10) {
+        this.typeConstructor = typeConstructor;
 
         this.array = [];
 
-        if (type) {
+        if (this.typeConstructor) {
             for (let i = 0; i < num; i++) {
-                this.array.push(new type());
+                this.array.push(new this.typeConstructor());
             }
         }
     }
@@ -29,7 +29,7 @@ export class ObjectPool {
             return object;
         }
 
-        return this.type ? new this.type() : null;
+        return this.typeConstructor ? new this.typeConstructor() : null;
     }
 
     empty() {
