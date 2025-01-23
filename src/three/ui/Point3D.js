@@ -28,6 +28,19 @@ import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
  * scene.add(point);
  *
  * MaterialPanelController.init(mesh, point);
+ * @example
+ * // ...
+ * const point = new Point3D(mesh, {
+ *     type: '',
+ *     noTracker: true
+ * });
+ * scene.add(point);
+ * @example
+ * // ...
+ * const item = new PanelItem({
+ *     // ...
+ * });
+ * point.addPanel(item);
  */
 export class Point3D extends Group {
     static init(renderer, scene, camera, {
