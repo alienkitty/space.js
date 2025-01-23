@@ -406,15 +406,18 @@ export class RadialGraphSegments extends Interface {
 
         if (this.isDragging && this.isDraggingAway) {
             this.origin.subVectors(this.mouse, this.bounds);
+
             target.css({ left: this.origin.x, top: this.origin.y + this.mobileOffset });
-            this.hoverOut();
+
+            if (this.hoveredIn) {
+                this.hoverOut();
+            }
         } else if (this.isDragging) {
             target.angle = this.mouseAngle;
-            this.hoverIn();
         } else if (this.isDraggingAway) {
             this.isDraggingAway = false;
+
             this.removeMarker(target);
-            this.hoverOut(true);
         }
 
         this.needsUpdate = true;

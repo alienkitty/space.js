@@ -375,16 +375,20 @@ export class Graph extends Interface {
 
         if (this.isDragging && this.isDraggingAway) {
             this.origin.subVectors(this.mouse, this.bounds);
+
             target.css({ left: this.origin.x, top: this.origin.y + this.mobileOffset });
-            this.hoverOut();
+
+            if (this.hoveredIn) {
+                this.hoverOut();
+            }
         } else if (this.isDragging) {
             target.x = this.mouseX;
+
             target.css({ top: -12 });
-            this.hoverIn();
         } else if (this.isDraggingAway) {
             this.isDraggingAway = false;
+
             this.removeMarker(target);
-            this.hoverOut(true);
         }
 
         this.needsUpdate = true;
