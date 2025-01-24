@@ -234,11 +234,13 @@ export class Point extends Interface {
 
         this.info.close(fast);
 
-        this.position.copy(this.target);
-        this.origin.set(0, 0);
-        this.originPosition.copy(this.position);
+        if (this.isMove) {
+            this.position.copy(this.target);
+            this.origin.set(0, 0);
+            this.originPosition.copy(this.position);
 
-        this.css({ left: this.originPosition.x, top: this.originPosition.y });
+            this.css({ left: this.originPosition.x, top: this.originPosition.y });
+        }
 
         this.isOpen = false;
         this.isMove = false;
