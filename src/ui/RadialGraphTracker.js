@@ -6,15 +6,21 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { TargetNumber } from './TargetNumber.js';
 
+import { clearTween, tween } from '../tween/Tween.js';
+
 export class RadialGraphTracker extends Interface {
     constructor() {
         super('.tracker');
 
         this.position = new Vector2();
+        this.origin = new Vector2();
+        this.originPosition = new Vector2();
+        this.graphHeight = 0;
         this.locked = false;
         this.animatedIn = false;
         this.isInstanced = true;
         this.isVisible = false;
+        this.isOpen = true;
 
         this.init();
     }
@@ -45,7 +51,9 @@ export class RadialGraphTracker extends Interface {
     }
 
     update() {
-        this.css({ left: this.position.x, top: this.position.y });
+        this.originPosition.addVectors(this.origin, this.position);
+
+        this.css({ left: this.originPosition.x, top: this.originPosition.y });
     }
 
     lock() {
@@ -74,6 +82,22 @@ export class RadialGraphTracker extends Interface {
         }
 
         this.animatedIn = false;
+    }
+
+    open() {
+        clearTween(this.origin);
+
+        tween(this.origin, { x: this.graphHeight }, 400, 'easeOutCubic');
+
+        this.isOpen = true;
+    }
+
+    close() {
+        clearTween(this.origin);
+
+        tween(this.origin, { x: 0 }, 400, 'easeInCubic', 100);
+
+        this.isOpen = false;
     }
 
     animateIn() {
