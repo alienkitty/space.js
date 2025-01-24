@@ -733,6 +733,10 @@ export class Point3D extends Group {
         this.camera = camera;
     }
 
+    setData(data) {
+        this.point.setData(data);
+    }
+
     setIndex(index) {
         this.index = index;
 
