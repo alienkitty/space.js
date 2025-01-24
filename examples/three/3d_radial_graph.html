@@ -71,6 +71,10 @@
         });
 
         const point = new Point3D(mesh, { graph });
+        point.setData({
+            name: '127.0.0.1',
+            type: 'localhost'
+        });
         scene.add(point);
 
         // panel
