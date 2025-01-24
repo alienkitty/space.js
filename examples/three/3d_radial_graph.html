@@ -55,7 +55,7 @@
 
         // graph
 
-        import { Point3D, RadialGraphCanvas, UI } from '../../src/three.js';
+        import { PanelItem, Point3D, RadialGraphCanvas, UI } from '../../src/three.js';
 
         const ui = new UI({ fps: true });
         ui.animateIn();
@@ -72,6 +72,19 @@
 
         const point = new Point3D(mesh, { graph });
         scene.add(point);
+
+        // panel
+
+        const item = new PanelItem({
+            type: 'link',
+            value: 'Update',
+            callback: value => {
+                console.log('Update callback:', value);
+
+                graph.setArray(Array.from({ length: 10 }, () => Math.random()));
+            }
+        });
+        point.addPanel(item);
 
         // animation
 
