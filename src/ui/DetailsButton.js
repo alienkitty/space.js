@@ -182,28 +182,6 @@ export class DetailsButton extends Interface {
         this.context.stroke();
     }
 
-    animateIn() {
-        clearTween(this.props);
-
-        this.props.radius = 0;
-
-        this.animatedIn = false;
-        this.needsUpdate = true;
-
-        tween(this.props, { radius: this.isOpen ? this.openRadius : this.radius }, 1000, 'easeOutExpo', () => {
-            this.needsUpdate = false;
-            this.animatedIn = true;
-        });
-
-        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
-    }
-
-    animateOut() {
-        this.animatedIn = false;
-
-        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
-    }
-
     open() {
         this.isOpen = true;
 
@@ -226,6 +204,28 @@ export class DetailsButton extends Interface {
         tween(this.props, { radius: this.radius }, 400, 'easeOutCubic', () => {
             this.needsUpdate = false;
         });
+    }
+
+    animateIn() {
+        clearTween(this.props);
+
+        this.props.radius = 0;
+
+        this.animatedIn = false;
+        this.needsUpdate = true;
+
+        tween(this.props, { radius: this.isOpen ? this.openRadius : this.radius }, 1000, 'easeOutExpo', () => {
+            this.needsUpdate = false;
+            this.animatedIn = true;
+        });
+
+        this.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic');
+    }
+
+    animateOut() {
+        this.animatedIn = false;
+
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
     }
 
     destroy() {
