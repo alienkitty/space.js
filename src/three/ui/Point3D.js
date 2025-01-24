@@ -671,7 +671,7 @@ export class Point3D extends Group {
     onClick = multiple => {
         clearTween(this.timeout);
 
-        if (this.tracker) {
+        if (this.graph || this.tracker) {
             if (this.isInstanced) {
                 const { instanceId } = Point3D;
 
@@ -737,10 +737,14 @@ export class Point3D extends Group {
     setIndex(index) {
         this.index = index;
 
-        if (this.tracker) {
+        if (this.graph || this.tracker) {
             const targetNumber = index + 1;
 
-            this.tracker.setData({ targetNumber });
+            if (this.graph) {
+            } else if (this.tracker) {
+                this.tracker.setData({ targetNumber });
+            }
+
             this.point.setTargetNumbers([targetNumber]);
         }
     }
@@ -869,6 +873,15 @@ export class Point3D extends Group {
         if (this.graph) {
             this.graph.position.set(centerX, centerY);
             this.graph.setSize(width, height);
+
+            // Set point position to the right of the start line
+            const radius = this.graph.middle;
+            // const x = centerX + radius * Math.cos(this.graph.startAngle);
+            const x = centerX + this.graph.halfWidth;
+            const y = centerY + radius * Math.sin(this.graph.startAngle);
+
+            this.point.target.set(x - 38, y);
+            this.point.update();
         } else {
             this.reticle.position.set(centerX, centerY);
 
@@ -1019,9 +1032,9 @@ export class Point3D extends Group {
         } else {
             this.reticle.animateIn();
             this.line.animateIn(reverse);
-
-            this.point.animateIn();
         }
+
+        this.point.animateIn();
 
         this.animatedIn = true;
     }
@@ -1036,9 +1049,9 @@ export class Point3D extends Group {
             if (this.tracker) {
                 this.tracker.animateOut();
             }
-
-            this.point.animateOut();
         }
+
+        this.point.animateOut();
 
         this.animatedIn = false;
     }
@@ -1106,7 +1119,7 @@ export class Point3D extends Group {
                 type: Point3D.getMultipleTypes()
             });
 
-            if (ui.tracker) {
+            if (ui.graph || ui.tracker) {
                 ui.point.setTargetNumbers(Point3D.getMultipleTargetNumbers());
             }
 
@@ -1121,7 +1134,7 @@ export class Point3D extends Group {
                 type: ui.type
             });
 
-            if (ui.tracker) {
+            if (ui.graph || ui.tracker) {
                 ui.point.setTargetNumbers([ui.index + 1]);
             }
 
@@ -1131,10 +1144,11 @@ export class Point3D extends Group {
 
     togglePanel(show, multiple) {
         if (show) {
-            this.reticle.animateOut();
-            this.line.animateOut(true);
+            if (this.graph) {
+            } else if (this.tracker) {
+                this.reticle.animateOut();
+                this.line.animateOut(true);
 
-            if (this.tracker) {
                 this.tracker.animateIn(this.isInstanced);
             }
 
@@ -1159,10 +1173,11 @@ export class Point3D extends Group {
                 }
             }
         } else {
-            this.reticle.animateIn();
-            this.line.animateIn(true);
+            if (this.graph) {
+            } else if (this.tracker) {
+                this.reticle.animateIn();
+                this.line.animateIn(true);
 
-            if (this.tracker) {
                 this.tracker.animateOut();
             }
 
@@ -1181,7 +1196,7 @@ export class Point3D extends Group {
                     type: this.type
                 });
 
-                if (this.tracker) {
+                if (this.graph || this.tracker) {
                     this.point.setTargetNumbers([this.index + 1]);
                 }
 
@@ -1314,7 +1329,7 @@ export class Point3D extends Group {
                 type: this.type
             });
 
-            if (this.tracker) {
+            if (this.graph || this.tracker) {
                 this.point.setTargetNumbers([this.index + 1]);
             }
 
@@ -1328,6 +1343,9 @@ export class Point3D extends Group {
 
         if (!this.graph) {
             this.line.deactivate();
+        }
+
+        if (this.point.isOpen) {
             this.point.deactivate();
         }
 
