@@ -881,6 +881,10 @@ export class Point3D extends Group {
             this.graph.position.set(centerX, centerY);
             this.graph.setSize(width, height);
 
+            if (this.tracker) {
+                this.tracker.graphHeight = -this.graph.graphHeight * 2;
+            }
+
             // Set point position to the right of the start line
             const radius = this.graph.middle;
             const x = centerX + this.graph.halfWidth;
@@ -1035,6 +1039,10 @@ export class Point3D extends Group {
     animateIn(reverse) {
         if (this.graph) {
             this.graph.animateIn();
+
+            if (this.tracker) {
+                this.tracker.open();
+            }
         } else {
             this.reticle.animateIn();
             this.line.animateIn(reverse);
@@ -1048,6 +1056,10 @@ export class Point3D extends Group {
     animateOut(fast, callback) {
         if (this.graph) {
             this.graph.animateOut();
+
+            if (this.tracker) {
+                this.tracker.close();
+            }
         } else {
             this.reticle.animateOut();
             this.line.animateOut(fast, callback);
