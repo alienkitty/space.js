@@ -9,6 +9,7 @@ import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.
 import { EventEmitter } from '../../utils/EventEmitter.js';
 import { Interface } from '../../utils/Interface.js';
 import { Stage } from '../../utils/Stage.js';
+import { RadialGraphTracker } from '../../ui/RadialGraphTracker.js';
 import { ReticleCanvas } from '../../ui/ReticleCanvas.js';
 import { LineCanvas } from '../../ui/LineCanvas.js';
 import { Tracker } from '../../ui/Tracker.js';
@@ -553,12 +554,10 @@ export class Point3D extends Group {
             this.graph.setContext(context);
             this.element.add(this.graph);
 
-            this.point = new Point(this, this.graph);
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
-            this.element.add(this.point);
+            if (!this.noTracker) {
+                this.tracker = new RadialGraphTracker();
+                this.element.add(this.tracker);
+            }
         } else {
             this.reticle = new ReticleCanvas();
             this.reticle.setContext(context);
@@ -572,14 +571,14 @@ export class Point3D extends Group {
                 this.tracker = new Tracker();
                 this.element.add(this.tracker);
             }
-
-            this.point = new Point(this, this.tracker);
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
-            this.element.add(this.point);
         }
+
+        this.point = new Point(this, this.tracker);
+        this.point.setData({
+            name: this.name,
+            type: this.type
+        });
+        this.element.add(this.point);
     }
 
     createMesh() {
@@ -671,7 +670,7 @@ export class Point3D extends Group {
     onClick = multiple => {
         clearTween(this.timeout);
 
-        if (this.graph || this.tracker) {
+        if (this.tracker) {
             if (this.isInstanced) {
                 const { instanceId } = Point3D;
 
@@ -737,14 +736,10 @@ export class Point3D extends Group {
     setIndex(index) {
         this.index = index;
 
-        if (this.graph || this.tracker) {
+        if (this.tracker) {
             const targetNumber = index + 1;
 
-            if (this.graph) {
-            } else if (this.tracker) {
-                this.tracker.setData({ targetNumber });
-            }
-
+            this.tracker.setData({ targetNumber });
             this.point.setTargetNumbers([targetNumber]);
         }
     }
@@ -876,7 +871,6 @@ export class Point3D extends Group {
 
             // Set point position to the right of the start line
             const radius = this.graph.middle;
-            // const x = centerX + radius * Math.cos(this.graph.startAngle);
             const x = centerX + this.graph.halfWidth;
             const y = centerY + radius * Math.sin(this.graph.startAngle);
 
@@ -885,19 +879,19 @@ export class Point3D extends Group {
         } else {
             this.reticle.position.set(centerX, centerY);
 
-            if (this.tracker) {
-                this.tracker.position.set(centerX, centerY);
-                this.tracker.update();
-                this.tracker.css({
-                    width,
-                    height,
-                    marginLeft: -halfWidth,
-                    marginTop: -halfHeight
-                });
-            }
-
             this.point.target.set(centerX + halfWidth, centerY - halfHeight);
             this.point.update();
+        }
+
+        if (this.tracker) {
+            this.tracker.position.set(centerX, centerY);
+            this.tracker.update();
+            this.tracker.css({
+                width,
+                height,
+                marginLeft: -halfWidth,
+                marginTop: -halfHeight
+            });
         }
 
         // Update instances and helpers
@@ -1045,10 +1039,10 @@ export class Point3D extends Group {
         } else {
             this.reticle.animateOut();
             this.line.animateOut(fast, callback);
+        }
 
-            if (this.tracker) {
-                this.tracker.animateOut();
-            }
+        if (this.tracker) {
+            this.tracker.animateOut();
         }
 
         this.point.animateOut();
@@ -1119,7 +1113,7 @@ export class Point3D extends Group {
                 type: Point3D.getMultipleTypes()
             });
 
-            if (ui.graph || ui.tracker) {
+            if (ui.tracker) {
                 ui.point.setTargetNumbers(Point3D.getMultipleTargetNumbers());
             }
 
@@ -1134,7 +1128,7 @@ export class Point3D extends Group {
                 type: ui.type
             });
 
-            if (ui.graph || ui.tracker) {
+            if (ui.tracker) {
                 ui.point.setTargetNumbers([ui.index + 1]);
             }
 
@@ -1144,13 +1138,12 @@ export class Point3D extends Group {
 
     togglePanel(show, multiple) {
         if (show) {
-            if (this.graph) {
-            } else if (this.tracker) {
+            if (!this.graph) {
                 this.reticle.animateOut();
                 this.line.animateOut(true);
-
-                this.tracker.animateIn(this.isInstanced);
             }
+
+            this.tracker.animateIn(this.isInstanced);
 
             const selected = Point3D.getSelected();
 
@@ -1173,13 +1166,12 @@ export class Point3D extends Group {
                 }
             }
         } else {
-            if (this.graph) {
-            } else if (this.tracker) {
+            if (!this.graph) {
                 this.reticle.animateIn();
                 this.line.animateIn(true);
-
-                this.tracker.animateOut();
             }
+
+            this.tracker.animateOut();
 
             if (this.isMultiple) {
                 Point3D.multiple.forEach(ui => {
@@ -1196,9 +1188,7 @@ export class Point3D extends Group {
                     type: this.type
                 });
 
-                if (this.graph || this.tracker) {
-                    this.point.setTargetNumbers([this.index + 1]);
-                }
+                this.point.setTargetNumbers([this.index + 1]);
 
                 this.isMultiple = false;
             } else if (Point3D.multiple.length) {
@@ -1329,7 +1319,7 @@ export class Point3D extends Group {
                 type: this.type
             });
 
-            if (this.graph || this.tracker) {
+            if (this.tracker) {
                 this.point.setTargetNumbers([this.index + 1]);
             }
 
