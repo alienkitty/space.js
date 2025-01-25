@@ -1059,17 +1059,20 @@ export class Point3D extends Group {
 
             if (this.tracker) {
                 this.tracker.close();
+                this.tracker.animateOut();
             }
+
+            this.point.animateOut(true);
         } else {
             this.reticle.animateOut();
             this.line.animateOut(fast, callback);
-        }
 
-        if (this.tracker) {
-            this.tracker.animateOut();
-        }
+            if (this.tracker) {
+                this.tracker.animateOut();
+            }
 
-        this.point.animateOut();
+            this.point.animateOut();
+        }
 
         this.animatedIn = false;
     }

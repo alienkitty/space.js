@@ -157,7 +157,13 @@ export class PointInfo extends Interface {
         this.clearTween().css({ left: 10, opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
     }
 
-    animateOut(callback) {
-        this.clearTween().tween({ opacity: 0 }, 400, 'easeInCubic', 300, callback);
+    animateOut(fast, callback) {
+        this.clearTween();
+
+        if (fast) {
+            this.tween({ opacity: 0 }, 300, 'easeOutSine', callback);
+        } else {
+            this.tween({ opacity: 0 }, 400, 'easeInCubic', 300, callback);
+        }
     }
 }
