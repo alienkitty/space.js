@@ -566,6 +566,14 @@ export class Point3D extends Group {
                 this.tracker = new RadialGraphTracker();
                 this.element.add(this.tracker);
             }
+
+            this.point = new Point(this, this.tracker);
+            this.point.info.css({ top: -43 });
+            this.point.setData({
+                name: this.name,
+                type: this.type
+            });
+            this.element.add(this.point);
         } else {
             this.reticle = new ReticleCanvas();
             this.reticle.setContext(context);
@@ -579,14 +587,14 @@ export class Point3D extends Group {
                 this.tracker = new Tracker();
                 this.element.add(this.tracker);
             }
-        }
 
-        this.point = new Point(this, this.tracker);
-        this.point.setData({
-            name: this.name,
-            type: this.type
-        });
-        this.element.add(this.point);
+            this.point = new Point(this, this.tracker);
+            this.point.setData({
+                name: this.name,
+                type: this.type
+            });
+            this.element.add(this.point);
+        }
     }
 
     createMesh() {
