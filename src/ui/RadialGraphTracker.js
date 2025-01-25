@@ -20,7 +20,7 @@ export class RadialGraphTracker extends Interface {
         this.animatedIn = false;
         this.isInstanced = true;
         this.isVisible = false;
-        this.isOpen = true;
+        this.isOpen = false;
 
         this.init();
     }
@@ -95,7 +95,7 @@ export class RadialGraphTracker extends Interface {
     close() {
         clearTween(this.origin);
 
-        tween(this.origin, { x: 0 }, 400, 'easeInCubic', 100);
+        tween(this.origin, { x: 0 }, 400, 'easeOutCubic', 200);
 
         this.isOpen = false;
     }

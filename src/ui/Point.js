@@ -254,8 +254,8 @@ export class Point extends Interface {
         this.info.animateIn();
     }
 
-    animateOut() {
-        this.info.animateOut(() => {
+    animateOut(fast) {
+        this.info.animateOut(fast, () => {
             this.invisible();
         });
     }
