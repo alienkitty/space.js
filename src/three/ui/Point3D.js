@@ -886,7 +886,7 @@ export class Point3D extends Group {
 
         // Set positions
         if (this.graph) {
-            const size = Math.max(width, height);
+            const size = Math.min(width, height);
 
             this.graph.position.set(centerX, centerY);
             this.graph.setSize(size, size);
