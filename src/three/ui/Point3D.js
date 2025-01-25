@@ -1191,7 +1191,10 @@ export class Point3D extends Group {
 
                 Point3D.multiple.push(this);
 
-                this.line.deactivate();
+                if (!this.graph) {
+                    this.line.deactivate();
+                }
+
                 this.point.deactivate();
             } else {
                 this.point.open();
