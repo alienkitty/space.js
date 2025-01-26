@@ -960,137 +960,6 @@ export class Point3D extends Group {
         }
     }
 
-    lock() {
-        if (this.point.isOpen) {
-            this.point.lock();
-        }
-
-        if (this.tracker) {
-            this.tracker.lock();
-
-            if (this.isMultiple) {
-                Point3D.multiple.forEach(ui => {
-                    if (ui !== this) {
-                        ui.lock();
-                    }
-                });
-            }
-        }
-
-        if (this.snappedLeft) {
-            const snapped = Point3D.getSnapped();
-
-            snapped.forEach(ui => {
-                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
-                    ui.point.origin.x += 28;
-                    ui.point.originPosition.x += 28;
-
-                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeOutCubic');
-                }
-            });
-        }
-    }
-
-    unlock() {
-        if (this.point.isOpen) {
-            this.point.unlock();
-        }
-
-        if (this.tracker) {
-            this.tracker.unlock();
-
-            if (this.isMultiple) {
-                Point3D.multiple.forEach(ui => {
-                    if (ui !== this) {
-                        ui.unlock();
-                    }
-                });
-            }
-        }
-
-        if (this.snappedLeft) {
-            const snapped = Point3D.getSnapped();
-
-            snapped.forEach(ui => {
-                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
-                    ui.point.origin.x -= 28;
-                    ui.point.originPosition.x -= 28;
-
-                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeInCubic', 100);
-                }
-            });
-        }
-    }
-
-    show() {
-        if (this.tracker) {
-            this.tracker.show();
-
-            if (this.isMultiple) {
-                Point3D.multiple.forEach(ui => {
-                    if (ui !== this) {
-                        ui.show();
-                    }
-                });
-            }
-        }
-    }
-
-    hide() {
-        if (this.tracker) {
-            this.tracker.hide(true);
-
-            if (this.isMultiple) {
-                Point3D.multiple.forEach(ui => {
-                    if (ui !== this) {
-                        ui.hide();
-                    }
-                });
-            }
-        }
-    }
-
-    animateIn(reverse) {
-        if (this.graph) {
-            this.graph.animateIn();
-
-            if (this.tracker) {
-                this.tracker.open();
-            }
-        } else {
-            this.reticle.animateIn();
-            this.line.animateIn(reverse);
-        }
-
-        this.point.animateIn();
-
-        this.animatedIn = true;
-    }
-
-    animateOut(fast, callback) {
-        if (this.graph) {
-            this.graph.animateOut();
-
-            if (this.tracker) {
-                this.tracker.close();
-                this.tracker.animateOut();
-            }
-
-            this.point.animateOut(true);
-        } else {
-            this.reticle.animateOut();
-            this.line.animateOut(fast, callback);
-
-            if (this.tracker) {
-                this.tracker.animateOut();
-            }
-
-            this.point.animateOut();
-        }
-
-        this.animatedIn = false;
-    }
-
     toggle(show, multiple) {
         if (this.isInstanced) {
             const { instanceId } = Point3D;
@@ -1253,6 +1122,180 @@ export class Point3D extends Group {
         }
     }
 
+    lock() {
+        if (this.point.isOpen) {
+            this.point.lock();
+        }
+
+        if (this.tracker) {
+            this.tracker.lock();
+
+            if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.lock();
+                    }
+                });
+            }
+        }
+
+        if (this.snappedLeft) {
+            const snapped = Point3D.getSnapped();
+
+            snapped.forEach(ui => {
+                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                    ui.point.origin.x += 28;
+                    ui.point.originPosition.x += 28;
+
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeOutCubic');
+                }
+            });
+        }
+    }
+
+    unlock() {
+        if (this.point.isOpen) {
+            this.point.unlock();
+        }
+
+        if (this.tracker) {
+            this.tracker.unlock();
+
+            if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.unlock();
+                    }
+                });
+            }
+        }
+
+        if (this.snappedLeft) {
+            const snapped = Point3D.getSnapped();
+
+            snapped.forEach(ui => {
+                if (ui === this || ui.point.originPosition.x > this.point.originPosition.x) {
+                    ui.point.origin.x -= 28;
+                    ui.point.originPosition.x -= 28;
+
+                    ui.point.clearTween().tween({ left: ui.point.originPosition.x }, 400, 'easeInCubic', 100);
+                }
+            });
+        }
+    }
+
+    show() {
+        if (this.tracker) {
+            this.tracker.show();
+
+            if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.show();
+                    }
+                });
+            }
+        }
+    }
+
+    hide() {
+        if (this.tracker) {
+            this.tracker.hide(true);
+
+            if (this.isMultiple) {
+                Point3D.multiple.forEach(ui => {
+                    if (ui !== this) {
+                        ui.hide();
+                    }
+                });
+            }
+        }
+    }
+
+    animateIn(reverse) {
+        if (this.graph) {
+            this.graph.animateIn();
+
+            if (this.tracker) {
+                this.tracker.open();
+            }
+        } else {
+            this.reticle.animateIn();
+            this.line.animateIn(reverse);
+        }
+
+        this.point.animateIn();
+
+        this.animatedIn = true;
+    }
+
+    animateOut(fast, callback) {
+        if (this.graph) {
+            this.graph.animateOut();
+
+            if (this.tracker) {
+                this.tracker.close();
+                this.tracker.animateOut();
+            }
+
+            this.point.animateOut(true);
+        } else {
+            this.reticle.animateOut();
+            this.line.animateOut(fast, callback);
+
+            if (this.tracker) {
+                this.tracker.animateOut();
+            }
+
+            this.point.animateOut();
+        }
+
+        this.animatedIn = false;
+    }
+
+    deactivate() {
+        if (this.isInstanced) {
+            this.instances.forEach(instance => this.removeMesh(instance));
+            this.instances.length = 0;
+
+            this.point.setData({
+                name: this.name
+            });
+        }
+
+        if (this.isMultiple) {
+            Point3D.multiple.length = 0;
+
+            this.point.setData({
+                name: this.name,
+                type: this.type
+            });
+
+            if (this.tracker) {
+                this.point.setTargetNumbers([this.index + 1]);
+            }
+
+            this.isMultiple = false;
+        }
+
+        this.selected = false;
+        this.snappedLeft = false;
+        this.snappedRight = false;
+        this.snapped = false;
+
+        if (!this.graph) {
+            this.line.deactivate();
+        }
+
+        if (this.point.isOpen) {
+            this.point.deactivate();
+        }
+
+        const selected = Point3D.getSelected();
+
+        Point3D.events.emit('change', { selected, target: this });
+    }
+
     snap() {
         const currentSnapped = this.snapped;
 
@@ -1343,49 +1386,6 @@ export class Point3D extends Group {
                 }
             });
         }
-    }
-
-    deactivate() {
-        if (this.isInstanced) {
-            this.instances.forEach(instance => this.removeMesh(instance));
-            this.instances.length = 0;
-
-            this.point.setData({
-                name: this.name
-            });
-        }
-
-        if (this.isMultiple) {
-            Point3D.multiple.length = 0;
-
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
-
-            if (this.tracker) {
-                this.point.setTargetNumbers([this.index + 1]);
-            }
-
-            this.isMultiple = false;
-        }
-
-        this.selected = false;
-        this.snappedLeft = false;
-        this.snappedRight = false;
-        this.snapped = false;
-
-        if (!this.graph) {
-            this.line.deactivate();
-        }
-
-        if (this.point.isOpen) {
-            this.point.deactivate();
-        }
-
-        const selected = Point3D.getSelected();
-
-        Point3D.events.emit('change', { selected, target: this });
     }
 
     destroy() {
