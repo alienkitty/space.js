@@ -961,7 +961,9 @@ export class Point3D extends Group {
     }
 
     lock() {
-        this.point.lock();
+        if (this.point.isOpen) {
+            this.point.lock();
+        }
 
         if (this.tracker) {
             this.tracker.lock();
@@ -990,7 +992,9 @@ export class Point3D extends Group {
     }
 
     unlock() {
-        this.point.unlock();
+        if (this.point.isOpen) {
+            this.point.unlock();
+        }
 
         if (this.tracker) {
             this.tracker.unlock();
