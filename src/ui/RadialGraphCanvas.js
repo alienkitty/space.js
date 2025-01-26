@@ -142,13 +142,10 @@ export class RadialGraphCanvas extends Interface {
 
     init() {
         this.css({
-            position: 'relative',
-            width: this.width,
-            height: this.height,
+            position: 'absolute',
             pointerEvents: 'none',
             webkitUserSelect: 'none',
-            userSelect: 'none',
-            touchAction: 'none'
+            userSelect: 'none'
         });
 
         if (!this.noHover) {
