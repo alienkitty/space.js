@@ -6,6 +6,10 @@ const production = !process.env.ROLLUP_WATCH;
 export default {
   input: 'src/main.js',
   preserveEntrySignatures: 'allow-extension',
+  treeshake: {
+    // Needed for OimoPhysics
+    correctVarValueBeforeDeclaration: true
+  },
   output: {
     dir: 'public/assets/js',
     entryFileNames: 'loader.js',
