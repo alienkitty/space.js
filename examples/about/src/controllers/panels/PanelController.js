@@ -33,6 +33,7 @@ export class PanelController {
         Point3D.init(this.renderer, this.scene, this.camera, {
             root: Stage,
             container: this.ui,
+            headerSnap: true,
             physics: this.physics,
             loader: textureLoader,
             uvHelper: true
