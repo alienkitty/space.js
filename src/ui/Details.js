@@ -6,6 +6,7 @@ import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
 import { Graph } from './Graph.js';
+import { GraphSegments } from './GraphSegments.js';
 import { Meter } from './Meter.js';
 
 export class Details extends Interface {
@@ -130,9 +131,15 @@ export class Details extends Interface {
                 }
 
                 if (data.graph !== undefined) {
-                    const graph = new Graph(data.graph);
-                    graph.animateIn(true);
-                    container.add(graph);
+                    if (data.graph.segments) {
+                        const graph = new GraphSegments(data.graph);
+                        graph.animateIn(true);
+                        container.add(graph);
+                    } else {
+                        const graph = new Graph(data.graph);
+                        graph.animateIn(true);
+                        container.add(graph);
+                    }
                 }
 
                 if (data.meter !== undefined) {
