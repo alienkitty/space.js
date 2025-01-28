@@ -51,7 +51,7 @@ export class GraphSegments extends Interface {
         noMarkerDrag = false,
         noGradient = false
     } = {}) {
-        super('.graph');
+        super('.graph-segments');
 
         this.value = value;
         this.ghost = ghost;

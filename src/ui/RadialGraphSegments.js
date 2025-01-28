@@ -56,7 +56,7 @@ export class RadialGraphSegments extends Interface {
         noMarkerDrag = false,
         noGradient = false
     } = {}) {
-        super('.radial-graph');
+        super('.radial-graph-segments');
 
         this.value = value;
         this.ghost = ghost;
