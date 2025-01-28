@@ -26,7 +26,7 @@ export class PanelLink extends Interface {
         this.css({
             position: 'relative',
             width: 'fit-content',
-            height: 20,
+            height: 18,
             lineHeight: 16,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',
