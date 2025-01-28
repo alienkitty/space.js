@@ -29,8 +29,8 @@ export class ScenePanelController {
             MaterialPanelController.init(object.mesh, object.point);
         });
 
-        // Shrink tracker meshes a little bit
-        floatingCrystal.point.mesh.scale.multiply(new Vector3(1, 0.9, 1));
+        // Shrink tracker mesh to better match the visual size of the object
+        floatingCrystal.point.mesh.scale.multiply(new Vector3(0.6, 1, 0.6));
         abstractCube.point.mesh.scale.multiplyScalar(0.9);
 
         // Debug
