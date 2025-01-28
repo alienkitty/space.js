@@ -58,7 +58,7 @@ export class ColorPicker extends Interface {
 
         this.init();
         this.initColorRing();
-        this.setValue(this.value);
+        this.setValue(this.value, false);
 
         this.addListeners();
     }

@@ -41,7 +41,7 @@ export class PanelThumbnail extends Interface {
 
         this.init();
         this.initDragAndDrop();
-        this.setValue(this.value);
+        this.setValue(this.value, false);
 
         this.addListeners();
     }

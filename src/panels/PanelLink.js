@@ -17,7 +17,7 @@ export class PanelLink extends Interface {
         this.callback = callback;
 
         this.init();
-        this.setValue(this.value);
+        this.setValue(this.value, false);
 
         this.addListeners();
     }
