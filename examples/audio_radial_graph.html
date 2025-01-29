@@ -46,7 +46,7 @@
 
             static initAnalyser() {
                 this.analyser = this.context.createAnalyser();
-                this.analyser.fftSize = 2048;
+                this.analyser.fftSize = 4096;
 
                 this.bufferLength = this.analyser.frequencyBinCount;
                 this.data = new Uint8Array(this.bufferLength);
