@@ -99,9 +99,10 @@ export function average(numbers) {
 
 export function median(numbers) {
     const sorted = numbers.toSorted();
-    const middle = Math.floor(sorted.length / 2);
+    const length = sorted.length;
+    const middle = Math.floor(length / 2);
 
-    if (sorted.length % 2 === 0) {
+    if (length % 2 === 0) {
         return (sorted[middle - 1] + sorted[middle]) / 2;
     }
 
