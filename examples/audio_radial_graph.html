@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { RadialGraphSegments, UI, WebAudio, average, clamp, mapLinear, median, ticker } from '../src/index.js';
+        import { RadialGraphSegments, UI, WebAudio, average, clamp, mapLinear, ticker } from '../src/index.js';
 
         class AudioController {
             static init(ui, graph) {
@@ -34,12 +34,9 @@
             static initAnalyser() {
                 this.analyser = this.context.createAnalyser();
                 this.analyser.fftSize = 2048;
-                // this.analyser.fftSize = 256;
-                // this.analyser.fftSize = 32;
 
                 this.bufferLength = this.analyser.frequencyBinCount;
                 this.data = new Uint8Array(this.bufferLength);
-                console.log('initAnalyser', this.bufferLength);
 
                 // Connect the source to be analyzed
                 this.protonradio.source.connect(this.analyser);
@@ -54,10 +51,6 @@
 
             static getAverageFrequency(data, start, end) {
                 return average(data.slice(start, end));
-            }
-
-            static getMedianFrequency(data, start, end) {
-                return median(data.slice(start, end));
             }
 
             // Event handlers
