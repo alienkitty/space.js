@@ -31,6 +31,7 @@
                 this.highsRange = [90, 150];
                 this.midsRange = [50, 150];
                 this.lowsRange = [0, 30];
+                this.multiplier = 1.1;
 
                 this.initSounds();
                 this.initAnalyser();
@@ -62,7 +63,7 @@
             }
 
             static getAverageFrequency(data, start, end) {
-                return average(data.slice(start, end));
+                return average(data.slice(start, end).map(value => value * this.multiplier));
             }
 
             // Event handlers
