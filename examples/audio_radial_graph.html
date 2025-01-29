@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { RadialGraphSegments, UI, WebAudio, average, clamp, mapLinear, ticker } from '../src/index.js';
+        import { RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker } from '../src/index.js';
 
         class AudioController {
             static init(ui, graph) {
@@ -27,11 +27,10 @@
                 this.mids = 0;
                 this.lows = 0;
 
-                // Range levels
-                this.highsRange = [100, 150];
-                this.midsRange = [50, 150];
-                this.lowsRange = [0, 30];
-                this.multiplier = 1.1;
+                // Range levels (normalized)
+                this.highsRange = [0.4, 0.6];
+                this.midsRange = [0.2, 0.6];
+                this.lowsRange = [0, 0.2];
 
                 this.initSounds();
                 this.initAnalyser();
@@ -62,8 +61,9 @@
                 this.ui.instructions.animateIn();
             }
 
-            static getAverageFrequency(data, start, end) {
-                return average(data.slice(start, end).map(value => value * this.multiplier));
+            static getAverageFrequency(data, start = 0, end = data.length) {
+                // Calculate the root median square (RMS)
+                return rms(Array.from(data.slice(start, end)).map(value => value / 256));
             }
 
             // Event handlers
@@ -99,7 +99,7 @@
 
                 const highs = this.getAverageFrequency(data, 0, Math.floor(length * 0.4));
                 const mids = this.getAverageFrequency(data, Math.floor(length * 0.4), Math.floor(length * 0.6));
-                const lows = this.getAverageFrequency(data, Math.floor(length * 0.6), length - 1);
+                const lows = this.getAverageFrequency(data, Math.floor(length * 0.6), length);
 
                 this.highs = Math.max(this.highs, highs);
                 this.mids = Math.max(this.mids, mids);
@@ -112,6 +112,9 @@
                 this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 5);
                 this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 5, 10);
                 this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 10, 15);
+
+                // this.analyser.getByteTimeDomainData(data);
+                // console.log('update', this.getAverageFrequency(data));
 
                 this.graph.needsUpdate = true;
             };
