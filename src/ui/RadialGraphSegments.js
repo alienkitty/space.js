@@ -480,18 +480,6 @@ export class RadialGraphSegments extends Interface {
         }
     }
 
-    setGhostArray(value) {
-        if (Array.isArray(value)) {
-            this.ghostArray = value;
-        } else {
-            this.ghostArray = new Array(this.resolution).fill(0);
-        }
-
-        this.needsUpdate = true;
-
-        this.update();
-    }
-
     setArray(value) {
         if (Array.isArray(value)) {
             this.array = value;
@@ -508,6 +496,18 @@ export class RadialGraphSegments extends Interface {
 
             this.graphNeedsUpdate = true;
         }
+
+        this.update();
+    }
+
+    setGhostArray(value) {
+        if (Array.isArray(value)) {
+            this.ghostArray = value;
+        } else {
+            this.ghostArray = new Array(this.array.length).fill(0);
+        }
+
+        this.needsUpdate = true;
 
         this.update();
     }
