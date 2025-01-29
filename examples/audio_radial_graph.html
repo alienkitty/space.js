@@ -45,6 +45,8 @@
 
             static initAnalyser() {
                 this.analyser = this.context.createAnalyser();
+                this.analyser.minDecibels = -90;
+                // this.analyser.maxDecibels = -10;
                 this.analyser.fftSize = 4096;
 
                 this.bufferLength = this.analyser.frequencyBinCount;
@@ -63,7 +65,7 @@
 
             static getAverageFrequency(data, start = 0, end = data.length) {
                 // Calculate the root median square (RMS)
-                return rms(Array.from(data.slice(start, end)).map(value => value / 256));
+                return rms(Array.from(data.slice(start, end)).map(v => v / 256));
             }
 
             // Event handlers
@@ -93,28 +95,39 @@
                 }
 
                 const data = this.data;
-                const length = this.bufferLength;
+                const bufferLength = this.bufferLength;
 
+                // Bars
                 this.analyser.getByteFrequencyData(data);
 
-                const highs = this.getAverageFrequency(data, 0, Math.floor(length * 0.4));
-                const mids = this.getAverageFrequency(data, Math.floor(length * 0.4), Math.floor(length * 0.6));
-                const lows = this.getAverageFrequency(data, Math.floor(length * 0.6), length);
+                const highs = this.getAverageFrequency(data, 0, Math.floor(bufferLength * 0.4));
+                const mids = this.getAverageFrequency(data, Math.floor(bufferLength * 0.4), Math.floor(bufferLength * 0.6));
+                const lows = this.getAverageFrequency(data, Math.floor(bufferLength * 0.6), bufferLength);
 
                 this.highs = Math.max(this.highs, highs);
                 this.mids = Math.max(this.mids, mids);
                 this.lows = Math.max(this.lows, lows);
 
-                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 5);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 5, 10);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 10, 15);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 682);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 682, 1364);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 1364, 2048);
 
-                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 5);
-                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 5, 10);
-                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 10, 15);
+                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 682);
+                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 682, 1364);
+                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 1364, 2048);
 
-                // this.analyser.getByteTimeDomainData(data);
-                // console.log('update', this.getAverageFrequency(data));
+                // this.graph.array.fill(0.5, 0, 682);
+                // this.graph.array.fill(0.5, 682, 1364);
+                // this.graph.array.fill(0.5, 1364, 2048);
+
+                // Oscilloscope
+                this.analyser.getByteTimeDomainData(data);
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = data[i] / 128;
+
+                    this.graph.array[i] = (v * (0.5 + this.graph.array[i])) / 2;
+                }
 
                 this.graph.needsUpdate = true;
             };
@@ -146,12 +159,13 @@
 
                 // Radial graph with 3 segments and ghost
                 this.graph = new RadialGraphSegments({
-                    value: new Array(15).fill(0),
+                    value: new Array(2048).fill(0),
                     ghost: true,
                     start: -90,
                     precision: 2,
                     lookupPrecision: 100,
-                    segments: [5, 5, 5],
+                    // segments: [682, 684, 682],
+                    segments: [682, 682, 684],
                     noHover: true
                 });
                 this.graph.animateIn();
