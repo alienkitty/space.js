@@ -16,8 +16,8 @@
         var id = 0;
 
         class AudioController {
-            static init(instructions) {
-                this.instructions = instructions;
+            static init(ui) {
+                this.ui = ui;
 
                 this.addListeners();
             }
@@ -26,7 +26,7 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                this.instructions.animateIn();
+                this.ui.instructions.animateIn();
             }
 
             // Event handlers
@@ -40,7 +40,7 @@
             };
 
             static onPointerDown = ({ clientX, clientY }) => {
-                // this.instructions.animateOut();
+                // this.ui.instructions.animateOut();
 
                 const normalX = clientX / document.documentElement.clientWidth;
                 const normalY = clientY / document.documentElement.clientHeight;
@@ -87,7 +87,7 @@
                 WebAudio.init({ sampleRate: 48000 });
                 WebAudio.load(this.loader.files);
 
-                AudioController.init(this.ui.instructions);
+                AudioController.init(this.ui);
             }
         }
 

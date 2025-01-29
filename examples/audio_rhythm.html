@@ -24,8 +24,8 @@
         import { BufferLoader, Interface, Panel, PanelItem, UI, WebAudio, headsTails } from '../src/index.js';
 
         class AudioController {
-            static init(instructions) {
-                this.instructions = instructions;
+            static init(ui) {
+                this.ui = ui;
 
                 this.context = WebAudio.context;
                 this.lastTime = 0;
@@ -64,7 +64,7 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                this.instructions.animateIn();
+                this.ui.instructions.animateIn();
             }
 
             // Event handlers
@@ -78,7 +78,7 @@
             };
 
             static onPointerDown = () => {
-                // this.instructions.animateOut();
+                // this.ui.instructions.animateOut();
 
                 // Based on https://www.html5rocks.com/en/tutorials/webaudio/intro/ by smus
 
@@ -556,7 +556,7 @@
                 WebAudio.init({ sampleRate: 48000 });
                 WebAudio.load(this.loader.files);
 
-                AudioController.init(this.ui.instructions);
+                AudioController.init(this.ui);
             }
 
             static initPanel() {
