@@ -97,6 +97,12 @@ export function average(numbers) {
     return sum / numbers.length;
 }
 
+export function rms(numbers) {
+    const sum = numbers.map(v => v * v).reduce((a, b) => a + b);
+
+    return Math.sqrt(sum / numbers.length);
+}
+
 export function median(numbers) {
     const sorted = numbers.toSorted();
     const length = sorted.length;
