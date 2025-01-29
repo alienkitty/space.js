@@ -81,7 +81,7 @@
                 const mids = this.getAverageFrequency(data, Math.floor(length * 0.4), Math.floor(length * 0.6));
                 const lows = this.getAverageFrequency(data, Math.floor(length * 0.6), length - 1);
 
-                this.graph.array.fill(clamp(mapLinear(highs, 100, 150, 0, 1), 0, 1), 0, 5);
+                this.graph.array.fill(clamp(mapLinear(highs, 80, 150, 0, 1), 0, 1), 0, 5);
                 this.graph.array.fill(clamp(mapLinear(mids, 50, 150, 0, 1), 0, 1), 5, 10);
                 this.graph.array.fill(clamp(mapLinear(lows, 0, 30, 0, 1), 0, 1), 10, 15);
                 this.graph.needsUpdate = true;
