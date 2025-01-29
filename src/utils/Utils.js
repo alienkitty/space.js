@@ -92,11 +92,7 @@ export function fract(value) {
 }
 
 export function average(numbers) {
-    let sum = 0;
-
-    for (let i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
-    }
+    const sum = numbers.reduce((a, b) => a + b, 0);
 
     return sum / numbers.length;
 }
