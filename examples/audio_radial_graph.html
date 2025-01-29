@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Analyser Radial Graph — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="module">
+        import { RadialGraphSegments, UI, WebAudio, average, clamp, mapLinear, median, ticker } from '../src/index.js';
+
+        class AudioController {
+            static init(ui, graph) {
+                this.ui = ui;
+                this.graph = graph;
+
+                this.context = WebAudio.context;
+
+                this.initSounds();
+                this.initAnalyser();
+
+                this.addListeners();
+            }
+
+            static initSounds() {
+                this.protonradio = WebAudio.get('protonradio');
+                this.protonradio.gain.set(1);
+            }
+
+            static initAnalyser() {
+                this.analyser = this.context.createAnalyser();
+                this.analyser.fftSize = 2048;
+                // this.analyser.fftSize = 256;
+                // this.analyser.fftSize = 32;
+
+                this.bufferLength = this.analyser.frequencyBinCount;
+                this.data = new Uint8Array(this.bufferLength);
+                console.log('initAnalyser', this.bufferLength);
+
+                // Connect the source to be analyzed
+                this.protonradio.source.connect(this.analyser);
+            }
+
+            static addListeners() {
+                document.addEventListener('visibilitychange', this.onVisibility);
+                document.addEventListener('pointerdown', this.onPointerDown);
+
+                this.ui.instructions.animateIn();
+            }
+
+            static getAverageFrequency(data, start, end) {
+                return average(data.slice(start, end));
+            }
+
+            static getMedianFrequency(data, start, end) {
+                return median(data.slice(start, end));
+            }
+
+            // Event handlers
+
+            static onVisibility = () => {
+                if (document.hidden) {
+                    WebAudio.mute();
+                } else {
+                    WebAudio.unmute();
+                }
+            };
+
+            static onPointerDown = () => {
+                this.ui.instructions.animateOut();
+
+                this.protonradio.play();
+            };
+
+            // Public methods
+
+            static update = () => {
+                const data = this.data;
+                const length = this.bufferLength;
+
+                this.analyser.getByteFrequencyData(data);
+
+                const highs = this.getAverageFrequency(data, 0, Math.floor(length * 0.4));
+                const mids = this.getAverageFrequency(data, Math.floor(length * 0.4), Math.floor(length * 0.6));
+                const lows = this.getAverageFrequency(data, Math.floor(length * 0.6), length - 1);
+
+                this.graph.array.fill(clamp(mapLinear(highs, 100, 150, 0, 1), 0, 1), 0, 5);
+                this.graph.array.fill(clamp(mapLinear(mids, 50, 150, 0, 1), 0, 1), 5, 10);
+                this.graph.array.fill(clamp(mapLinear(lows, 0, 30, 0, 1), 0, 1), 10, 15);
+                this.graph.needsUpdate = true;
+            };
+        }
+
+        class App {
+            static async init() {
+                this.initViews();
+                this.initAudio();
+
+                this.addListeners();
+                this.onResize();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    instructions: {
+                        content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
+                    }
+                });
+                this.ui.css({
+                    minHeight: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '55px 0 125px'
+                });
+                document.body.appendChild(this.ui.element);
+
+                // Radial graph with 3 segments and ghost
+                this.graph = new RadialGraphSegments({
+                    value: new Array(15).fill(0),
+                    ghost: true,
+                    start: -90,
+                    precision: 2,
+                    lookupPrecision: 100,
+                    segments: [5, 5, 5],
+                    noHover: true
+                });
+                this.graph.animateIn();
+                this.ui.add(this.graph);
+            }
+
+            static initAudio() {
+                WebAudio.init({ sampleRate: 48000 });
+
+                // Shoutcast streams append a semicolon (;) to the URL
+                WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
+
+                AudioController.init(this.ui, this.graph);
+            }
+
+            static addListeners() {
+                document.addEventListener('dblclick', this.preventZoom);
+                window.addEventListener('resize', this.onResize);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static preventZoom = e => {
+                e.preventDefault();
+            };
+
+            static onResize = () => {
+                const width = document.documentElement.clientWidth;
+                const height = document.documentElement.clientHeight;
+
+                if (width < height) {
+                    this.graph.setSize(250, 250);
+                } else {
+                    this.graph.setSize(300, 300);
+                }
+            };
+
+            static onUpdate = () => {
+                AudioController.update();
+                this.graph.update();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>
