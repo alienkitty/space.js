@@ -250,6 +250,7 @@ scene.environmentIntensity = 1.2;
 [panel](https://space.js.org/examples/panel.html) (standalone)  
 [graph](https://space.js.org/examples/graph.html) (standalone)  
 [radial graph](https://space.js.org/examples/radial_graph.html) (standalone)  
+[radial graph](https://space.js.org/examples/audio_radial_graph.html) (audio analyser)  
 [graph markers](https://space.js.org/examples/graph_markers.html)  
 [meter](https://space.js.org/examples/meter.html) (standalone)  
 [thumbnail](https://space.js.org/examples/thumbnail.html)  
@@ -269,6 +270,7 @@ scene.environmentIntensity = 1.2;
 [stream](https://space.js.org/examples/audio_stream.html)  
 [rhythm](https://space.js.org/examples/audio_rhythm.html)  
 [audio](https://space.js.org/examples/ui_audio.html) (ui)  
+[analyser](https://space.js.org/examples/audio_radial_graph.html) (radial graph)  
 
 #### thread
 
