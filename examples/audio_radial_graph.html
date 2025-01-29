@@ -27,6 +27,11 @@
                 this.mids = 0;
                 this.lows = 0;
 
+                // Range levels
+                this.highsRange = [80, 150];
+                this.midsRange = [50, 150];
+                this.lowsRange = [0, 30];
+
                 this.initSounds();
                 this.initAnalyser();
 
@@ -99,13 +104,13 @@
                 this.mids = Math.max(this.mids, mids);
                 this.lows = Math.max(this.lows, lows);
 
-                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, 80, 150, 0, 1), 0, 1), 0, 5);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, 50, 150, 0, 1), 0, 1), 5, 10);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, 0, 30, 0, 1), 0, 1), 10, 15);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 5);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 5, 10);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 10, 15);
 
-                this.graph.array.fill(clamp(mapLinear(highs, 80, 150, 0, 1), 0, 1), 0, 5);
-                this.graph.array.fill(clamp(mapLinear(mids, 50, 150, 0, 1), 0, 1), 5, 10);
-                this.graph.array.fill(clamp(mapLinear(lows, 0, 30, 0, 1), 0, 1), 10, 15);
+                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 5);
+                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 5, 10);
+                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 10, 15);
 
                 this.graph.needsUpdate = true;
             };
