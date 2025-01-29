@@ -369,18 +369,6 @@ export class PanelGraph extends Interface {
         this.needsUpdate = true;
     }
 
-    setGhostArray(value) {
-        if (Array.isArray(value)) {
-            this.ghostArray = value;
-        } else {
-            this.ghostArray = new Array(this.resolution).fill(0);
-        }
-
-        this.needsUpdate = true;
-
-        this.update();
-    }
-
     setArray(value) {
         if (Array.isArray(value)) {
             if (!this.callback) {
@@ -398,6 +386,18 @@ export class PanelGraph extends Interface {
             this.pathData = '';
             this.graphNeedsUpdate = true;
         }
+
+        this.update();
+    }
+
+    setGhostArray(value) {
+        if (Array.isArray(value)) {
+            this.ghostArray = value;
+        } else {
+            this.ghostArray = new Array(this.array.length).fill(0);
+        }
+
+        this.needsUpdate = true;
 
         this.update();
     }

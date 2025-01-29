@@ -421,14 +421,6 @@ export class RadialGraphCanvas extends Interface {
         }
     }
 
-    setGhostArray(value) {
-        if (Array.isArray(value)) {
-            this.ghostArray = value;
-        } else {
-            this.ghostArray = new Array(this.resolution).fill(0);
-        }
-    }
-
     setArray(value) {
         if (Array.isArray(value)) {
             this.array = value;
@@ -439,6 +431,14 @@ export class RadialGraphCanvas extends Interface {
         if (!this.noHover && this.lookupPrecision) {
             this.pathData = '';
             this.graphNeedsUpdate = true;
+        }
+    }
+
+    setGhostArray(value) {
+        if (Array.isArray(value)) {
+            this.ghostArray = value;
+        } else {
+            this.ghostArray = new Array(this.array.length).fill(0);
         }
     }
 
