@@ -91,6 +91,16 @@ export function fract(value) {
     return value - Math.floor(value);
 }
 
+export function average(numbers) {
+    let sum = 0;
+
+    for (let i = 0; i < numbers.length; i++) {
+        sum += numbers[i];
+    }
+
+    return sum / numbers.length;
+}
+
 export function median(numbers) {
     const sorted = numbers.toSorted();
     const middle = Math.floor(sorted.length / 2);
