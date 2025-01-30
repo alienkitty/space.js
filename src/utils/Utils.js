@@ -92,13 +92,13 @@ export function fract(value) {
 }
 
 export function average(numbers) {
-    const sum = numbers.reduce((a, b) => a + b);
+    const sum = numbers.reduce((a, b) => a + b, 0);
 
     return sum / numbers.length;
 }
 
 export function rms(numbers) {
-    const sum = numbers.map(v => v * v).reduce((a, b) => a + b);
+    const sum = numbers.map(v => v * v).reduce((a, b) => a + b, 0);
 
     return Math.sqrt(sum / numbers.length);
 }
