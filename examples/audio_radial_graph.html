@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker } from '../src/index.js';
+        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker, tween } from '../src/index.js';
+
+        const store = {
+            sound: true
+        };
 
         class AudioController {
             static init(ui, graph) {
@@ -51,7 +55,7 @@
                 // Delay the output to sync with the analyser
                 this.analyserDelay = this.context.createDelay();
                 this.analyserDelay.delayTime.value = 1 / 60; // 1 frame
-                this.analyserDelay.connect(this.protonradio.stereo);
+                this.analyserDelay.connect(this.protonradio.parent.input);
 
                 this.analyser = this.context.createAnalyser();
                 this.analyser.fftSize = 4096;
@@ -59,12 +63,12 @@
                 this.bufferLength = this.analyser.frequencyBinCount;
                 this.data = new Uint8Array(this.bufferLength);
 
-                // Connect the source to be analyzed (without output)
+                // Connect the source to be analyzed (directly without output)
                 // this.protonradio.source.connect(this.analyser);
 
-                // Reconnect the source to be analyzed (with analyser output)
-                this.protonradio.source.disconnect();
-                this.protonradio.source.connect(this.analyser);
+                // Reconnect the output to be analyzed (with analyser output)
+                this.protonradio.output.disconnect();
+                this.protonradio.output.connect(this.analyser);
                 this.analyser.connect(this.analyserDelay);
             }
 
@@ -72,7 +76,9 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                this.ui.instructions.animateIn();
+                if (store.sound) {
+                    this.ui.instructions.animateIn();
+                }
             }
 
             static setGraphSegments() {
@@ -149,6 +155,14 @@
 
                 this.graph.needsUpdate = true;
             };
+
+            static mute = () => {
+                tween(this.protonradio.gain, { value: 0 }, 500, 'easeOutSine');
+            };
+
+            static unmute = () => {
+                tween(this.protonradio.gain, { value: 1 }, 500, 'easeOutSine');
+            };
         }
 
         class PanelController {
@@ -159,11 +173,25 @@
             }
 
             static initPanel() {
-                const { analyserDelay } = AudioController;
+                const { protonradio, analyserDelay } = AudioController;
 
                 const items = [
                     {
                         name: 'FPS'
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Volume',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.gain.value,
+                        callback: value => {
+                            protonradio.gain.value = value;
+                        }
                     },
                     {
                         type: 'divider'
@@ -275,6 +303,9 @@
 
         class App {
             static async init() {
+                const sound = localStorage.getItem('sound');
+                store.sound = sound ? JSON.parse(sound) : true;
+
                 this.initViews();
                 this.initAudio();
                 this.initPanel();
@@ -292,7 +323,7 @@
                         content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
                     },
                     audioButton: {
-                        sound: true
+                        sound: store.sound
                     }
                 });
                 this.ui.css({
@@ -337,6 +368,7 @@
             }
 
             static addListeners() {
+                this.ui.audioButton.events.on('update', this.onAudio);
                 document.addEventListener('dblclick', this.preventZoom);
                 window.addEventListener('resize', this.onResize);
                 ticker.add(this.onUpdate);
@@ -347,6 +379,18 @@
 
             static preventZoom = e => {
                 e.preventDefault();
+            };
+
+            static onAudio = ({ sound }) => {
+                if (sound) {
+                    AudioController.unmute();
+                } else {
+                    AudioController.mute();
+                }
+
+                localStorage.setItem('sound', JSON.stringify(sound));
+
+                store.sound = sound;
             };
 
             static onResize = () => {
