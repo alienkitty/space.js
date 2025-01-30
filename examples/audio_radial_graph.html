@@ -33,7 +33,7 @@
                 this.lowsRange = [0, 0.2];
 
                 // Oscilloscope
-                this.multiplier = 1;
+                this.multiplier = 0;
 
                 this.initSounds();
                 this.initAnalyser();
@@ -48,6 +48,12 @@
             }
 
             static initAnalyser() {
+                // Delay the output to sync with the analyser
+                this.analyserDelay = this.context.createDelay();
+                this.analyserDelay.delayTime.value = 3 / 60; // 3 frames
+                console.log('initAnalyser', this.analyserDelay.delayTime.value);
+                this.analyserDelay.connect(this.protonradio.stereo);
+
                 this.analyser = this.context.createAnalyser();
                 this.analyser.fftSize = 4096;
 
@@ -60,7 +66,7 @@
                 // Reconnect the source to be analyzed (with analyser output)
                 this.protonradio.source.disconnect();
                 this.protonradio.source.connect(this.analyser);
-                this.analyser.connect(this.protonradio.stereo);
+                this.analyser.connect(this.analyserDelay);
             }
 
             static addListeners() {
