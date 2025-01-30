@@ -270,7 +270,7 @@ scene.environmentIntensity = 1.2;
 [stream](https://space.js.org/examples/audio_stream.html)  
 [rhythm](https://space.js.org/examples/audio_rhythm.html)  
 [audio](https://space.js.org/examples/ui_audio.html) (ui)  
-[analyser](https://space.js.org/examples/audio_radial_graph.html) (radial graph)  
+[analyser](https://space.js.org/examples/audio_radial_graph.html) (ui, radial graph)  
 
 #### thread
 
