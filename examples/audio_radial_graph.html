@@ -54,8 +54,13 @@
                 this.bufferLength = this.analyser.frequencyBinCount;
                 this.data = new Uint8Array(this.bufferLength);
 
-                // Connect the source to be analyzed
+                // Connect the source to be analyzed (without output)
+                // this.protonradio.source.connect(this.analyser);
+
+                // Reconnect the source to be analyzed (with analyser output)
+                this.protonradio.source.disconnect();
                 this.protonradio.source.connect(this.analyser);
+                this.analyser.connect(this.protonradio.stereo);
             }
 
             static addListeners() {
