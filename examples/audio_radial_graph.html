@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker } from '../src/index.js';
+        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker } from '../src/index.js';
 
         class AudioController {
             static init(ui, graph) {
@@ -50,8 +50,7 @@
             static initAnalyser() {
                 // Delay the output to sync with the analyser
                 this.analyserDelay = this.context.createDelay();
-                this.analyserDelay.delayTime.value = 3 / 60; // 3 frames
-                console.log('initAnalyser', this.analyserDelay.delayTime.value);
+                this.analyserDelay.delayTime.value = 1 / 60; // 1 frame
                 this.analyserDelay.connect(this.protonradio.stereo);
 
                 this.analyser = this.context.createAnalyser();
@@ -152,17 +151,143 @@
             };
         }
 
+        class PanelController {
+            static init(ui) {
+                this.ui = ui;
+
+                this.initPanel();
+            }
+
+            static initPanel() {
+                const { analyserDelay } = AudioController;
+
+                const items = [
+                    {
+                        name: 'FPS'
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Highs Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.highsRange[0],
+                        callback: value => {
+                            AudioController.highsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Highs Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.highsRange[1],
+                        callback: value => {
+                            AudioController.highsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Mids Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.midsRange[0],
+                        callback: value => {
+                            AudioController.midsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Mids Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.midsRange[1],
+                        callback: value => {
+                            AudioController.midsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Lows Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.lowsRange[0],
+                        callback: value => {
+                            AudioController.lowsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Lows Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.lowsRange[1],
+                        callback: value => {
+                            AudioController.lowsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Oscope',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.multiplier,
+                        callback: value => {
+                            AudioController.multiplier = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Delay',
+                        min: 0,
+                        max: 60,
+                        step: 1,
+                        value: analyserDelay.delayTime.value * 60,
+                        callback: value => {
+                            analyserDelay.delayTime.value = value / 60;
+                        }
+                    }
+                ];
+
+                items.forEach(data => {
+                    this.ui.addPanel(new PanelItem(data));
+                });
+            }
+        }
+
         class App {
             static async init() {
                 this.initViews();
                 this.initAudio();
+                this.initPanel();
 
                 this.addListeners();
                 this.onResize();
+
+                this.animateIn();
             }
 
             static initViews() {
                 this.ui = new UI({
+                    fps: true,
                     instructions: {
                         content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
                     }
@@ -186,7 +311,6 @@
                     segments: [1, 1, 1],
                     noHover: true
                 });
-                this.graph.animateIn();
                 this.ui.add(this.graph);
             }
 
@@ -197,6 +321,10 @@
                 WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
 
                 AudioController.init(this.ui, this.graph);
+            }
+
+            static initPanel() {
+                PanelController.init(this.ui);
             }
 
             static addListeners() {
@@ -226,6 +354,14 @@
             static onUpdate = time => {
                 AudioController.update(time);
                 this.graph.update();
+                this.ui.update();
+            };
+
+            // Public methods
+
+            static animateIn = () => {
+                this.graph.animateIn();
+                this.ui.animateIn();
             };
         }
 
