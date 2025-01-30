@@ -290,6 +290,9 @@
                     fps: true,
                     instructions: {
                         content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
+                    },
+                    audioButton: {
+                        sound: true
                     }
                 });
                 this.ui.css({
@@ -300,6 +303,12 @@
                     padding: '55px 0 125px'
                 });
                 document.body.appendChild(this.ui.element);
+
+                this.ui.audioButton.setData({
+                    name: 'Proton Radio',
+                    title: 'protonradio.com',
+                    link: 'https://www.protonradio.com/'
+                });
 
                 // Radial graph with 3 segments and ghost
                 this.graph = new RadialGraphSegments({
