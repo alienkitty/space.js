@@ -276,7 +276,7 @@ export class UI extends Interface {
             if (this.animatedIn) {
                 this.animateOut();
 
-                if (this.details.animatedIn) {
+                if (this.details && this.details.animatedIn) {
                     this.toggleDetails(false);
                 }
             } else {
