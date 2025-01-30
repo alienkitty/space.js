@@ -136,6 +136,8 @@ Mars is the fourth planet from the Sun. The surface of Mars is orange-red becaus
                 console.log('MuteButton event:', e);
 
                 localStorage.setItem('sound', JSON.stringify(e.sound));
+
+                store.sound = e.sound;
             };
 
             static onKeyUp = e => {
