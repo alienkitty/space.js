@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, fract, mapLinear, median, rms, ticker, tween } from '../src/index.js';
+        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, median, rms, ticker, tween } from '../src/index.js';
 
         const store = {
             sound: true
@@ -76,7 +76,7 @@
                 this.protonradio.output.connect(this.analyser);
                 this.analyser.connect(this.analyserDelay);
 
-                // Find all chunk sizes evenly divisible by 3
+                // Find all the chunk sizes evenly divisible by 3
                 const segmentSizes = [];
 
                 for (let i = 1; i < this.bufferLength; i++) {
@@ -91,14 +91,12 @@
                 }
 
                 this.chunkSizes.unshift(1, 2, 3, 4, 5, 6, 7, 8, 9);
-                console.log('setGraphSegments', this.chunkSizes);
             }
 
             static setGraphSegments(chunkSize) {
                 this.chunkSize = chunkSize;
 
                 this.arrayLength = Math.floor(this.bufferLength / this.chunkSize);
-                console.log('setGraphSegments', this.bufferLength, this.chunkSize, this.arrayLength, this.bufferLength % this.chunkSize);
 
                 const segmentSize = Math.floor(this.arrayLength / 3);
 
@@ -107,7 +105,6 @@
                 this.graph.ghostArray.length = this.arrayLength;
 
                 this.segmentPositions = [segmentSize, segmentSize * 2, this.arrayLength];
-                console.log('setGraphSegments', this.graph.segments, this.segmentPositions);
             }
 
             static addListeners() {
