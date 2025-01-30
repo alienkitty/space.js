@@ -34,6 +34,7 @@
 
                 this.initSounds();
                 this.initAnalyser();
+                this.setGraphSegments();
 
                 this.addListeners();
             }
@@ -45,8 +46,6 @@
 
             static initAnalyser() {
                 this.analyser = this.context.createAnalyser();
-                this.analyser.minDecibels = -90;
-                // this.analyser.maxDecibels = -10;
                 this.analyser.fftSize = 4096;
 
                 this.bufferLength = this.analyser.frequencyBinCount;
@@ -61,6 +60,14 @@
                 document.addEventListener('pointerdown', this.onPointerDown);
 
                 this.ui.instructions.animateIn();
+            }
+
+            static setGraphSegments() {
+                const segmentSize = Math.floor(this.bufferLength / 3);
+
+                this.graph.segments = [segmentSize, segmentSize, this.bufferLength - segmentSize * 2];
+
+                this.segmentPositions = [segmentSize, segmentSize * 2, this.bufferLength];
             }
 
             static getAverageFrequency(data, start = 0, end = data.length) {
@@ -96,6 +103,7 @@
 
                 const data = this.data;
                 const bufferLength = this.bufferLength;
+                const segmentPositions = this.segmentPositions;
 
                 // Bars
                 this.analyser.getByteFrequencyData(data);
@@ -108,17 +116,13 @@
                 this.mids = Math.max(this.mids, mids);
                 this.lows = Math.max(this.lows, lows);
 
-                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 682);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 682, 1364);
-                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 1364, 2048);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, segmentPositions[0]);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), segmentPositions[0], segmentPositions[1]);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), segmentPositions[1], segmentPositions[2]);
 
-                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, 682);
-                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), 682, 1364);
-                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), 1364, 2048);
-
-                // this.graph.array.fill(0.5, 0, 682);
-                // this.graph.array.fill(0.5, 682, 1364);
-                // this.graph.array.fill(0.5, 1364, 2048);
+                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, segmentPositions[0]);
+                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), segmentPositions[0], segmentPositions[1]);
+                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), segmentPositions[1], segmentPositions[2]);
 
                 // Oscilloscope
                 this.analyser.getByteTimeDomainData(data);
@@ -164,8 +168,7 @@
                     start: -90,
                     precision: 2,
                     lookupPrecision: 100,
-                    // segments: [682, 684, 682],
-                    segments: [682, 682, 684],
+                    segments: [1, 1, 1],
                     noHover: true
                 });
                 this.graph.animateIn();
