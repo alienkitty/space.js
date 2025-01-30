@@ -27,10 +27,13 @@
                 this.mids = 0;
                 this.lows = 0;
 
-                // Range levels (normalized)
+                // Bars
                 this.highsRange = [0.4, 0.6];
                 this.midsRange = [0.2, 0.6];
                 this.lowsRange = [0, 0.2];
+
+                // Oscilloscope
+                this.multiplier = 1;
 
                 this.initSounds();
                 this.initAnalyser();
@@ -129,8 +132,9 @@
 
                 for (let i = 0; i < bufferLength; i++) {
                     const v = data[i] / 128;
+                    const y = clamp(mapLinear(v, 0, 2, -0.5, 0.5), -0.5, 0.5);
 
-                    this.graph.array[i] = (v * (0.5 + this.graph.array[i])) / 2;
+                    this.graph.array[i] = this.graph.array[i] + y * this.multiplier;
                 }
 
                 this.graph.needsUpdate = true;
