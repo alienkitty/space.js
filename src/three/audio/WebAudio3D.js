@@ -1,5 +1,7 @@
 /**
  * @author pschroen / https://ufo.ai/
+ *
+ * Based on https://github.com/mrdoob/three.js/blob/dev/src/audio/AudioListener.js
  */
 
 import { Group, Quaternion, Vector3 } from 'three';

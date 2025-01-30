@@ -56,6 +56,7 @@ export class Point3D extends Group {
         root = document.body,
         container = document.body,
         breakpoint = 1000,
+        headerSnap = false,
         physics = null,
         loader = new TextureLoader(),
         uvTexturePath = 'assets/textures/uv.jpg',
@@ -69,6 +70,7 @@ export class Point3D extends Group {
         this.root = root instanceof Interface ? root : new Interface(root);
         this.container = container instanceof Interface ? container : new Interface(container);
         this.breakpoint = breakpoint;
+        this.headerSnap = headerSnap;
         this.physics = physics;
         this.loader = loader;
         this.uvTexturePath = uvTexturePath;
@@ -96,6 +98,7 @@ export class Point3D extends Group {
         this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         this.uvTexture = null;
         this.windowSnapMargin = 30;
+        this.windowSnapTop = this.headerSnap ? 29 : 0;
         this.openColor = null;
         this.isDragging = false;
         this.enabled = true;
@@ -574,6 +577,8 @@ export class Point3D extends Group {
                 type: this.type
             });
             this.element.add(this.point);
+
+            this.point.windowSnapTop = 42;
         } else {
             this.reticle = new ReticleCanvas();
             this.reticle.setContext(context);
@@ -589,11 +594,14 @@ export class Point3D extends Group {
             }
 
             this.point = new Point(this, this.tracker);
+            this.point.info.css({ top: -15 });
             this.point.setData({
                 name: this.name,
                 type: this.type
             });
             this.element.add(this.point);
+
+            this.point.windowSnapTop = 14;
         }
     }
 
@@ -1305,7 +1313,7 @@ export class Point3D extends Group {
         this.snapPosition.copy(this.point.originPosition);
         this.snapTarget.copy(this.snapPosition);
 
-        const windowSnapTop = Point3D.windowSnapMargin + 43;
+        const windowSnapTop = Point3D.windowSnapMargin + Point3D.windowSnapTop + this.point.windowSnapTop;
         let windowSnapLeft = -(48 - Point3D.windowSnapMargin);
 
         if (this.point.tracker.locked) {

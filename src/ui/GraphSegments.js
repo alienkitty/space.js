@@ -51,7 +51,7 @@ export class GraphSegments extends Interface {
         noMarkerDrag = false,
         noGradient = false
     } = {}) {
-        super('.graph');
+        super('.graph-segments');
 
         this.value = value;
         this.ghost = ghost;
@@ -426,18 +426,6 @@ export class GraphSegments extends Interface {
         return name;
     }
 
-    setGhostArray(value) {
-        if (Array.isArray(value)) {
-            this.ghostArray = value;
-        } else {
-            this.ghostArray = new Array(this.resolution).fill(0);
-        }
-
-        this.needsUpdate = true;
-
-        this.update();
-    }
-
     setArray(value) {
         if (Array.isArray(value)) {
             this.array = value;
@@ -454,6 +442,18 @@ export class GraphSegments extends Interface {
 
             this.graphNeedsUpdate = true;
         }
+
+        this.update();
+    }
+
+    setGhostArray(value) {
+        if (Array.isArray(value)) {
+            this.ghostArray = value;
+        } else {
+            this.ghostArray = new Array(this.array.length).fill(0);
+        }
+
+        this.needsUpdate = true;
 
         this.update();
     }

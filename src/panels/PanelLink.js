@@ -17,7 +17,7 @@ export class PanelLink extends Interface {
         this.callback = callback;
 
         this.init();
-        this.setValue(this.value);
+        this.setValue(this.value, false);
 
         this.addListeners();
     }
@@ -26,7 +26,7 @@ export class PanelLink extends Interface {
         this.css({
             position: 'relative',
             width: 'fit-content',
-            height: 20,
+            height: 18,
             lineHeight: 16,
             textTransform: 'uppercase',
             whiteSpace: 'nowrap',

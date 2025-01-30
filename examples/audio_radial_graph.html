@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Analyser Radial Graph — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@400;700">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="module">
+        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker, tween } from '../src/index.js';
+
+        const store = {
+            sound: true
+        };
+
+        class AudioController {
+            static init(ui, graph) {
+                this.ui = ui;
+                this.graph = graph;
+
+                this.context = WebAudio.context;
+
+                // Peak levels for ghost graph
+                this.peakInterval = 3; // 3 seconds
+                this.lastTime = 0;
+                this.highs = 0;
+                this.mids = 0;
+                this.lows = 0;
+
+                // Bars
+                this.highsRange = [0.4, 0.6];
+                this.midsRange = [0.2, 0.6];
+                this.lowsRange = [0, 0.3];
+
+                // Oscilloscope
+                this.multiplier = 0.5;
+
+                this.initSounds();
+                this.initAnalyser();
+                this.setGraphSegments();
+
+                this.addListeners();
+            }
+
+            static initSounds() {
+                this.protonradio = WebAudio.get('protonradio');
+                this.protonradio.gain.set(1);
+            }
+
+            static initAnalyser() {
+                // Delay the output to sync with the analyser
+                this.analyserDelay = this.context.createDelay();
+                this.analyserDelay.delayTime.value = 1 / 60; // 1 frame
+                this.analyserDelay.connect(this.protonradio.parent.input);
+
+                this.analyser = this.context.createAnalyser();
+                this.analyser.fftSize = 4096;
+
+                this.bufferLength = this.analyser.frequencyBinCount;
+                this.data = new Uint8Array(this.bufferLength);
+
+                // Connect the source to be analyzed (directly without output)
+                // this.protonradio.source.connect(this.analyser);
+
+                // Reconnect the output to be analyzed (with analyser output)
+                this.protonradio.output.disconnect();
+                this.protonradio.output.connect(this.analyser);
+                this.analyser.connect(this.analyserDelay);
+            }
+
+            static addListeners() {
+                document.addEventListener('visibilitychange', this.onVisibility);
+                document.addEventListener('pointerdown', this.onPointerDown);
+
+                if (store.sound) {
+                    this.ui.instructions.animateIn();
+                }
+            }
+
+            static setGraphSegments() {
+                const segmentSize = Math.floor(this.bufferLength / 3);
+
+                this.graph.segments = [segmentSize, segmentSize, this.bufferLength - segmentSize * 2];
+
+                this.segmentPositions = [segmentSize, segmentSize * 2, this.bufferLength];
+            }
+
+            static getAverageFrequency(data, start = 0, end = data.length) {
+                // Calculate the root median square (RMS)
+                return rms(Array.from(data.slice(start, end)).map(v => v / 256));
+            }
+
+            // Event handlers
+
+            static onVisibility = () => {
+                if (document.hidden) {
+                    WebAudio.mute();
+                } else {
+                    WebAudio.unmute();
+                }
+            };
+
+            static onPointerDown = () => {
+                this.ui.instructions.animateOut();
+
+                this.protonradio.play();
+            };
+
+            // Public methods
+
+            static update = time => {
+                if (time - this.lastTime > this.peakInterval) {
+                    this.lastTime = time;
+                    this.highs = 0;
+                    this.mids = 0;
+                    this.lows = 0;
+                }
+
+                const data = this.data;
+                const bufferLength = this.bufferLength;
+                const segmentPositions = this.segmentPositions;
+
+                // Bars
+                this.analyser.getByteFrequencyData(data);
+
+                const highs = this.getAverageFrequency(data, 0, Math.floor(bufferLength * 0.4));
+                const mids = this.getAverageFrequency(data, Math.floor(bufferLength * 0.4), Math.floor(bufferLength * 0.6));
+                const lows = this.getAverageFrequency(data, Math.floor(bufferLength * 0.6), bufferLength);
+
+                this.highs = Math.max(this.highs, highs);
+                this.mids = Math.max(this.mids, mids);
+                this.lows = Math.max(this.lows, lows);
+
+                this.graph.ghostArray.fill(clamp(mapLinear(this.highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, segmentPositions[0]);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), segmentPositions[0], segmentPositions[1]);
+                this.graph.ghostArray.fill(clamp(mapLinear(this.lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), segmentPositions[1], segmentPositions[2]);
+
+                this.graph.array.fill(clamp(mapLinear(highs, this.highsRange[0], this.highsRange[1], 0, 1), 0, 1), 0, segmentPositions[0]);
+                this.graph.array.fill(clamp(mapLinear(mids, this.midsRange[0], this.midsRange[1], 0, 1), 0, 1), segmentPositions[0], segmentPositions[1]);
+                this.graph.array.fill(clamp(mapLinear(lows, this.lowsRange[0], this.lowsRange[1], 0, 1), 0, 1), segmentPositions[1], segmentPositions[2]);
+
+                // Oscilloscope
+                this.analyser.getByteTimeDomainData(data);
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = data[i] / 128;
+                    const y = clamp(mapLinear(v, 0, 2, -0.5, 0.5), -0.5, 0.5);
+
+                    this.graph.array[i] = this.graph.array[i] + y * this.multiplier;
+                }
+
+                this.graph.needsUpdate = true;
+            };
+
+            static mute = () => {
+                tween(this.protonradio.gain, { value: 0 }, 500, 'easeOutSine');
+            };
+
+            static unmute = () => {
+                tween(this.protonradio.gain, { value: 1 }, 500, 'easeOutSine');
+            };
+        }
+
+        class PanelController {
+            static init(ui) {
+                this.ui = ui;
+
+                this.initPanel();
+            }
+
+            static initPanel() {
+                const { protonradio, analyserDelay } = AudioController;
+
+                const items = [
+                    {
+                        name: 'FPS'
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Volume',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: protonradio.gain.value,
+                        callback: value => {
+                            protonradio.gain.value = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Highs Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.highsRange[0],
+                        callback: value => {
+                            AudioController.highsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Highs Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.highsRange[1],
+                        callback: value => {
+                            AudioController.highsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Mids Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.midsRange[0],
+                        callback: value => {
+                            AudioController.midsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Mids Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.midsRange[1],
+                        callback: value => {
+                            AudioController.midsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Lows Min',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.lowsRange[0],
+                        callback: value => {
+                            AudioController.lowsRange[0] = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Lows Max',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.lowsRange[1],
+                        callback: value => {
+                            AudioController.lowsRange[1] = value;
+                        }
+                    },
+                    {
+                        type: 'divider'
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Oscope',
+                        min: 0,
+                        max: 1,
+                        step: 0.01,
+                        value: AudioController.multiplier,
+                        callback: value => {
+                            AudioController.multiplier = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Delay',
+                        min: 0,
+                        max: 60,
+                        step: 1,
+                        value: analyserDelay.delayTime.value * 60,
+                        callback: value => {
+                            analyserDelay.delayTime.value = value / 60;
+                        }
+                    }
+                ];
+
+                items.forEach(data => {
+                    this.ui.addPanel(new PanelItem(data));
+                });
+            }
+        }
+
+        class App {
+            static async init() {
+                const sound = localStorage.getItem('sound');
+                store.sound = sound ? JSON.parse(sound) : true;
+
+                this.initViews();
+                this.initAudio();
+                this.initPanel();
+
+                this.addListeners();
+                this.onResize();
+
+                this.animateIn();
+            }
+
+            static initViews() {
+                this.ui = new UI({
+                    fps: true,
+                    instructions: {
+                        content: `${navigator.maxTouchPoints ? 'Tap' : 'Click'} for sound`
+                    },
+                    audioButton: {
+                        sound: store.sound
+                    }
+                });
+                this.ui.css({
+                    minHeight: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                });
+                document.body.appendChild(this.ui.element);
+
+                this.ui.audioButton.setData({
+                    name: 'Proton Radio',
+                    title: 'protonradio.com',
+                    link: 'https://www.protonradio.com/'
+                });
+
+                // Radial graph with 3 segments and ghost
+                this.graph = new RadialGraphSegments({
+                    value: new Array(2048).fill(0),
+                    ghost: true,
+                    start: -90,
+                    precision: 2,
+                    lookupPrecision: 100,
+                    segments: [1, 1, 1],
+                    noHover: true
+                });
+                this.ui.add(this.graph);
+            }
+
+            static initAudio() {
+                WebAudio.init({ sampleRate: 48000 });
+
+                // Shoutcast streams append a semicolon (;) to the URL
+                WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
+
+                AudioController.init(this.ui, this.graph);
+            }
+
+            static initPanel() {
+                PanelController.init(this.ui);
+            }
+
+            static addListeners() {
+                this.ui.audioButton.events.on('update', this.onAudio);
+                document.addEventListener('dblclick', this.preventZoom);
+                window.addEventListener('resize', this.onResize);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            }
+
+            // Event handlers
+
+            static preventZoom = e => {
+                e.preventDefault();
+            };
+
+            static onAudio = ({ sound }) => {
+                if (sound) {
+                    AudioController.unmute();
+                } else {
+                    AudioController.mute();
+                }
+
+                localStorage.setItem('sound', JSON.stringify(sound));
+
+                store.sound = sound;
+            };
+
+            static onResize = () => {
+                const width = document.documentElement.clientWidth;
+                const height = document.documentElement.clientHeight;
+
+                if (width < height) {
+                    const size = document.documentElement.clientWidth * 0.74;
+
+                    this.graph.setSize(size, size);
+                } else {
+                    const size = document.documentElement.clientHeight * 0.74;
+
+                    this.graph.setSize(size, size);
+                }
+            };
+
+            static onUpdate = time => {
+                AudioController.update(time);
+                this.graph.update();
+                this.ui.update();
+            };
+
+            // Public methods
+
+            static animateIn = () => {
+                this.graph.animateIn();
+                this.ui.animateIn();
+            };
+        }
+
+        App.init();
+    </script>
+</head>
+<body>
+</body>
+</html>

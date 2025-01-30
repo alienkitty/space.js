@@ -14,8 +14,8 @@
         import { Panel, PanelItem, UI, WebAudio } from '../src/index.js';
 
         class AudioController {
-            static init(instructions) {
-                this.instructions = instructions;
+            static init(ui) {
+                this.ui = ui;
 
                 this.initSounds();
 
@@ -31,7 +31,7 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                this.instructions.animateIn();
+                this.ui.instructions.animateIn();
             }
 
             // Event handlers
@@ -45,7 +45,7 @@
             };
 
             static onPointerDown = () => {
-                this.instructions.animateOut();
+                this.ui.instructions.animateOut();
 
                 this.protonradio.play();
             };
@@ -131,7 +131,7 @@
                 // Shoutcast streams append a semicolon (;) to the URL
                 WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
 
-                AudioController.init(this.ui.instructions);
+                AudioController.init(this.ui);
             }
 
             static initPanel() {

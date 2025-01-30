@@ -487,8 +487,8 @@
             };
 
             static onArray = array => {
-                this.ghostArray = array.slice(0, 80);
-                this.array = array.slice(-80);
+                this.ghostArray = array.slice(0, 160);
+                this.array = array.slice(-160);
 
                 if (this.ui) {
                     this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
