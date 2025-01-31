@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script type="module">
-        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, rms, ticker, tween } from '../src/index.js';
+        import { PanelItem, RadialGraphSegments, UI, WebAudio, clamp, mapLinear, median, rms, ticker, tween } from '../src/index.js';
 
         const store = {
             sound: true
@@ -23,6 +23,11 @@
                 this.graph = graph;
 
                 this.context = WebAudio.context;
+
+                // Median downsample
+                this.array = [];
+                this.chunkSizes = [];
+                this.chunkSize = 1;
 
                 // Peak levels for ghost graph
                 this.peakInterval = 3; // 3 seconds
@@ -41,7 +46,7 @@
 
                 this.initSounds();
                 this.initAnalyser();
-                this.setGraphSegments();
+                this.setGraphSegments(this.chunkSize);
 
                 this.addListeners();
             }
@@ -70,28 +75,48 @@
                 this.protonradio.output.disconnect();
                 this.protonradio.output.connect(this.analyser);
                 this.analyser.connect(this.analyserDelay);
+
+                // Find all the chunk sizes evenly divisible by 3
+                const segmentSizes = [];
+
+                for (let i = 1; i < this.bufferLength; i++) {
+                    const arrayLength = Math.floor(this.bufferLength / i);
+                    const segmentSize = Math.floor(arrayLength / 3);
+
+                    if (arrayLength - segmentSize * 3 === 0 && segmentSize >= 5 && !segmentSizes.includes(segmentSize)) {
+                        segmentSizes.push(segmentSize);
+
+                        this.chunkSizes.push(i);
+                    }
+                }
+
+                this.chunkSizes.unshift(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            }
+
+            static setGraphSegments(chunkSize) {
+                this.chunkSize = chunkSize;
+
+                this.arrayLength = Math.floor(this.bufferLength / this.chunkSize);
+
+                const segmentSize = Math.floor(this.arrayLength / 3);
+
+                this.graph.segments = [segmentSize, segmentSize, this.arrayLength - segmentSize * 2];
+                this.graph.array.length = this.arrayLength;
+                this.graph.ghostArray.length = this.arrayLength;
+
+                this.segmentPositions = [segmentSize, segmentSize * 2, this.arrayLength];
             }
 
             static addListeners() {
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                if (store.sound) {
-                    this.ui.instructions.animateIn();
-                }
-            }
-
-            static setGraphSegments() {
-                const segmentSize = Math.floor(this.bufferLength / 3);
-
-                this.graph.segments = [segmentSize, segmentSize, this.bufferLength - segmentSize * 2];
-
-                this.segmentPositions = [segmentSize, segmentSize * 2, this.bufferLength];
+                this.ui.instructions.animateIn();
             }
 
             static getAverageFrequency(data, start = 0, end = data.length) {
                 // Calculate the root median square (RMS)
-                return rms(Array.from(data.slice(start, end)).map(v => v / 256));
+                return rms(data.slice(start, end).map(v => v / 256));
             }
 
             // Event handlers
@@ -105,7 +130,15 @@
             };
 
             static onPointerDown = () => {
+                document.removeEventListener('pointerdown', this.onPointerDown);
+
+                WebAudio.resume();
+
                 this.ui.instructions.animateOut();
+
+                if (!store.sound) {
+                    this.ui.audioButton.onClick();
+                }
 
                 this.protonradio.play();
             };
@@ -122,14 +155,23 @@
 
                 const data = this.data;
                 const bufferLength = this.bufferLength;
+                const chunkSize = this.chunkSize;
+                const arrayLength = this.arrayLength;
                 const segmentPositions = this.segmentPositions;
 
                 // Bars
                 this.analyser.getByteFrequencyData(data);
 
-                const highs = this.getAverageFrequency(data, 0, Math.floor(bufferLength * 0.4));
-                const mids = this.getAverageFrequency(data, Math.floor(bufferLength * 0.4), Math.floor(bufferLength * 0.6));
-                const lows = this.getAverageFrequency(data, Math.floor(bufferLength * 0.6), bufferLength);
+                // Median downsample
+                this.array.length = 0;
+
+                for (let i = 0; i < bufferLength; i += chunkSize) {
+                    this.array.push(median(data.slice(i, i + chunkSize)));
+                }
+
+                const highs = this.getAverageFrequency(this.array, 0, Math.floor(arrayLength * 0.4));
+                const mids = this.getAverageFrequency(this.array, Math.floor(arrayLength * 0.4), Math.floor(arrayLength * 0.6));
+                const lows = this.getAverageFrequency(this.array, Math.floor(arrayLength * 0.6), arrayLength);
 
                 this.highs = Math.max(this.highs, highs);
                 this.mids = Math.max(this.mids, mids);
@@ -146,8 +188,15 @@
                 // Oscilloscope
                 this.analyser.getByteTimeDomainData(data);
 
-                for (let i = 0; i < bufferLength; i++) {
-                    const v = data[i] / 128;
+                // Median downsample
+                this.array.length = 0;
+
+                for (let i = 0; i < bufferLength; i += chunkSize) {
+                    this.array.push(median(data.slice(i, i + chunkSize)));
+                }
+
+                for (let i = 0; i < arrayLength; i++) {
+                    const v = this.array[i] / 128;
                     const y = clamp(mapLinear(v, 0, 2, -0.5, 0.5), -0.5, 0.5);
 
                     this.graph.array[i] = this.graph.array[i] + y * this.multiplier;
@@ -191,6 +240,17 @@
                         value: protonradio.gain.value,
                         callback: value => {
                             protonradio.gain.value = value;
+                        }
+                    },
+                    {
+                        type: 'slider',
+                        name: 'Delay',
+                        min: 0,
+                        max: 60,
+                        step: 1,
+                        value: analyserDelay.delayTime.value * 60,
+                        callback: value => {
+                            analyserDelay.delayTime.value = value / 60;
                         }
                     },
                     {
@@ -284,13 +344,13 @@
                     },
                     {
                         type: 'slider',
-                        name: 'Delay',
+                        name: 'Chunk',
                         min: 0,
-                        max: 60,
+                        max: AudioController.chunkSizes.length - 1,
                         step: 1,
-                        value: analyserDelay.delayTime.value * 60,
+                        value: AudioController.chunkSizes.indexOf(AudioController.chunkSize),
                         callback: value => {
-                            analyserDelay.delayTime.value = value / 60;
+                            AudioController.setGraphSegments(AudioController.chunkSizes[value]);
                         }
                     }
                 ];
