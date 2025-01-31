@@ -45,6 +45,10 @@
             };
 
             static onPointerDown = () => {
+                document.removeEventListener('pointerdown', this.onPointerDown);
+
+                WebAudio.resume();
+
                 this.ui.instructions.animateOut();
 
                 this.protonradio.play();
