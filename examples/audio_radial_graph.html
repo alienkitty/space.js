@@ -111,9 +111,7 @@
                 document.addEventListener('visibilitychange', this.onVisibility);
                 document.addEventListener('pointerdown', this.onPointerDown);
 
-                if (store.sound) {
-                    this.ui.instructions.animateIn();
-                }
+                this.ui.instructions.animateIn();
             }
 
             static getAverageFrequency(data, start = 0, end = data.length) {
@@ -137,6 +135,10 @@
                 WebAudio.resume();
 
                 this.ui.instructions.animateOut();
+
+                if (!store.sound) {
+                    this.ui.audioButton.onClick();
+                }
 
                 this.protonradio.play();
             };
