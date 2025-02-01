@@ -23,7 +23,7 @@
     </style>
 
     <script type="module">
-        import { EventEmitter, UI, ticker } from '../src/index.js';
+        import { EventEmitter, UI, median, ticker } from '../src/index.js';
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -171,8 +171,17 @@
                             // Separate last status update from array as new update
                             const last = data.pop();
 
-                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
-                            this.emit('array', data.slice(-320).map(data => data[2] * 100)); // percentage
+                            // Create a new array downsampled with median values
+                            const array = [];
+                            const chunkSize = 10;
+
+                            for (let i = 0; i < data.length; i += chunkSize) {
+                                const chunk = data.slice(i, i + chunkSize).map(data => data[2] * 100); // percentage
+                                array.push(median(chunk));
+                            }
+
+                            // Last 40 status updates for load average graph (20 + 20, ghost + array)
+                            this.emit('array', array.slice(-40)); // percentage
 
                             data = last;
                         }
@@ -390,7 +399,9 @@
                                                 suffix: '%',
                                                 value: this.array,
                                                 ghost: this.ghostArray,
-                                                resolution: 160,
+                                                lookupPrecision: 100,
+                                                segments: [10, 10],
+                                                ratio: [0.9, 0.1],
                                                 range: 400,
                                                 width: 200,
                                                 height: 48,
@@ -487,8 +498,8 @@
             };
 
             static onArray = array => {
-                this.ghostArray = array.slice(0, 160);
-                this.array = array.slice(-160);
+                this.ghostArray = array.slice(0, 20);
+                this.array = array.slice(-20);
 
                 if (this.ui) {
                     this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);

@@ -91,7 +91,8 @@
             ghost: Array.from({ length: 13 }, () => Math.random()),
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 3] // length of each segment (minimum length of 2)
+            segments: [5, 5, 3], // length of each segment (minimum length of 2)
+            ratio: [0.45, 0.45, 0.1] // normalized ratio of each segment
         });
         graph6.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph6.animateIn();
