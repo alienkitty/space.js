@@ -547,6 +547,14 @@ export class GraphSegments extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.graphs.forEach(graph => {
+                        graph.pathData = '';
+                    });
+        
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 

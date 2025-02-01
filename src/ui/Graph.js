@@ -528,6 +528,11 @@ export class Graph extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.pathData = '';
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
