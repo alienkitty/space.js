@@ -43,6 +43,7 @@ export class GraphSegments extends Interface {
         precision = 0,
         lookupPrecision = 0,
         segments = [],
+        ratio = [],
         markers = [],
         range = 1,
         suffix = '',
@@ -61,6 +62,7 @@ export class GraphSegments extends Interface {
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.segments = segments;
+        this.ratio = ratio;
         this.markers = markers;
         this.range = range;
         this.suffix = suffix;
@@ -77,6 +79,7 @@ export class GraphSegments extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
+        this.segmentsRatio = [];
         this.rangeHeight = [];
         this.array = [];
         this.ghostArray = [];
@@ -298,6 +301,14 @@ export class GraphSegments extends Interface {
         });
     }
 
+    getSegmentsRatio(ratio) {
+        if (ratio.length) {
+            return this.segments.map((length, i) => (this.array.length * ratio[i]) / length);
+        } else {
+            return this.segments.map(() => 1);
+        }
+    }
+
     getRangeHeight(range) {
         if (Array.isArray(range)) {
             return range.map(range => (this.height - 5) / range);
@@ -432,6 +443,8 @@ export class GraphSegments extends Interface {
         } else {
             this.array = new Array(this.resolution).fill(0);
         }
+
+        this.segmentsRatio = this.getSegmentsRatio(this.ratio);
 
         this.needsUpdate = true;
 
@@ -595,7 +608,7 @@ export class GraphSegments extends Interface {
         for (let i = 0, l = this.array.length, il = this.segments.length - 1; i < il; i++) {
             end += this.segments[i] / l;
 
-            const x = end * this.width;
+            const x = end * this.segmentsRatio[i] * this.width;
 
             this.context.beginPath();
             this.context.moveTo(x, h - 0.5);
@@ -651,13 +664,17 @@ export class GraphSegments extends Interface {
             let start = 0;
             let width = 0;
             let end = 0;
+            let startX = 0;
+            let endX = 0;
 
             for (; i < segmentsLength; i++) {
                 start = end;
                 width = this.segments[i] / length;
                 end += width;
+                startX = endX;
+                endX += width * this.segmentsRatio[i];
 
-                if (this.mouseX >= start && this.mouseX <= end) {
+                if (this.mouseX >= startX && this.mouseX <= endX) {
                     break;
                 }
             }
@@ -666,7 +683,7 @@ export class GraphSegments extends Interface {
                 i = segmentsLength - 1;
             }
 
-            const mouseX = clamp(mapLinear(this.mouseX, start, end, 0, 1), 0, 1);
+            const mouseX = clamp(mapLinear(this.mouseX, startX, endX, 0, 1), 0, 1);
             let index = Math.floor(start * length + mouseX * this.segments[i]);
 
             if (index === length) {
@@ -679,7 +696,7 @@ export class GraphSegments extends Interface {
             let y;
 
             if (this.lookupPrecision) {
-                y = this.getCurveY(this.graphs[i], mouseX, width * this.width) - 1;
+                y = this.getCurveY(this.graphs[i], mouseX, width * this.segmentsRatio[i] * this.width) - 1;
             } else {
                 y = h - value * this.rangeHeight[i] - 1;
             }
@@ -727,6 +744,7 @@ export class GraphSegments extends Interface {
         }
 
         let end = 0;
+        let endX = 0;
 
         for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
             if (this.props.progress === 1) {
@@ -736,9 +754,9 @@ export class GraphSegments extends Interface {
             const start = end;
             end += this.segments[i];
 
-            const startX = (start / l) * this.width;
-            const endX = (end / l) * this.width;
-            const segmentWidth = (this.segments[i] / l) * this.width;
+            const startX = endX;
+            const segmentWidth = (this.segments[i] / l) * this.segmentsRatio[i] * this.width;
+            endX += segmentWidth;
 
             for (let j = 0, jl = this.segments[i]; j < jl - 1; j++) {
                 const x0 = (j / (jl - 1)) * segmentWidth;
