@@ -68,7 +68,6 @@ export class GraphSegments extends Interface {
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
         this.noGradient = noGradient;
-        this.initialized = false;
 
         if (!Stage.root) {
             Stage.root = document.querySelector(':root');
@@ -78,7 +77,7 @@ export class GraphSegments extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.rangeHeight = [];
         this.array = [];
         this.ghostArray = [];
         this.graphs = [];
@@ -97,6 +96,7 @@ export class GraphSegments extends Interface {
         this.hoveredIn = false;
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
+        this.initialized = false;
 
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
@@ -552,7 +552,7 @@ export class GraphSegments extends Interface {
                     this.graphs.forEach(graph => {
                         graph.pathData = '';
                     });
-        
+
                     this.graphNeedsUpdate = true;
                 }
             }

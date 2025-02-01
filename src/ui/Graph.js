@@ -74,7 +74,7 @@ export class Graph extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.rangeHeight = 0;
         this.array = [];
         this.ghostArray = [];
         this.pathData = '';
