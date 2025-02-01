@@ -540,6 +540,11 @@ export class RadialGraphCanvas extends Interface {
                     this.array.pop();
                     this.array.unshift(value);
                 }
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.pathData = '';
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
