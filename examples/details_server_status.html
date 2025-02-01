@@ -168,20 +168,11 @@
                         let data = status;
 
                         if (data.length > 3) {
-                            // Separate last status update from array as new update
+                            // Separate last status update as new update
                             const last = data.pop();
 
-                            // Create a new array downsampled with median values
-                            const array = [];
-                            const chunkSize = 10;
-
-                            for (let i = 0; i < data.length; i += chunkSize) {
-                                const chunk = data.slice(i, i + chunkSize).map(data => data[2] * 100); // percentage
-                                array.push(median(chunk));
-                            }
-
-                            // Last 40 status updates for load average graph (20 + 20, ghost + array)
-                            this.emit('array', array.slice(-40)); // percentage
+                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
+                            this.emit('array', data.slice(-320).map(data => data[2] * 100)); // percentage
 
                             data = last;
                         }
@@ -397,8 +388,9 @@
                                             title: '',
                                             graph: {
                                                 suffix: '%',
+                                                resolution: 26,
                                                 lookupPrecision: [100, 0],
-                                                segments: [10, 10],
+                                                segments: [16, 10],
                                                 ratio: [0.9, 0.1],
                                                 range: 400,
                                                 width: 200,
@@ -495,9 +487,25 @@
                 }
             };
 
-            static onArray = array => {
-                this.ghostArray = array.slice(0, 20);
-                this.array = array.slice(-20);
+            static onArray = data => {
+                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                const realtimeArray = data.slice(-20);
+
+                // Median downsample
+                const array = [];
+                const chunkSize = 10;
+
+                for (let i = 0; i < data.length; i += chunkSize) {
+                    array.push(median(data.slice(i, i + chunkSize)));
+                }
+
+                // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
+                this.ghostArray = array.slice(0, 16);
+                this.array = array.slice(-16);
+
+                // Re-add realtime data to the end of each array
+                this.ghostArray.push(...realtimeArray.slice(0, 10));
+                this.array.push(...realtimeArray.slice(-10));
 
                 if (this.ui) {
                     this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
