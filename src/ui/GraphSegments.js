@@ -101,6 +101,10 @@ export class GraphSegments extends Interface {
         this.graphNeedsUpdate = false;
         this.initialized = false;
 
+        if (!Array.isArray(this.lookupPrecision)) {
+            this.lookupPrecision = new Array(this.segments.length).fill(this.lookupPrecision);
+        }
+
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
             bottom: Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim(),
@@ -180,7 +184,7 @@ export class GraphSegments extends Interface {
 
     initGraphs() {
         // Not added to DOM
-        this.graphs = this.segments.map(() => {
+        this.graphs = this.segments.map((length, i) => {
             const graph = new Interface(null, 'svg');
             graph.path = new Interface(null, 'svg', 'path');
             graph.add(graph.path);
@@ -188,6 +192,7 @@ export class GraphSegments extends Interface {
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
+            graph.lookupPrecision = this.lookupPrecision[i];
 
             return graph;
         });
@@ -202,24 +207,24 @@ export class GraphSegments extends Interface {
         while (i <= 1) {
             graph.lookup.push(graph.path.element.getPointAtLength(i * graph.length));
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / graph.lookupPrecision;
         }
     }
 
     getCurveY(graph, mouseX, width) {
         const x = mouseX * width;
-        const approxIndex = Math.floor(mouseX * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseX * graph.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
 
-        for (; i < this.lookupPrecision; i++) {
+        for (; i < graph.lookupPrecision; i++) {
             if (graph.lookup[i].x > x) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            return graph.lookup[this.lookupPrecision - 1].y;
+        if (i === graph.lookupPrecision) {
+            return graph.lookup[graph.lookupPrecision - 1].y;
         }
 
         const lower = graph.lookup[i - 1];
@@ -695,7 +700,7 @@ export class GraphSegments extends Interface {
 
             let y;
 
-            if (this.lookupPrecision) {
+            if (this.graphs[i].lookupPrecision) {
                 y = this.getCurveY(this.graphs[i], mouseX, width * this.segmentsRatio[i] * this.width) - 1;
             } else {
                 y = h - value * this.rangeHeight[i] - 1;
