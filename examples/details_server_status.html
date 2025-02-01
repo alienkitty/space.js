@@ -549,6 +549,7 @@
                         realtimeGhostArray.push(realtimeGhost);
                         this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
                         this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
 
                         if (++this.realtimeCounter === this.chunkSize) {
                             // Median downsample
@@ -562,11 +563,11 @@
                             ghostArray.push(ghost);
                             this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
                             this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+                            this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
 
                             this.realtimeCounter = 0;
                         }
 
-                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
                         this.ui.detailsLoadAvgGraph.update();
                     }
                 }
