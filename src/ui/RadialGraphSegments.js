@@ -490,10 +490,6 @@ export class RadialGraphSegments extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -539,10 +535,6 @@ export class RadialGraphSegments extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -605,10 +597,6 @@ export class RadialGraphSegments extends Interface {
                 this.needsUpdate = true;
 
                 if (!this.noHover && this.lookupPrecision) {
-                    this.graphs.forEach(graph => {
-                        graph.pathData = '';
-                    });
-
                     this.graphNeedsUpdate = true;
                 }
             }
@@ -898,7 +886,7 @@ export class RadialGraphSegments extends Interface {
                     }
                 }
 
-                this.graphs[i].pathData += `M ${this.points[1].x} ${this.points[1].y}`;
+                this.graphs[i].pathData = `M ${this.points[1].x} ${this.points[1].y}`;
 
                 for (let j = 1, jl = this.points.length; j < jl - 2; j++) {
                     const p0 = this.points[j - 1];
