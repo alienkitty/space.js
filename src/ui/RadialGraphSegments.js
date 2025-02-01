@@ -87,10 +87,10 @@ export class RadialGraphSegments extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.middle = this.width / 2;
-        this.radius = this.middle - this.graphHeight;
-        this.distance = this.radius - this.graphHeight;
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.middle = 0;
+        this.radius = 0;
+        this.distance = 0;
+        this.rangeHeight = [];
         this.startAngle = degToRad(this.start);
         this.array = [];
         this.ghostArray = [];
