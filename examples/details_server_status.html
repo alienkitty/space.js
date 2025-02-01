@@ -243,6 +243,14 @@
             static async init() {
                 this.initSocket();
 
+                // Median downsample
+                this.chunkSize = 10;
+                this.realtimeCounter = 0;
+
+                // Load average graph
+                this.ghostArray = [];
+                this.array = [];
+
                 this.addListeners();
             }
 
@@ -493,7 +501,7 @@
 
                 // Median downsample
                 const array = [];
-                const chunkSize = 10;
+                const chunkSize = this.chunkSize;
 
                 for (let i = 0; i < data.length; i += chunkSize) {
                     array.push(median(data.slice(i, i + chunkSize)));
@@ -533,14 +541,31 @@
                         this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                         this.ui.detailsLoadAvgMeter.update(loadAvg);
 
-                        const ghostArray = this.ghostArray.slice(-10);
-                        const array = this.array.slice(-10);
-                        const ghost = array.shift();
-                        array.push(loadAvg);
-                        ghostArray.shift();
-                        ghostArray.push(ghost);
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...ghostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...array);
+                        const realtimeGhostArray = this.ghostArray.slice(-10);
+                        const realtimeArray = this.array.slice(-10);
+                        const realtimeGhost = realtimeArray.shift();
+                        realtimeArray.push(loadAvg);
+                        realtimeGhostArray.shift();
+                        realtimeGhostArray.push(realtimeGhost);
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+
+                        if (++this.realtimeCounter === this.chunkSize) {
+                            // Median downsample
+                            const value = median(realtimeArray);
+
+                            const ghostArray = this.ghostArray.slice(0, 16);
+                            const array = this.array.slice(0, 16);
+                            const ghost = array.shift();
+                            array.push(value);
+                            ghostArray.shift();
+                            ghostArray.push(ghost);
+                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
+                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+
+                            this.realtimeCounter = 0;
+                        }
+
                         this.ui.detailsLoadAvgGraph.needsUpdate = true;
                         this.ui.detailsLoadAvgGraph.update();
                     }
