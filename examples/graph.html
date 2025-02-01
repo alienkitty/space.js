@@ -90,7 +90,7 @@
             value: Array.from({ length: 13 }, () => Math.random()),
             ghost: Array.from({ length: 13 }, () => Math.random()),
             precision: 2,
-            lookupPrecision: 100, // per segment
+            lookupPrecision: [100, 100, 50], // per segment
             segments: [5, 5, 3], // length of each segment (minimum length of 2)
             ratio: [0.45, 0.45, 0.1] // normalized ratio of each segment
         });

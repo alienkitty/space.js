@@ -397,9 +397,7 @@
                                             title: '',
                                             graph: {
                                                 suffix: '%',
-                                                value: this.array,
-                                                ghost: this.ghostArray,
-                                                lookupPrecision: 100,
+                                                lookupPrecision: [100, 0],
                                                 segments: [10, 10],
                                                 ratio: [0.9, 0.1],
                                                 range: 400,
@@ -526,7 +524,17 @@
                     if (loadAvg !== undefined) {
                         this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                         this.ui.detailsLoadAvgMeter.update(loadAvg);
-                        this.ui.detailsLoadAvgGraph.update(loadAvg);
+
+                        const ghostArray = this.ghostArray.slice(-10);
+                        const array = this.array.slice(-10);
+                        const ghost = array.shift();
+                        array.push(loadAvg);
+                        ghostArray.shift();
+                        ghostArray.push(ghost);
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...ghostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...array);
+                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
+                        this.ui.detailsLoadAvgGraph.update();
                     }
                 }
             };
