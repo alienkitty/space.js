@@ -739,7 +739,6 @@ export class RadialGraphSegments extends Interface {
             const length = this.array.length;
             const segmentsLength = this.segments.length;
             const mouseAngle = angle / TwoPI;
-            const value = this.array[Math.floor(mouseAngle * length)];
 
             let i = 0;
             let start = 0;
@@ -759,6 +758,8 @@ export class RadialGraphSegments extends Interface {
             if (i === segmentsLength) {
                 i = segmentsLength - 1;
             }
+
+            const value = this.array[Math.floor(mouseAngle * length)];
 
             let radius;
 
@@ -848,13 +849,15 @@ export class RadialGraphSegments extends Interface {
             this.points.length = 0;
 
             let end = 0;
+            let endAngle = 0;
 
             for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
                 const start = end;
                 end += this.segments[i];
 
-                const startAngle = (start / l) * TwoPI;
+                const startAngle = endAngle;
                 const segmentSlice = (this.segments[i] / l) * TwoPI;
+                endAngle += segmentSlice;
 
                 for (let j = 0, jl = this.segments[i]; j < jl; j++) {
                     const radius = this.middle - (this.graphHeight - array[start + j] * this.rangeHeight[i]);
@@ -917,14 +920,16 @@ export class RadialGraphSegments extends Interface {
         this.points.length = 0;
 
         let end = 0;
+        let endAngle = 0;
 
+        // Close loop smoothly by repeating the first and last values
         for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
             const start = end;
             end += this.segments[i];
 
-            const startAngle = (start / l) * TwoPI;
-            const endAngle = (end / l) * TwoPI;
+            const startAngle = endAngle;
             const segmentSlice = (this.segments[i] / l) * TwoPI;
+            endAngle += segmentSlice;
 
             for (let j = 0, jl = this.segments[i]; j < jl; j++) {
                 const radius = this.middle - (h - array[start + j] * this.rangeHeight[i] * this.props.yMultiplier - 1);
@@ -965,6 +970,7 @@ export class RadialGraphSegments extends Interface {
                 }
             }
 
+            // Close loop smoothly with the first and last control points
             if (this.props.progress === 1) {
                 this.context.beginPath();
                 this.context.moveTo(this.points[1].x, this.points[1].y);
