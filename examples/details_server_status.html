@@ -23,7 +23,7 @@
     </style>
 
     <script type="module">
-        import { EventEmitter, UI, median, ticker } from '../src/index.js';
+        import { EventEmitter, UI, delayedCall, median, ticker } from '../src/index.js';
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -69,7 +69,10 @@
             };
 
             onClose = () => {
+                console.log('close');
                 this.connected = false;
+
+                delayedCall(250, this.connect);
             };
 
             onMessage = ({ data }) => {
