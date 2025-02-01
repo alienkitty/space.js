@@ -454,10 +454,6 @@ export class GraphSegments extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -500,10 +496,6 @@ export class GraphSegments extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -567,10 +559,6 @@ export class GraphSegments extends Interface {
                 this.needsUpdate = true;
 
                 if (!this.noHover && this.lookupPrecision) {
-                    this.graphs.forEach(graph => {
-                        graph.pathData = '';
-                    });
-
                     this.graphNeedsUpdate = true;
                 }
             }
@@ -775,7 +763,7 @@ export class GraphSegments extends Interface {
 
                 if (j === 0) {
                     if (this.graphNeedsUpdate && !ghost) {
-                        this.graphs[i].pathData += `M ${x0} ${h - y0}`;
+                        this.graphs[i].pathData = `M ${x0} ${h - y0}`;
                     }
 
                     if (this.props.progress === 1) {
