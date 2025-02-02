@@ -212,7 +212,7 @@ export class GraphSegments extends Interface {
     }
 
     getCurveY(graph, mouseX, width) {
-        const x = mouseX * width;
+        const x = mouseX * width * this.width;
         const approxIndex = Math.floor(mouseX * graph.lookupPrecision);
 
         let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
@@ -676,8 +676,8 @@ export class GraphSegments extends Interface {
                 i = segmentsLength - 1;
             }
 
-            const mouseX = clamp(mapLinear(this.mouseX, startX, endX, 0, 1), 0, 1);
-            let index = Math.floor(start * length + mouseX * this.segments[i]);
+            const segmentX = clamp(mapLinear(this.mouseX, startX, endX, 0, 1), 0, 1);
+            let index = Math.floor(start * length + segmentX * this.segments[i]);
 
             if (index === length) {
                 index = length - 1;
@@ -689,7 +689,7 @@ export class GraphSegments extends Interface {
             let y;
 
             if (this.graphs[i].lookupPrecision) {
-                y = this.getCurveY(this.graphs[i], mouseX, width * this.segmentsRatio[i] * this.width) - 1;
+                y = this.getCurveY(this.graphs[i], segmentX, width * this.segmentsRatio[i]) - 1;
             } else {
                 y = h - value * this.rangeHeight[i] - 1;
             }
@@ -740,16 +740,16 @@ export class GraphSegments extends Interface {
         let endX = 0;
 
         for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
-            if (this.props.progress === 1) {
-                this.context.beginPath();
-            }
-
             const start = end;
             end += this.segments[i];
 
             const startX = endX;
             const segmentWidth = (this.segments[i] / l) * this.segmentsRatio[i] * this.width;
             endX += segmentWidth;
+
+            if (this.props.progress === 1) {
+                this.context.beginPath();
+            }
 
             for (let j = 0, jl = this.segments[i]; j < jl - 1; j++) {
                 const x0 = (j / (jl - 1)) * segmentWidth;
