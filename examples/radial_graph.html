@@ -83,14 +83,14 @@
         graph5.animateIn();
         document.body.appendChild(graph5.element);
 
-        // Radial graph with 3 segments and ghost
+        // Radial graph with uneven segments and ghost
         const graph6 = new RadialGraphSegments({
-            value: Array.from({ length: 15 }, () => Math.random()),
-            ghost: Array.from({ length: 15 }, () => Math.random()),
-            start: -90,
+            value: Array.from({ length: 13 }, () => Math.random()),
+            ghost: Array.from({ length: 13 }, () => Math.random()),
+            start: -45,
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 5] // length of each segment (minimum length of 2)
+            segments: [3, 5, 5] // length of each segment (minimum length of 2)
         });
         graph6.animateIn();
         document.body.appendChild(graph6.element);
