@@ -599,9 +599,9 @@ export class GraphSegments extends Interface {
         let end = 0;
 
         for (let i = 0, l = this.array.length, il = this.segments.length - 1; i < il; i++) {
-            end += this.segments[i] / l;
+            end += (this.segments[i] / l) * this.segmentsRatio[i];
 
-            const x = end * this.segmentsRatio[i] * this.width;
+            const x = end * this.width;
 
             this.context.beginPath();
             this.context.moveTo(x, h - 0.5);
