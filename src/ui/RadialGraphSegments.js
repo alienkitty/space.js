@@ -123,6 +123,10 @@ export class RadialGraphSegments extends Interface {
             this.startAngle += TwoPI;
         }
 
+        if (!Array.isArray(this.lookupPrecision)) {
+            this.lookupPrecision = new Array(this.segments.length).fill(this.lookupPrecision);
+        }
+
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
             bottom: Stage.rootStyle.getPropertyValue('--ui-color-graph-bottom-line').trim(),
@@ -201,7 +205,7 @@ export class RadialGraphSegments extends Interface {
 
     initGraphs() {
         // Not added to DOM
-        this.graphs = this.segments.map(() => {
+        this.graphs = this.segments.map((length, i) => {
             const graph = new Interface(null, 'svg');
             graph.path = new Interface(null, 'svg', 'path');
             graph.add(graph.path);
@@ -209,6 +213,7 @@ export class RadialGraphSegments extends Interface {
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
+            graph.lookupPrecision = this.lookupPrecision[i];
 
             return graph;
         });
@@ -237,25 +242,25 @@ export class RadialGraphSegments extends Interface {
                 angle
             });
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / graph.lookupPrecision;
         }
     }
 
     getCurvePoint(graph, mouseAngle, slice) {
         const angle = mouseAngle * TwoPI;
-        const approxIndex = Math.floor(mouseAngle * slice * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseAngle * slice * graph.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
 
-        for (; i < this.lookupPrecision; i++) {
+        for (; i < graph.lookupPrecision; i++) {
             if (graph.lookup[i].angle > angle) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            const x = graph.lookup[this.lookupPrecision - 1].x;
-            const y = graph.lookup[this.lookupPrecision - 1].y;
+        if (i === graph.lookupPrecision) {
+            const x = graph.lookup[graph.lookupPrecision - 1].x;
+            const y = graph.lookup[graph.lookupPrecision - 1].y;
 
             return { x, y };
         }
@@ -769,7 +774,7 @@ export class RadialGraphSegments extends Interface {
 
             let radius;
 
-            if (this.lookupPrecision) {
+            if (this.graphs[i].lookupPrecision) {
                 const point = this.getCurvePoint(this.graphs[i], mouseAngle, slice * this.segmentsRatio[i]);
                 const x = point.x - this.middle;
                 const y = point.y - this.middle;
