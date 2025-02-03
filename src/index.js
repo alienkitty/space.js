@@ -61,6 +61,7 @@ export { DetailsButton } from './ui/DetailsButton.js';
 export { MuteButton } from './ui/MuteButton.js';
 export { AudioButton } from './ui/AudioButton.js';
 export { AudioButtonInfo } from './ui/AudioButtonInfo.js';
+export { DividerLine } from './ui/DividerLine.js';
 export { Info } from './ui/Info.js';
 export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';
