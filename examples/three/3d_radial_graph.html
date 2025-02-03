@@ -55,7 +55,7 @@
 
         // graph
 
-        import { PanelItem, Point3D, RadialGraphCanvas, UI } from '../../src/three.js';
+        import { PanelItem, Point3D, RadialGraphSegmentsCanvas, UI } from '../../src/three.js';
 
         const ui = new UI({ fps: true });
         ui.animateIn();
@@ -63,11 +63,13 @@
 
         Point3D.init(renderer, scene, camera);
 
-        const graph = new RadialGraphCanvas({
-            value: Array.from({ length: 10 }, () => Math.random()),
+        const graph = new RadialGraphSegmentsCanvas({
+            value: Array.from({ length: 26 }, () => Math.random()),
             start: -45,
             precision: 2,
-            lookupPrecision: 200
+            lookupPrecision: [50, 100],
+            segments: [10, 16],
+            ratio: [0.125, 0.875] // 45 / 360 = 0.125
         });
 
         const point = new Point3D(mesh, { graph });
@@ -85,7 +87,7 @@
             callback: value => {
                 console.log('Update callback:', value);
 
-                graph.setArray(Array.from({ length: 10 }, () => Math.random()));
+                graph.setArray(Array.from({ length: 26 }, () => Math.random()));
             }
         });
         point.addPanel(item);
