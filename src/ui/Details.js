@@ -51,6 +51,7 @@ export class Details extends Interface {
 
         if (this.data.dividerLine) {
             this.dividerLine = new DividerLine();
+            this.dividerLine.setLeft(this.width);
             this.add(this.dividerLine);
         }
 
@@ -186,10 +187,18 @@ export class Details extends Interface {
             this.container.css({
                 padding: '80px 20px 60px'
             });
+
+            if (this.dividerLine) {
+                this.dividerLine.setLeft('100vw');
+            }
         } else {
             this.container.css({
                 padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
             });
+
+            if (this.dividerLine) {
+                this.dividerLine.setLeft(this.width);
+            }
         }
     }
 

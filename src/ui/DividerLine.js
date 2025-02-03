@@ -50,6 +50,11 @@ export class DividerLine extends Interface {
 
     // Public methods
 
+    setLeft(left) {
+        this.top.css({ left });
+        this.bottom.css({ left });
+    }
+
     animateIn() {
         this.top.clearTween().tween({ scaleY: 1 }, 800, 'easeOutQuint');
         this.bottom.clearTween().tween({ scaleY: 1 }, 800, 'easeOutQuint');
