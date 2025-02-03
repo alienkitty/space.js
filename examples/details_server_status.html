@@ -23,7 +23,7 @@
     </style>
 
     <script type="module">
-        import { EventEmitter, UI, delayedCall, median, ticker } from '../src/index.js';
+        import { EventEmitter, UI, average, delayedCall, median, ticker } from '../src/index.js';
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -202,8 +202,7 @@
                         let latencyAvg;
 
                         if (this.latencyArray.length) {
-                            latencyAvg = this.latencyArray.reduce((a, b) => a + b, 0) / this.latencyArray.length;
-                            latencyAvg = Math.round(latencyAvg);
+                            latencyAvg = Math.round(average(this.latencyArray));
                         }
 
                         let loadAvg = data[2] * 100; // percentage
@@ -262,14 +261,14 @@
             }
 
             static addListeners() {
-                this.socket.on('details', this.onDetails);
-                this.socket.on('array', this.onArray);
-                this.socket.on('status', this.onStatus);
+                this.socket.on('details', this.onServerDetails);
+                this.socket.on('array', this.onServerArray);
+                this.socket.on('status', this.onServerStatus);
             }
 
             // Event handlers
 
-            static onDetails = ({
+            static onServerDetails = ({
                 projectDomain,
                 networkName,
                 serverVersion,
@@ -498,7 +497,7 @@
                 }
             };
 
-            static onArray = data => {
+            static onServerArray = data => {
                 // Last 20 status updates for realtime graph (10 + 10, ghost + array)
                 const realtimeArray = data.slice(-20);
 
@@ -524,7 +523,7 @@
                 }
             };
 
-            static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
+            static onServerStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
                 if (this.ui) {
                     if (serverUptime !== undefined) {
                         this.ui.detailsUptime.html(serverUptime);
