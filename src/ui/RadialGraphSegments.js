@@ -48,6 +48,7 @@ export class RadialGraphSegments extends Interface {
         textDistanceX = 20,
         textDistanceY = 10,
         segments = [],
+        ratio = [],
         markers = [],
         range = 1,
         suffix = '',
@@ -71,6 +72,7 @@ export class RadialGraphSegments extends Interface {
         this.textDistanceX = textDistanceX;
         this.textDistanceY = textDistanceY;
         this.segments = segments;
+        this.ratio = ratio;
         this.markers = markers;
         this.range = range;
         this.suffix = suffix;
@@ -90,7 +92,8 @@ export class RadialGraphSegments extends Interface {
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
         this.distance = this.radius - this.graphHeight;
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.segmentsRatio = [];
+        this.rangeHeight = [];
         this.startAngle = degToRad(this.start);
         this.array = [];
         this.ghostArray = [];
@@ -118,6 +121,10 @@ export class RadialGraphSegments extends Interface {
 
         if (this.startAngle < 0) {
             this.startAngle += TwoPI;
+        }
+
+        if (!Array.isArray(this.lookupPrecision)) {
+            this.lookupPrecision = new Array(this.segments.length).fill(this.lookupPrecision);
         }
 
         this.lineColors = {
@@ -198,7 +205,7 @@ export class RadialGraphSegments extends Interface {
 
     initGraphs() {
         // Not added to DOM
-        this.graphs = this.segments.map(() => {
+        this.graphs = this.segments.map((length, i) => {
             const graph = new Interface(null, 'svg');
             graph.path = new Interface(null, 'svg', 'path');
             graph.add(graph.path);
@@ -206,6 +213,7 @@ export class RadialGraphSegments extends Interface {
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
+            graph.lookupPrecision = this.lookupPrecision[i];
 
             return graph;
         });
@@ -234,25 +242,25 @@ export class RadialGraphSegments extends Interface {
                 angle
             });
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / graph.lookupPrecision;
         }
     }
 
-    getCurvePoint(graph, mouseAngle, start, slice) {
+    getCurvePoint(graph, mouseAngle, slice) {
         const angle = mouseAngle * TwoPI;
-        const approxIndex = Math.floor(start + slice * mouseAngle * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseAngle * slice * graph.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
 
-        for (; i < this.lookupPrecision; i++) {
+        for (; i < graph.lookupPrecision; i++) {
             if (graph.lookup[i].angle > angle) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            const x = graph.lookup[this.lookupPrecision - 1].x;
-            const y = graph.lookup[this.lookupPrecision - 1].y;
+        if (i === graph.lookupPrecision) {
+            const x = graph.lookup[graph.lookupPrecision - 1].x;
+            const y = graph.lookup[graph.lookupPrecision - 1].y;
 
             return { x, y };
         }
@@ -332,6 +340,14 @@ export class RadialGraphSegments extends Interface {
             item.events.off('update', this.onMarkerUpdate);
             item.events.off('click', this.onMarkerClick);
         });
+    }
+
+    getSegmentsRatio(ratio) {
+        if (ratio.length) {
+            return this.segments.map((length, i) => (this.array.length * ratio[i]) / length);
+        } else {
+            return this.segments.map(() => 1);
+        }
     }
 
     getRangeHeight(range) {
@@ -487,13 +503,11 @@ export class RadialGraphSegments extends Interface {
             this.array = new Array(this.resolution).fill(0);
         }
 
+        this.segmentsRatio = this.getSegmentsRatio(this.ratio);
+
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -539,10 +553,6 @@ export class RadialGraphSegments extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.graphs.forEach(graph => {
-                graph.pathData = '';
-            });
-
             this.graphNeedsUpdate = true;
         }
 
@@ -603,6 +613,10 @@ export class RadialGraphSegments extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
@@ -639,7 +653,7 @@ export class RadialGraphSegments extends Interface {
         let end = 0;
 
         for (let i = 0, l = this.array.length, il = this.segments.length; i < il; i++) {
-            end += this.segments[i] / l;
+            end += (this.segments[i] / l) * this.segmentsRatio[i];
 
             const angle = this.startAngle + end * TwoPI;
             const c = Math.cos(angle);
@@ -731,19 +745,22 @@ export class RadialGraphSegments extends Interface {
             const length = this.array.length;
             const segmentsLength = this.segments.length;
             const mouseAngle = angle / TwoPI;
-            const value = this.array[Math.floor(mouseAngle * length)];
 
             let i = 0;
             let start = 0;
             let slice = 0;
             let end = 0;
+            let startAngle = 0;
+            let endAngle = 0;
 
             for (; i < segmentsLength; i++) {
                 start = end;
                 slice = this.segments[i] / length;
                 end += slice;
+                startAngle = endAngle;
+                endAngle += slice * this.segmentsRatio[i];
 
-                if (mouseAngle >= start && mouseAngle <= end) {
+                if (mouseAngle >= startAngle && mouseAngle <= endAngle) {
                     break;
                 }
             }
@@ -752,10 +769,13 @@ export class RadialGraphSegments extends Interface {
                 i = segmentsLength - 1;
             }
 
+            const segmentAngle = mapLinear(mouseAngle, startAngle, endAngle, 0, 1);
+            const value = this.array[Math.floor(start * length + segmentAngle * this.segments[i])];
+
             let radius;
 
-            if (this.lookupPrecision) {
-                const point = this.getCurvePoint(this.graphs[i], mouseAngle, start, slice);
+            if (this.graphs[i].lookupPrecision) {
+                const point = this.getCurvePoint(this.graphs[i], mouseAngle, slice * this.segmentsRatio[i]);
                 const x = point.x - this.middle;
                 const y = point.y - this.middle;
                 const distance = Math.sqrt(x * x + y * y);
@@ -837,16 +857,18 @@ export class RadialGraphSegments extends Interface {
         }
 
         if (!this.noHover && this.graphNeedsUpdate && !ghost) {
-            this.points.length = 0;
-
             let end = 0;
+            let endAngle = 0;
 
             for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
                 const start = end;
                 end += this.segments[i];
 
-                const startAngle = (start / l) * TwoPI;
-                const segmentSlice = (this.segments[i] / l) * TwoPI;
+                const startAngle = endAngle;
+                const segmentSlice = (this.segments[i] / l) * this.segmentsRatio[i] * TwoPI;
+                endAngle += segmentSlice;
+
+                this.points.length = 0;
 
                 for (let j = 0, jl = this.segments[i]; j < jl; j++) {
                     const radius = this.middle - (this.graphHeight - array[start + j] * this.rangeHeight[i]);
@@ -887,7 +909,7 @@ export class RadialGraphSegments extends Interface {
                     }
                 }
 
-                this.graphs[i].pathData += `M ${this.points[1].x} ${this.points[1].y}`;
+                this.graphs[i].pathData = `M ${this.points[1].x} ${this.points[1].y}`;
 
                 for (let j = 1, jl = this.points.length; j < jl - 2; j++) {
                     const p0 = this.points[j - 1];
@@ -906,18 +928,20 @@ export class RadialGraphSegments extends Interface {
             }
         }
 
-        this.points.length = 0;
-
         let end = 0;
+        let endAngle = 0;
 
         for (let i = 0, l = array.length, il = this.segments.length; i < il; i++) {
             const start = end;
             end += this.segments[i];
 
-            const startAngle = (start / l) * TwoPI;
-            const endAngle = (end / l) * TwoPI;
-            const segmentSlice = (this.segments[i] / l) * TwoPI;
+            const startAngle = endAngle;
+            const segmentSlice = (this.segments[i] / l) * this.segmentsRatio[i] * TwoPI;
+            endAngle += segmentSlice;
 
+            this.points.length = 0;
+
+            // Close loop smoothly by repeating the first and last values
             for (let j = 0, jl = this.segments[i]; j < jl; j++) {
                 const radius = this.middle - (h - array[start + j] * this.rangeHeight[i] * this.props.yMultiplier - 1);
 
@@ -957,6 +981,7 @@ export class RadialGraphSegments extends Interface {
                 }
             }
 
+            // Close loop smoothly with the first and last control points
             if (this.props.progress === 1) {
                 this.context.beginPath();
                 this.context.moveTo(this.points[1].x, this.points[1].y);

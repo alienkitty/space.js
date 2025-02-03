@@ -44,7 +44,7 @@ export class PanelGraph extends Interface {
         this.callback = callback;
 
         this.width = parseFloat(Stage.rootStyle.getPropertyValue('--ui-panel-width').trim());
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.rangeHeight = 0;
         this.array = [];
         this.ghostArray = [];
         this.pathData = '';
@@ -383,7 +383,6 @@ export class PanelGraph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
 
@@ -443,6 +442,10 @@ export class PanelGraph extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
@@ -557,7 +560,7 @@ export class PanelGraph extends Interface {
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x0} ${y0}`;
+                    this.pathData = `M ${x0} ${y0}`;
                 }
 
                 this.context.moveTo(x0, y0 - 1);

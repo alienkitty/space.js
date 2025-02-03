@@ -74,7 +74,7 @@ export class Graph extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.rangeHeight = 0;
         this.array = [];
         this.ghostArray = [];
         this.pathData = '';
@@ -423,7 +423,6 @@ export class Graph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
 
@@ -466,7 +465,6 @@ export class Graph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
 
@@ -528,6 +526,10 @@ export class Graph extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
@@ -673,7 +675,7 @@ export class Graph extends Interface {
 
             if (i === 0) {
                 if (this.graphNeedsUpdate && !ghost) {
-                    this.pathData += `M ${x0} ${h - y0}`;
+                    this.pathData = `M ${x0} ${h - y0}`;
                 }
 
                 if (this.props.progress === 1) {

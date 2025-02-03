@@ -87,7 +87,7 @@ export class RadialGraph extends Interface {
         this.middle = this.width / 2;
         this.radius = this.middle - this.graphHeight;
         this.distance = this.radius - this.graphHeight;
-        this.rangeHeight = this.getRangeHeight(this.range);
+        this.rangeHeight = 0;
         this.startAngle = degToRad(this.start);
         this.array = [];
         this.ghostArray = [];
@@ -477,7 +477,6 @@ export class RadialGraph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
 
@@ -523,7 +522,6 @@ export class RadialGraph extends Interface {
         this.needsUpdate = true;
 
         if (!this.noHover && this.lookupPrecision) {
-            this.pathData = '';
             this.graphNeedsUpdate = true;
         }
 
@@ -584,6 +582,10 @@ export class RadialGraph extends Interface {
                 }
 
                 this.needsUpdate = true;
+
+                if (!this.noHover && this.lookupPrecision) {
+                    this.graphNeedsUpdate = true;
+                }
             }
         }
 
@@ -828,7 +830,7 @@ export class RadialGraph extends Interface {
                 }
             }
 
-            this.pathData += `M ${this.points[1].x} ${this.points[1].y}`;
+            this.pathData = `M ${this.points[1].x} ${this.points[1].y}`;
 
             for (let i = 1, l = this.points.length; i < l - 2; i++) {
                 const p0 = this.points[i - 1];

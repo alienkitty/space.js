@@ -23,7 +23,7 @@
     </style>
 
     <script type="module">
-        import { EventEmitter, UI, ticker } from '../src/index.js';
+        import { EventEmitter, UI, delayedCall, median, ticker } from '../src/index.js';
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -69,7 +69,10 @@
             };
 
             onClose = () => {
+                console.log('close');
                 this.connected = false;
+
+                delayedCall(250, this.connect);
             };
 
             onMessage = ({ data }) => {
@@ -168,7 +171,7 @@
                         let data = status;
 
                         if (data.length > 3) {
-                            // Separate last status update from array as new update
+                            // Separate last status update as new update
                             const last = data.pop();
 
                             // Last 320 status updates for load average graph (160 + 160, ghost + array)
@@ -242,6 +245,14 @@
         class App {
             static async init() {
                 this.initSocket();
+
+                // Median downsample
+                this.chunkSize = 10;
+                this.realtimeCounter = 0;
+
+                // Load average graph
+                this.ghostArray = [];
+                this.array = [];
 
                 this.addListeners();
             }
@@ -388,9 +399,10 @@
                                             title: '',
                                             graph: {
                                                 suffix: '%',
-                                                value: this.array,
-                                                ghost: this.ghostArray,
-                                                resolution: 160,
+                                                resolution: 26,
+                                                lookupPrecision: [100, 0],
+                                                segments: [16, 10],
+                                                ratio: [0.9, 0.1],
                                                 range: 400,
                                                 width: 200,
                                                 height: 48,
@@ -486,9 +498,25 @@
                 }
             };
 
-            static onArray = array => {
-                this.ghostArray = array.slice(0, 160);
-                this.array = array.slice(-160);
+            static onArray = data => {
+                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                const realtimeArray = data.slice(-20);
+
+                // Median downsample
+                const array = [];
+                const chunkSize = this.chunkSize;
+
+                for (let i = 0; i < data.length; i += chunkSize) {
+                    array.push(median(data.slice(i, i + chunkSize)));
+                }
+
+                // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
+                this.ghostArray = array.slice(0, 16);
+                this.array = array.slice(-16);
+
+                // Re-add realtime data to the end of each array
+                this.ghostArray.push(...realtimeArray.slice(0, 10));
+                this.array.push(...realtimeArray.slice(-10));
 
                 if (this.ui) {
                     this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
@@ -515,7 +543,35 @@
                     if (loadAvg !== undefined) {
                         this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                         this.ui.detailsLoadAvgMeter.update(loadAvg);
-                        this.ui.detailsLoadAvgGraph.update(loadAvg);
+
+                        const realtimeGhostArray = this.ghostArray.slice(-10);
+                        const realtimeArray = this.array.slice(-10);
+                        const realtimeGhost = realtimeArray.shift();
+                        realtimeArray.push(loadAvg);
+                        realtimeGhostArray.shift();
+                        realtimeGhostArray.push(realtimeGhost);
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
+
+                        if (++this.realtimeCounter === this.chunkSize) {
+                            // Median downsample
+                            const value = median(realtimeArray);
+
+                            const ghostArray = this.ghostArray.slice(0, 16);
+                            const array = this.array.slice(0, 16);
+                            const ghost = array.shift();
+                            array.push(value);
+                            ghostArray.shift();
+                            ghostArray.push(ghost);
+                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
+                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+                            this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
+
+                            this.realtimeCounter = 0;
+                        }
+
+                        this.ui.detailsLoadAvgGraph.update();
                     }
                 }
             };
