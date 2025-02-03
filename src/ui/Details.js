@@ -15,6 +15,7 @@ export class Details extends Interface {
 
         this.data = data;
 
+        this.width = data.width || '100vw';
         this.content = [];
         this.links = [];
         this.animatedIn = false;
@@ -29,6 +30,7 @@ export class Details extends Interface {
         this.invisible();
         this.css({
             position: 'relative',
+            width: this.width,
             pointerEvents: 'none',
             opacity: 0
         });
@@ -51,7 +53,7 @@ export class Details extends Interface {
             position: 'relative',
             display: 'flex',
             flexWrap: 'wrap',
-            padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
+            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
         });
         this.add(this.container);
     }
@@ -180,7 +182,7 @@ export class Details extends Interface {
             });
         } else {
             this.container.css({
-                padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
+                padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
             });
         }
     }
