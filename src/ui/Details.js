@@ -5,6 +5,7 @@
 import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
+import { DividerLine } from './DividerLine.js';
 import { Graph } from './Graph.js';
 import { GraphSegments } from './GraphSegments.js';
 import { Meter } from './Meter.js';
@@ -46,6 +47,11 @@ export class Details extends Interface {
                 backgroundColor: 'var(--bg-color)'
             });
             this.add(this.bg);
+        }
+
+        if (this.data.dividerLine) {
+            this.dividerLine = new DividerLine();
+            this.add(this.dividerLine);
         }
 
         this.container = new Interface('.container');
@@ -202,6 +208,10 @@ export class Details extends Interface {
             this.bg.clearTween().css({ opacity: 0 }).tween({ opacity: 0.35 }, duration, 'easeOutSine');
         }
 
+        if (this.dividerLine) {
+            this.dividerLine.animateIn();
+        }
+
         this.container.children.forEach((child, i) => {
             const delay = i === 0 ? 0 : 200;
 
@@ -216,6 +226,10 @@ export class Details extends Interface {
     animateOut(callback) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
+
+        if (this.dividerLine) {
+            this.dividerLine.animateOut();
+        }
 
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
