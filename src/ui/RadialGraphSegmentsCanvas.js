@@ -58,6 +58,11 @@ export class RadialGraphSegmentsCanvas extends Interface {
         this.noMarkerDrag = noMarkerDrag;
         this.noGradient = noGradient;
 
+        if (!Stage.root) {
+            Stage.root = document.querySelector(':root');
+            Stage.rootStyle = getComputedStyle(Stage.root);
+        }
+
         this.position = new Vector2();
         this.objectWidth = 0;
         this.objectHeight = 0;
