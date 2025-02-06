@@ -211,13 +211,19 @@ export class Point3D extends Group {
                     gap += 28;
                 }
 
-                const last = snapped[i - 1];
-                const positionX = last.point.originPosition.x + last.point.bounds.width + gap;
+                const prev = snapped[i - 1];
+                const positionX = prev.point.originPosition.x + prev.point.bounds.width + gap;
 
                 ui.point.origin.x = positionX;
                 ui.point.originPosition.x = positionX;
             }
 
+            ui.snap();
+        });
+
+        const moved = this.getMoved();
+
+        moved.forEach(ui => {
             ui.snap();
         });
     };
