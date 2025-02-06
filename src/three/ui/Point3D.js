@@ -744,7 +744,7 @@ export class Point3D extends Group {
         if (cursor !== this.lastCursor) {
             this.lastCursor = cursor;
 
-            if (cursor || (!cursor && !Point3D.hover)) {
+            if (!Point3D.hover) {
                 Point3D.setCursor(cursor);
             }
         }
