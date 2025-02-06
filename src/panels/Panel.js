@@ -201,12 +201,6 @@ export class Panel extends Interface {
     }
 
     animateOut(callback) {
-        if (!this.animatedIn) {
-            return;
-        }
-
-        this.animatedIn = false;
-
         this.items.forEach((item, i) => {
             item.animateOut(i, this.items.length - 1, (this.items.length - 1 - i) * 15, () => {
                 this.hide();
@@ -216,6 +210,8 @@ export class Panel extends Interface {
                 }
             });
         });
+
+        this.animatedIn = false;
     }
 
     enable() {
