@@ -678,14 +678,13 @@ export class Point3D extends Group {
 
             if (!this.animatedIn) {
                 this.setInitialPosition();
-                this.animateIn();
             }
+
+            this.animateIn();
         } else {
-            if (!this.graph) {
-                this.timeout = delayedCall(2000, () => {
-                    this.animateOut();
-                });
-            }
+            this.timeout = delayedCall(2000, () => {
+                this.animateOut();
+            });
         }
 
         Point3D.events.emit('hover', { type, target: this });
@@ -1221,29 +1220,37 @@ export class Point3D extends Group {
     }
 
     animateIn(reverse) {
-        if (this.graph) {
-            this.graph.animateIn();
+        if (!this.animatedIn) {
+            if (this.graph) {
+                this.graph.animateIn();
 
-            if (this.tracker) {
-                this.tracker.open();
+                if (this.tracker) {
+                    this.tracker.open();
+                }
+            } else {
+                this.reticle.animateIn();
+                this.line.animateIn(reverse);
             }
-        } else {
-            this.reticle.animateIn();
-            this.line.animateIn(reverse);
+
+            this.animatedIn = true;
         }
 
-        this.point.animateIn();
-
-        this.animatedIn = true;
+        if (!this.point.animatedIn) {
+            this.point.animateIn();
+        }
     }
 
     animateOut(fast, callback) {
         if (this.graph) {
-            this.graph.animateOut();
+            if (fast) {
+                this.graph.animateOut();
 
-            if (this.tracker) {
-                this.tracker.close();
-                this.tracker.animateOut();
+                if (this.tracker) {
+                    this.tracker.close();
+                    this.tracker.animateOut();
+                }
+
+                this.animatedIn = false;
             }
 
             this.point.animateOut(true);
@@ -1256,9 +1263,9 @@ export class Point3D extends Group {
             }
 
             this.point.animateOut();
-        }
 
-        this.animatedIn = false;
+            this.animatedIn = false;
+        }
     }
 
     deactivate() {
