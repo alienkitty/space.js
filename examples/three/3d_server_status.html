@@ -35,7 +35,7 @@
         import { BoxGeometry, Color, Group, HemisphereLight, MathUtils, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        import { EventEmitter, PanelItem, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
+        import { EventEmitter, Interface, PanelItem, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
 
         const isDebug = /[?&]debug/.test(location.search);
 
@@ -255,6 +255,27 @@
             };
         }
 
+        class TrackersView extends Interface {
+            constructor() {
+                super('.trackers');
+
+                this.init();
+            }
+
+            init() {
+                this.css({
+                    position: 'fixed',
+                    left: 0,
+                    top: 0,
+                    width: '100%',
+                    height: '100%',
+                    pointerEvents: 'none',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
+                });
+            }
+        }
+
         class SceneView extends Group {
             constructor() {
                 super();
@@ -362,11 +383,12 @@
         }
 
         class PanelController {
-            static init(renderer, scene, camera, view, ui) {
+            static init(renderer, scene, camera, view, trackers, ui) {
                 this.renderer = renderer;
                 this.scene = scene;
                 this.camera = camera;
                 this.view = view;
+                this.trackers = trackers;
                 this.ui = ui;
 
                 this.initControllers();
@@ -374,7 +396,7 @@
 
             static initControllers() {
                 Point3D.init(this.renderer, this.scene, this.camera, {
-                    container: this.ui,
+                    container: this.trackers,
                     debug: isDebug
                 });
 
@@ -468,8 +490,8 @@
         class WorldController {
             static init() {
                 this.initWorld();
-                this.initControls();
                 this.initLights();
+                this.initControls();
 
                 this.addListeners();
             }
@@ -498,6 +520,10 @@
                 this.poiCamera.position.z = 6;
             }
 
+            static initLights() {
+                this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
+            }
+
             static initControls() {
                 // Map controls
                 this.mapControls = new OrbitControls(this.mapCamera, this.renderer.domElement);
@@ -514,10 +540,6 @@
                 // Output camera controls
                 this.controls = this.mapControls;
                 this.controls.enabled = true;
-            }
-
-            static initLights() {
-                this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
             }
 
             static addListeners() {
@@ -579,6 +601,9 @@
             static initViews() {
                 this.view = new SceneView();
                 WorldController.scene.add(this.view);
+
+                this.trackers = new TrackersView();
+                document.body.appendChild(this.trackers.element);
             }
 
             static initControllers() {
@@ -595,7 +620,7 @@
             static initPanel() {
                 const { renderer, scene, camera } = WorldController;
 
-                PanelController.init(renderer, scene, camera, this.view, this.ui);
+                PanelController.init(renderer, scene, camera, this.view, this.trackers, this.ui);
             }
 
             static addListeners() {
