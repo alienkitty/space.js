@@ -38,7 +38,7 @@ import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
  * scene.add(point);
  * @example
  * // ...
- * const point = new Point3D(mesh);
+ * const point = new Point3D(mesh, { graph });
  * point.setData({
  *     name: '127.0.0.1',
  *     type: 'localhost'
