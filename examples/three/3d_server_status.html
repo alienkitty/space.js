@@ -397,6 +397,7 @@
             static initControllers() {
                 Point3D.init(this.renderer, this.scene, this.camera, {
                     container: this.trackers,
+                    dividerSnap: this.ui.details.dividerLine,
                     debug: isDebug
                 });
 
@@ -668,6 +669,8 @@
                     this.ui = new UI({
                         fps: true,
                         details: {
+                            dividerLine: true,
+                            width: '50vw',
                             title: 'server-status'.replace(/[\s.-]+/g, '_'),
                             content: [
                                 {
@@ -831,9 +834,7 @@
                                         }
                                     ]
                                 }
-                            ],
-                            width: '50vw',
-                            dividerLine: true
+                            ]
                         }
                     });
                     this.ui.css({ position: 'static' });
