@@ -329,19 +329,21 @@
                 const objects = [view];
 
                 objects.forEach(object => {
-                    const graph = new RadialGraphSegmentsCanvas({
-                        value: Array.from({ length: 26 }, () => Math.random()),
+                    object.graph = new RadialGraphSegmentsCanvas({
                         start: -45,
                         graphHeight: 40,
-                        precision: 2,
-                        lookupPrecision: [50, 100],
+                        resolution: 26,
+                        lookupPrecision: [0, 100],
                         segments: [10, 16],
-                        ratio: [0.125, 0.875] // 45 / 360 = 0.125
+                        ratio: [0.02, 0.98],
+                        range: 400,
+                        suffix: '%',
+                        noMarker: true
                     });
 
                     object.point = new Point3D(object.mesh, {
                         type: 'localhost',
-                        graph
+                        graph: object.graph
                     });
                     object.add(object.point);
 
@@ -587,6 +589,8 @@
                 this.realtimeCounter = 0;
 
                 // Load average graph
+                this.realtimeGhostArray = [];
+                this.realtimeArray = [];
                 this.ghostArray = [];
                 this.array = [];
 
@@ -886,7 +890,9 @@
 
             static onServerArray = data => {
                 // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                const realtimeArray = data.slice(-20);
+                const realtimeData = data.slice(-20);
+                this.realtimeGhostArray = realtimeData.slice(0, 10);
+                this.realtimeArray = realtimeData.slice(-10);
 
                 // Median downsample
                 const array = [];
@@ -900,14 +906,12 @@
                 this.ghostArray = array.slice(0, 16);
                 this.array = array.slice(-16);
 
-                // Re-add realtime data to the end of each array
-                this.ghostArray.push(...realtimeArray.slice(0, 10));
-                this.array.push(...realtimeArray.slice(-10));
+                // Update graphs
+                this.view.graph.setGhostArray([...this.realtimeGhostArray.toReversed(), ...this.ghostArray.toReversed()]);
+                this.view.graph.setArray([...this.realtimeArray.toReversed(), ...this.array.toReversed()]);
 
-                if (this.ui) {
-                    this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
-                    this.ui.detailsLoadAvgGraph.setArray(this.array);
-                }
+                this.ui.detailsLoadAvgGraph.setGhostArray([...this.ghostArray, ...this.realtimeGhostArray]);
+                this.ui.detailsLoadAvgGraph.setArray([...this.array, ...this.realtimeArray]);
             };
 
             static onServerStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
@@ -930,33 +934,42 @@
                         this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                         this.ui.detailsLoadAvgMeter.update(loadAvg);
 
-                        const realtimeGhostArray = this.ghostArray.slice(-10);
-                        const realtimeArray = this.array.slice(-10);
-                        const realtimeGhost = realtimeArray.shift();
-                        realtimeArray.push(loadAvg);
-                        realtimeGhostArray.shift();
-                        realtimeGhostArray.push(realtimeGhost);
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                        const realtimeGhost = this.realtimeArray.shift();
+                        this.realtimeArray.push(loadAvg);
+                        this.realtimeGhostArray.shift();
+                        this.realtimeGhostArray.push(realtimeGhost);
+
+                        // Update graphs
+                        this.view.graph.ghostArray.splice(0, 10, ...this.realtimeGhostArray.toReversed());
+                        this.view.graph.array.splice(0, 10, ...this.realtimeArray.toReversed());
+                        this.view.graph.needsUpdate = true;
+
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...this.realtimeGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...this.realtimeArray);
                         this.ui.detailsLoadAvgGraph.needsUpdate = true;
 
                         if (++this.realtimeCounter === this.chunkSize) {
                             // Median downsample
-                            const value = median(realtimeArray);
+                            const value = median(this.realtimeArray);
 
-                            const ghostArray = this.ghostArray.slice(0, 16);
-                            const array = this.array.slice(0, 16);
-                            const ghost = array.shift();
-                            array.push(value);
-                            ghostArray.shift();
-                            ghostArray.push(ghost);
-                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
-                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+                            const ghost = this.array.shift();
+                            this.array.push(value);
+                            this.ghostArray.shift();
+                            this.ghostArray.push(ghost);
+
+                            // Update graphs
+                            this.view.graph.ghostArray.splice(-16, 16, ...this.ghostArray.toReversed());
+                            this.view.graph.array.splice(-16, 16, ...this.array.toReversed());
+                            this.view.graph.graphNeedsUpdate = true;
+
+                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...this.ghostArray);
+                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...this.array);
                             this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
 
                             this.realtimeCounter = 0;
                         }
 
+                        this.view.graph.update();
                         this.ui.detailsLoadAvgGraph.update();
                     }
                 }
