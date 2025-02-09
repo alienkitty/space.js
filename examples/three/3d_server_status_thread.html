@@ -463,173 +463,10 @@
             };
         }
 
-        class CameraController {
-            static init(worldCamera, mapCamera, pointCamera) {
-                this.worldCamera = worldCamera;
-                this.mapCamera = mapCamera;
-                this.pointCamera = pointCamera;
-
-                // Default camera
-                this.camera = this.mapCamera;
-
-                this.progress = 0;
-                this.isTransitioning = false;
-            }
-
-            static transition() {
-                const target = this.target;
-
-                this.progress = 0;
-
-                tween(this, { progress: 1 }, 1000, 'easeInOutSine', () => {
-                    this.camera = target;
-
-                    if (this.target !== this.camera) {
-                        this.transition();
-                    } else {
-                        this.isTransitioning = false;
-                    }
-                }, () => {
-                    lerpCameras(this.worldCamera, target, this.progress);
-                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.pointCamera ? this.offsetX : 0, this.progress);
-                    this.worldCamera.updateProjectionMatrix();
-                });
-            }
-
-            // Public methods
-
-            static setCamera = camera => {
-                // this.camera = camera;
-                this.target = camera;
-
-                if (!this.isTransitioning) {
-                    this.isTransitioning = true;
-
-                    this.transition();
-                }
-            };
-
-            static resize = (width, height) => {
-                this.offsetX = -width / 4;
-
-                // World camera
-                this.worldCamera.aspect = width / height;
-                this.worldCamera.setViewOffset(width, height, this.camera === this.pointCamera ? this.offsetX : 0, 0, width, height);
-                this.worldCamera.updateProjectionMatrix();
-
-                // Map camera
-                this.mapCamera.aspect = width / height;
-                this.mapCamera.updateProjectionMatrix();
-
-                // Point of interest camera
-                this.pointCamera.aspect = width / height;
-                this.pointCamera.updateProjectionMatrix();
-            };
-
-            static update = () => {
-                if (this.isTransitioning) {
-                    return;
-                }
-
-                this.worldCamera.position.copy(this.camera.position);
-                this.worldCamera.quaternion.copy(this.camera.quaternion);
-            };
-        }
-
-        class WorldController {
-            static init() {
-                this.initWorld();
-                this.initLights();
-                this.initControls();
-
-                this.addListeners();
-            }
-
-            static initWorld() {
-                this.renderer = new WebGLRenderer({ antialias: true });
-
-                // Output canvas
-                this.element = this.renderer.domElement;
-
-                // 3D scene
-                this.scene = new Scene();
-                this.scene.background = new Color(0x060606);
-
-                // World camera
-                this.camera = new PerspectiveCamera(35);
-                this.camera.near = 1;
-                this.camera.far = 2000;
-                this.camera.position.z = 10;
-
-                // Map camera
-                this.mapCamera = this.camera.clone();
-
-                // Point of interest camera
-                this.pointCamera = this.camera.clone();
-                this.pointCamera.position.z = 6;
-            }
-
-            static initLights() {
-                this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
-            }
-
-            static initControls() {
-                // Map controls
-                this.mapControls = new OrbitControls(this.mapCamera, this.renderer.domElement);
-                this.mapControls.enableDamping = true;
-                this.mapControls.enabled = false;
-
-                // Point of interest controls
-                this.poiControls = new OrbitControls(this.pointCamera, this.renderer.domElement);
-                this.poiControls.target.set(0, 0, 0);
-                this.poiControls.enableDamping = true;
-                this.poiControls.enablePan = false;
-                this.poiControls.enabled = false;
-
-                // Output camera controls
-                this.controls = this.mapControls;
-                this.controls.enabled = true;
-            }
-
-            static addListeners() {
-                this.renderer.domElement.addEventListener('touchstart', this.onTouchStart);
-            }
-
-            // Event handlers
-
-            static onTouchStart = e => {
-                e.preventDefault();
-            };
-
-            // Public methods
-
-            static setControls = controls => {
-                this.controls = controls;
-
-                this.mapControls.enabled = false;
-                this.poiControls.enabled = false;
-
-                this.controls.enabled = true;
-            };
-
-            static resize = (width, height, dpr) => {
-                this.renderer.setPixelRatio(dpr);
-                this.renderer.setSize(width, height);
-            };
-
-            static update = () => {
-                this.controls.update();
-                this.renderer.render(this.scene, this.camera);
-            };
-        }
-
-        class App {
-            static async init() {
-                this.initThread();
-                this.initWorld();
-                this.initViews();
-                this.initControllers();
-                this.initSocket();
+        class ServerStatusController {
+            static init(view, trackers) {
+                this.view = view;
+                this.trackers = trackers;
 
                 // Median downsample
                 this.largeChunkSize = 200;
@@ -644,32 +481,9 @@
                 this.smallGhostArray = [];
                 this.smallArray = [];
 
+                this.initSocket();
+
                 this.addListeners();
-                this.onResize();
-            }
-
-            static initThread() {
-                Thread.count--; // Make room for the websocket thread
-            }
-
-            static initWorld() {
-                WorldController.init();
-                document.body.appendChild(WorldController.element);
-            }
-
-            static initViews() {
-                this.view = new SceneView();
-                WorldController.scene.add(this.view);
-
-                this.trackers = new TrackersView();
-                document.body.appendChild(this.trackers.element);
-            }
-
-            static initControllers() {
-                const { camera, mapCamera, pointCamera } = WorldController;
-
-                CameraController.init(camera, mapCamera, pointCamera);
-                SceneController.init(this.view);
             }
 
             static initSocket() {
@@ -694,30 +508,14 @@
             }
 
             static addListeners() {
-                this.thread.on('details', this.onServerDetails);
-                this.thread.on('array', this.onServerArray);
-                this.thread.on('status', this.onServerStatus);
+                this.thread.on('details', this.onDetails);
+                this.thread.on('array', this.onArray);
+                this.thread.on('status', this.onStatus);
             }
 
             // Event handlers
 
-            static onDetails = ({ open }) => {
-                let camera;
-                let controls;
-
-                if (open) {
-                    camera = WorldController.pointCamera;
-                    controls = WorldController.poiControls;
-                } else {
-                    camera = WorldController.mapCamera;
-                    controls = WorldController.mapControls;
-                }
-
-                CameraController.setCamera(camera);
-                WorldController.setControls(controls);
-            };
-
-            static onServerDetails = ({
+            static onDetails = ({
                 projectDomain,
                 networkName,
                 serverVersion,
@@ -935,10 +733,7 @@
 
                     this.initPanel();
 
-                    Stage.events.on('details', this.onDetails);
-                    window.addEventListener('resize', this.onResize);
-                    ticker.add(this.onUpdate);
-                    ticker.start();
+                    Stage.events.emit('start');
                 } else {
                     this.ui.detailsNumClients.html(numClients);
 
@@ -953,7 +748,7 @@
                 }
             };
 
-            static onServerArray = data => {
+            static onArray = data => {
                 this.data = data;
 
                 // Last 320 status updates for load average graph (160 + 160, ghost + array)
@@ -996,66 +791,295 @@
                 this.ui.detailsLoadAvgGraph.setArray([...this.smallArray, ...realtimeArray]);
             };
 
-            static onServerStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
-                if (this.ui) {
-                    if (serverUptime !== undefined) {
-                        this.ui.detailsUptime.html(serverUptime);
-                    }
-
-                    if (latency !== undefined) {
-                        this.ui.detailsLatencyMeter.update(latency);
-                        this.ui.detailsLatencyGraph.update(latency);
-                    }
-
-                    if (latencyAvg !== undefined) {
-                        this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
-                        this.ui.detailsLatencyAvgMeter.update(latencyAvg);
-                    }
-
-                    if (loadAvg !== undefined) {
-                        this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
-                        this.ui.detailsLoadAvgMeter.update(loadAvg);
-
-                        const ghost = this.array.shift();
-                        this.array.push(loadAvg);
-                        this.ghostArray.shift();
-                        this.ghostArray.push(ghost);
-
-                        // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                        const realtimeData = this.array.slice(-20);
-                        const realtimeGhostArray = realtimeData.slice(0, 10);
-                        const realtimeArray = realtimeData.slice(-10);
-
-                        // Update graphs
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
-                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
-
-                        if (++this.realtimeCounter === this.smallChunkSize) {
-                            // Median downsample
-                            const value = median(realtimeArray);
-
-                            const medianGhost = this.smallArray.shift();
-                            this.smallArray.push(value);
-                            this.smallGhostArray.shift();
-                            this.smallGhostArray.push(medianGhost);
-
-                            this.view.graph.ghostArray.splice(0, 16, ...this.smallGhostArray.toReversed());
-                            this.view.graph.array.splice(0, 16, ...this.smallArray.toReversed());
-                            this.view.graph.needsUpdate = true;
-                            this.view.graph.graphNeedsUpdate = true;
-
-                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...this.smallGhostArray);
-                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...this.smallArray);
-                            this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
-
-                            this.realtimeCounter = 0;
-                        }
-
-                        this.view.graph.update();
-                        this.ui.detailsLoadAvgGraph.update();
-                    }
+            static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
+                if (serverUptime !== undefined) {
+                    this.ui.detailsUptime.html(serverUptime);
                 }
+
+                if (latency !== undefined) {
+                    this.ui.detailsLatencyMeter.update(latency);
+                    this.ui.detailsLatencyGraph.update(latency);
+                }
+
+                if (latencyAvg !== undefined) {
+                    this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
+                    this.ui.detailsLatencyAvgMeter.update(latencyAvg);
+                }
+
+                if (loadAvg !== undefined) {
+                    this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
+                    this.ui.detailsLoadAvgMeter.update(loadAvg);
+
+                    const ghost = this.array.shift();
+                    this.array.push(loadAvg);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
+
+                    // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                    const realtimeData = this.array.slice(-20);
+                    const realtimeGhostArray = realtimeData.slice(0, 10);
+                    const realtimeArray = realtimeData.slice(-10);
+
+                    // Update graphs
+                    this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
+                    this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                    this.ui.detailsLoadAvgGraph.needsUpdate = true;
+
+                    if (++this.realtimeCounter === this.smallChunkSize) {
+                        // Median downsample
+                        const value = median(realtimeArray);
+
+                        const medianGhost = this.smallArray.shift();
+                        this.smallArray.push(value);
+                        this.smallGhostArray.shift();
+                        this.smallGhostArray.push(medianGhost);
+
+                        this.view.graph.ghostArray.splice(0, 16, ...this.smallGhostArray.toReversed());
+                        this.view.graph.array.splice(0, 16, ...this.smallArray.toReversed());
+                        this.view.graph.needsUpdate = true;
+                        this.view.graph.graphNeedsUpdate = true;
+
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...this.smallGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...this.smallArray);
+                        this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
+
+                        this.realtimeCounter = 0;
+                    }
+
+                    this.view.graph.update();
+                    this.ui.detailsLoadAvgGraph.update();
+                }
+            };
+
+            // Public methods
+
+            static update = () => {
+                if (this.ui) {
+                    this.ui.update();
+                    this.ui.detailsLatencyGraph.update();
+                    this.ui.detailsLoadAvgGraph.update();
+                }
+            };
+        }
+
+        class CameraController {
+            static init(worldCamera, mapCamera, pointCamera) {
+                this.worldCamera = worldCamera;
+                this.mapCamera = mapCamera;
+                this.pointCamera = pointCamera;
+
+                // Default camera
+                this.camera = this.mapCamera;
+
+                this.progress = 0;
+                this.isTransitioning = false;
+            }
+
+            static transition() {
+                const target = this.target;
+
+                this.progress = 0;
+
+                tween(this, { progress: 1 }, 1000, 'easeInOutSine', () => {
+                    this.camera = target;
+
+                    if (this.target !== this.camera) {
+                        this.transition();
+                    } else {
+                        this.isTransitioning = false;
+                    }
+                }, () => {
+                    lerpCameras(this.worldCamera, target, this.progress);
+                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.pointCamera ? this.offsetX : 0, this.progress);
+                    this.worldCamera.updateProjectionMatrix();
+                });
+            }
+
+            // Public methods
+
+            static setCamera = camera => {
+                // this.camera = camera;
+                this.target = camera;
+
+                if (!this.isTransitioning) {
+                    this.isTransitioning = true;
+
+                    this.transition();
+                }
+            };
+
+            static resize = (width, height) => {
+                this.offsetX = -width / 4;
+
+                // World camera
+                this.worldCamera.aspect = width / height;
+                this.worldCamera.setViewOffset(width, height, this.camera === this.pointCamera ? this.offsetX : 0, 0, width, height);
+                this.worldCamera.updateProjectionMatrix();
+
+                // Map camera
+                this.mapCamera.aspect = width / height;
+                this.mapCamera.updateProjectionMatrix();
+
+                // Point of interest camera
+                this.pointCamera.aspect = width / height;
+                this.pointCamera.updateProjectionMatrix();
+            };
+
+            static update = () => {
+                if (this.isTransitioning) {
+                    return;
+                }
+
+                this.worldCamera.position.copy(this.camera.position);
+                this.worldCamera.quaternion.copy(this.camera.quaternion);
+            };
+        }
+
+        class WorldController {
+            static init() {
+                this.initWorld();
+                this.initLights();
+                this.initControls();
+
+                this.addListeners();
+            }
+
+            static initWorld() {
+                this.renderer = new WebGLRenderer({ antialias: true });
+
+                // Output canvas
+                this.element = this.renderer.domElement;
+
+                // 3D scene
+                this.scene = new Scene();
+                this.scene.background = new Color(0x060606);
+
+                // World camera
+                this.camera = new PerspectiveCamera(35);
+                this.camera.near = 1;
+                this.camera.far = 2000;
+                this.camera.position.z = 10;
+
+                // Map camera
+                this.mapCamera = this.camera.clone();
+
+                // Point of interest camera
+                this.pointCamera = this.camera.clone();
+                this.pointCamera.position.z = 6;
+            }
+
+            static initLights() {
+                this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
+            }
+
+            static initControls() {
+                // Map controls
+                this.mapControls = new OrbitControls(this.mapCamera, this.renderer.domElement);
+                this.mapControls.enableDamping = true;
+                this.mapControls.enabled = false;
+
+                // Point of interest controls
+                this.poiControls = new OrbitControls(this.pointCamera, this.renderer.domElement);
+                this.poiControls.target.set(0, 0, 0);
+                this.poiControls.enableDamping = true;
+                this.poiControls.enablePan = false;
+                this.poiControls.enabled = false;
+
+                // Output camera controls
+                this.controls = this.mapControls;
+                this.controls.enabled = true;
+            }
+
+            static addListeners() {
+                this.renderer.domElement.addEventListener('touchstart', this.onTouchStart);
+            }
+
+            // Event handlers
+
+            static onTouchStart = e => {
+                e.preventDefault();
+            };
+
+            // Public methods
+
+            static setControls = controls => {
+                this.controls = controls;
+
+                this.mapControls.enabled = false;
+                this.poiControls.enabled = false;
+
+                this.controls.enabled = true;
+            };
+
+            static resize = (width, height, dpr) => {
+                this.renderer.setPixelRatio(dpr);
+                this.renderer.setSize(width, height);
+            };
+
+            static update = () => {
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            };
+        }
+
+        class App {
+            static async init() {
+                this.initWorld();
+                this.initViews();
+                this.initControllers();
+
+                this.addListeners();
+                this.onResize();
+            }
+
+            static initWorld() {
+                WorldController.init();
+                document.body.appendChild(WorldController.element);
+            }
+
+            static initViews() {
+                this.view = new SceneView();
+                WorldController.scene.add(this.view);
+
+                this.trackers = new TrackersView();
+                document.body.appendChild(this.trackers.element);
+            }
+
+            static initControllers() {
+                const { camera, mapCamera, pointCamera } = WorldController;
+
+                CameraController.init(camera, mapCamera, pointCamera);
+                SceneController.init(this.view);
+                ServerStatusController.init(this.view, this.trackers);
+            }
+
+            static addListeners() {
+                Stage.events.on('start', this.onStart);
+            }
+
+            // Event handlers
+
+            static onStart = () => {
+                Stage.events.on('details', this.onDetails);
+                window.addEventListener('resize', this.onResize);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            };
+
+            static onDetails = ({ open }) => {
+                let camera;
+                let controls;
+
+                if (open) {
+                    camera = WorldController.pointCamera;
+                    controls = WorldController.poiControls;
+                } else {
+                    camera = WorldController.mapCamera;
+                    controls = WorldController.mapControls;
+                }
+
+                CameraController.setCamera(camera);
+                WorldController.setControls(controls);
             };
 
             static onResize = () => {
@@ -1072,12 +1096,7 @@
                 CameraController.update();
                 SceneController.update(time);
                 PanelController.update(time);
-
-                if (this.ui) {
-                    this.ui.update();
-                    this.ui.detailsLatencyGraph.update();
-                    this.ui.detailsLoadAvgGraph.update();
-                }
+                ServerStatusController.update(time);
             };
         }
 
