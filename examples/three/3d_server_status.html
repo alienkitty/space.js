@@ -417,10 +417,10 @@
         }
 
         class CameraController {
-            static init(worldCamera, mapCamera, poiCamera) {
+            static init(worldCamera, mapCamera, pointCamera) {
                 this.worldCamera = worldCamera;
                 this.mapCamera = mapCamera;
-                this.poiCamera = poiCamera;
+                this.pointCamera = pointCamera;
 
                 // Default camera
                 this.camera = this.mapCamera;
@@ -444,7 +444,7 @@
                     }
                 }, () => {
                     lerpCameras(this.worldCamera, target, this.progress);
-                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.poiCamera ? this.offsetX : 0, this.progress);
+                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.pointCamera ? this.offsetX : 0, this.progress);
                     this.worldCamera.updateProjectionMatrix();
                 });
             }
@@ -467,7 +467,7 @@
 
                 // World camera
                 this.worldCamera.aspect = width / height;
-                this.worldCamera.setViewOffset(width, height, this.camera === this.poiCamera ? this.offsetX : 0, 0, width, height);
+                this.worldCamera.setViewOffset(width, height, this.camera === this.pointCamera ? this.offsetX : 0, 0, width, height);
                 this.worldCamera.updateProjectionMatrix();
 
                 // Map camera
@@ -475,8 +475,8 @@
                 this.mapCamera.updateProjectionMatrix();
 
                 // Point of interest camera
-                this.poiCamera.aspect = width / height;
-                this.poiCamera.updateProjectionMatrix();
+                this.pointCamera.aspect = width / height;
+                this.pointCamera.updateProjectionMatrix();
             };
 
             static update = () => {
@@ -518,8 +518,8 @@
                 this.mapCamera = this.camera.clone();
 
                 // Point of interest camera
-                this.poiCamera = this.camera.clone();
-                this.poiCamera.position.z = 6;
+                this.pointCamera = this.camera.clone();
+                this.pointCamera.position.z = 6;
             }
 
             static initLights() {
@@ -533,7 +533,7 @@
                 this.mapControls.enabled = false;
 
                 // Point of interest controls
-                this.poiControls = new OrbitControls(this.poiCamera, this.renderer.domElement);
+                this.poiControls = new OrbitControls(this.pointCamera, this.renderer.domElement);
                 this.poiControls.target.set(0, 0, 0);
                 this.poiControls.enableDamping = true;
                 this.poiControls.enablePan = false;
@@ -614,9 +614,9 @@
             }
 
             static initControllers() {
-                const { camera, mapCamera, poiCamera } = WorldController;
+                const { camera, mapCamera, pointCamera } = WorldController;
 
-                CameraController.init(camera, mapCamera, poiCamera);
+                CameraController.init(camera, mapCamera, pointCamera);
                 SceneController.init(this.view);
             }
 
@@ -643,7 +643,7 @@
                 let controls;
 
                 if (open) {
-                    camera = WorldController.poiCamera;
+                    camera = WorldController.pointCamera;
                     controls = WorldController.poiControls;
                 } else {
                     camera = WorldController.mapCamera;
