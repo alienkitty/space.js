@@ -22,7 +22,7 @@ export class SVGPathProperties {
         let curve;
         let start = [0, 0];
 
-        for (let i = 0; i < parsed.length; i++) {
+        for (let i = 0, l = parsed.length; i < l; i++) {
             if (parsed[i][0] === 'M') {
                 // moveTo
                 cur = [parsed[i][1], parsed[i][2]];
@@ -131,7 +131,7 @@ export class SVGPathProperties {
                     );
                 }
             } else if (parsed[i][0] === 'S') {
-                if (i > 0 && ['C', 'c', 'S', 's'].indexOf(parsed[i - 1][0]) > -1) {
+                if (i > 0 && ~['C', 'c', 'S', 's'].indexOf(parsed[i - 1][0])) {
                     if (curve) {
                         const c = curve.getC();
                         curve = new Bezier(
@@ -165,7 +165,7 @@ export class SVGPathProperties {
                 }
             } else if (parsed[i][0] === 's') {
                 // 240 225
-                if (i > 0 && ['C', 'c', 'S', 's'].indexOf(parsed[i - 1][0]) > -1) {
+                if (i > 0 && ~['C', 'c', 'S', 's'].indexOf(parsed[i - 1][0])) {
                     if (curve) {
                         const c = curve.getC();
                         const d = curve.getD();
@@ -254,7 +254,7 @@ export class SVGPathProperties {
                 prev = [cur[0] + parsed[i][1], cur[1] + parsed[i][2]];
                 cur = [parsed[i][3] + cur[0], parsed[i][4] + cur[1]];
             } else if (parsed[i][0] === 'T') {
-                if (i > 0 && ['Q', 'q', 'T', 't'].indexOf(parsed[i - 1][0]) > -1) {
+                if (i > 0 && ~['Q', 'q', 'T', 't'].indexOf(parsed[i - 1][0])) {
                     curve = new Bezier(
                         cur[0],
                         cur[1],
@@ -281,7 +281,7 @@ export class SVGPathProperties {
                 prev = [2 * cur[0] - prev[0], 2 * cur[1] - prev[1]];
                 cur = [parsed[i][1], parsed[i][2]];
             } else if (parsed[i][0] === 't') {
-                if (i > 0 && ['Q', 'q', 'T', 't'].indexOf(parsed[i - 1][0]) > -1) {
+                if (i > 0 && ~['Q', 'q', 'T', 't'].indexOf(parsed[i - 1][0])) {
                     curve = new Bezier(
                         cur[0],
                         cur[1],
@@ -414,7 +414,7 @@ export class SVGPathProperties {
     getParts() {
         const parts = [];
 
-        for (var i = 0; i < this.functions.length; i++) {
+        for (var i = 0, l = this.functions.length; i < l; i++) {
             if (this.functions[i] !== null) {
                 const properties = {
                     start: this.functions[i].getPointAtLength(0),
