@@ -38,8 +38,8 @@ export function getCubicArcLength(xs, ys, t) {
     let sum = 0;
 
     for (let i = 0; i < n; i++) {
-        correctedT = z * tValues[n][i] + z;
-        sum += cValues[n][i] * BFunc(xs, ys, correctedT);
+        correctedT = z * tValues[i] + z;
+        sum += cValues[i] * BFunc(xs, ys, correctedT);
     }
 
     return z * sum;
