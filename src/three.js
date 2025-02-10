@@ -14,6 +14,9 @@ export { BufferGeometryLoaderThread } from './three/loaders/BufferGeometryLoader
 export { Color } from './math/Color.js';
 export { Vector2 } from './math/Vector2.js';
 
+// Path
+export { SVGPathProperties } from './path/SVGPathProperties.js';
+
 // Tween
 export * from './tween/Ticker.js';
 export * from './tween/BezierEasing.js';
