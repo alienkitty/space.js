@@ -32,7 +32,7 @@ export function cubicDerivative(xs, ys, t) {
 }
 
 export function getCubicArcLength(xs, ys, t) {
-    const n = 20;
+    const n = 2;
     const z = t / 2;
     let correctedT;
     let sum = 0;
