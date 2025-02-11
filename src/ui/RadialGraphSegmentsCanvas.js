@@ -4,6 +4,7 @@
 
 import { Color } from '../math/Color.js';
 import { Vector2 } from '../math/Vector2.js';
+import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -178,12 +179,8 @@ export class RadialGraphSegmentsCanvas extends Interface {
     }
 
     initGraphs() {
-        // Not added to DOM
         this.graphs = this.segments.map((length, i) => {
-            const graph = new Interface(null, 'svg');
-            graph.path = new Interface(null, 'svg', 'path');
-            graph.add(graph.path);
-
+            const graph = {};
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
@@ -194,13 +191,15 @@ export class RadialGraphSegmentsCanvas extends Interface {
     }
 
     calculateLookup(graph) {
-        graph.length = graph.path.element.getTotalLength();
+        const properties = new SVGPathProperties(graph.pathData);
+
+        graph.length = properties.getTotalLength();
         graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            const point = graph.path.element.getPointAtLength(i * graph.length);
+            const point = properties.getPointAtLength(i * graph.length);
             const x = point.x - this.middle;
             const y = point.y - this.middle;
 
@@ -690,11 +689,7 @@ export class RadialGraphSegmentsCanvas extends Interface {
         // Draw handle line and circle
         if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
-                this.graphs.forEach(graph => {
-                    graph.path.attr({ d: graph.pathData });
-                    this.calculateLookup(graph);
-                });
-
+                this.graphs.forEach(graph => this.calculateLookup(graph));
                 this.graphNeedsUpdate = false;
                 this.onPointerMove();
             }

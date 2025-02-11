@@ -4,6 +4,7 @@
 
 import { Color } from '../math/Color.js';
 import { Vector2 } from '../math/Vector2.js';
+import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -130,10 +131,6 @@ export class RadialGraphCanvas extends Interface {
 
         this.init();
 
-        if (!this.noHover && this.lookupPrecision) {
-            this.initGraph();
-        }
-
         if (!this.noMarker) {
             this.initMarkers();
         }
@@ -170,21 +167,16 @@ export class RadialGraphCanvas extends Interface {
         }
     }
 
-    initGraph() {
-        // Not added to DOM
-        this.graph = new Interface(null, 'svg');
-        this.graph.path = new Interface(null, 'svg', 'path');
-        this.graph.add(this.graph.path);
-    }
-
     calculateLookup() {
-        this.length = this.graph.path.element.getTotalLength();
+        const properties = new SVGPathProperties(this.pathData);
+
+        this.length = properties.getTotalLength();
         this.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            const point = this.graph.path.element.getPointAtLength(i * this.length);
+            const point = properties.getPointAtLength(i * this.length);
             const x = point.x - this.middle;
             const y = point.y - this.middle;
 
@@ -653,7 +645,6 @@ export class RadialGraphCanvas extends Interface {
         // Draw handle line and circle
         if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
-                this.graph.path.attr({ d: this.pathData });
                 this.calculateLookup();
                 this.graphNeedsUpdate = false;
                 this.onPointerMove();

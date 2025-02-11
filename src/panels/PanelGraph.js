@@ -3,6 +3,7 @@
  */
 
 import { Color } from '../math/Color.js';
+import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -93,11 +94,6 @@ export class PanelGraph extends Interface {
 
         this.init();
         this.initCanvas();
-
-        if (!this.noHover && this.lookupPrecision) {
-            this.initGraph();
-        }
-
         this.setArray(this.value);
 
         if (this.ghost !== undefined) {
@@ -160,39 +156,16 @@ export class PanelGraph extends Interface {
         }
     }
 
-    initGraph() {
-        // Not added to DOM
-        this.graph = new Interface(null, 'svg');
-        this.graph.attr({
-            viewBox: `0 0 ${this.width} ${this.height}`,
-            width: this.width,
-            height: this.height
-        });
-        this.graph.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: this.width,
-            height: this.height
-        });
-
-        this.graph.path = new Interface(null, 'svg', 'path');
-        this.graph.path.css({
-            fill: 'none',
-            stroke: 'var(--ui-color)',
-            strokeWidth: 1.5
-        });
-        this.graph.add(this.graph.path);
-    }
-
     calculateLookup() {
-        this.length = this.graph.path.element.getTotalLength();
+        const properties = new SVGPathProperties(this.pathData);
+
+        this.length = properties.getTotalLength();
         this.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(this.graph.path.element.getPointAtLength(i * this.length));
+            this.lookup.push(properties.getPointAtLength(i * this.length));
 
             i += 1 / this.lookupPrecision;
         }
@@ -482,7 +455,6 @@ export class PanelGraph extends Interface {
         // Draw handle line and circle
         if (!this.noHover) {
             if (this.graphNeedsUpdate) {
-                this.graph.path.attr({ d: this.pathData });
                 this.calculateLookup();
                 this.graphNeedsUpdate = false;
             }

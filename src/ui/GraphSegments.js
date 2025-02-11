@@ -4,6 +4,7 @@
 
 import { Color } from '../math/Color.js';
 import { Vector2 } from '../math/Vector2.js';
+import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -183,12 +184,8 @@ export class GraphSegments extends Interface {
     }
 
     initGraphs() {
-        // Not added to DOM
         this.graphs = this.segments.map((length, i) => {
-            const graph = new Interface(null, 'svg');
-            graph.path = new Interface(null, 'svg', 'path');
-            graph.add(graph.path);
-
+            const graph = {};
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
@@ -199,13 +196,15 @@ export class GraphSegments extends Interface {
     }
 
     calculateLookup(graph) {
-        graph.length = graph.path.element.getTotalLength();
+        const properties = new SVGPathProperties(graph.pathData);
+
+        graph.length = properties.getTotalLength();
         graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            graph.lookup.push(graph.path.element.getPointAtLength(i * graph.length));
+            graph.lookup.push(properties.getPointAtLength(i * graph.length));
 
             i += 1 / graph.lookupPrecision;
         }
@@ -642,11 +641,7 @@ export class GraphSegments extends Interface {
         // Draw handle line and circle
         if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
-                this.graphs.forEach(graph => {
-                    graph.path.attr({ d: graph.pathData });
-                    this.calculateLookup(graph);
-                });
-
+                this.graphs.forEach(graph => this.calculateLookup(graph));
                 this.graphNeedsUpdate = false;
             }
 
