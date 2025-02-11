@@ -171,7 +171,7 @@ export function getKeyByValue(object, value) {
 export function getConstructor(object) {
     const isInstance = typeof object !== 'function';
     const code = isInstance ? object.constructor.toString() : object.toString();
-    const name = code.match(/(?:class|function)\s([^\s{(]+)/)[1];
+    const name = code.match(/(?:class|function)\s([^\s{(]+)/).pop();
 
     return { name, code, isInstance };
 }
