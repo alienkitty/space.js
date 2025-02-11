@@ -35,9 +35,27 @@
         import { BoxGeometry, Color, Group, HemisphereLight, MathUtils, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        import { EventEmitter, Interface, PanelItem, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
+        import { EventEmitter, Interface, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
 
         const isDebug = /[?&]debug/.test(location.search);
+
+        class Data {
+            static init({ projectDomain, networkName }) {
+                this.projectDomain = projectDomain;
+                this.networkName = networkName;
+            }
+
+            // Public methods
+
+            static getName = () => {
+                // return basename(this.projectDomain);
+                return 'server-status';
+            };
+
+            static getType = () => {
+                return this.networkName.match(/\(([^)]+)\)/).pop();
+            };
+        }
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -377,6 +395,8 @@
                 this.ui = ui;
 
                 this.initPanel();
+
+                this.addListeners();
             }
 
             static initPanel() {
@@ -398,46 +418,29 @@
                     });
 
                     object.point = new Point3D(object.mesh, {
-                        type: 'localhost',
-                        graph: object.graph
+                        name: Data.getName(),
+                        type: Data.getType(),
+                        graph: object.graph,
+                        noTracker: true
                     });
                     object.add(object.point);
-
-                    const items = [
-                        {
-                            type: 'divider'
-                        },
-                        {
-                            type: 'link',
-                            value: 'Details',
-                            callback: () => {
-                                this.ui.toggleDetails(!this.ui.details.animatedIn);
-                                object.point.animateOut(true);
-                                object.point.deactivate();
-                            }
-                        },
-                        {
-                            type: 'link',
-                            value: 'Edit',
-                            callback: () => {
-                            }
-                        },
-                        {
-                            type: 'link',
-                            value: 'Restart',
-                            callback: () => {
-                            }
-                        }
-                    ];
-
-                    items.forEach(data => {
-                        object.point.addPanel(new PanelItem(data));
-                    });
                 });
 
                 // Shrink tracker mesh to better match the visual size of the object
                 view.point.mesh.scale.multiplyScalar(0.8);
             }
+
+            static addListeners() {
+                Point3D.events.on('click', this.onClick);
+            }
+
+            // Event handlers
+
+            static onClick = () => {
+                this.ui.toggleDetails(!this.ui.details.animatedIn);
+
+                Point3D.animateOut();
+            };
         }
 
         class PanelController {
@@ -720,6 +723,8 @@
 
                     this.ui.detailsStorage = this.ui.details.content[14].children[1];
                     this.ui.detailsStorageMeter = this.ui.details.content[14].children[2];
+
+                    Data.init({ projectDomain, networkName });
 
                     this.initPanel();
 
