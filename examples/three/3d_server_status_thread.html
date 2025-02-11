@@ -45,10 +45,22 @@
 
                 this.server = server;
 
-                // Used for calculating the average
+                this.connected = false;
+
+                // Latency average
                 this.latencyArray = [];
 
-                this.connected = false;
+                // Load average
+                this.ghostArray = [];
+                this.array = [];
+                this.largeGhostArray = [];
+                this.largeArray = [];
+                this.smallGhostArray = [];
+                this.smallArray = [];
+
+                // Median downsample
+                this.largeChunkSize = 200;
+                this.smallChunkSize = 10;
 
                 this.connect();
             }
@@ -188,7 +200,52 @@
                             // Separate last status update as new update
                             const last = data.pop();
 
-                            this.emit('array', data.map(data => data[2] * 100)); // percentage
+                            // Load average data
+                            data = data.map(data => data[2] * 100); // percentage
+                            this.data = data;
+
+                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
+                            data = data.slice(-320);
+                            this.ghostArray = data.slice(0, 160);
+                            this.array = data.slice(-160);
+
+                            // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                            const realtimeData = data.slice(-20);
+                            const realtimeGhostArray = realtimeData.slice(0, 10);
+                            const realtimeArray = realtimeData.slice(-10);
+
+                            // Large median downsample
+                            const array = [];
+
+                            for (let i = 0; i < this.data.length; i += this.largeChunkSize) {
+                                array.push(median(this.data.slice(i, i + this.largeChunkSize)));
+                            }
+
+                            // Past day (21488 status updates) downsampled to 108 (54 + 54, ghost + array)
+                            this.largeArray = array.splice(-54, 54);
+                            this.largeGhostArray = array.splice(-54, 54);
+
+                            // Small median downsample
+                            array.length = 0;
+
+                            for (let i = 0; i < data.length; i += this.smallChunkSize) {
+                                array.push(median(data.slice(i, i + this.smallChunkSize)));
+                            }
+
+                            // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
+                            this.smallGhostArray = array.slice(0, 16);
+                            this.smallArray = array.slice(-16);
+
+                            this.emit('array', {
+                                ghostArray: this.ghostArray,
+                                array: this.array,
+                                largeGhostArray: this.largeGhostArray,
+                                largeArray: this.largeArray,
+                                smallGhostArray: this.smallGhostArray,
+                                smallArray: this.smallArray,
+                                realtimeGhostArray,
+                                realtimeArray
+                            });
 
                             data = last;
                         }
@@ -469,17 +526,8 @@
                 this.trackers = trackers;
 
                 // Median downsample
-                this.largeChunkSize = 200;
                 this.smallChunkSize = 10;
                 this.realtimeCounter = 0;
-
-                // Load average graph
-                this.ghostArray = [];
-                this.array = [];
-                this.largeGhostArray = [];
-                this.largeArray = [];
-                this.smallGhostArray = [];
-                this.smallArray = [];
 
                 this.initSocket();
 
@@ -492,8 +540,8 @@
                 this.thread = new Thread({
                     imports: [
                         // TODO: Investigate why the `three` entry point fails
-                        // ['../../src/three.js', 'EventEmitter', 'average', 'delayedCall']
-                        ['../../src/index.js', 'EventEmitter', 'average', 'delayedCall']
+                        // ['../../src/three.js', 'EventEmitter', 'average', 'delayedCall', 'median']
+                        ['../../src/index.js', 'EventEmitter', 'average', 'delayedCall', 'median']
                     ],
                     classes: [Socket],
                     controller: [SocketThread, 'init']
@@ -748,47 +796,26 @@
                 }
             };
 
-            static onArray = data => {
-                this.data = data;
+            static onArray = ({
+                ghostArray,
+                array,
+                largeGhostArray,
+                largeArray,
+                smallGhostArray,
+                smallArray,
+                realtimeGhostArray,
+                realtimeArray
+            }) => {
+                this.ghostArray = ghostArray;
+                this.array = array;
+                this.smallGhostArray = smallGhostArray;
+                this.smallArray = smallArray;
 
-                // Last 320 status updates for load average graph (160 + 160, ghost + array)
-                data = data.slice(-320);
-                this.ghostArray = data.slice(0, 160);
-                this.array = data.slice(-160);
+                this.view.graph.setGhostArray([...smallGhostArray.toReversed(), ...largeGhostArray.toReversed()]);
+                this.view.graph.setArray([...smallArray.toReversed(), ...largeArray.toReversed()]);
 
-                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                const realtimeData = data.slice(-20);
-                const realtimeGhostArray = realtimeData.slice(0, 10);
-                const realtimeArray = realtimeData.slice(-10);
-
-                // Large median downsample
-                const array = [];
-
-                for (let i = 0; i < this.data.length; i += this.largeChunkSize) {
-                    array.push(median(this.data.slice(i, i + this.largeChunkSize)));
-                }
-
-                // Past day (21488 status updates) downsampled to 108 (54 + 54, ghost + array)
-                this.largeArray = array.splice(-54, 54);
-                this.largeGhostArray = array.splice(-54, 54);
-
-                // Small median downsample
-                array.length = 0;
-
-                for (let i = 0; i < data.length; i += this.smallChunkSize) {
-                    array.push(median(data.slice(i, i + this.smallChunkSize)));
-                }
-
-                // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
-                this.smallGhostArray = array.slice(0, 16);
-                this.smallArray = array.slice(-16);
-
-                // Update graphs
-                this.view.graph.setGhostArray([...this.smallGhostArray.toReversed(), ...this.largeGhostArray.toReversed()]);
-                this.view.graph.setArray([...this.smallArray.toReversed(), ...this.largeArray.toReversed()]);
-
-                this.ui.detailsLoadAvgGraph.setGhostArray([...this.smallGhostArray, ...realtimeGhostArray]);
-                this.ui.detailsLoadAvgGraph.setArray([...this.smallArray, ...realtimeArray]);
+                this.ui.detailsLoadAvgGraph.setGhostArray([...smallGhostArray, ...realtimeGhostArray]);
+                this.ui.detailsLoadAvgGraph.setArray([...smallArray, ...realtimeArray]);
             };
 
             static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
@@ -806,7 +833,7 @@
                     this.ui.detailsLatencyAvgMeter.update(latencyAvg);
                 }
 
-                if (loadAvg !== undefined) {
+                if (loadAvg !== undefined && this.array) {
                     this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                     this.ui.detailsLoadAvgMeter.update(loadAvg);
 

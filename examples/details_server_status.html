@@ -31,10 +31,17 @@
 
                 this.server = server;
 
-                // Used for calculating the average
+                this.connected = false;
+
+                // Latency average
                 this.latencyArray = [];
 
-                this.connected = false;
+                // Load average
+                this.ghostArray = [];
+                this.array = [];
+
+                // Median downsample
+                this.chunkSize = 10;
 
                 this.connect();
             }
@@ -174,8 +181,33 @@
                             // Separate last status update as new update
                             const last = data.pop();
 
-                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
-                            this.emit('array', data.slice(-320).map(data => data[2] * 100)); // percentage
+                            // Load average data
+                            data = data.map(data => data[2] * 100); // percentage
+                            this.data = data;
+
+                            // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                            const realtimeArray = data.slice(-20);
+
+                            // Median downsample
+                            const array = [];
+                            const chunkSize = this.chunkSize;
+
+                            for (let i = 0; i < data.length; i += chunkSize) {
+                                array.push(median(data.slice(i, i + chunkSize)));
+                            }
+
+                            // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
+                            this.ghostArray = array.slice(0, 16);
+                            this.array = array.slice(-16);
+
+                            // Re-add realtime data to the end of each array
+                            this.ghostArray.push(...realtimeArray.slice(0, 10));
+                            this.array.push(...realtimeArray.slice(-10));
+
+                            this.emit('array', {
+                                ghostArray: this.ghostArray,
+                                array: this.array
+                            });
 
                             data = last;
                         }
@@ -497,81 +529,61 @@
                 }
             };
 
-            static onServerArray = data => {
-                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                const realtimeArray = data.slice(-20);
+            static onServerArray = ({ ghostArray, array }) => {
+                this.ghostArray = ghostArray;
+                this.array = array;
 
-                // Median downsample
-                const array = [];
-                const chunkSize = this.chunkSize;
-
-                for (let i = 0; i < data.length; i += chunkSize) {
-                    array.push(median(data.slice(i, i + chunkSize)));
-                }
-
-                // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
-                this.ghostArray = array.slice(0, 16);
-                this.array = array.slice(-16);
-
-                // Re-add realtime data to the end of each array
-                this.ghostArray.push(...realtimeArray.slice(0, 10));
-                this.array.push(...realtimeArray.slice(-10));
-
-                if (this.ui) {
-                    this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
-                    this.ui.detailsLoadAvgGraph.setArray(this.array);
-                }
+                this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
+                this.ui.detailsLoadAvgGraph.setArray(this.array);
             };
 
             static onServerStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
-                if (this.ui) {
-                    if (serverUptime !== undefined) {
-                        this.ui.detailsUptime.html(serverUptime);
+                if (serverUptime !== undefined) {
+                    this.ui.detailsUptime.html(serverUptime);
+                }
+
+                if (latency !== undefined) {
+                    this.ui.detailsLatencyMeter.update(latency);
+                    this.ui.detailsLatencyGraph.update(latency);
+                }
+
+                if (latencyAvg !== undefined) {
+                    this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
+                    this.ui.detailsLatencyAvgMeter.update(latencyAvg);
+                }
+
+                if (loadAvg !== undefined && this.array) {
+                    this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
+                    this.ui.detailsLoadAvgMeter.update(loadAvg);
+
+                    const realtimeGhostArray = this.ghostArray.slice(-10);
+                    const realtimeArray = this.array.slice(-10);
+                    const realtimeGhost = realtimeArray.shift();
+                    realtimeArray.push(loadAvg);
+                    realtimeGhostArray.shift();
+                    realtimeGhostArray.push(realtimeGhost);
+                    this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
+                    this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                    this.ui.detailsLoadAvgGraph.needsUpdate = true;
+
+                    if (++this.realtimeCounter === this.chunkSize) {
+                        // Median downsample
+                        const value = median(realtimeArray);
+
+                        const ghostArray = this.ghostArray.slice(0, 16);
+                        const array = this.array.slice(0, 16);
+                        const ghost = array.shift();
+                        array.push(value);
+                        ghostArray.shift();
+                        ghostArray.push(ghost);
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+                        this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
+
+                        this.realtimeCounter = 0;
                     }
 
-                    if (latency !== undefined) {
-                        this.ui.detailsLatencyMeter.update(latency);
-                        this.ui.detailsLatencyGraph.update(latency);
-                    }
-
-                    if (latencyAvg !== undefined) {
-                        this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
-                        this.ui.detailsLatencyAvgMeter.update(latencyAvg);
-                    }
-
-                    if (loadAvg !== undefined) {
-                        this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
-                        this.ui.detailsLoadAvgMeter.update(loadAvg);
-
-                        const realtimeGhostArray = this.ghostArray.slice(-10);
-                        const realtimeArray = this.array.slice(-10);
-                        const realtimeGhost = realtimeArray.shift();
-                        realtimeArray.push(loadAvg);
-                        realtimeGhostArray.shift();
-                        realtimeGhostArray.push(realtimeGhost);
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
-                        this.ui.detailsLoadAvgGraph.needsUpdate = true;
-
-                        if (++this.realtimeCounter === this.chunkSize) {
-                            // Median downsample
-                            const value = median(realtimeArray);
-
-                            const ghostArray = this.ghostArray.slice(0, 16);
-                            const array = this.array.slice(0, 16);
-                            const ghost = array.shift();
-                            array.push(value);
-                            ghostArray.shift();
-                            ghostArray.push(ghost);
-                            this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
-                            this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
-                            this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
-
-                            this.realtimeCounter = 0;
-                        }
-
-                        this.ui.detailsLoadAvgGraph.update();
-                    }
+                    this.ui.detailsLoadAvgGraph.update();
                 }
             };
 
