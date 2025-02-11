@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>SVG Path Properties — Space.js</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@alienkitty/space.js": "../src/index.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { SVGPathProperties } from '@alienkitty/space.js';
+
+        // https://github.com/rveciana/svg-path-properties
+        const properties = new SVGPathProperties('M0,100 Q50,-50 100,100 T200,100');
+        const length = properties.getTotalLength();
+        const point = properties.getPointAtLength(200);
+        const tangent = properties.getTangentAtLength(200);
+        const allProperties = properties.getPropertiesAtLength(200);
+        const parts = properties.getParts();
+
+        console.log(length, point, tangent, allProperties, parts);
+    </script>
+</head>
+<body>
+</body>
+</html>

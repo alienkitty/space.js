@@ -5,6 +5,7 @@
 import { Interface } from '../utils/Interface.js';
 import { DetailsTitle } from './DetailsTitle.js';
 import { DetailsLink } from './DetailsLink.js';
+import { DividerLine } from './DividerLine.js';
 import { Graph } from './Graph.js';
 import { GraphSegments } from './GraphSegments.js';
 import { Meter } from './Meter.js';
@@ -15,6 +16,7 @@ export class Details extends Interface {
 
         this.data = data;
 
+        this.width = data.width || '100vw';
         this.content = [];
         this.links = [];
         this.animatedIn = false;
@@ -29,6 +31,7 @@ export class Details extends Interface {
         this.invisible();
         this.css({
             position: 'relative',
+            width: this.width,
             pointerEvents: 'none',
             opacity: 0
         });
@@ -46,12 +49,18 @@ export class Details extends Interface {
             this.add(this.bg);
         }
 
+        if (this.data.dividerLine) {
+            this.dividerLine = new DividerLine();
+            this.dividerLine.setLeft(this.width);
+            this.add(this.dividerLine);
+        }
+
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
             display: 'flex',
             flexWrap: 'wrap',
-            padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
+            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
         });
         this.add(this.container);
     }
@@ -178,10 +187,18 @@ export class Details extends Interface {
             this.container.css({
                 padding: '80px 20px 60px'
             });
+
+            if (this.dividerLine) {
+                this.dividerLine.setLeft('100vw');
+            }
         } else {
             this.container.css({
-                padding: '10vw calc(100vw - 10vw - 440px) 13vw 10vw'
+                padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
             });
+
+            if (this.dividerLine) {
+                this.dividerLine.setLeft(this.width);
+            }
         }
     }
 
@@ -200,6 +217,10 @@ export class Details extends Interface {
             this.bg.clearTween().css({ opacity: 0 }).tween({ opacity: 0.35 }, duration, 'easeOutSine');
         }
 
+        if (this.dividerLine) {
+            this.dividerLine.animateIn();
+        }
+
         this.container.children.forEach((child, i) => {
             const delay = i === 0 ? 0 : 200;
 
@@ -214,6 +235,10 @@ export class Details extends Interface {
     animateOut(callback) {
         this.clearTween();
         this.css({ pointerEvents: 'none' });
+
+        if (this.dividerLine) {
+            this.dividerLine.animateOut();
+        }
 
         this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();

@@ -25,6 +25,7 @@ export class Point extends Interface {
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();
         this.lerpSpeed = 0.07;
+        this.animatedIn = false;
         this.openColor = null;
         this.isOpen = false;
         this.isMove = false;
@@ -252,12 +253,16 @@ export class Point extends Interface {
         this.css({ opacity: 1 });
 
         this.info.animateIn();
+
+        this.animatedIn = true;
     }
 
     animateOut(fast) {
         this.info.animateOut(fast, () => {
             this.invisible();
         });
+
+        this.animatedIn = false;
     }
 
     enable() {

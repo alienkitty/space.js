@@ -10,6 +10,9 @@ export { ImageBitmapLoaderThread } from './loaders/ImageBitmapLoaderThread.js';
 export { Color } from './math/Color.js';
 export { Vector2 } from './math/Vector2.js';
 
+// Path
+export { SVGPathProperties } from './path/SVGPathProperties.js';
+
 // Tween
 export * from './tween/Ticker.js';
 export * from './tween/BezierEasing.js';
@@ -61,6 +64,7 @@ export { DetailsButton } from './ui/DetailsButton.js';
 export { MuteButton } from './ui/MuteButton.js';
 export { AudioButton } from './ui/AudioButton.js';
 export { AudioButtonInfo } from './ui/AudioButtonInfo.js';
+export { DividerLine } from './ui/DividerLine.js';
 export { Info } from './ui/Info.js';
 export { Title } from './ui/Title.js';
 export { Link } from './ui/Link.js';
@@ -71,8 +75,9 @@ export { Graph } from './ui/Graph.js';
 export { GraphSegments } from './ui/GraphSegments.js';
 export { GraphMarker } from './ui/GraphMarker.js';
 export { RadialGraph } from './ui/RadialGraph.js';
-export { RadialGraphSegments } from './ui/RadialGraphSegments.js';
 export { RadialGraphCanvas } from './ui/RadialGraphCanvas.js';
+export { RadialGraphSegments } from './ui/RadialGraphSegments.js';
+export { RadialGraphSegmentsCanvas } from './ui/RadialGraphSegmentsCanvas.js';
 export { RadialGraphTracker } from './ui/RadialGraphTracker.js';
 export { Meter } from './ui/Meter.js';
 export { LineCanvas } from './ui/LineCanvas.js';

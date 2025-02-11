@@ -20,7 +20,8 @@ export class DetailsTitle extends Interface {
 
     init() {
         this.css({
-            width: 'fit-content'
+            width: 'fit-content',
+            whiteSpace: 'nowrap'
         });
     }
 

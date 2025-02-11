@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Details Server Status — Space.js</title>
+    <title>Server Status — Space.js</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@300&family=Gothic+A1:wght@500;700">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <style>
         *, :after, :before {
@@ -22,8 +22,40 @@
         }
     </style>
 
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three/examples/jsm/"
+            }
+        }
+    </script>
+
     <script type="module">
-        import { EventEmitter, UI, average, delayedCall, median, ticker } from '../src/index.js';
+        import { BoxGeometry, Color, Group, HemisphereLight, MathUtils, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        import { EventEmitter, Interface, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
+
+        const isDebug = /[?&]debug/.test(location.search);
+
+        class Data {
+            static init({ projectDomain, networkName }) {
+                this.projectDomain = projectDomain;
+                this.networkName = networkName;
+            }
+
+            // Public methods
+
+            static getName = () => {
+                // return basename(this.projectDomain);
+                return 'server-status';
+            };
+
+            static getType = () => {
+                return this.networkName.match(/\(([^)]+)\)/).pop();
+            };
+        }
 
         class Socket extends EventEmitter {
             constructor(server) {
@@ -39,9 +71,14 @@
                 // Load average
                 this.ghostArray = [];
                 this.array = [];
+                this.largeGhostArray = [];
+                this.largeArray = [];
+                this.smallGhostArray = [];
+                this.smallArray = [];
 
                 // Median downsample
-                this.chunkSize = 10;
+                this.largeChunkSize = 200;
+                this.smallChunkSize = 10;
 
                 this.connect();
             }
@@ -185,28 +222,47 @@
                             data = data.map(data => data[2] * 100); // percentage
                             this.data = data;
 
+                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
+                            data = data.slice(-320);
+                            this.ghostArray = data.slice(0, 160);
+                            this.array = data.slice(-160);
+
                             // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                            const realtimeArray = data.slice(-20);
+                            const realtimeData = data.slice(-20);
+                            const realtimeGhostArray = realtimeData.slice(0, 10);
+                            const realtimeArray = realtimeData.slice(-10);
 
-                            // Median downsample
+                            // Large median downsample
                             const array = [];
-                            const chunkSize = this.chunkSize;
 
-                            for (let i = 0; i < data.length; i += chunkSize) {
-                                array.push(median(data.slice(i, i + chunkSize)));
+                            for (let i = 0; i < this.data.length; i += this.largeChunkSize) {
+                                array.push(median(this.data.slice(i, i + this.largeChunkSize)));
+                            }
+
+                            // Past day (21488 status updates) downsampled to 108 (54 + 54, ghost + array)
+                            this.largeArray = array.splice(-54, 54);
+                            this.largeGhostArray = array.splice(-54, 54);
+
+                            // Small median downsample
+                            array.length = 0;
+
+                            for (let i = 0; i < data.length; i += this.smallChunkSize) {
+                                array.push(median(data.slice(i, i + this.smallChunkSize)));
                             }
 
                             // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
-                            this.ghostArray = array.slice(0, 16);
-                            this.array = array.slice(-16);
-
-                            // Re-add realtime data to the end of each array
-                            this.ghostArray.push(...realtimeArray.slice(0, 10));
-                            this.array.push(...realtimeArray.slice(-10));
+                            this.smallGhostArray = array.slice(0, 16);
+                            this.smallArray = array.slice(-16);
 
                             this.emit('array', {
                                 ghostArray: this.ghostArray,
-                                array: this.array
+                                array: this.array,
+                                largeGhostArray: this.largeGhostArray,
+                                largeArray: this.largeArray,
+                                smallGhostArray: this.smallGhostArray,
+                                smallArray: this.smallArray,
+                                realtimeGhostArray,
+                                realtimeArray
                             });
 
                             data = last;
@@ -273,17 +329,163 @@
             };
         }
 
-        class App {
-            static async init() {
-                this.initSocket();
+        class TrackersView extends Interface {
+            constructor() {
+                super('.trackers');
+
+                this.init();
+            }
+
+            init() {
+                this.css({
+                    position: 'fixed',
+                    left: 0,
+                    top: 0,
+                    width: '100%',
+                    height: '100%',
+                    pointerEvents: 'none',
+                    webkitUserSelect: 'none',
+                    userSelect: 'none'
+                });
+            }
+        }
+
+        class SceneView extends Group {
+            constructor() {
+                super();
+
+                this.initMesh();
+            }
+
+            initMesh() {
+                const geometry = new BoxGeometry();
+                geometry.computeTangents();
+
+                const material = new MeshNormalMaterial();
+
+                const mesh = new Mesh(geometry, material);
+                this.add(mesh);
+
+                this.mesh = mesh;
+            }
+
+            // Public methods
+
+            update = time => {
+                this.mesh.rotation.x = time / 2;
+                this.mesh.rotation.y = time;
+            };
+        }
+
+        class SceneController {
+            static init(view) {
+                this.view = view;
+            }
+
+            // Public methods
+
+            static update = time => {
+                this.view.update(time);
+            };
+        }
+
+        class ScenePanelController {
+            static init(view, ui) {
+                this.view = view;
+                this.ui = ui;
+
+                this.initPanel();
+
+                this.addListeners();
+            }
+
+            static initPanel() {
+                const view = this.view;
+
+                const objects = [view];
+
+                objects.forEach(object => {
+                    object.graph = new RadialGraphSegmentsCanvas({
+                        start: -45,
+                        graphHeight: 40,
+                        resolution: 70,
+                        lookupPrecision: [25, 100],
+                        segments: [16, 54],
+                        ratio: [0.125, 0.875], // 45 / 360 = 0.125
+                        range: 400,
+                        suffix: '%',
+                        noMarker: true
+                    });
+
+                    object.point = new Point3D(object.mesh, {
+                        name: Data.getName(),
+                        type: Data.getType(),
+                        graph: object.graph,
+                        noTracker: true
+                    });
+                    object.add(object.point);
+                });
+
+                // Shrink tracker mesh to better match the visual size of the object
+                view.point.mesh.scale.multiplyScalar(0.8);
+            }
+
+            static addListeners() {
+                Point3D.events.on('click', this.onClick);
+            }
+
+            // Event handlers
+
+            static onClick = () => {
+                this.ui.toggleDetails(!this.ui.details.animatedIn);
+
+                Point3D.animateOut();
+            };
+        }
+
+        class PanelController {
+            static init(renderer, scene, camera, view, trackers, ui) {
+                this.renderer = renderer;
+                this.scene = scene;
+                this.camera = camera;
+                this.view = view;
+                this.trackers = trackers;
+                this.ui = ui;
+
+                this.initControllers();
+            }
+
+            static initControllers() {
+                Point3D.init(this.renderer, this.scene, this.camera, {
+                    container: this.trackers,
+                    dividerSnap: this.ui.details.dividerLine,
+                    debug: isDebug
+                });
+
+                ScenePanelController.init(this.view, this.ui);
+            }
+
+            // Public methods
+
+            static update = time => {
+                if (!this.ui) {
+                    return;
+                }
+
+                Point3D.update(time);
+            };
+        }
+
+        class ServerStatusController {
+            static init(view, trackers) {
+                this.view = view;
+                this.trackers = trackers;
 
                 // Median downsample
-                this.chunkSize = 10;
+                this.smallChunkSize = 10;
                 this.realtimeCounter = 0;
 
-                // Load average graph
-                this.ghostArray = [];
-                this.array = [];
+                this.initSocket();
 
                 this.addListeners();
             }
@@ -292,15 +494,21 @@
                 this.socket = new Socket('wss://hello-websockets-server-status.glitch.me');
             }
 
+            static initPanel() {
+                const { renderer, scene, camera } = WorldController;
+
+                PanelController.init(renderer, scene, camera, this.view, this.trackers, this.ui);
+            }
+
             static addListeners() {
-                this.socket.on('details', this.onServerDetails);
-                this.socket.on('array', this.onServerArray);
-                this.socket.on('status', this.onServerStatus);
+                this.socket.on('details', this.onDetails);
+                this.socket.on('array', this.onArray);
+                this.socket.on('status', this.onStatus);
             }
 
             // Event handlers
 
-            static onServerDetails = ({
+            static onDetails = ({
                 projectDomain,
                 networkName,
                 serverVersion,
@@ -319,7 +527,10 @@
             }) => {
                 if (!this.ui) {
                     this.ui = new UI({
+                        fps: true,
                         details: {
+                            dividerLine: true,
+                            width: '50vw',
                             title: 'server-status'.replace(/[\s.-]+/g, '_'),
                             content: [
                                 {
@@ -487,7 +698,7 @@
                         }
                     });
                     this.ui.css({ position: 'static' });
-                    this.ui.toggleDetails(true);
+                    this.ui.details.css({ minWidth: 220 });
                     this.ui.animateIn();
                     document.body.appendChild(this.ui.element);
 
@@ -513,8 +724,11 @@
                     this.ui.detailsStorage = this.ui.details.content[14].children[1];
                     this.ui.detailsStorageMeter = this.ui.details.content[14].children[2];
 
-                    ticker.add(this.onUpdate);
-                    ticker.start();
+                    Data.init({ projectDomain, networkName });
+
+                    this.initPanel();
+
+                    Stage.events.emit('start');
                 } else {
                     this.ui.detailsNumClients.html(numClients);
 
@@ -529,15 +743,29 @@
                 }
             };
 
-            static onServerArray = ({ ghostArray, array }) => {
+            static onArray = ({
+                ghostArray,
+                array,
+                largeGhostArray,
+                largeArray,
+                smallGhostArray,
+                smallArray,
+                realtimeGhostArray,
+                realtimeArray
+            }) => {
                 this.ghostArray = ghostArray;
                 this.array = array;
+                this.smallGhostArray = smallGhostArray;
+                this.smallArray = smallArray;
 
-                this.ui.detailsLoadAvgGraph.setGhostArray(this.ghostArray);
-                this.ui.detailsLoadAvgGraph.setArray(this.array);
+                this.view.graph.setGhostArray([...smallGhostArray.toReversed(), ...largeGhostArray.toReversed()]);
+                this.view.graph.setArray([...smallArray.toReversed(), ...largeArray.toReversed()]);
+
+                this.ui.detailsLoadAvgGraph.setGhostArray([...smallGhostArray, ...realtimeGhostArray]);
+                this.ui.detailsLoadAvgGraph.setArray([...smallArray, ...realtimeArray]);
             };
 
-            static onServerStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
+            static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
                 if (serverUptime !== undefined) {
                     this.ui.detailsUptime.html(serverUptime);
                 }
@@ -556,41 +784,293 @@
                     this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                     this.ui.detailsLoadAvgMeter.update(loadAvg);
 
-                    const realtimeGhostArray = this.ghostArray.slice(-10);
-                    const realtimeArray = this.array.slice(-10);
-                    const realtimeGhost = realtimeArray.shift();
-                    realtimeArray.push(loadAvg);
-                    realtimeGhostArray.shift();
-                    realtimeGhostArray.push(realtimeGhost);
+                    const ghost = this.array.shift();
+                    this.array.push(loadAvg);
+                    this.ghostArray.shift();
+                    this.ghostArray.push(ghost);
+
+                    // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                    const realtimeData = this.array.slice(-20);
+                    const realtimeGhostArray = realtimeData.slice(0, 10);
+                    const realtimeArray = realtimeData.slice(-10);
+
+                    // Update graphs
                     this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
                     this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
                     this.ui.detailsLoadAvgGraph.needsUpdate = true;
 
-                    if (++this.realtimeCounter === this.chunkSize) {
+                    if (++this.realtimeCounter === this.smallChunkSize) {
                         // Median downsample
                         const value = median(realtimeArray);
 
-                        const ghostArray = this.ghostArray.slice(0, 16);
-                        const array = this.array.slice(0, 16);
-                        const ghost = array.shift();
-                        array.push(value);
-                        ghostArray.shift();
-                        ghostArray.push(ghost);
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...ghostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...array);
+                        const medianGhost = this.smallArray.shift();
+                        this.smallArray.push(value);
+                        this.smallGhostArray.shift();
+                        this.smallGhostArray.push(medianGhost);
+
+                        this.view.graph.ghostArray.splice(0, 16, ...this.smallGhostArray.toReversed());
+                        this.view.graph.array.splice(0, 16, ...this.smallArray.toReversed());
+                        this.view.graph.needsUpdate = true;
+                        this.view.graph.graphNeedsUpdate = true;
+
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...this.smallGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...this.smallArray);
                         this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
 
                         this.realtimeCounter = 0;
                     }
 
+                    this.view.graph.update();
                     this.ui.detailsLoadAvgGraph.update();
                 }
             };
 
-            static onUpdate = () => {
-                this.ui.update();
-                this.ui.detailsLatencyGraph.update();
-                this.ui.detailsLoadAvgGraph.update();
+            // Public methods
+
+            static update = () => {
+                if (this.ui) {
+                    this.ui.update();
+                    this.ui.detailsLatencyGraph.update();
+                    this.ui.detailsLoadAvgGraph.update();
+                }
+            };
+        }
+
+        class CameraController {
+            static init(worldCamera, mapCamera, pointCamera) {
+                this.worldCamera = worldCamera;
+                this.mapCamera = mapCamera;
+                this.pointCamera = pointCamera;
+
+                // Default camera
+                this.camera = this.mapCamera;
+
+                this.progress = 0;
+                this.isTransitioning = false;
+            }
+
+            static transition() {
+                const target = this.target;
+
+                this.progress = 0;
+
+                tween(this, { progress: 1 }, 1000, 'easeInOutSine', () => {
+                    this.camera = target;
+
+                    if (this.target !== this.camera) {
+                        this.transition();
+                    } else {
+                        this.isTransitioning = false;
+                    }
+                }, () => {
+                    lerpCameras(this.worldCamera, target, this.progress);
+                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.pointCamera ? this.offsetX : 0, this.progress);
+                    this.worldCamera.updateProjectionMatrix();
+                });
+            }
+
+            // Public methods
+
+            static setCamera = camera => {
+                // this.camera = camera;
+                this.target = camera;
+
+                if (!this.isTransitioning) {
+                    this.isTransitioning = true;
+
+                    this.transition();
+                }
+            };
+
+            static resize = (width, height) => {
+                this.offsetX = -width / 4;
+
+                // World camera
+                this.worldCamera.aspect = width / height;
+                this.worldCamera.setViewOffset(width, height, this.camera === this.pointCamera ? this.offsetX : 0, 0, width, height);
+                this.worldCamera.updateProjectionMatrix();
+
+                // Map camera
+                this.mapCamera.aspect = width / height;
+                this.mapCamera.updateProjectionMatrix();
+
+                // Point of interest camera
+                this.pointCamera.aspect = width / height;
+                this.pointCamera.updateProjectionMatrix();
+            };
+
+            static update = () => {
+                if (this.isTransitioning) {
+                    return;
+                }
+
+                this.worldCamera.position.copy(this.camera.position);
+                this.worldCamera.quaternion.copy(this.camera.quaternion);
+            };
+        }
+
+        class WorldController {
+            static init() {
+                this.initWorld();
+                this.initLights();
+                this.initControls();
+
+                this.addListeners();
+            }
+
+            static initWorld() {
+                this.renderer = new WebGLRenderer({ antialias: true });
+
+                // Output canvas
+                this.element = this.renderer.domElement;
+
+                // 3D scene
+                this.scene = new Scene();
+                this.scene.background = new Color(0x060606);
+
+                // World camera
+                this.camera = new PerspectiveCamera(35);
+                this.camera.near = 1;
+                this.camera.far = 2000;
+                this.camera.position.z = 10;
+
+                // Map camera
+                this.mapCamera = this.camera.clone();
+
+                // Point of interest camera
+                this.pointCamera = this.camera.clone();
+                this.pointCamera.position.z = 6;
+            }
+
+            static initLights() {
+                this.scene.add(new HemisphereLight(0xffffff, 0x888888, 3));
+            }
+
+            static initControls() {
+                // Map controls
+                this.mapControls = new OrbitControls(this.mapCamera, this.renderer.domElement);
+                this.mapControls.enableDamping = true;
+                this.mapControls.enabled = false;
+
+                // Point of interest controls
+                this.poiControls = new OrbitControls(this.pointCamera, this.renderer.domElement);
+                this.poiControls.target.set(0, 0, 0);
+                this.poiControls.enableDamping = true;
+                this.poiControls.enablePan = false;
+                this.poiControls.enabled = false;
+
+                // Output camera controls
+                this.controls = this.mapControls;
+                this.controls.enabled = true;
+            }
+
+            static addListeners() {
+                this.renderer.domElement.addEventListener('touchstart', this.onTouchStart);
+            }
+
+            // Event handlers
+
+            static onTouchStart = e => {
+                e.preventDefault();
+            };
+
+            // Public methods
+
+            static setControls = controls => {
+                this.controls = controls;
+
+                this.mapControls.enabled = false;
+                this.poiControls.enabled = false;
+
+                this.controls.enabled = true;
+            };
+
+            static resize = (width, height, dpr) => {
+                this.renderer.setPixelRatio(dpr);
+                this.renderer.setSize(width, height);
+            };
+
+            static update = () => {
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            };
+        }
+
+        class App {
+            static async init() {
+                this.initWorld();
+                this.initViews();
+                this.initControllers();
+
+                this.addListeners();
+                this.onResize();
+            }
+
+            static initWorld() {
+                WorldController.init();
+                document.body.appendChild(WorldController.element);
+            }
+
+            static initViews() {
+                this.view = new SceneView();
+                WorldController.scene.add(this.view);
+
+                this.trackers = new TrackersView();
+                document.body.appendChild(this.trackers.element);
+            }
+
+            static initControllers() {
+                const { camera, mapCamera, pointCamera } = WorldController;
+
+                CameraController.init(camera, mapCamera, pointCamera);
+                SceneController.init(this.view);
+                ServerStatusController.init(this.view, this.trackers);
+            }
+
+            static addListeners() {
+                Stage.events.on('start', this.onStart);
+            }
+
+            // Event handlers
+
+            static onStart = () => {
+                Stage.events.on('details', this.onDetails);
+                window.addEventListener('resize', this.onResize);
+                ticker.add(this.onUpdate);
+                ticker.start();
+            };
+
+            static onDetails = ({ open }) => {
+                let camera;
+                let controls;
+
+                if (open) {
+                    camera = WorldController.pointCamera;
+                    controls = WorldController.poiControls;
+                } else {
+                    camera = WorldController.mapCamera;
+                    controls = WorldController.mapControls;
+                }
+
+                CameraController.setCamera(camera);
+                WorldController.setControls(controls);
+            };
+
+            static onResize = () => {
+                const width = document.documentElement.clientWidth;
+                const height = document.documentElement.clientHeight;
+                const dpr = window.devicePixelRatio;
+
+                WorldController.resize(width, height, dpr);
+                CameraController.resize(width, height);
+            };
+
+            static onUpdate = (time, delta, frame) => {
+                WorldController.update(time, delta, frame);
+                CameraController.update();
+                SceneController.update(time);
+                PanelController.update(time);
+                ServerStatusController.update(time);
             };
         }
 

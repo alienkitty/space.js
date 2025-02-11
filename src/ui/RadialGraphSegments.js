@@ -4,6 +4,7 @@
 
 import { Color } from '../math/Color.js';
 import { Vector2 } from '../math/Vector2.js';
+import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
@@ -89,9 +90,9 @@ export class RadialGraphSegments extends Interface {
         this.startTime = performance.now();
         this.frame = 0;
 
-        this.middle = this.width / 2;
-        this.radius = this.middle - this.graphHeight;
-        this.distance = this.radius - this.graphHeight;
+        this.middle = 0;
+        this.radius = 0;
+        this.distance = 0;
         this.segmentsRatio = [];
         this.rangeHeight = [];
         this.startAngle = degToRad(this.start);
@@ -204,12 +205,8 @@ export class RadialGraphSegments extends Interface {
     }
 
     initGraphs() {
-        // Not added to DOM
         this.graphs = this.segments.map((length, i) => {
-            const graph = new Interface(null, 'svg');
-            graph.path = new Interface(null, 'svg', 'path');
-            graph.add(graph.path);
-
+            const graph = {};
             graph.pathData = '';
             graph.length = 0;
             graph.lookup = [];
@@ -220,13 +217,15 @@ export class RadialGraphSegments extends Interface {
     }
 
     calculateLookup(graph) {
-        graph.length = graph.path.element.getTotalLength();
+        const properties = new SVGPathProperties(graph.pathData);
+
+        graph.length = properties.getTotalLength();
         graph.lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            const point = graph.path.element.getPointAtLength(i * graph.length);
+            const point = properties.getPointAtLength(i * graph.length);
             const x = point.x - this.middle;
             const y = point.y - this.middle;
 
@@ -250,7 +249,7 @@ export class RadialGraphSegments extends Interface {
         const angle = mouseAngle * TwoPI;
         const approxIndex = Math.floor(mouseAngle * slice * graph.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 4));
 
         for (; i < graph.lookupPrecision; i++) {
             if (graph.lookup[i].angle > angle) {
@@ -728,11 +727,7 @@ export class RadialGraphSegments extends Interface {
         // Draw handle line and circle
         if (!this.noHover && !this.isDraggingAway) {
             if (this.graphNeedsUpdate) {
-                this.graphs.forEach(graph => {
-                    graph.path.attr({ d: graph.pathData });
-                    this.calculateLookup(graph);
-                });
-
+                this.graphs.forEach(graph => this.calculateLookup(graph));
                 this.graphNeedsUpdate = false;
             }
 

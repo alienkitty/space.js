@@ -139,12 +139,6 @@
                 this.thread.init({ params: this.params, buffer: [this.params.canvas] });
             }
 
-            // Event handlers
-
-            static onUpdate = () => {
-                this.noise.update();
-            };
-
             // Public methods
 
             static resize = (width, height, dpr) => {
