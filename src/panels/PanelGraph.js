@@ -175,7 +175,7 @@ export class PanelGraph extends Interface {
         const x = mouseX * this.width;
         const approxIndex = Math.floor(mouseX * this.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 4));
 
         for (; i < this.lookupPrecision; i++) {
             if (this.lookup[i].x > x) {

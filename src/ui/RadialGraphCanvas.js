@@ -200,7 +200,7 @@ export class RadialGraphCanvas extends Interface {
         const angle = mouseAngle * TwoPI;
         const approxIndex = Math.floor(mouseAngle * this.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 4));
 
         for (; i < this.lookupPrecision; i++) {
             if (this.lookup[i].angle > angle) {

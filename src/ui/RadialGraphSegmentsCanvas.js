@@ -223,7 +223,7 @@ export class RadialGraphSegmentsCanvas extends Interface {
         const angle = mouseAngle * TwoPI;
         const approxIndex = Math.floor(mouseAngle * slice * graph.lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 3));
+        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 4));
 
         for (; i < graph.lookupPrecision; i++) {
             if (graph.lookup[i].angle > angle) {
