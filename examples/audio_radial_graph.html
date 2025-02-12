@@ -400,7 +400,7 @@
                     link: 'https://www.protonradio.com/'
                 });
 
-                // Radial graph with 3 segments and ghost
+                // Radial graph with 3 segments, ghost and labels
                 this.graph = new RadialGraphSegments({
                     value: new Array(2048).fill(0),
                     ghost: true,
@@ -408,6 +408,7 @@
                     precision: 2,
                     lookupPrecision: 100,
                     segments: [1, 1, 1],
+                    labels: ['Highs', 'Mids', 'Lows'],
                     noHover: true
                 });
                 this.ui.add(this.graph);
@@ -465,6 +466,8 @@
 
                     this.graph.setSize(size, size);
                 }
+
+                this.ui.instructions.css({ bottom: Math.round(height / 2) - 16 });
             };
 
             static onUpdate = time => {

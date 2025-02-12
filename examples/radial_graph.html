@@ -83,15 +83,17 @@
         graph5.animateIn();
         document.body.appendChild(graph5.element);
 
-        // Radial graph with uneven segments and ghost
+        // Radial graph with uneven segments, ghost and labels
         const graph6 = new RadialGraphSegments({
             value: Array.from({ length: 13 }, () => Math.random()),
             ghost: Array.from({ length: 13 }, () => Math.random()),
             start: -45,
+            graphHeight: 40,
             precision: 2,
             lookupPrecision: [100, 100, 50], // per segment
             segments: [5, 5, 3], // length of each segment (minimum length of 2)
-            ratio: [0.45, 0.45, 0.1] // normalized ratio of each segment
+            ratio: [0.45, 0.45, 0.1], // normalized ratio of each segment
+            labels: ['Segment 1', 'Segment 2', 'Segment 3']
         });
         graph6.animateIn();
         document.body.appendChild(graph6.element);

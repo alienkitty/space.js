@@ -8,6 +8,7 @@ import { SVGPathProperties } from '../path/SVGPathProperties.js';
 import { Easing } from '../tween/Easing.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
+import { GraphLabel } from './GraphLabel.js';
 import { GraphMarker } from './GraphMarker.js';
 
 import { ticker } from '../tween/Ticker.js';
@@ -45,6 +46,7 @@ export class GraphSegments extends Interface {
         lookupPrecision = 0,
         segments = [],
         ratio = [],
+        labels = [],
         markers = [],
         range = 1,
         suffix = '',
@@ -64,6 +66,7 @@ export class GraphSegments extends Interface {
         this.lookupPrecision = lookupPrecision;
         this.segments = segments;
         this.ratio = ratio;
+        this.labels = labels;
         this.markers = markers;
         this.range = range;
         this.suffix = suffix;
@@ -138,6 +141,10 @@ export class GraphSegments extends Interface {
 
         if (!this.noHover && this.lookupPrecision) {
             this.initGraphs();
+        }
+
+        if (this.labels.length) {
+            this.initLabels();
         }
 
         if (!this.noMarker) {
@@ -269,6 +276,16 @@ export class GraphSegments extends Interface {
 
     toRGBA(color, alpha) {
         return `rgb(${Math.round(color.r * 255)} ${Math.round(color.g * 255)} ${Math.round(color.b * 255)} / ${alpha * this.alpha})`;
+    }
+
+    initLabels() {
+        this.labels = this.segments.map((length, i) => {
+            const label = new GraphLabel({ name: this.labels[i] });
+            label.css({ top: -12 });
+            this.add(label);
+
+            return label;
+        });
     }
 
     initMarkers() {
@@ -595,17 +612,30 @@ export class GraphSegments extends Interface {
         this.context.stroke();
 
         // Draw segment lines
+        let start = 0;
+        let width = 0;
         let end = 0;
 
-        for (let i = 0, l = this.array.length, il = this.segments.length - 1; i < il; i++) {
-            end += (this.segments[i] / l) * this.segmentsRatio[i];
+        for (let i = 0, l = this.array.length, il = this.segments.length; i < il; i++) {
+            start = end;
+            width = (this.segments[i] / l) * this.segmentsRatio[i];
+            end += width;
 
             const x = end * this.width;
 
-            this.context.beginPath();
-            this.context.moveTo(x, h - 0.5);
-            this.context.lineTo(x, h - 0.5 - (h - 0.5) * this.props.yMultiplier);
-            this.context.stroke();
+            // Don't draw last line
+            if (i < il - 1) {
+                this.context.beginPath();
+                this.context.moveTo(x, h - 0.5);
+                this.context.lineTo(x, h - 0.5 - (h - 0.5) * this.props.yMultiplier);
+                this.context.stroke();
+            }
+
+            if (this.labels[i]) {
+                const x = clamp((start + width / 2) * this.width, 0.5, this.width - 0.5);
+
+                this.labels[i].css({ left: x });
+            }
         }
 
         // Draw graph line and linear gradient fill
@@ -840,6 +870,16 @@ export class GraphSegments extends Interface {
 
         clearTween(this.props);
 
+        this.labels.forEach(label => {
+            label.clearTween();
+        });
+
+        if (!this.noMarker) {
+            this.items.forEach(item => {
+                item.clearTween();
+            });
+        }
+
         if (!this.initialized) {
             this.initialized = true;
 
@@ -859,6 +899,16 @@ export class GraphSegments extends Interface {
             if (this.hoveredIn) {
                 this.hoverIn();
             }
+
+            this.labels.forEach(label => {
+                label.css({ opacity: 1 });
+            });
+
+            if (!this.noMarker) {
+                this.items.forEach(item => {
+                    item.css({ opacity: 1 });
+                });
+            }
         } else {
             this.props.alpha = 0;
             this.props.yMultiplier = 0;
@@ -873,6 +923,10 @@ export class GraphSegments extends Interface {
                     if (this.hoveredIn) {
                         this.hoverIn();
                     }
+
+                    this.labels.forEach(label => {
+                        label.tween({ opacity: 1 }, 500, 'easeOutSine');
+                    });
 
                     if (!this.noMarker) {
                         this.items.forEach(item => {
@@ -897,6 +951,16 @@ export class GraphSegments extends Interface {
 
         clearTween(this.props);
 
+        this.labels.forEach(label => {
+            label.clearTween();
+        });
+
+        if (!this.noMarker) {
+            this.items.forEach(item => {
+                item.clearTween();
+            });
+        }
+
         this.animatedIn = false;
 
         this.hoverOut(true);
@@ -905,6 +969,10 @@ export class GraphSegments extends Interface {
 
         tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', null, () => {
             this.needsUpdate = true;
+
+            this.labels.forEach(label => {
+                label.css({ opacity: this.props.yMultiplier });
+            });
 
             if (!this.noMarker) {
                 this.items.forEach(item => {

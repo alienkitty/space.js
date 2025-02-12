@@ -53,11 +53,12 @@
         graph2.animateIn();
         document.body.appendChild(graph2.element);
 
-        // Graph with 3 segments
+        // Graph with 3 segments and labels
         const graph3 = new GraphSegments({
             precision: 2,
             lookupPrecision: 100, // per segment
-            segments: [5, 5, 5] // length of each segment (minimum length of 2)
+            segments: [5, 5, 5], // length of each segment (minimum length of 2)
+            labels: ['Segment 1', 'Segment 2', 'Segment 3']
         });
         graph3.setArray(Array.from({ length: 15 }, () => Math.random()));
         graph3.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
@@ -85,14 +86,15 @@
         graph5.animateIn();
         document.body.appendChild(graph5.element);
 
-        // Graph with uneven segments and ghost
+        // Graph with uneven segments, ghost and labels
         const graph6 = new GraphSegments({
             value: Array.from({ length: 13 }, () => Math.random()),
             ghost: Array.from({ length: 13 }, () => Math.random()),
             precision: 2,
             lookupPrecision: [100, 100, 50], // per segment
             segments: [5, 5, 3], // length of each segment (minimum length of 2)
-            ratio: [0.45, 0.45, 0.1] // normalized ratio of each segment
+            ratio: [0.45, 0.45, 0.1], // normalized ratio of each segment
+            labels: ['Segment 1', 'Segment 2', 'Segment 3']
         });
         graph6.setSize(document.documentElement.clientWidth * 0.74, clamp(mapLinear(document.documentElement.clientHeight, 600, 1000, 40, 80), 40, 80));
         graph6.animateIn();

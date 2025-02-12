@@ -743,6 +743,12 @@ export class Graph extends Interface {
 
         clearTween(this.props);
 
+        if (!this.noMarker) {
+            this.items.forEach(item => {
+                item.clearTween();
+            });
+        }
+
         if (!this.initialized) {
             this.initialized = true;
 
@@ -761,6 +767,12 @@ export class Graph extends Interface {
 
             if (this.hoveredIn) {
                 this.hoverIn();
+            }
+
+            if (!this.noMarker) {
+                this.items.forEach(item => {
+                    item.css({ opacity: 1 });
+                });
             }
         } else {
             this.props.alpha = 0;
@@ -799,6 +811,12 @@ export class Graph extends Interface {
         this.removeListeners();
 
         clearTween(this.props);
+
+        if (!this.noMarker) {
+            this.items.forEach(item => {
+                item.clearTween();
+            });
+        }
 
         this.animatedIn = false;
 
