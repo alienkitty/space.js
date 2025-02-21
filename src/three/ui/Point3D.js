@@ -325,11 +325,15 @@ export class Point3D extends Group {
     };
 
     static onKeyUp = e => {
+        if (e.ctrlKey) { // Ctrl key reserved for view toggling
+            return;
+        }
+
         if (e.keyCode >= 49 && e.keyCode <= 57) { // 1-9
             const select = this.points[e.keyCode - 49];
 
             if (select) {
-                if (!e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                if (!e.shiftKey && !e.altKey && !e.metaKey) {
                     this.points.forEach(ui => {
                         if (ui !== select && ui.animatedIn) {
                             ui.animateOut(true);
@@ -338,10 +342,8 @@ export class Point3D extends Group {
                     });
                 }
 
-                if (!e.ctrlKey) { // Ctrl key reserved for camera perspective
-                    select.onHover({ type: 'over' });
-                    select.onClick(e.shiftKey);
-                }
+                select.onHover({ type: 'over' });
+                select.onClick(e.shiftKey);
             } else {
                 this.animateOut();
             }
@@ -1251,6 +1253,8 @@ export class Point3D extends Group {
             }
 
             this.animatedIn = true;
+        } else if (this.graph) {
+            this.graph.animateLabelsIn();
         }
 
         if (!this.point.animatedIn) {
@@ -1269,6 +1273,8 @@ export class Point3D extends Group {
                 }
 
                 this.animatedIn = false;
+            } else {
+                this.graph.animateLabelsOut();
             }
 
             this.point.animateOut(true);

@@ -21,6 +21,7 @@ export class PanelGraph extends Interface {
         lookupPrecision = 0,
         range = 1,
         suffix = '',
+        format = value => `${value}${suffix}`,
         value,
         ghost,
         noText = false,
@@ -36,7 +37,7 @@ export class PanelGraph extends Interface {
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
         this.range = range;
-        this.suffix = suffix;
+        this.format = format;
         this.value = value;
         this.ghost = ghost;
         this.noText = noText;
@@ -157,38 +158,45 @@ export class PanelGraph extends Interface {
     }
 
     calculateLookup() {
-        const properties = new SVGPathProperties(this.pathData);
+        const lookupPrecision = this.lookupPrecision;
 
-        this.length = properties.getTotalLength();
-        this.lookup = [];
+        const properties = new SVGPathProperties(this.pathData);
+        const length = properties.getTotalLength();
+        const lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(properties.getPointAtLength(i * this.length));
+            lookup.push(properties.getPointAtLength(i * length));
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / lookupPrecision;
         }
+
+        this.length = length;
+        this.lookup = lookup;
     }
 
     getCurveY(mouseX) {
+        const lookupPrecision = this.lookupPrecision;
+        const lookup = this.lookup;
+
         const x = mouseX * this.width;
-        const approxIndex = Math.floor(mouseX * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseX * lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 4));
+        let i = Math.max(1, approxIndex - Math.floor(lookupPrecision / 4));
 
-        for (; i < this.lookupPrecision; i++) {
-            if (this.lookup[i].x > x) {
+        for (; i < lookupPrecision; i++) {
+            if (lookup[i].x > x) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            return this.lookup[this.lookupPrecision - 1].y;
+        if (i === lookupPrecision) {
+            return lookup[lookupPrecision - 1].y;
         }
 
-        const lower = this.lookup[i - 1];
-        const upper = this.lookup[i];
+        const lower = lookup[i - 1];
+        const upper = lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
         const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
@@ -494,8 +502,10 @@ export class PanelGraph extends Interface {
             this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
-            this.info.css({ left: x });
-            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
+            if (this.animatedIn) {
+                this.info.css({ left: x });
+                this.info.text(this.format(value.toFixed(this.precision)));
+            }
         }
     }
 

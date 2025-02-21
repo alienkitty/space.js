@@ -7,12 +7,16 @@ import { MenuItem } from './MenuItem.js';
 
 export class Menu extends Interface {
     constructor({
+        bottom = false,
+        itemWidth,
         items,
         active,
         callback
     }) {
         super('.menu');
 
+        this.bottom = bottom;
+        this.itemWidth = itemWidth;
         this.names = items;
         this.index = this.names.indexOf(active);
         this.callback = callback;
@@ -30,17 +34,22 @@ export class Menu extends Interface {
         this.css({
             position: 'fixed',
             left: 20,
-            top: 20,
             right: 20,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
         });
+
+        if (this.bottom) {
+            this.css({ bottom: 20 });
+        } else {
+            this.css({ top: 20 });
+        }
     }
 
     initViews() {
         this.names.forEach((name, index) => {
-            const item = new MenuItem({ name, index });
+            const item = new MenuItem({ width: this.itemWidth, name, index });
             item.events.on('click', this.onClick);
             this.add(item);
             this.items.push(item);
@@ -67,15 +76,25 @@ export class Menu extends Interface {
         if (width < breakpoint) {
             this.css({
                 left: 10,
-                top: 10,
                 right: 10
             });
+
+            if (this.bottom) {
+                this.css({ bottom: 10 });
+            } else {
+                this.css({ top: 10 });
+            }
         } else {
             this.css({
                 left: 20,
-                top: 20,
                 right: 20
             });
+
+            if (this.bottom) {
+                this.css({ bottom: 20 });
+            } else {
+                this.css({ top: 20 });
+            }
         }
     }
 

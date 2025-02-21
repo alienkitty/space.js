@@ -45,11 +45,12 @@ export class RadialGraph extends Interface {
         tension = 6,
         precision = 0,
         lookupPrecision = 0,
-        textDistanceX = 20,
-        textDistanceY = 10,
         markers = [],
         range = 1,
+        infoDistanceX = 20,
+        infoDistanceY = 10,
         suffix = '',
+        format = value => `${value}${suffix}`,
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -67,11 +68,11 @@ export class RadialGraph extends Interface {
         this.tension = tension;
         this.precision = precision;
         this.lookupPrecision = lookupPrecision;
-        this.textDistanceX = textDistanceX;
-        this.textDistanceY = textDistanceY;
         this.markers = markers;
         this.range = range;
-        this.suffix = suffix;
+        this.infoDistanceX = infoDistanceX;
+        this.infoDistanceY = infoDistanceY;
+        this.format = format;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -114,7 +115,6 @@ export class RadialGraph extends Interface {
         this.hoveredIn = false;
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
-        this.initialized = false;
 
         if (this.startAngle < 0) {
             this.startAngle += TwoPI;
@@ -150,8 +150,8 @@ export class RadialGraph extends Interface {
         this.init();
         this.initCanvas();
 
-        if (!this.noMarker) {
-            this.initMarkers();
+        if (!this.noMarker && this.markers.length) {
+            this.setMarkers(this.markers);
         }
 
         this.setArray(this.value);
@@ -193,55 +193,64 @@ export class RadialGraph extends Interface {
     }
 
     calculateLookup() {
-        const properties = new SVGPathProperties(this.pathData);
+        const lookupPrecision = this.lookupPrecision;
+        const middle = this.middle;
+        const startAngle = this.startAngle;
 
-        this.length = properties.getTotalLength();
-        this.lookup = [];
+        const properties = new SVGPathProperties(this.pathData);
+        const length = properties.getTotalLength();
+        const lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            const point = properties.getPointAtLength(i * this.length);
-            const x = point.x - this.middle;
-            const y = point.y - this.middle;
+            const point = properties.getPointAtLength(i * length);
+            const x = point.x - middle;
+            const y = point.y - middle;
 
-            let angle = (-this.startAngle + Math.atan2(y, x)) % TwoPI;
+            let angle = (-startAngle + Math.atan2(y, x)) % TwoPI;
 
             if (angle < 0) {
                 angle += TwoPI;
             }
 
-            this.lookup.push({
+            lookup.push({
                 x: point.x,
                 y: point.y,
                 angle
             });
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / lookupPrecision;
         }
+
+        this.length = length;
+        this.lookup = lookup;
     }
 
     getCurvePoint(mouseAngle) {
+        const lookupPrecision = this.lookupPrecision;
+        const lookup = this.lookup;
+
         const angle = mouseAngle * TwoPI;
-        const approxIndex = Math.floor(mouseAngle * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseAngle * lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 4));
+        let i = Math.max(1, approxIndex - Math.floor(lookupPrecision / 4));
 
-        for (; i < this.lookupPrecision; i++) {
-            if (this.lookup[i].angle > angle) {
+        for (; i < lookupPrecision; i++) {
+            if (lookup[i].angle > angle) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            const x = this.lookup[this.lookupPrecision - 1].x;
-            const y = this.lookup[this.lookupPrecision - 1].y;
+        if (i === lookupPrecision) {
+            const x = lookup[lookupPrecision - 1].x;
+            const y = lookup[lookupPrecision - 1].y;
 
             return { x, y };
         }
 
-        const lower = this.lookup[i - 1];
-        const upper = this.lookup[i];
+        const lower = lookup[i - 1];
+        const upper = lookup[i];
         const percent = (angle - lower.angle) / (upper.angle - lower.angle);
         const diffX = upper.x - lower.x;
         const diffY = upper.y - lower.y;
@@ -287,12 +296,6 @@ export class RadialGraph extends Interface {
         return `rgb(${Math.round(color.r * 255)} ${Math.round(color.g * 255)} ${Math.round(color.b * 255)} / ${alpha * this.alpha})`;
     }
 
-    initMarkers() {
-        this.markers.forEach(data => {
-            this.addMarker(data);
-        });
-    }
-
     addListeners() {
         if (!this.noHover) {
             window.addEventListener('pointerdown', this.onPointerDown);
@@ -321,17 +324,17 @@ export class RadialGraph extends Interface {
         return (this.graphHeight - 5) / range;
     }
 
-    getTextOffset(mouseAngle, textDistanceX) {
+    getTextOffset(mouseAngle, infoDistanceX) {
         let textOffset;
 
         if (mouseAngle >= 0 && mouseAngle < 0.25) {
-            textOffset = mapLinear(mouseAngle, 0, 0.25, textDistanceX, this.textDistanceY);
+            textOffset = mapLinear(mouseAngle, 0, 0.25, infoDistanceX, this.infoDistanceY);
         } else if (mouseAngle >= 0.25 && mouseAngle < 0.5) {
-            textOffset = mapLinear(mouseAngle, 0.25, 0.5, this.textDistanceY, textDistanceX);
+            textOffset = mapLinear(mouseAngle, 0.25, 0.5, this.infoDistanceY, infoDistanceX);
         } else if (mouseAngle >= 0.5 && mouseAngle < 0.75) {
-            textOffset = mapLinear(mouseAngle, 0.5, 0.75, textDistanceX, this.textDistanceY);
+            textOffset = mapLinear(mouseAngle, 0.5, 0.75, infoDistanceX, this.infoDistanceY);
         } else if (mouseAngle >= 0.75 && mouseAngle <= 1) {
-            textOffset = mapLinear(mouseAngle, 0.75, 1, this.textDistanceY, textDistanceX);
+            textOffset = mapLinear(mouseAngle, 0.75, 1, this.infoDistanceY, infoDistanceX);
         }
 
         return textOffset;
@@ -437,6 +440,13 @@ export class RadialGraph extends Interface {
         return name;
     }
 
+    setMarkers(markers, fast) {
+        this.items.forEach(item => item.destroy());
+        this.items.length = 0;
+
+        markers.forEach(data => this.addMarker(data, fast));
+    }
+
     setHover(type = 'out') {
         if (this.isDraggingAway) {
             return;
@@ -536,7 +546,7 @@ export class RadialGraph extends Interface {
         this.update();
     }
 
-    addMarker([angle, name]) {
+    addMarker([angle, name], fast) {
         const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.angle = angle;
         item.multiplier = 0;
@@ -544,17 +554,22 @@ export class RadialGraph extends Interface {
 
         this.items.push(item);
 
-        if (this.initialized) {
-            item.events.on('update', this.onMarkerUpdate);
-            item.events.on('click', this.onMarkerClick);
+        if (this.animatedIn) {
+            if (fast) {
+                item.multiplier = 1;
+                item.css({ opacity: 1 });
+            } else {
+                item.events.on('update', this.onMarkerUpdate);
+                item.events.on('click', this.onMarkerClick);
 
-            tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
-                this.needsUpdate = true;
+                tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
+                    this.needsUpdate = true;
 
-                item.css({ opacity: item.multiplier });
-            });
+                    item.css({ opacity: item.multiplier });
+                });
 
-            Stage.events.emit('marker', { type: 'add', item, target: this });
+                Stage.events.emit('marker', { type: 'add', item, target: this });
+            }
         }
     }
 
@@ -714,7 +729,7 @@ export class RadialGraph extends Interface {
 
             const c = Math.cos(angle);
             const s = Math.sin(angle);
-            const r0 = this.radius - this.getTextOffset(this.mouseAngle, this.textDistanceX);
+            const r0 = this.radius - this.getTextOffset(this.mouseAngle, this.infoDistanceX);
             const r1 = this.radius;
             const r2 = radius - 2;
             const r3 = radius;
@@ -745,8 +760,10 @@ export class RadialGraph extends Interface {
             this.context.arc(x3, y3, 2.5, 0, TwoPI);
             this.context.stroke();
 
-            this.info.css({ left: x0, top: y0 });
-            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
+            if (this.animatedIn) {
+                this.info.css({ left: x0, top: y0 });
+                this.info.text(this.format(value.toFixed(this.precision)));
+            }
         }
     }
 
@@ -961,12 +978,6 @@ export class RadialGraph extends Interface {
             });
         }
 
-        if (!this.initialized) {
-            this.initialized = true;
-
-            this.update();
-        }
-
         if (fast) {
             this.props.alpha = 1;
             this.props.yMultiplier = 1;
@@ -983,6 +994,7 @@ export class RadialGraph extends Interface {
 
             if (!this.noMarker) {
                 this.items.forEach(item => {
+                    item.multiplier = 1;
                     item.css({ opacity: 1 });
                 });
             }

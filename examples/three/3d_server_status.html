@@ -35,9 +35,53 @@
         import { BoxGeometry, Color, Group, HemisphereLight, MathUtils, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        import { EventEmitter, Interface, Point3D, RadialGraphSegmentsCanvas, Stage, UI, average, delayedCall, lerpCameras, median, ticker, tween } from '../../src/three.js';
+        import { EventEmitter, Interface, PanelItem, Point3D, RadialGraphContainer, RadialGraphSegmentsCanvas, Stage, UI, average, consecutive, delayedCall, lerpCameras, median, peaks, ticker, tween } from '../../src/three.js';
 
         const isDebug = /[?&]debug/.test(location.search);
+
+        class Utils {
+            // https://stackoverflow.com/questions/36098913/convert-seconds-to-days-hours-minutes-and-seconds/52387803#52387803
+            static formatSeconds(seconds) {
+                seconds = Number(seconds);
+
+                const d = Math.floor(seconds / 86400);
+                const h = Math.floor(seconds % 86400 / 3600);
+                const m = Math.floor(seconds % 3600 / 60);
+                const s = Math.floor(seconds % 60);
+
+                const daysFormatted = d > 0 ? `${d}${(d === 1 ? ' day ' : ' days ')}` : '';
+                const hoursFormatted = h > 0 ? `${h}${(h === 1 ? ' hour ' : ' hours ')}` : '';
+                const minutesFormatted = m > 0 ? `${m}${(m === 1 ? ' minute ' : ' minutes ')}` : '';
+                const secondsFormatted = `${s}${(s === 1 ? ' second' : ' seconds')}`;
+
+                return `${daysFormatted}${hoursFormatted}${minutesFormatted}${secondsFormatted}`;
+            }
+
+            static formatInfoSeconds(seconds) {
+                seconds = Number(seconds);
+                if (seconds < 60) return 'now';
+                if (seconds < 3600) return `${Math.floor(seconds % 3600 / 60)}min`;
+                if (seconds < 86400) return `${Math.floor(seconds % 86400 / 3600)}h`;
+                return `${Math.floor(seconds / 86400)}d`;
+            }
+
+            static formatDateTimeSeconds(seconds) {
+                seconds = Number(seconds);
+                return new Date(seconds * 1000).toLocaleString('default', {
+                    month: 'short',
+                    day: 'numeric',
+                    // year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false
+                });
+            }
+
+            // https://stackoverflow.com/questions/32054170/how-to-resize-an-array/32055229#32055229
+            static backfill(array, size, value) {
+                return [...Array(Math.max(0, size - array.length)).fill(value), ...array];
+            }
+        }
 
         class Data {
             static init({ projectDomain, networkName }) {
@@ -57,6 +101,306 @@
             };
         }
 
+        class TimestampData {
+            constructor() {
+                this.array = [];
+                this.markers = [];
+
+                // Median downsample
+                this.largeChunkSize = 120;
+                this.smallChunkSize = 10;
+                this.largeCounter = 0;
+            }
+
+            parse() {
+                // Median downsample
+                let array = [];
+                const chunkSize = this.smallChunkSize;
+
+                for (let i = 0, l = this.array.length; i < l; i += chunkSize) {
+                    array.push(median(this.array.slice(i, i + chunkSize)));
+                }
+
+                // Duplicate first value for truncated array
+                if (array.length < 1080) {
+                    array = Utils.backfill(array, 1080, array[0] || 0);
+                }
+
+                // Past 12hrs (~10800 status updates) downsampled to 1080
+                this.markersArray = [];
+                this.labelsArray = [];
+                let lastDate;
+                const markers = Array.from(this.markers);
+
+                for (let i = 0, l = array.length; i < l; i++) {
+                    const value = array[i];
+                    const formatted = Utils.formatDateTimeSeconds(value);
+                    const [date, time] = formatted.split(/, | at /);
+
+                    if (i === 0) {
+                        lastDate = date;
+                    }
+
+                    if (date !== lastDate) {
+                        this.markersArray.push([i / l, date]); // position, name
+                        lastDate = date;
+                    }
+
+                    this.labelsArray.push(time);
+
+                    // Additional markers
+                    markers.forEach(data => {
+                        const [seconds, name] = data;
+
+                        if (value > seconds) {
+                            const index = markers.indexOf(data);
+
+                            if (~index) {
+                                markers.splice(index, 1);
+                            }
+
+                            // Only add the marker if it's within the window size
+                            if (i !== 0) {
+                                this.markersArray.push([i / l, name]); // position, name
+                            }
+                        }
+                    });
+                }
+
+                // Reversed
+                this.markersArrayReversed = this.markersArray.toReversed().map(data => {
+                    data[0] = 1 - data[0];
+                    return data;
+                });
+                this.labelsArrayReversed = this.labelsArray.toReversed();
+
+                // Cleanup
+                array.length = 0;
+            }
+
+            // Public methods
+
+            setData = data => {
+                // Past 12hrs (~10800 status updates)
+                this.array = data.slice(-10800);
+
+                this.parse();
+            };
+
+            getArrays = () => ({
+                array: this.array,
+                markersArray: this.markersArray,
+                markersArrayReversed: this.markersArrayReversed,
+                labelsArray: this.labelsArray,
+                labelsArrayReversed: this.labelsArrayReversed
+            });
+
+            setArrays = ({
+                array,
+                markersArray,
+                markersArrayReversed,
+                labelsArray,
+                labelsArrayReversed
+            }) => {
+                this.array = array;
+                this.markersArray = markersArray;
+                this.markersArrayReversed = markersArrayReversed;
+                this.labelsArray = labelsArray;
+                this.labelsArrayReversed = labelsArrayReversed;
+            };
+
+            addMarker(data) {
+                this.markers.push(data);
+
+                this.parse();
+            }
+
+            update = value => {
+                this.array.shift();
+                this.array.push(value);
+
+                if (++this.largeCounter === this.largeChunkSize) {
+                    this.parse();
+
+                    this.largeCounter = 0;
+                }
+            };
+        }
+
+        class GraphData {
+            constructor() {
+                this.array = [];
+
+                // Graph averages
+                this.largeGhostArray = [];
+                this.largeArray = [];
+                this.smallGhostArray = [];
+                this.smallArray = [];
+
+                // Median downsample
+                this.largeChunkSize = 120;
+                this.smallChunkSize = 10;
+                this.largeCounter = 0;
+                this.smallCounter = 0;
+            }
+
+            // Public methods
+
+            setData = data => {
+                // Past 12hrs (~10800 status updates)
+                this.array = data.slice(-10800);
+
+                // Last 240 status updates for small graph (120 + 120, ghost + array)
+                const smallData = data.slice(-240);
+
+                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                const realtimeData = data.slice(-20);
+                this.realtimeGhostArray = realtimeData.slice(0, 10);
+                this.realtimeArray = realtimeData.slice(-10);
+
+                // Large median downsample
+                const array = [];
+                let chunkSize = this.largeChunkSize;
+
+                for (let i = 0, l = data.length; i < l; i += chunkSize) {
+                    array.push(median(data.slice(i, i + chunkSize)));
+                }
+
+                // Past day (~21600 status updates) downsampled to 180 (90 + 90, ghost + array)
+                this.largeArray = array.splice(-90, 90);
+
+                if (this.largeArray.length < 90) {
+                    this.largeArray = Utils.backfill(this.largeArray, 90, this.largeArray[0] || 0);
+                }
+
+                this.largeGhostArray = array.splice(-90, 90);
+
+                if (this.largeGhostArray.length < 90) {
+                    this.largeGhostArray = Utils.backfill(this.largeGhostArray, 90, this.largeGhostArray[0] || 0);
+                }
+
+                // Small median downsample
+                array.length = 0;
+                chunkSize = this.smallChunkSize;
+
+                for (let i = 0, l = smallData.length; i < l; i += chunkSize) {
+                    array.push(median(smallData.slice(i, i + chunkSize)));
+                }
+
+                // Last 240 status updates downsampled to 24 (12 + 12, ghost + array)
+                this.smallArray = array.splice(-12, 12);
+
+                if (this.smallArray.length < 12) {
+                    this.smallArray = Utils.backfill(this.smallArray, 12, this.smallArray[0] || 0);
+                }
+
+                this.smallGhostArray = array.splice(-12, 12);
+
+                if (this.smallGhostArray.length < 12) {
+                    this.smallGhostArray = Utils.backfill(this.smallGhostArray, 12, this.smallGhostArray[0] || 0);
+                }
+
+                // Reversed
+                this.largeGhostArrayReversed = this.largeGhostArray.toReversed();
+                this.largeArrayReversed = this.largeArray.toReversed();
+                this.smallGhostArrayReversed = this.smallGhostArray.toReversed();
+                this.smallArrayReversed = this.smallArray.toReversed();
+
+                // Cleanup
+                smallData.length = 0;
+                realtimeData.length = 0;
+                array.length = 0;
+            };
+
+            getArrays = () => ({
+                array: this.array,
+                largeGhostArray: this.largeGhostArray,
+                largeGhostArrayReversed: this.largeGhostArrayReversed,
+                largeArray: this.largeArray,
+                largeArrayReversed: this.largeArrayReversed,
+                smallGhostArray: this.smallGhostArray,
+                smallGhostArrayReversed: this.smallGhostArrayReversed,
+                smallArray: this.smallArray,
+                smallArrayReversed: this.smallArrayReversed,
+                realtimeGhostArray: this.realtimeGhostArray,
+                realtimeArray: this.realtimeArray
+            });
+
+            setArrays = ({
+                array,
+                largeGhostArray,
+                largeGhostArrayReversed,
+                largeArray,
+                largeArrayReversed,
+                smallGhostArray,
+                smallGhostArrayReversed,
+                smallArray,
+                smallArrayReversed,
+                realtimeGhostArray,
+                realtimeArray
+            }) => {
+                this.array = array;
+                this.largeGhostArray = largeGhostArray;
+                this.largeGhostArrayReversed = largeGhostArrayReversed;
+                this.largeArray = largeArray;
+                this.largeArrayReversed = largeArrayReversed;
+                this.smallGhostArray = smallGhostArray;
+                this.smallGhostArrayReversed = smallGhostArrayReversed;
+                this.smallArray = smallArray;
+                this.smallArrayReversed = smallArrayReversed;
+                this.realtimeGhostArray = realtimeGhostArray;
+                this.realtimeArray = realtimeArray;
+            };
+
+            getPeaks = threshold => {
+                // Past 12hrs (~10800 status updates)
+                const groups = consecutive(peaks(this.array, this.largeChunkSize / 2, threshold));
+
+                return groups.map(array => array[0] / 10800); // First index normalized
+            };
+
+            update = value => {
+                this.array.shift();
+                this.array.push(value);
+
+                // Last 20 status updates for realtime graph (10 + 10, ghost + array)
+                const realtimeData = this.array.slice(-20);
+                this.realtimeGhostArray = realtimeData.slice(0, 10);
+                this.realtimeArray = realtimeData.slice(-10);
+
+                // Small median downsample
+                if (++this.smallCounter === this.smallChunkSize) {
+                    const smallGhost = this.smallArray.shift();
+                    this.smallArray.push(median(this.realtimeArray));
+                    this.smallGhostArray.shift();
+                    this.smallGhostArray.push(smallGhost);
+
+                    // Small reversed
+                    this.smallGhostArrayReversed = this.smallGhostArray.toReversed();
+                    this.smallArrayReversed = this.smallArray.toReversed();
+
+                    this.smallCounter = 0;
+                }
+
+                // Large median downsample
+                if (++this.largeCounter === this.largeChunkSize) {
+                    const largeGhost = this.largeArray.shift();
+                    this.largeArray.push(median(this.array.slice(-this.largeChunkSize)));
+                    this.largeGhostArray.shift();
+                    this.largeGhostArray.push(largeGhost);
+
+                    // Large reversed
+                    this.largeGhostArrayReversed = this.largeGhostArray.toReversed();
+                    this.largeArrayReversed = this.largeArray.toReversed();
+
+                    this.largeCounter = 0;
+                }
+
+                // Cleanup
+                realtimeData.length = 0;
+            };
+        }
+
         class Socket extends EventEmitter {
             constructor(server) {
                 super();
@@ -67,18 +411,6 @@
 
                 // Latency average
                 this.latencyArray = [];
-
-                // Load average
-                this.ghostArray = [];
-                this.array = [];
-                this.largeGhostArray = [];
-                this.largeArray = [];
-                this.smallGhostArray = [];
-                this.smallArray = [];
-
-                // Median downsample
-                this.largeChunkSize = 200;
-                this.smallChunkSize = 10;
 
                 this.connect();
             }
@@ -128,13 +460,14 @@
                         this.send({ event, message });
                         break;
                     case 'server-details': {
-                        const { details/* , latency */ } = message;
+                        const { details/* , serverUptime, latency */ } = message;
 
                         const {
                             // packageVersion,
                             projectDomain,
                             networkName,
                             serverVersion,
+                            restartTime,
                             memTotal,
                             memFree,
                             swapTotal,
@@ -142,8 +475,7 @@
                             storageTotal,
                             storageAvailable,
                             processorName,
-                            numProcessingUnits,
-                            numClients
+                            numProcessingUnits
                         } = details;
 
                         const memUsed = memTotal - memFree;
@@ -194,6 +526,7 @@
                             projectDomain,
                             networkName,
                             serverVersion,
+                            restartTime,
                             memUsed: memUsedFormatted,
                             memTotal: memTotalFormatted,
                             memUsedPercentage,
@@ -204,65 +537,41 @@
                             storageTotal: storageTotalFormatted,
                             storageUsedPercentage,
                             processorName,
-                            numProcessingUnits,
-                            numClients: numClients > 0 ? numClients : 1
+                            numProcessingUnits
                         });
                         break;
                     }
                     case 'server-status': {
-                        const { status, latency } = message;
+                        const { status, serverUptime, latency } = message;
 
                         let data = status;
 
+                        // Initial data dump
                         if (data.length > 3) {
                             // Separate last status update as new update
                             const last = data.pop();
 
+                            // Timestamp data
+                            this.timestampData = new TimestampData();
+                            this.timestampData.setData(data.map(data => data[0])); // seconds
+
+                            // Latency average data (initially no data, all 0s)
+                            this.latencyAvgData = new GraphData();
+                            this.latencyAvgData.setData(new Array(data.length).fill(0));
+
                             // Load average data
-                            data = data.map(data => data[2] * 100); // percentage
-                            this.data = data;
+                            this.loadAvgData = new GraphData();
+                            this.loadAvgData.setData(data.map(data => data[1] * 100)); // percentage
 
-                            // Last 320 status updates for load average graph (160 + 160, ghost + array)
-                            data = data.slice(-320);
-                            this.ghostArray = data.slice(0, 160);
-                            this.array = data.slice(-160);
+                            // Clients data
+                            this.clientsData = new GraphData();
+                            this.clientsData.setData(data.map(data => data[2]));
 
-                            // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                            const realtimeData = data.slice(-20);
-                            const realtimeGhostArray = realtimeData.slice(0, 10);
-                            const realtimeArray = realtimeData.slice(-10);
-
-                            // Large median downsample
-                            const array = [];
-
-                            for (let i = 0; i < this.data.length; i += this.largeChunkSize) {
-                                array.push(median(this.data.slice(i, i + this.largeChunkSize)));
-                            }
-
-                            // Past day (21488 status updates) downsampled to 108 (54 + 54, ghost + array)
-                            this.largeArray = array.splice(-54, 54);
-                            this.largeGhostArray = array.splice(-54, 54);
-
-                            // Small median downsample
-                            array.length = 0;
-
-                            for (let i = 0; i < data.length; i += this.smallChunkSize) {
-                                array.push(median(data.slice(i, i + this.smallChunkSize)));
-                            }
-
-                            // Last 320 status updates downsampled to 32 (16 + 16, ghost + array)
-                            this.smallGhostArray = array.slice(0, 16);
-                            this.smallArray = array.slice(-16);
-
-                            this.emit('array', {
-                                ghostArray: this.ghostArray,
-                                array: this.array,
-                                largeGhostArray: this.largeGhostArray,
-                                largeArray: this.largeArray,
-                                smallGhostArray: this.smallGhostArray,
-                                smallArray: this.smallArray,
-                                realtimeGhostArray,
-                                realtimeArray
+                            this.emit('data', {
+                                timestampData: this.timestampData.getArrays(),
+                                latencyAvgData: this.latencyAvgData.getArrays(),
+                                loadAvgData: this.loadAvgData.getArrays(),
+                                clientsData: this.clientsData.getArrays()
                             });
 
                             data = last;
@@ -272,20 +581,8 @@
                             this.latencyArray.push(latency);
                         }
 
-                        let serverUptime = data[1];
-
-                        // https://stackoverflow.com/questions/36098913/convert-seconds-to-days-hours-minutes-and-seconds/52387803#52387803
-                        const days = Math.floor(serverUptime / (3600 * 24));
-                        const hours = Math.floor(serverUptime % (3600 * 24) / 3600);
-                        const minutes = Math.floor(serverUptime % 3600 / 60);
-                        const seconds = Math.floor(serverUptime % 60);
-
-                        const daysFormatted = days > 0 ? days + (days === 1 ? ' day ' : ' days ') : '';
-                        const hoursFormatted = hours > 0 ? hours + (hours === 1 ? ' hour ' : ' hours ') : '';
-                        const minutesFormatted = minutes > 0 ? minutes + (minutes === 1 ? ' minute ' : ' minutes ') : '';
-                        const secondsFormatted = seconds > 0 ? seconds + (seconds === 1 ? ' second' : ' seconds') : '';
-
-                        serverUptime = daysFormatted + hoursFormatted + minutesFormatted + secondsFormatted;
+                        const currentTime = data[0]; // seconds
+                        const serverUptimeFormatted = Utils.formatSeconds(serverUptime);
 
                         let latencyAvg;
 
@@ -293,16 +590,36 @@
                             latencyAvg = Math.round(average(this.latencyArray));
                         }
 
-                        let loadAvg = data[2] * 100; // percentage
+                        let loadAvg = data[1] * 100; // percentage
                         loadAvg = Math.round(loadAvg);
 
-                        this.emit('status', { serverUptime, latency, latencyAvg, loadAvg });
+                        const numClients = data[2];
+
+                        // Update data
+                        this.timestampData.update(currentTime);
+                        this.latencyAvgData.update(latencyAvg);
+                        this.loadAvgData.update(loadAvg);
+                        this.clientsData.update(numClients);
+
+                        this.emit('status', {
+                            currentTime,
+                            serverUptime,
+                            serverUptimeFormatted,
+                            latency,
+                            latencyAvg,
+                            loadAvg,
+                            numClients
+                        });
                         break;
                     }
                 }
             };
 
             // Public methods
+
+            getPeaks = (name, threshold) => {
+                return this[name].getPeaks(threshold);
+            };
 
             send = data => {
                 if (!this.connected) {
@@ -395,8 +712,6 @@
                 this.ui = ui;
 
                 this.initPanel();
-
-                this.addListeners();
             }
 
             static initPanel() {
@@ -405,43 +720,111 @@
                 const objects = [view];
 
                 objects.forEach(object => {
-                    object.graph = new RadialGraphSegmentsCanvas({
+                    // Note the `start` and `graphHeight` parameters are used for the point position
+                    object.graph = new RadialGraphContainer({
+                        start: -45,
+                        graphHeight: 40
+                    });
+
+                    object.latencyAvgGraph = new RadialGraphSegmentsCanvas({
                         start: -45,
                         graphHeight: 40,
-                        resolution: 70,
-                        lookupPrecision: [25, 100],
-                        segments: [16, 54],
+                        resolution: 102,
+                        tension: 12,
+                        lookupPrecision: [25, 200],
+                        segments: [12, 90],
                         ratio: [0.125, 0.875], // 45 / 360 = 0.125
-                        labels: ['Load', '12hrs'],
+                        labels: ['', '12hrs'],
+                        range: 300,
+                        suffix: 'ms',
+                        hoverLabels: true,
+                        noMarkerDrag: true
+                    });
+                    object.graph.add(object.latencyAvgGraph);
+
+                    object.loadAvgGraph = new RadialGraphSegmentsCanvas({
+                        start: -45,
+                        graphHeight: 40,
+                        resolution: 102,
+                        tension: 6,
+                        lookupPrecision: [25, 200],
+                        segments: [12, 90],
+                        ratio: [0.125, 0.875], // 45 / 360 = 0.125
+                        labels: ['', '12hrs'],
                         range: 400,
                         suffix: '%',
-                        noMarker: true
+                        hoverLabels: true,
+                        noMarkerDrag: true
                     });
+                    object.graph.add(object.loadAvgGraph);
+
+                    object.clientsGraph = new RadialGraphSegmentsCanvas({
+                        start: -45,
+                        graphHeight: 40,
+                        resolution: 102,
+                        tension: 12,
+                        lookupPrecision: [25, 200],
+                        segments: [12, 90],
+                        ratio: [0.125, 0.875], // 45 / 360 = 0.125
+                        labels: ['', '12hrs'],
+                        range: 10,
+                        hoverLabels: true,
+                        noMarkerDrag: true
+                    });
+                    object.graph.add(object.clientsGraph);
+
+                    // Default graph (load average)
+                    object.graph.setIndex(1);
 
                     object.point = new Point3D(object.mesh, {
                         name: Data.getName(),
                         type: Data.getType(),
-                        graph: object.graph,
-                        noTracker: true
+                        graph: object.graph
                     });
                     object.add(object.point);
+
+                    const graphOptions = {
+                        'Latency': 0,
+                        'Load': 1,
+                        'Clients': 2
+                    };
+
+                    const items = [
+                        {
+                            type: 'divider'
+                        },
+                        {
+                            type: 'list',
+                            name: 'Graph',
+                            list: graphOptions,
+                            value: 'Load',
+                            callback: value => {
+                                const index = graphOptions[value];
+                                object.graph.setIndex(index);
+                            }
+                        },
+                        {
+                            type: 'divider'
+                        },
+                        {
+                            type: 'link',
+                            value: 'Details',
+                            callback: () => {
+                                this.ui.toggleDetails(!this.ui.details.animatedIn);
+                                object.point.animateOut(true);
+                                object.point.deactivate();
+                            }
+                        }
+                    ];
+
+                    items.forEach(data => {
+                        object.point.addPanel(new PanelItem(data));
+                    });
                 });
 
                 // Shrink tracker mesh to better match the visual size of the object
                 view.point.mesh.scale.multiplyScalar(0.8);
             }
-
-            static addListeners() {
-                Point3D.events.on('click', this.onClick);
-            }
-
-            // Event handlers
-
-            static onClick = () => {
-                this.ui.toggleDetails(!this.ui.details.animatedIn);
-
-                Point3D.animateOut();
-            };
         }
 
         class PanelController {
@@ -482,10 +865,6 @@
                 this.view = view;
                 this.trackers = trackers;
 
-                // Median downsample
-                this.smallChunkSize = 10;
-                this.realtimeCounter = 0;
-
                 this.initSocket();
 
                 this.addListeners();
@@ -503,7 +882,7 @@
 
             static addListeners() {
                 this.socket.on('details', this.onDetails);
-                this.socket.on('array', this.onArray);
+                this.socket.on('data', this.onData);
                 this.socket.on('status', this.onStatus);
             }
 
@@ -513,6 +892,7 @@
                 projectDomain,
                 networkName,
                 serverVersion,
+                restartTime,
                 memUsed,
                 memTotal,
                 memUsedPercentage,
@@ -523,9 +903,10 @@
                 storageTotal,
                 storageUsedPercentage,
                 processorName,
-                numProcessingUnits,
-                numClients
+                numProcessingUnits
             }) => {
+                this.restartTime = restartTime;
+
                 if (!this.ui) {
                     this.ui = new UI({
                         fps: true,
@@ -577,7 +958,7 @@
                                         },
                                         {
                                             title: 'Clients',
-                                            content: numClients,
+                                            content: '',
                                             width: 70
                                         }
                                     ]
@@ -642,9 +1023,9 @@
                                             title: '',
                                             graph: {
                                                 suffix: '%',
-                                                resolution: 26,
+                                                resolution: 22,
                                                 lookupPrecision: [100, 0],
-                                                segments: [16, 10],
+                                                segments: [12, 10],
                                                 ratio: [0.9, 0.1],
                                                 range: 400,
                                                 width: 200,
@@ -730,9 +1111,8 @@
                     this.initPanel();
 
                     Stage.events.emit('start');
+                    window.addEventListener('keyup', this.onKeyUp);
                 } else {
-                    this.ui.detailsNumClients.html(numClients);
-
                     this.ui.detailsMem.html(`${memUsed} / ${memTotal} (${memUsedPercentage}%)`);
                     this.ui.detailsMemMeter.update(memUsedPercentage);
 
@@ -744,31 +1124,46 @@
                 }
             };
 
-            static onArray = ({
-                ghostArray,
-                array,
-                largeGhostArray,
-                largeArray,
-                smallGhostArray,
-                smallArray,
-                realtimeGhostArray,
-                realtimeArray
-            }) => {
-                this.ghostArray = ghostArray;
-                this.array = array;
-                this.smallGhostArray = smallGhostArray;
-                this.smallArray = smallArray;
+            static onData = ({ timestampData, latencyAvgData, loadAvgData, clientsData }) => {
+                this.timestampData = new TimestampData();
+                this.timestampData.setArrays(timestampData);
+                this.timestampData.addMarker([this.restartTime, 'Restart']);
 
-                this.view.graph.setGhostArray([...smallGhostArray.toReversed(), ...largeGhostArray.toReversed()]);
-                this.view.graph.setArray([...smallArray.toReversed(), ...largeArray.toReversed()]);
+                this.latencyAvgData = new GraphData();
+                this.latencyAvgData.setArrays(latencyAvgData);
 
-                this.ui.detailsLoadAvgGraph.setGhostArray([...smallGhostArray, ...realtimeGhostArray]);
-                this.ui.detailsLoadAvgGraph.setArray([...smallArray, ...realtimeArray]);
+                this.view.latencyAvgGraph.setGhostArray([...this.latencyAvgData.smallGhostArrayReversed, ...this.latencyAvgData.largeGhostArrayReversed]);
+                this.view.latencyAvgGraph.setArray([...this.latencyAvgData.smallArrayReversed, ...this.latencyAvgData.largeArrayReversed]);
+
+                this.loadAvgData = new GraphData();
+                this.loadAvgData.setArrays(loadAvgData);
+
+                this.ui.detailsLoadAvgGraph.setGhostArray([...this.loadAvgData.smallGhostArray, ...this.loadAvgData.realtimeGhostArray]);
+                this.ui.detailsLoadAvgGraph.setArray([...this.loadAvgData.smallArray, ...this.loadAvgData.realtimeArray]);
+
+                this.view.loadAvgGraph.setGhostArray([...this.loadAvgData.smallGhostArrayReversed, ...this.loadAvgData.largeGhostArrayReversed]);
+                this.view.loadAvgGraph.setArray([...this.loadAvgData.smallArrayReversed, ...this.loadAvgData.largeArrayReversed]);
+
+                this.clientsData = new GraphData();
+                this.clientsData.setArrays(clientsData);
+
+                this.view.clientsGraph.setGhostArray([...this.clientsData.smallGhostArrayReversed, ...this.clientsData.largeGhostArrayReversed]);
+                this.view.clientsGraph.setArray([...this.clientsData.smallArrayReversed, ...this.clientsData.largeArrayReversed]);
+
+                this.refresh();
             };
 
-            static onStatus = ({ serverUptime, latency, latencyAvg, loadAvg }) => {
-                if (serverUptime !== undefined) {
-                    this.ui.detailsUptime.html(serverUptime);
+            static onStatus = ({ currentTime, serverUptimeFormatted, latency, latencyAvg, loadAvg, numClients }) => {
+                if (this.timestampData && currentTime !== undefined) {
+                    this.timestampData.update(currentTime);
+
+                    if (this.timestampData.largeCounter === 0) {
+                        this.refresh();
+                    }
+                }
+
+                if (serverUptimeFormatted !== undefined) {
+                    this.ui.detailsUptime.html(serverUptimeFormatted);
                 }
 
                 if (latency !== undefined) {
@@ -776,57 +1171,104 @@
                     this.ui.detailsLatencyGraph.update(latency);
                 }
 
-                if (latencyAvg !== undefined) {
+                if (this.latencyAvgData && latencyAvg !== undefined) {
                     this.ui.detailsLatencyAvg.html(`${latencyAvg}ms (avg)`);
                     this.ui.detailsLatencyAvgMeter.update(latencyAvg);
+
+                    this.latencyAvgData.update(latencyAvg);
+
+                    if (this.latencyAvgData.smallCounter === 0) {
+                        this.view.latencyAvgGraph.ghostArray.splice(0, 12, ...this.latencyAvgData.smallGhostArrayReversed);
+                        this.view.latencyAvgGraph.array.splice(0, 12, ...this.latencyAvgData.smallArrayReversed);
+                        this.view.latencyAvgGraph.needsUpdate = true;
+                        this.view.latencyAvgGraph.graphNeedsUpdate = true;
+                    }
+
+                    if (this.latencyAvgData.largeCounter === 0) {
+                        this.view.latencyAvgGraph.ghostArray.splice(-90, 90, ...this.latencyAvgData.largeGhostArrayReversed);
+                        this.view.latencyAvgGraph.array.splice(-90, 90, ...this.latencyAvgData.largeArrayReversed);
+                        this.view.latencyAvgGraph.needsUpdate = true;
+                        this.view.latencyAvgGraph.graphNeedsUpdate = true;
+                    }
                 }
 
-                if (loadAvg !== undefined && this.array) {
+                if (this.loadAvgData && loadAvg !== undefined) {
                     this.ui.detailsLoadAvg.html(`${loadAvg}% (1min avg)`);
                     this.ui.detailsLoadAvgMeter.update(loadAvg);
 
-                    const ghost = this.array.shift();
-                    this.array.push(loadAvg);
-                    this.ghostArray.shift();
-                    this.ghostArray.push(ghost);
+                    this.loadAvgData.update(loadAvg);
 
-                    // Last 20 status updates for realtime graph (10 + 10, ghost + array)
-                    const realtimeData = this.array.slice(-20);
-                    const realtimeGhostArray = realtimeData.slice(0, 10);
-                    const realtimeArray = realtimeData.slice(-10);
-
-                    // Update graphs
-                    this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...realtimeGhostArray);
-                    this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...realtimeArray);
+                    this.ui.detailsLoadAvgGraph.ghostArray.splice(-10, 10, ...this.loadAvgData.realtimeGhostArray);
+                    this.ui.detailsLoadAvgGraph.array.splice(-10, 10, ...this.loadAvgData.realtimeArray);
                     this.ui.detailsLoadAvgGraph.needsUpdate = true;
 
-                    if (++this.realtimeCounter === this.smallChunkSize) {
-                        // Median downsample
-                        const value = median(realtimeArray);
-
-                        const medianGhost = this.smallArray.shift();
-                        this.smallArray.push(value);
-                        this.smallGhostArray.shift();
-                        this.smallGhostArray.push(medianGhost);
-
-                        this.view.graph.ghostArray.splice(0, 16, ...this.smallGhostArray.toReversed());
-                        this.view.graph.array.splice(0, 16, ...this.smallArray.toReversed());
-                        this.view.graph.needsUpdate = true;
-                        this.view.graph.graphNeedsUpdate = true;
-
-                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 16, ...this.smallGhostArray);
-                        this.ui.detailsLoadAvgGraph.array.splice(0, 16, ...this.smallArray);
+                    if (this.loadAvgData.smallCounter === 0) {
+                        this.ui.detailsLoadAvgGraph.ghostArray.splice(0, 12, ...this.loadAvgData.smallGhostArray);
+                        this.ui.detailsLoadAvgGraph.array.splice(0, 12, ...this.loadAvgData.smallArray);
                         this.ui.detailsLoadAvgGraph.graphNeedsUpdate = true;
 
-                        this.realtimeCounter = 0;
+                        this.view.loadAvgGraph.ghostArray.splice(0, 12, ...this.loadAvgData.smallGhostArrayReversed);
+                        this.view.loadAvgGraph.array.splice(0, 12, ...this.loadAvgData.smallArrayReversed);
+                        this.view.loadAvgGraph.needsUpdate = true;
+                        this.view.loadAvgGraph.graphNeedsUpdate = true;
                     }
 
-                    this.view.graph.update();
+                    if (this.loadAvgData.largeCounter === 0) {
+                        this.view.loadAvgGraph.ghostArray.splice(-90, 90, ...this.loadAvgData.largeGhostArrayReversed);
+                        this.view.loadAvgGraph.array.splice(-90, 90, ...this.loadAvgData.largeArrayReversed);
+                        this.view.loadAvgGraph.needsUpdate = true;
+                        this.view.loadAvgGraph.graphNeedsUpdate = true;
+                    }
+
                     this.ui.detailsLoadAvgGraph.update();
+                }
+
+                if (this.clientsData && numClients !== undefined) {
+                    this.ui.detailsNumClients.html(numClients);
+
+                    this.clientsData.update(numClients);
+
+                    if (this.clientsData.smallCounter === 0) {
+                        this.view.clientsGraph.ghostArray.splice(0, 12, ...this.clientsData.smallGhostArrayReversed);
+                        this.view.clientsGraph.array.splice(0, 12, ...this.clientsData.smallArrayReversed);
+                        this.view.clientsGraph.needsUpdate = true;
+                        this.view.clientsGraph.graphNeedsUpdate = true;
+                    }
+
+                    if (this.clientsData.largeCounter === 0) {
+                        this.view.clientsGraph.ghostArray.splice(-90, 90, ...this.clientsData.largeGhostArrayReversed);
+                        this.view.clientsGraph.array.splice(-90, 90, ...this.clientsData.largeArrayReversed);
+                        this.view.clientsGraph.needsUpdate = true;
+                        this.view.clientsGraph.graphNeedsUpdate = true;
+                    }
+                }
+            };
+
+            static onKeyUp = e => {
+                if (e.ctrlKey && e.keyCode >= 55 && e.keyCode <= 57) { // Ctrl 7-9
+                    const index = e.keyCode - 55;
+                    this.view.point.setPanelIndex('Graph', index);
                 }
             };
 
             // Public methods
+
+            static refresh = () => {
+                this.view.latencyAvgGraph.setData([[], this.timestampData.labelsArrayReversed]);
+                this.view.loadAvgGraph.setData([[], this.timestampData.labelsArrayReversed]);
+                this.view.clientsGraph.setData([[], this.timestampData.labelsArrayReversed]);
+
+                const markers = this.timestampData.markersArrayReversed.map(data => {
+                    data[0] = data[0] * 0.875; // 0.875 segment ratio
+                    return data;
+                });
+                this.view.latencyAvgGraph.setMarkers(markers, true);
+                this.view.loadAvgGraph.setMarkers(markers, true);
+                this.view.clientsGraph.setMarkers(markers, true);
+
+                // Cleanup
+                markers.length = 0;
+            };
 
             static update = () => {
                 if (this.ui) {
@@ -955,7 +1397,6 @@
 
                 // Point of interest controls
                 this.poiControls = new OrbitControls(this.pointCamera, this.renderer.domElement);
-                this.poiControls.target.set(0, 0, 0);
                 this.poiControls.enableDamping = true;
                 this.poiControls.enablePan = false;
                 this.poiControls.enabled = false;

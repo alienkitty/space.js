@@ -50,6 +50,8 @@ export class GraphSegments extends Interface {
         markers = [],
         range = 1,
         suffix = '',
+        format = value => `${value}${suffix}`,
+        hoverLabels = false,
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -69,7 +71,8 @@ export class GraphSegments extends Interface {
         this.labels = labels;
         this.markers = markers;
         this.range = range;
-        this.suffix = suffix;
+        this.format = format;
+        this.hoverLabels = hoverLabels;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -100,10 +103,11 @@ export class GraphSegments extends Interface {
         this.isDragging = false;
         this.isDraggingAway = false;
         this.animatedIn = false;
+        this.labelsAnimatedIn = false;
         this.hoveredIn = false;
+        this.labelHoveredIn = false;
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
-        this.initialized = false;
 
         if (!Array.isArray(this.lookupPrecision)) {
             this.lookupPrecision = new Array(this.segments.length).fill(this.lookupPrecision);
@@ -147,8 +151,8 @@ export class GraphSegments extends Interface {
             this.initLabels();
         }
 
-        if (!this.noMarker) {
-            this.initMarkers();
+        if (!this.noMarker && this.markers.length) {
+            this.setMarkers(this.markers);
         }
 
         this.setArray(this.value);
@@ -203,38 +207,45 @@ export class GraphSegments extends Interface {
     }
 
     calculateLookup(graph) {
-        const properties = new SVGPathProperties(graph.pathData);
+        const lookupPrecision = graph.lookupPrecision;
 
-        graph.length = properties.getTotalLength();
-        graph.lookup = [];
+        const properties = new SVGPathProperties(graph.pathData);
+        const length = properties.getTotalLength();
+        const lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            graph.lookup.push(properties.getPointAtLength(i * graph.length));
+            lookup.push(properties.getPointAtLength(i * length));
 
-            i += 1 / graph.lookupPrecision;
+            i += 1 / lookupPrecision;
         }
+
+        graph.length = length;
+        graph.lookup = lookup;
     }
 
     getCurveY(graph, mouseX, width) {
+        const lookupPrecision = graph.lookupPrecision;
+        const lookup = graph.lookup;
+
         const x = mouseX * width * this.width;
-        const approxIndex = Math.floor(mouseX * graph.lookupPrecision);
+        const approxIndex = Math.floor(mouseX * lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(graph.lookupPrecision / 4));
+        let i = Math.max(1, approxIndex - Math.floor(lookupPrecision / 4));
 
-        for (; i < graph.lookupPrecision; i++) {
-            if (graph.lookup[i].x > x) {
+        for (; i < lookupPrecision; i++) {
+            if (lookup[i].x > x) {
                 break;
             }
         }
 
-        if (i === graph.lookupPrecision) {
-            return graph.lookup[graph.lookupPrecision - 1].y;
+        if (i === lookupPrecision) {
+            return lookup[lookupPrecision - 1].y;
         }
 
-        const lower = graph.lookup[i - 1];
-        const upper = graph.lookup[i];
+        const lower = lookup[i - 1];
+        const upper = lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
         const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
@@ -285,12 +296,6 @@ export class GraphSegments extends Interface {
             this.add(label);
 
             return label;
-        });
-    }
-
-    initMarkers() {
-        this.markers.forEach(data => {
-            this.addMarker(data);
         });
     }
 
@@ -458,6 +463,39 @@ export class GraphSegments extends Interface {
         return name;
     }
 
+    setMarkers(markers, fast) {
+        this.items.forEach(item => item.destroy());
+        this.items.length = 0;
+
+        markers.forEach(data => this.addMarker(data, fast));
+    }
+
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        if (!this.label) {
+            this.label = new Interface('.label');
+            this.label.invisible();
+            this.label.css({
+                position: 'absolute',
+                left: 0,
+                top: -12,
+                transform: 'translate(-50%, -50%)',
+                fontSize: 'const(--ui-secondary-font-size)',
+                letterSpacing: 'const(--ui-secondary-letter-spacing)',
+                color: 'var(--ui-secondary-color)',
+                whiteSpace: 'nowrap',
+                zIndex: 1,
+                opacity: 0
+            });
+            this.add(this.label);
+        }
+
+        this.data = data;
+    }
+
     setArray(value) {
         if (Array.isArray(value)) {
             this.array = value;
@@ -518,7 +556,7 @@ export class GraphSegments extends Interface {
         this.update();
     }
 
-    addMarker([x, name]) {
+    addMarker([x, name], fast) {
         const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.css({ top: -12 });
         item.x = x;
@@ -527,17 +565,22 @@ export class GraphSegments extends Interface {
 
         this.items.push(item);
 
-        if (this.initialized) {
-            item.events.on('update', this.onMarkerUpdate);
-            item.events.on('click', this.onMarkerClick);
+        if (this.animatedIn) {
+            if (fast) {
+                item.multiplier = 1;
+                item.css({ opacity: 1 });
+            } else {
+                item.events.on('update', this.onMarkerUpdate);
+                item.events.on('click', this.onMarkerClick);
 
-            tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
-                this.needsUpdate = true;
+                tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
+                    this.needsUpdate = true;
 
-                item.css({ opacity: item.multiplier });
-            });
+                    item.css({ opacity: item.multiplier });
+                });
 
-            Stage.events.emit('marker', { type: 'add', item, target: this });
+                Stage.events.emit('marker', { type: 'add', item, target: this });
+            }
         }
     }
 
@@ -737,8 +780,25 @@ export class GraphSegments extends Interface {
             this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
-            this.info.css({ left: x });
-            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
+            if (this.animatedIn) {
+                this.info.css({ left: x });
+                this.info.text(this.format(value.toFixed(this.precision)));
+
+                if (this.label) {
+                    if (this.data[i] && this.data[i].length) {
+                        const value = this.data[i][Math.floor(segmentX * this.data[i].length)];
+
+                        this.label.css({ left: x });
+                        this.label.text(value);
+
+                        if (this.hoveredIn && !this.labelHoveredIn) {
+                            this.hoverLabelIn();
+                        }
+                    } else if (this.hoveredIn && this.labelHoveredIn) {
+                        this.hoverLabelOut();
+                    }
+                }
+            }
         }
     }
 
@@ -830,39 +890,83 @@ export class GraphSegments extends Interface {
     hoverIn() {
         clearTween(this.handleProps);
 
-        tween(this.handleProps, { alpha: 1 }, 275, 'easeInOutCubic', null, () => {
-            this.needsUpdate = true;
-        });
+        tween(this.handleProps, { alpha: 1 }, 275, 'easeInOutCubic');
 
         this.info.clearTween();
         this.info.visible();
         this.info.tween({ opacity: 1 }, 275, 'easeInOutCubic');
 
+        if (this.label) {
+            this.hoverLabelIn();
+        }
+
         this.hoveredIn = true;
     }
 
     hoverOut(fast) {
+        this.lastHover = 'out';
+
         clearTween(this.handleProps);
 
         this.info.clearTween();
 
         if (fast) {
             this.handleProps.alpha = 0;
-            this.needsUpdate = true;
 
             this.info.css({ opacity: 0 });
             this.info.invisible();
         } else {
-            tween(this.handleProps, { alpha: 0 }, 275, 'easeInOutCubic', null, () => {
-                this.needsUpdate = true;
-            });
+            tween(this.handleProps, { alpha: 0 }, 275, 'easeInOutCubic');
 
             this.info.tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
                 this.info.invisible();
             });
         }
 
+        if (this.label) {
+            this.hoverLabelOut(fast);
+        }
+
         this.hoveredIn = false;
+    }
+
+    hoverLabelIn() {
+        this.label.clearTween();
+        this.label.visible();
+        this.label.tween({ opacity: 1 }, 275, 'easeInOutCubic');
+
+        this.labelHoveredIn = true;
+    }
+
+    hoverLabelOut(fast) {
+        this.label.clearTween();
+
+        if (fast) {
+            this.label.css({ opacity: 0 });
+            this.label.invisible();
+        } else {
+            this.label.tween({ opacity: 0 }, 275, 'easeInOutCubic', () => {
+                this.label.invisible();
+            });
+        }
+
+        this.labelHoveredIn = false;
+    }
+
+    animateLabelsIn() {
+        this.labels.forEach(label => {
+            label.clearTween().tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
+        });
+
+        this.labelsAnimatedIn = true;
+    }
+
+    animateLabelsOut() {
+        this.labels.forEach(label => {
+            label.clearTween().tween({ opacity: 0 }, 300, 'easeOutSine');
+        });
+
+        this.labelsAnimatedIn = false;
     }
 
     animateIn(fast) {
@@ -878,12 +982,6 @@ export class GraphSegments extends Interface {
             this.items.forEach(item => {
                 item.clearTween();
             });
-        }
-
-        if (!this.initialized) {
-            this.initialized = true;
-
-            this.update();
         }
 
         if (fast) {
@@ -906,6 +1004,7 @@ export class GraphSegments extends Interface {
 
             if (!this.noMarker) {
                 this.items.forEach(item => {
+                    item.multiplier = 1;
                     item.css({ opacity: 1 });
                 });
             }
@@ -924,9 +1023,11 @@ export class GraphSegments extends Interface {
                         this.hoverIn();
                     }
 
-                    this.labels.forEach(label => {
-                        label.tween({ opacity: 1 }, 500, 'easeOutSine');
-                    });
+                    if (!this.hoverLabels) {
+                        this.labels.forEach(label => {
+                            label.tween({ opacity: 1 }, 500, 'easeOutSine');
+                        });
+                    }
 
                     if (!this.noMarker) {
                         this.items.forEach(item => {
@@ -943,6 +1044,10 @@ export class GraphSegments extends Interface {
             }, () => {
                 this.needsUpdate = true;
             });
+
+            if (this.hoverLabels) {
+                this.animateLabelsIn();
+            }
         }
     }
 
@@ -970,10 +1075,6 @@ export class GraphSegments extends Interface {
         tween(this.props, { yMultiplier: 0 }, 300, 'easeOutCubic', null, () => {
             this.needsUpdate = true;
 
-            this.labels.forEach(label => {
-                label.css({ opacity: this.props.yMultiplier });
-            });
-
             if (!this.noMarker) {
                 this.items.forEach(item => {
                     item.multiplier = this.props.yMultiplier;
@@ -982,6 +1083,8 @@ export class GraphSegments extends Interface {
                 });
             }
         });
+
+        this.animateLabelsOut();
     }
 
     destroy() {

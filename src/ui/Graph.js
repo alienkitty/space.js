@@ -45,6 +45,7 @@ export class Graph extends Interface {
         markers = [],
         range = 1,
         suffix = '',
+        format = value => `${value}${suffix}`,
         noHover = false,
         noMarker = false,
         noMarkerDrag = false,
@@ -61,7 +62,7 @@ export class Graph extends Interface {
         this.lookupPrecision = lookupPrecision;
         this.markers = markers;
         this.range = range;
-        this.suffix = suffix;
+        this.format = format;
         this.noHover = noHover;
         this.noMarker = noMarker;
         this.noMarkerDrag = noMarkerDrag;
@@ -96,7 +97,6 @@ export class Graph extends Interface {
         this.hoveredIn = false;
         this.needsUpdate = false;
         this.graphNeedsUpdate = false;
-        this.initialized = false;
 
         this.lineColors = {
             graph: Stage.rootStyle.getPropertyValue('--ui-color-line').trim(),
@@ -128,8 +128,8 @@ export class Graph extends Interface {
         this.init();
         this.initCanvas();
 
-        if (!this.noMarker) {
-            this.initMarkers();
+        if (!this.noMarker && this.markers.length) {
+            this.setMarkers(this.markers);
         }
 
         this.setArray(this.value);
@@ -172,38 +172,45 @@ export class Graph extends Interface {
     }
 
     calculateLookup() {
-        const properties = new SVGPathProperties(this.pathData);
+        const lookupPrecision = this.lookupPrecision;
 
-        this.length = properties.getTotalLength();
-        this.lookup = [];
+        const properties = new SVGPathProperties(this.pathData);
+        const length = properties.getTotalLength();
+        const lookup = [];
 
         let i = 0;
 
         while (i <= 1) {
-            this.lookup.push(properties.getPointAtLength(i * this.length));
+            lookup.push(properties.getPointAtLength(i * length));
 
-            i += 1 / this.lookupPrecision;
+            i += 1 / lookupPrecision;
         }
+
+        this.length = length;
+        this.lookup = lookup;
     }
 
     getCurveY(mouseX) {
+        const lookupPrecision = this.lookupPrecision;
+        const lookup = this.lookup;
+
         const x = mouseX * this.width;
-        const approxIndex = Math.floor(mouseX * this.lookupPrecision);
+        const approxIndex = Math.floor(mouseX * lookupPrecision);
 
-        let i = Math.max(1, approxIndex - Math.floor(this.lookupPrecision / 4));
+        let i = Math.max(1, approxIndex - Math.floor(lookupPrecision / 4));
 
-        for (; i < this.lookupPrecision; i++) {
-            if (this.lookup[i].x > x) {
+        for (; i < lookupPrecision; i++) {
+            if (lookup[i].x > x) {
                 break;
             }
         }
 
-        if (i === this.lookupPrecision) {
-            return this.lookup[this.lookupPrecision - 1].y;
+        if (i === lookupPrecision) {
+            return lookup[lookupPrecision - 1].y;
         }
 
-        const lower = this.lookup[i - 1];
-        const upper = this.lookup[i];
+        const lower = lookup[i - 1];
+        const upper = lookup[i];
         const percent = (x - lower.x) / (upper.x - lower.x);
         const diff = upper.y - lower.y;
         const y = lower.y + diff * percent;
@@ -245,12 +252,6 @@ export class Graph extends Interface {
 
     toRGBA(color, alpha) {
         return `rgb(${Math.round(color.r * 255)} ${Math.round(color.g * 255)} ${Math.round(color.b * 255)} / ${alpha * this.alpha})`;
-    }
-
-    initMarkers() {
-        this.markers.forEach(data => {
-            this.addMarker(data);
-        });
     }
 
     addListeners() {
@@ -405,6 +406,13 @@ export class Graph extends Interface {
         return name;
     }
 
+    setMarkers(markers, fast) {
+        this.items.forEach(item => item.destroy());
+        this.items.length = 0;
+
+        markers.forEach(data => this.addMarker(data, fast));
+    }
+
     setArray(value) {
         if (Array.isArray(value)) {
             this.array = value;
@@ -463,7 +471,7 @@ export class Graph extends Interface {
         this.update();
     }
 
-    addMarker([x, name]) {
+    addMarker([x, name], fast) {
         const item = new GraphMarker({ name, noDrag: this.noMarkerDrag });
         item.css({ top: -12 });
         item.x = x;
@@ -472,17 +480,22 @@ export class Graph extends Interface {
 
         this.items.push(item);
 
-        if (this.initialized) {
-            item.events.on('update', this.onMarkerUpdate);
-            item.events.on('click', this.onMarkerClick);
+        if (this.animatedIn) {
+            if (fast) {
+                item.multiplier = 1;
+                item.css({ opacity: 1 });
+            } else {
+                item.events.on('update', this.onMarkerUpdate);
+                item.events.on('click', this.onMarkerClick);
 
-            tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
-                this.needsUpdate = true;
+                tween(item, { multiplier: 1 }, 400, 'easeOutCubic', null, () => {
+                    this.needsUpdate = true;
 
-                item.css({ opacity: item.multiplier });
-            });
+                    item.css({ opacity: item.multiplier });
+                });
 
-            Stage.events.emit('marker', { type: 'add', item, target: this });
+                Stage.events.emit('marker', { type: 'add', item, target: this });
+            }
         }
     }
 
@@ -628,8 +641,10 @@ export class Graph extends Interface {
             this.context.arc(x, y, 2.5, 0, Math.PI * 2);
             this.context.stroke();
 
-            this.info.css({ left: x });
-            this.info.text(`${value.toFixed(this.precision)}${this.suffix}`);
+            if (this.animatedIn) {
+                this.info.css({ left: x });
+                this.info.text(this.format(value.toFixed(this.precision)));
+            }
         }
     }
 
@@ -749,12 +764,6 @@ export class Graph extends Interface {
             });
         }
 
-        if (!this.initialized) {
-            this.initialized = true;
-
-            this.update();
-        }
-
         if (fast) {
             this.props.alpha = 1;
             this.props.yMultiplier = 1;
@@ -771,6 +780,7 @@ export class Graph extends Interface {
 
             if (!this.noMarker) {
                 this.items.forEach(item => {
+                    item.multiplier = 1;
                     item.css({ opacity: 1 });
                 });
             }

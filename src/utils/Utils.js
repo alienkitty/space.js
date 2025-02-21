@@ -115,6 +115,41 @@ export function median(numbers) {
     return sorted[middle];
 }
 
+export function peaks(numbers, windowSize, threshold) {
+    const length = numbers.length;
+    const peaks = [];
+
+    for (let i = 0; i < length; i++) {
+        const start = Math.max(1, i - windowSize);
+        const end = Math.min(length, i + windowSize);
+        let sum = 0;
+
+        for (let j = start; j < end; j++) {
+            sum += Math.abs(numbers[j] - numbers[j - 1]);
+        }
+
+        if (sum > threshold) {
+            peaks.push(i);
+        }
+    }
+
+    return peaks;
+}
+
+export function consecutive(numbers) {
+    return numbers.reduce((array, value) => {
+        let group = array[array.length - 1];
+
+        if (!group || group[group.length - 1] !== value - 1) {
+            group = array[array.push([]) - 1];
+        }
+
+        group.push(value);
+
+        return array;
+    }, []);
+}
+
 export function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
