@@ -35,7 +35,7 @@
         import { BoxGeometry, Color, Group, HemisphereLight, MathUtils, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        import { EventEmitter, Interface, PanelItem, Point3D, RadialGraphContainer, RadialGraphSegmentsCanvas, Stage, UI, average, consecutive, delayedCall, lerpCameras, median, peaks, ticker, tween } from '../../src/three.js';
+        import { EventEmitter, Interface, PanelItem, Point3D, RadialGraphContainer, RadialGraphSegmentsCanvas, Stage, UI, average, clearTween, consecutive, delayedCall, lerpCameras, median, peaks, ticker, tween } from '../../src/three.js';
 
         const isDebug = /[?&]debug/.test(location.search);
 
@@ -352,8 +352,17 @@
                 this.realtimeArray = realtimeArray;
             };
 
+            getMax = () => {
+                let max = 0;
+
+                for (let i = 0, l = this.array.length; i < l; i++) {
+                    max = Math.max(max, this.array[i]);
+                }
+
+                return max;
+            };
+
             getPeaks = threshold => {
-                // Past 12hrs (~10800 status updates)
                 const groups = consecutive(peaks(this.array, this.largeChunkSize / 2, threshold));
 
                 return groups.map(array => array[0] / 10800); // First index normalized
@@ -460,7 +469,7 @@
                         this.send({ event, message });
                         break;
                     case 'server-details': {
-                        const { details/* , serverUptime, latency */ } = message;
+                        const { details, serverUptime/* , latency */ } = message;
 
                         const {
                             // packageVersion,
@@ -477,6 +486,8 @@
                             processorName,
                             numProcessingUnits
                         } = details;
+
+                        const serverUptimeFormatted = Utils.formatSeconds(serverUptime);
 
                         const memUsed = memTotal - memFree;
 
@@ -527,6 +538,7 @@
                             networkName,
                             serverVersion,
                             restartTime,
+                            serverUptime: serverUptimeFormatted,
                             memUsed: memUsedFormatted,
                             memTotal: memTotalFormatted,
                             memUsedPercentage,
@@ -603,8 +615,7 @@
 
                         this.emit('status', {
                             currentTime,
-                            serverUptime,
-                            serverUptimeFormatted,
+                            serverUptime: serverUptimeFormatted,
                             latency,
                             latencyAvg,
                             loadAvg,
@@ -800,6 +811,7 @@
                             value: 'Load',
                             callback: value => {
                                 const index = graphOptions[value];
+
                                 object.graph.setIndex(index);
                             }
                         },
@@ -809,10 +821,17 @@
                         {
                             type: 'link',
                             value: 'Details',
-                            callback: () => {
+                            callback: (value, item) => {
+                                clearTween(this.timeout);
+
                                 this.ui.toggleDetails(!this.ui.details.animatedIn);
+
                                 object.point.animateOut(true);
                                 object.point.deactivate();
+
+                                this.timeout = delayedCall(300, () => {
+                                    item.setValue(this.ui.details.animatedIn ? 'Map' : 'Details');
+                                });
                             }
                         }
                     ];
@@ -893,6 +912,7 @@
                 networkName,
                 serverVersion,
                 restartTime,
+                serverUptime,
                 memUsed,
                 memTotal,
                 memUsedPercentage,
@@ -910,6 +930,7 @@
                 if (!this.ui) {
                     this.ui = new UI({
                         fps: true,
+                        detailsButton: true,
                         details: {
                             dividerLine: true,
                             width: '50vw',
@@ -934,7 +955,7 @@
                                         },
                                         {
                                             title: 'Uptime',
-                                            content: '',
+                                            content: serverUptime,
                                             width: 200
                                         },
                                         {
@@ -1125,35 +1146,49 @@
             };
 
             static onData = ({ timestampData, latencyAvgData, loadAvgData, clientsData }) => {
+                // Timestamp data
                 this.timestampData = new TimestampData();
                 this.timestampData.setArrays(timestampData);
                 this.timestampData.addMarker([this.restartTime, 'Restart']);
 
+                // Latency average data (initially no data, all 0s)
                 this.latencyAvgData = new GraphData();
                 this.latencyAvgData.setArrays(latencyAvgData);
 
+                const latencyAvgMax = Math.max(300, this.latencyAvgData.getMax());
+
                 this.view.latencyAvgGraph.setGhostArray([...this.latencyAvgData.smallGhostArrayReversed, ...this.latencyAvgData.largeGhostArrayReversed]);
                 this.view.latencyAvgGraph.setArray([...this.latencyAvgData.smallArrayReversed, ...this.latencyAvgData.largeArrayReversed]);
+                this.view.latencyAvgGraph.setRange(latencyAvgMax);
 
+                // Load average data
                 this.loadAvgData = new GraphData();
                 this.loadAvgData.setArrays(loadAvgData);
 
+                const loadAvgMax = Math.max(400, this.loadAvgData.getMax());
+
                 this.ui.detailsLoadAvgGraph.setGhostArray([...this.loadAvgData.smallGhostArray, ...this.loadAvgData.realtimeGhostArray]);
                 this.ui.detailsLoadAvgGraph.setArray([...this.loadAvgData.smallArray, ...this.loadAvgData.realtimeArray]);
+                this.ui.detailsLoadAvgGraph.setRange(loadAvgMax);
 
                 this.view.loadAvgGraph.setGhostArray([...this.loadAvgData.smallGhostArrayReversed, ...this.loadAvgData.largeGhostArrayReversed]);
                 this.view.loadAvgGraph.setArray([...this.loadAvgData.smallArrayReversed, ...this.loadAvgData.largeArrayReversed]);
+                this.view.loadAvgGraph.setRange(loadAvgMax);
 
+                // Clients data
                 this.clientsData = new GraphData();
                 this.clientsData.setArrays(clientsData);
 
+                const clientsMax = Math.max(10, this.clientsData.getMax());
+
                 this.view.clientsGraph.setGhostArray([...this.clientsData.smallGhostArrayReversed, ...this.clientsData.largeGhostArrayReversed]);
                 this.view.clientsGraph.setArray([...this.clientsData.smallArrayReversed, ...this.clientsData.largeArrayReversed]);
+                this.view.clientsGraph.setRange(clientsMax);
 
                 this.refresh();
             };
 
-            static onStatus = ({ currentTime, serverUptimeFormatted, latency, latencyAvg, loadAvg, numClients }) => {
+            static onStatus = ({ currentTime, serverUptime, latency, latencyAvg, loadAvg, numClients }) => {
                 if (this.timestampData && currentTime !== undefined) {
                     this.timestampData.update(currentTime);
 
@@ -1162,8 +1197,8 @@
                     }
                 }
 
-                if (serverUptimeFormatted !== undefined) {
-                    this.ui.detailsUptime.html(serverUptimeFormatted);
+                if (serverUptime !== undefined) {
+                    this.ui.detailsUptime.html(serverUptime);
                 }
 
                 if (latency !== undefined) {
@@ -1248,6 +1283,7 @@
                 if (e.ctrlKey && e.keyCode >= 55 && e.keyCode <= 57) { // Ctrl 7-9
                     const index = e.keyCode - 55;
                     this.view.point.setPanelIndex('Graph', index);
+                    this.view.point.onHover({ type: 'over' });
                 }
             };
 
@@ -1293,36 +1329,33 @@
             }
 
             static transition() {
-                const target = this.target;
+                clearTween(this);
+                clearTween(this.timeout);
+
+                Point3D.enabled = false;
 
                 this.progress = 0;
+                this.isTransitioning = true;
 
                 tween(this, { progress: 1 }, 1000, 'easeInOutSine', () => {
-                    this.camera = target;
-
-                    if (this.target !== this.camera) {
-                        this.transition();
-                    } else {
-                        this.isTransitioning = false;
-                    }
+                    this.isTransitioning = false;
                 }, () => {
-                    lerpCameras(this.worldCamera, target, this.progress);
-                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, target === this.pointCamera ? this.offsetX : 0, this.progress);
+                    lerpCameras(this.worldCamera, this.camera, this.progress);
+                    this.worldCamera.view.offsetX = MathUtils.lerp(this.worldCamera.view.offsetX, this.camera === this.pointCamera ? this.offsetX : 0, this.progress);
                     this.worldCamera.updateProjectionMatrix();
+                });
+
+                this.timeout = delayedCall(300, () => {
+                    Point3D.enabled = true;
                 });
             }
 
             // Public methods
 
             static setCamera = camera => {
-                // this.camera = camera;
-                this.target = camera;
+                this.camera = camera;
 
-                if (!this.isTransitioning) {
-                    this.isTransitioning = true;
-
-                    this.transition();
-                }
+                this.transition();
             };
 
             static resize = (width, height) => {
