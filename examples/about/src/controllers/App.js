@@ -36,7 +36,7 @@ export class App {
 
     static initWorld() {
         WorldController.init();
-        Stage.add(WorldController.element);
+        Stage.add(WorldController.canvas);
     }
 
     static initViews() {
