@@ -24,8 +24,8 @@ export class WorldController {
 
         // Output canvas
         // this.element = this.renderer.domElement;
-        this.element = new Interface(this.renderer.domElement);
-        this.element.css({ opacity: 0 });
+        this.canvas = new Interface(this.renderer.domElement);
+        this.canvas.css({ opacity: 0 });
 
         // Disable color management
         ColorManagement.enabled = false;
@@ -170,14 +170,15 @@ export class WorldController {
     };
 
     static animateIn = () => {
-        this.element.tween({ opacity: 1 }, 1000, 'linear', () => {
-            this.element.css({ opacity: '' });
+        this.canvas.tween({ opacity: 1 }, 1000, 'linear', () => {
+            this.canvas.css({ opacity: '' });
         });
     };
 
     static ready = () => Promise.all([
         this.textureLoader.ready(),
-        this.environmentLoader.ready()
+        this.environmentLoader.ready(),
+        this.bufferGeometryLoader.ready()
     ]);
 
     // Global handlers
