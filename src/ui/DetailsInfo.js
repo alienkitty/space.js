@@ -25,7 +25,6 @@ export class DetailsInfo extends Interface {
             height: '100%',
             display: 'flex',
             alignItems: 'flex-end',
-            pointerEvents: 'none',
             x: -10,
             opacity: 0
         });
@@ -40,11 +39,16 @@ export class DetailsInfo extends Interface {
 
     initViews() {
         this.title = new DetailsTitle(this.data.title);
+        this.title.css({
+            width: 'fit-content',
+            pointerEvents: 'auto'
+        });
         this.container.add(this.title);
 
         this.info = new Interface('.info', 'p');
         this.info.css({
             width: 'fit-content',
+            pointerEvents: 'auto',
             textTransform: 'uppercase'
         });
         this.info.html(this.data.content);
@@ -68,10 +72,7 @@ export class DetailsInfo extends Interface {
     animateIn() {
         this.clearTween();
         this.visible();
-        this.css({
-            pointerEvents: 'auto',
-            opacity: 1
-        });
+        this.css({ opacity: 1 });
 
         const duration = 2000;
         const stagger = 175;
@@ -88,10 +89,7 @@ export class DetailsInfo extends Interface {
     }
 
     animateOut(callback) {
-        this.clearTween();
-        this.css({ pointerEvents: 'none' });
-
-        this.tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic', () => {
             this.invisible();
 
             if (callback) {

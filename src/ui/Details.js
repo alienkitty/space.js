@@ -32,7 +32,6 @@ export class Details extends Interface {
         this.css({
             position: 'relative',
             width: this.width,
-            pointerEvents: 'none',
             opacity: 0
         });
 
@@ -60,7 +59,8 @@ export class Details extends Interface {
             position: 'relative',
             display: 'flex',
             flexWrap: 'wrap',
-            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
+            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`,
+            pointerEvents: 'auto'
         });
         this.add(this.container);
     }
@@ -205,10 +205,7 @@ export class Details extends Interface {
     animateIn() {
         this.clearTween();
         this.visible();
-        this.css({
-            pointerEvents: 'auto',
-            opacity: 1
-        });
+        this.css({ opacity: 1 });
 
         const duration = 2000;
         const stagger = 175;
@@ -234,7 +231,6 @@ export class Details extends Interface {
 
     animateOut(callback) {
         this.clearTween();
-        this.css({ pointerEvents: 'none' });
 
         if (this.dividerLine) {
             this.dividerLine.animateOut();
