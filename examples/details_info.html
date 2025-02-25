@@ -21,10 +21,6 @@
             font-weight: 100;
             font-size: 46px;
         }
-
-        p {
-            margin: 6px 0;
-        }
     </style>
 
     <script type="module">
@@ -52,8 +48,6 @@ Distance from Sun: 230 million km
                 });
                 this.ui.detailsInfo.animateIn();
                 document.body.appendChild(this.ui.element);
-
-                this.animatedIn = true;
             }
 
             static addListeners() {
@@ -74,6 +68,8 @@ Distance from Sun: 230 million km
             };
 
             static onLoad = () => {
+                this.animatedIn = true;
+
                 this.ui.animateIn();
             };
         }
