@@ -36,6 +36,7 @@ export class PanelController {
             headerSnap: true,
             physics: this.physics,
             loader: textureLoader,
+            uvTexturePath: 'uv.jpg',
             uvHelper: true
         });
         Point3D.enabled = false;
