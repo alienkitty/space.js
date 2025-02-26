@@ -540,7 +540,7 @@ export class Point3D extends Group {
         this.matrix = new Matrix4();
 
         this.initMesh();
-        this.initElement();
+        this.initContainer();
         this.initViews();
 
         Point3D.add(this);
@@ -566,15 +566,15 @@ export class Point3D extends Group {
         this.mesh = this.createMesh();
     }
 
-    initElement() {
-        this.element = new Interface('.target');
-        this.element.css({
+    initContainer() {
+        this.container = new Interface('.target');
+        this.container.css({
             position: 'absolute',
             left: 0,
             top: 0,
             pointerEvents: 'none'
         });
-        Point3D.container.add(this.element);
+        Point3D.container.add(this.container);
     }
 
     initViews() {
@@ -583,11 +583,11 @@ export class Point3D extends Group {
         if (this.graph) {
             this.graph.events.on('cursor', this.onCursor);
             this.graph.setContext(context);
-            this.element.add(this.graph);
+            this.container.add(this.graph);
 
             if (!this.noTracker) {
                 this.tracker = new RadialGraphTracker();
-                this.element.add(this.tracker);
+                this.container.add(this.tracker);
             }
 
             this.point = new Point(this, this.tracker);
@@ -596,21 +596,21 @@ export class Point3D extends Group {
                 name: this.name,
                 type: this.type
             });
-            this.element.add(this.point);
+            this.container.add(this.point);
 
             this.point.windowSnapTop = 42;
         } else {
             this.reticle = new ReticleCanvas();
             this.reticle.setContext(context);
-            this.element.add(this.reticle);
+            this.container.add(this.reticle);
 
             this.line = new LineCanvas();
             this.line.setContext(context);
-            this.element.add(this.line);
+            this.container.add(this.line);
 
             if (!this.noTracker) {
                 this.tracker = new Tracker();
-                this.element.add(this.tracker);
+                this.container.add(this.tracker);
             }
 
             this.point = new Point(this, this.tracker);
@@ -619,7 +619,7 @@ export class Point3D extends Group {
                 name: this.name,
                 type: this.type
             });
-            this.element.add(this.point);
+            this.container.add(this.point);
 
             this.point.windowSnapTop = 14;
         }
@@ -1006,7 +1006,7 @@ export class Point3D extends Group {
                 this.instances.push(mesh);
 
                 mesh.tracker = new Tracker();
-                this.element.add(mesh.tracker);
+                this.container.add(mesh.tracker);
 
                 this.updateMatrixWorld();
 
@@ -1455,7 +1455,7 @@ export class Point3D extends Group {
         this.geometry.dispose();
 
         this.animateOut(false, () => {
-            this.element = this.element.destroy();
+            this.container = this.container.destroy();
         });
     }
 }
