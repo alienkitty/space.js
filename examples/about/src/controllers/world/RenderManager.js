@@ -76,7 +76,9 @@ export class RenderManager {
         });
 
         // Motion blur composite material
-        this.motionBlurCompositeMaterial = new MotionBlurCompositeMaterial(textureLoader);
+        this.motionBlurCompositeMaterial = new MotionBlurCompositeMaterial(textureLoader, {
+            blueNoisePath: 'blue_noise.png'
+        });
         this.motionBlurCompositeMaterial.uniforms.tVelocity.value = this.drawBuffers.renderTarget.textures[1];
 
         // Luminosity high pass material
@@ -108,8 +110,8 @@ export class RenderManager {
 
         // Debug materials
         this.blackoutMaterial = new MeshBasicMaterial({ color: 0x000000 });
-        this.matcap1Material = new MeshMatcapMaterial({ matcap: getTexture('assets/textures/matcaps/040full.jpg') });
-        this.matcap2Material = new MeshMatcapMaterial({ matcap: getTexture('assets/textures/matcaps/defaultwax.jpg') });
+        this.matcap1Material = new MeshMatcapMaterial({ matcap: getTexture('matcaps/040full.jpg') });
+        this.matcap2Material = new MeshMatcapMaterial({ matcap: getTexture('matcaps/defaultwax.jpg') });
         this.normalMaterial = new NormalMaterial();
         this.depthMaterial = new DepthMaterial();
         this.copyMaterial = new CopyMaterial();

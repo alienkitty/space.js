@@ -109,8 +109,8 @@ export class CompositeMaterial extends RawShaderMaterial {
 
         // Textures
         const [lensDirtMap, lensDirtTilesMap] = [
-            getTexture('../assets/textures/lens_dirt.jpg'),
-            getTexture('../assets/textures/pbr/white_hexagonal_tiles_height.jpg')
+            getTexture('lens_dirt.jpg'),
+            getTexture('pbr/white_hexagonal_tiles_height.jpg')
         ];
 
         lensDirtTilesMap.wrapS = RepeatWrapping;
