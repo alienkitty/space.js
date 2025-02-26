@@ -91,18 +91,21 @@ export class WorldController {
 
     static initLoaders() {
         this.textureLoader = new TextureLoader();
-        /* this.textureLoader.setPath('/');
-        this.textureLoader.setOptions({
+        this.textureLoader.setPath('assets/textures/');
+        /* this.textureLoader.setOptions({
             preserveData: true
         });
         this.textureLoader.cache = true; */
 
         this.environmentLoader = new EnvironmentTextureLoader(this.renderer);
+        this.environmentLoader.setPath('assets/textures/env/');
+
         this.bufferGeometryLoader = new BufferGeometryLoader();
+        this.bufferGeometryLoader.setPath('assets/geometry/');
     }
 
     static async initEnvironment() {
-        this.scene.environment = await this.loadEnvironmentTexture('assets/textures/env/jewelry_black_contrast.jpg');
+        this.scene.environment = await this.loadEnvironmentTexture('jewelry_black_contrast.jpg');
         this.scene.environmentIntensity = 1.2;
     }
 
