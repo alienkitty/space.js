@@ -63,6 +63,10 @@ export class TextureLoader extends Loader {
         } else {
             texture = new Texture();
 
+            if (ColorManagement.enabled) {
+                texture.colorSpace = SRGBColorSpace;
+            }
+
             if (cached) {
                 promise = Promise.resolve(cached);
             } else {
@@ -89,11 +93,6 @@ export class TextureLoader extends Loader {
                 }
 
                 texture.image = bitmap;
-
-                if (ColorManagement.enabled) {
-                    texture.colorSpace = SRGBColorSpace;
-                }
-
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
