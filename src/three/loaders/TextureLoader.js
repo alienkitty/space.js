@@ -68,7 +68,8 @@ export class TextureLoader extends Loader {
             } else {
                 const params = {
                     imageOrientation: this.options.imageOrientation,
-                    premultiplyAlpha: this.options.premultiplyAlpha
+                    premultiplyAlpha: this.options.premultiplyAlpha,
+                    colorSpaceConversion: this.options.colorSpaceConversion
                 };
 
                 if (Thread.threads) {
