@@ -76,7 +76,7 @@ export class TextureLoader extends Loader {
                     colorSpaceConversion: this.options.colorSpaceConversion
                 };
 
-                if (Thread.threads) {
+                if (Thread.handlers) {
                     promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, params);
                 } else {
                     promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
