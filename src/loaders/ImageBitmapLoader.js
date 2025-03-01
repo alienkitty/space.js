@@ -35,7 +35,7 @@ export class ImageBitmapLoader extends Loader {
 
         if (cached) {
             promise = Promise.resolve(cached);
-        } else if (Thread.threads) {
+        } else if (Thread.handlers) {
             promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, this.options);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {

@@ -19,7 +19,7 @@ export class BufferGeometryLoader extends Loader {
     load(path, callback) {
         let promise;
 
-        if (Thread.threads) {
+        if (Thread.handlers) {
             promise = BufferGeometryLoaderThread.load(this.getPath(path), this.fetchOptions);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
