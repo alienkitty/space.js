@@ -56,9 +56,9 @@ export class WebAudio {
     }
 
     static load(files) {
-        for (const path in files) {
-            this.add(this, basename(path), files.get(path));
-        }
+        files.forEach((buffer, path) => {
+            this.add(this, basename(path), buffer);
+        });
     }
 
     static add(parent, id, buffer, bypass) {
@@ -247,9 +247,9 @@ export class WebAudio {
     }
 
     static destroy() {
-        for (const id in this.map) {
+        this.map.forEach((sound, id) => {
             this.remove(id);
-        }
+        });
 
         this.context.close();
 
