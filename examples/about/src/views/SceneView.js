@@ -43,6 +43,10 @@ export class SceneView extends Group {
         this.floor.invert(isInverted);
     };
 
+    toggle = show => {
+        this.floor.toggle(show);
+    };
+
     update = time => {
         this.darkPlanet.update(time);
         this.floatingCrystal.update(time);
@@ -51,10 +55,6 @@ export class SceneView extends Group {
 
     animateIn = () => {
         this.addListeners();
-    };
-
-    toggle = show => {
-        this.floor.toggle(show);
     };
 
     ready = () => Promise.all([

@@ -25,7 +25,7 @@ export class App {
         ]);
 
         await WorldController.ready();
-        await this.precompileShaders();
+        await SceneController.precompile();
 
         this.initPanel();
     }
@@ -87,30 +87,10 @@ export class App {
             controls
         );
 
-        SceneController.init(this.view);
+        SceneController.init(renderer, scene, camera, this.view);
         PhysicsController.init(physics);
         InputManager.init(scene, camera, controls);
         RenderManager.init(renderer, scene, camera, this.ui);
-    }
-
-    static async precompileShaders() {
-        const { renderer, scene, camera } = WorldController;
-
-        // Centre objects for prerender
-        const currentPositions = this.view.children.map(object => object.position.clone());
-
-        this.view.children.forEach(object => object.position.set(0, 0, 0));
-        this.view.visible = true;
-
-        await renderer.compileAsync(this.view, camera, scene);
-
-        RenderManager.enabled = true;
-        RenderManager.update();
-        RenderManager.enabled = false;
-
-        // Restore positions
-        this.view.visible = false;
-        this.view.children.forEach((object, i) => object.position.copy(currentPositions[i]));
     }
 
     static initPanel() {
