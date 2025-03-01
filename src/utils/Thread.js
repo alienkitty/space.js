@@ -93,7 +93,13 @@ export class Thread extends EventEmitter {
     }
 
     createMethod(name) {
-        this[name] = (message = {}) => new Promise(resolve => this.send(name, message, resolve));
+        if (name.startsWith('void ')) {
+            name = name.slice(5);
+
+            this[name] = (message = {}) => this.send(name, message);
+        } else {
+            this[name] = (message = {}) => new Promise(resolve => this.send(name, message, resolve));
+        }
     }
 
     addListeners() {
