@@ -28,7 +28,7 @@ export class BufferLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let promise;
 
@@ -42,7 +42,7 @@ export class BufferLoader extends Loader {
 
         promise.then(buffer => {
             if (this.cache) {
-                this.files[path] = buffer;
+                this.files.set(path, buffer);
             }
 
             this.increment();

@@ -64,7 +64,7 @@ export class CubeTextureLoader extends Loader {
         let loaded = 0;
 
         paths.forEach((path, i) => {
-            const cached = this.files[path];
+            const cached = this.files.get(path);
 
             let promise;
 
@@ -97,7 +97,7 @@ export class CubeTextureLoader extends Loader {
 
                 if (this.options.preserveData) {
                     if (this.cache) {
-                        this.files[path] = bitmap;
+                        this.files.set(path, bitmap);
                     }
                 }
 

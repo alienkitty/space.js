@@ -57,7 +57,7 @@ export class WebAudio {
 
     static load(files) {
         for (const path in files) {
-            this.add(this, basename(path), files[path]);
+            this.add(this, basename(path), files.get(path));
         }
     }
 

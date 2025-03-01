@@ -20,7 +20,7 @@ export class Loader {
         this.crossOrigin = 'anonymous';
         this.fetchOptions;
         this.cache = false;
-        this.files = {};
+        this.files = new Map();
 
         this.promise = new Promise(resolve => this.resolve = resolve);
     }
@@ -70,13 +70,7 @@ export class Loader {
     }
 
     filter(callback) {
-        const files = Object.keys(this.files).filter(callback).reduce((object, key) => {
-            object[key] = this.files[key];
-
-            return object;
-        }, {});
-
-        return files;
+        return new Map([...this.files].filter(callback));
     }
 
     getPath(path) {

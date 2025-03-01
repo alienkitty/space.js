@@ -47,7 +47,7 @@ export class TextureLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let texture;
         let promise;
@@ -117,7 +117,7 @@ export class TextureLoader extends Loader {
             });
 
             if (this.cache) {
-                this.files[path] = texture;
+                this.files.set(path, texture);
             }
         }
 
