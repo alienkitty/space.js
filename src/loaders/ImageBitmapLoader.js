@@ -20,7 +20,7 @@ export class ImageBitmapLoader extends Loader {
         super();
 
         this.defaultOptions = {
-            imageOrientation: 'none',
+            imageOrientation: 'from-image',
             premultiplyAlpha: 'none',
             colorSpaceConversion: 'none'
         };
