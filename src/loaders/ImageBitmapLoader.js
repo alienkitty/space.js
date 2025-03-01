@@ -29,7 +29,7 @@ export class ImageBitmapLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let promise;
 
@@ -51,7 +51,7 @@ export class ImageBitmapLoader extends Loader {
             }
 
             if (this.cache) {
-                this.files[path] = bitmap;
+                this.files.set(path, bitmap);
             }
 
             this.increment();

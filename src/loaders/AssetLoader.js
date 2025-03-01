@@ -19,7 +19,7 @@ var id = 0;
  * ]);
  *
  * await loader.ready();
- * console.log(loader.filter(path => /sounds/.test(path)));
+ * console.log(loader.filter(([path, data]) => /sounds/.test(path)));
  * @example
  * const loader = new AssetLoader();
  * const image = await loader.loadImage('assets/images/alienkitty.svg');
@@ -38,7 +38,7 @@ var id = 0;
  */
 export class AssetLoader extends Loader {
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let promise;
 
@@ -60,7 +60,7 @@ export class AssetLoader extends Loader {
 
         promise.then(data => {
             if (this.cache) {
-                this.files[path] = data;
+                this.files.set(path, data);
             }
 
             this.increment();
