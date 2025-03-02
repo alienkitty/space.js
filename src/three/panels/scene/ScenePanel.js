@@ -7,7 +7,7 @@ import { MathUtils } from 'three';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-import { brightness } from '../../../utils/Utils.js';
+import { TwoPI, brightness } from '../../../utils/Utils.js';
 
 export class ScenePanel extends Panel {
     constructor(scene, ui) {
@@ -78,7 +78,7 @@ export class ScenePanel extends Panel {
                         min: 0,
                         max: 360,
                         step: 1,
-                        value: MathUtils.radToDeg(scene.backgroundRotation.x),
+                        value: MathUtils.radToDeg(scene.backgroundRotation.x + (scene.backgroundRotation.x < 0 ? TwoPI : 0)),
                         callback: value => {
                             value = MathUtils.degToRad(value);
                             scene.backgroundRotation.x = value;
@@ -90,7 +90,7 @@ export class ScenePanel extends Panel {
                         min: 0,
                         max: 360,
                         step: 1,
-                        value: MathUtils.radToDeg(scene.backgroundRotation.y),
+                        value: MathUtils.radToDeg(scene.backgroundRotation.y + (scene.backgroundRotation.y < 0 ? TwoPI : 0)),
                         callback: value => {
                             value = MathUtils.degToRad(value);
                             scene.backgroundRotation.y = value;
@@ -102,7 +102,7 @@ export class ScenePanel extends Panel {
                         min: 0,
                         max: 360,
                         step: 1,
-                        value: MathUtils.radToDeg(scene.backgroundRotation.z),
+                        value: MathUtils.radToDeg(scene.backgroundRotation.z + (scene.backgroundRotation.z < 0 ? TwoPI : 0)),
                         callback: value => {
                             value = MathUtils.degToRad(value);
                             scene.backgroundRotation.z = value;
@@ -134,7 +134,7 @@ export class ScenePanel extends Panel {
                     min: 0,
                     max: 360,
                     step: 1,
-                    value: MathUtils.radToDeg(scene.environmentRotation.x),
+                    value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
                     callback: value => {
                         value = MathUtils.degToRad(value);
                         scene.environmentRotation.x = value;
@@ -146,7 +146,7 @@ export class ScenePanel extends Panel {
                     min: 0,
                     max: 360,
                     step: 1,
-                    value: MathUtils.radToDeg(scene.environmentRotation.y),
+                    value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
                     callback: value => {
                         value = MathUtils.degToRad(value);
                         scene.environmentRotation.y = value;
@@ -158,7 +158,7 @@ export class ScenePanel extends Panel {
                     min: 0,
                     max: 360,
                     step: 1,
-                    value: MathUtils.radToDeg(scene.environmentRotation.z),
+                    value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
                     callback: value => {
                         value = MathUtils.degToRad(value);
                         scene.environmentRotation.z = value;
