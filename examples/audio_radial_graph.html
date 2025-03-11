@@ -59,7 +59,7 @@
             static initAnalyser() {
                 // Delay the output to sync with the analyser
                 this.analyserDelay = this.context.createDelay();
-                this.analyserDelay.delayTime.value = 1 / 60; // 1 frame
+                this.analyserDelay.delayTime.value = 4 / 60; // seconds
                 this.analyserDelay.connect(this.protonradio.parent.input);
 
                 this.analyser = this.context.createAnalyser();
