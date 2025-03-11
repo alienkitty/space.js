@@ -56,9 +56,15 @@ export class WebAudio {
     }
 
     static load(files) {
-        files.forEach((buffer, path) => {
-            this.add(this, basename(path), buffer);
-        });
+        if (files instanceof Map) {
+            files.forEach((buffer, path) => {
+                this.add(this, basename(path), buffer);
+            });
+        } else {
+            for (const path in files) {
+                this.add(this, basename(path), files[path]);
+            }
+        }
     }
 
     static add(parent, id, buffer, bypass) {
