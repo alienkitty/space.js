@@ -57,11 +57,10 @@ export class RenderManager {
 
         this.renderTargetB = this.renderTargetA.clone();
 
+        this.renderTargetBright = this.renderTargetA.clone();
         this.renderTargetsHorizontal = [];
         this.renderTargetsVertical = [];
         this.nMips = 5;
-
-        this.renderTargetBright = this.renderTargetA.clone();
 
         for (let i = 0, l = this.nMips; i < l; i++) {
             this.renderTargetsHorizontal.push(this.renderTargetA.clone());
