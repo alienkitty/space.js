@@ -74,6 +74,7 @@ export class UI extends Interface {
 
         this.buttons = [];
         this.isDetailsToggle = false;
+        this.isDetailsInfoToggle = false;
         this.animatedIn = false;
 
         this.init();
@@ -105,7 +106,7 @@ export class UI extends Interface {
         }
 
         if (this.data.detailsInfo) {
-            this.detailsInfo = new DetailsInfo(this.data.detailsInfo);
+            this.detailsInfo = new DetailsInfo({ ...this.data.detailsInfo, detailsButton: this.data.detailsButton });
             this.add(this.detailsInfo);
         }
 
@@ -277,19 +278,23 @@ export class UI extends Interface {
             if (this.animatedIn) {
                 if (this.details && this.details.animatedIn) {
                     this.isDetailsToggle = true;
+                }
 
-                    this.toggleDetails(false);
+                if (this.detailsInfo && this.detailsInfo.animatedIn) {
+                    this.isDetailsInfoToggle = true;
                 }
 
                 this.animateOut();
             } else {
+                this.animateIn();
+
                 if (this.isDetailsToggle) {
                     this.isDetailsToggle = false;
-
-                    this.toggleDetails(true);
                 }
 
-                this.animateIn();
+                if (this.isDetailsInfoToggle) {
+                    this.isDetailsInfoToggle = false;
+                }
             }
 
             Stage.events.emit('ui', { open: this.animatedIn, target: this });
@@ -349,6 +354,14 @@ export class UI extends Interface {
     }
 
     animateIn() {
+        if (this.details && this.isDetailsToggle) {
+            this.details.animateIn();
+        }
+
+        if (this.detailsInfo && this.isDetailsInfoToggle) {
+            this.detailsInfo.animateIn();
+        }
+
         if (this.header) {
             this.header.animateIn();
         }
@@ -402,8 +415,6 @@ export class UI extends Interface {
 
     toggleDetails(show) {
         if (show) {
-            this.details.animatedIn = true;
-
             if (this.detailsButton) {
                 this.detailsButton.open();
             }
@@ -414,8 +425,6 @@ export class UI extends Interface {
 
             this.details.animateIn();
         } else {
-            this.details.animatedIn = false;
-
             this.details.animateOut();
 
             if (this.detailsInfo) {

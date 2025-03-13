@@ -11,6 +11,8 @@ export class DetailsInfo extends Interface {
 
         this.data = data;
 
+        this.animatedIn = false;
+
         this.init();
         this.initViews();
     }
@@ -32,23 +34,19 @@ export class DetailsInfo extends Interface {
         this.container = new Interface('.container');
         this.container.css({
             position: 'relative',
-            margin: '10% 10% 6%'
+            padding: '10% 10% 6%',
+            pointerEvents: 'auto'
         });
         this.add(this.container);
     }
 
     initViews() {
         this.title = new DetailsTitle(this.data.title);
-        this.title.css({
-            width: 'fit-content',
-            pointerEvents: 'auto'
-        });
         this.container.add(this.title);
 
         this.info = new Interface('.info', 'p');
         this.info.css({
             width: 'fit-content',
-            pointerEvents: 'auto',
             textTransform: 'uppercase'
         });
         this.info.html(this.data.content);
@@ -63,9 +61,19 @@ export class DetailsInfo extends Interface {
 
     resize(width, height, dpr, breakpoint) {
         if (width < breakpoint) {
-            this.container.css({ margin: '0 20px 24px' });
+            if (this.data.detailsButton) {
+                this.container.css({
+                    padding: '0 20px 60px'
+                });
+            } else {
+                this.container.css({
+                    padding: '0 20px 24px'
+                });
+            }
         } else {
-            this.container.css({ margin: '10% 10% 6%' });
+            this.container.css({
+                padding: '10% 10% 6%'
+            });
         }
     }
 
@@ -86,6 +94,8 @@ export class DetailsInfo extends Interface {
         this.title.animateIn();
 
         this.css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, duration, 'easeOutCubic');
+
+        this.animatedIn = true;
     }
 
     animateOut(callback) {
@@ -96,5 +106,7 @@ export class DetailsInfo extends Interface {
                 callback();
             }
         });
+
+        this.animatedIn = false;
     }
 }
