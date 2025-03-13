@@ -399,11 +399,19 @@ export class UI extends Interface {
                 this.detailsButton.open();
             }
 
+            if (this.detailsInfo) {
+                this.detailsInfo.animateOut();
+            }
+
             this.details.animateIn();
         } else {
             this.details.animatedIn = false;
 
             this.details.animateOut();
+
+            if (this.detailsInfo) {
+                this.detailsInfo.animateIn();
+            }
 
             if (this.detailsButton) {
                 this.detailsButton.close();
