@@ -73,6 +73,7 @@ export class UI extends Interface {
         this.frame = 0;
 
         this.buttons = [];
+        this.isDetailsToggle = false;
         this.animatedIn = false;
 
         this.init();
@@ -274,12 +275,20 @@ export class UI extends Interface {
 
         if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
             if (this.animatedIn) {
-                this.animateOut();
-
                 if (this.details && this.details.animatedIn) {
+                    this.isDetailsToggle = true;
+
                     this.toggleDetails(false);
                 }
+
+                this.animateOut();
             } else {
+                if (this.isDetailsToggle) {
+                    this.isDetailsToggle = false;
+
+                    this.toggleDetails(true);
+                }
+
                 this.animateIn();
             }
 
