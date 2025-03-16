@@ -34,8 +34,7 @@ export class StandardMaterialEnvPanel extends Panel {
                 step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.x + (mesh.material.envMapRotation.x < 0 ? TwoPI : 0)),
                 callback: value => {
-                    value = MathUtils.degToRad(value);
-                    mesh.material.envMapRotation.x = value;
+                    mesh.material.envMapRotation.x = MathUtils.degToRad(value);
                 }
             },
             {
@@ -46,8 +45,7 @@ export class StandardMaterialEnvPanel extends Panel {
                 step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.y + (mesh.material.envMapRotation.y < 0 ? TwoPI : 0)),
                 callback: value => {
-                    value = MathUtils.degToRad(value);
-                    mesh.material.envMapRotation.y = value;
+                    mesh.material.envMapRotation.y = MathUtils.degToRad(value);
                 }
             },
             {
@@ -58,8 +56,7 @@ export class StandardMaterialEnvPanel extends Panel {
                 step: 1,
                 value: MathUtils.radToDeg(mesh.material.envMapRotation.z + (mesh.material.envMapRotation.z < 0 ? TwoPI : 0)),
                 callback: value => {
-                    value = MathUtils.degToRad(value);
-                    mesh.material.envMapRotation.z = value;
+                    mesh.material.envMapRotation.z = MathUtils.degToRad(value);
                 }
             },
             {

@@ -49,6 +49,7 @@ export class ScenePanel extends Panel {
                     }
                 );
             } else if (scene.background.isTexture) {
+                // TODO: Fix CubeTexture backgroundBlurriness
                 items.push(
                     {
                         type: 'slider',
@@ -80,8 +81,7 @@ export class ScenePanel extends Panel {
                         step: 1,
                         value: MathUtils.radToDeg(scene.backgroundRotation.x + (scene.backgroundRotation.x < 0 ? TwoPI : 0)),
                         callback: value => {
-                            value = MathUtils.degToRad(value);
-                            scene.backgroundRotation.x = value;
+                            scene.backgroundRotation.x = MathUtils.degToRad(value);
                         }
                     },
                     {
@@ -92,8 +92,7 @@ export class ScenePanel extends Panel {
                         step: 1,
                         value: MathUtils.radToDeg(scene.backgroundRotation.y + (scene.backgroundRotation.y < 0 ? TwoPI : 0)),
                         callback: value => {
-                            value = MathUtils.degToRad(value);
-                            scene.backgroundRotation.y = value;
+                            scene.backgroundRotation.y = MathUtils.degToRad(value);
                         }
                     },
                     {
@@ -104,8 +103,7 @@ export class ScenePanel extends Panel {
                         step: 1,
                         value: MathUtils.radToDeg(scene.backgroundRotation.z + (scene.backgroundRotation.z < 0 ? TwoPI : 0)),
                         callback: value => {
-                            value = MathUtils.degToRad(value);
-                            scene.backgroundRotation.z = value;
+                            scene.backgroundRotation.z = MathUtils.degToRad(value);
                         }
                     }
                 );
@@ -136,8 +134,7 @@ export class ScenePanel extends Panel {
                     step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
                     callback: value => {
-                        value = MathUtils.degToRad(value);
-                        scene.environmentRotation.x = value;
+                        scene.environmentRotation.x = MathUtils.degToRad(value);
                     }
                 },
                 {
@@ -148,8 +145,7 @@ export class ScenePanel extends Panel {
                     step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
                     callback: value => {
-                        value = MathUtils.degToRad(value);
-                        scene.environmentRotation.y = value;
+                        scene.environmentRotation.y = MathUtils.degToRad(value);
                     }
                 },
                 {
@@ -160,8 +156,7 @@ export class ScenePanel extends Panel {
                     step: 1,
                     value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
                     callback: value => {
-                        value = MathUtils.degToRad(value);
-                        scene.environmentRotation.z = value;
+                        scene.environmentRotation.z = MathUtils.degToRad(value);
                     }
                 }
             );
