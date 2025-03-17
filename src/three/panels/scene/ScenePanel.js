@@ -50,18 +50,23 @@ export class ScenePanel extends Panel {
                 );
             } else if (scene.background.isTexture) {
                 // TODO: Fix CubeTexture backgroundBlurriness
-                items.push(
-                    {
-                        type: 'slider',
-                        name: 'Blur',
-                        min: 0,
-                        max: 1,
-                        step: 0.01,
-                        value: scene.backgroundBlurriness,
-                        callback: value => {
-                            scene.backgroundBlurriness = value;
+                if (!scene.background.isCubeTexture) {
+                    items.push(
+                        {
+                            type: 'slider',
+                            name: 'Blur',
+                            min: 0,
+                            max: 1,
+                            step: 0.01,
+                            value: scene.backgroundBlurriness,
+                            callback: value => {
+                                scene.backgroundBlurriness = value;
+                            }
                         }
-                    },
+                    );
+                }
+
+                items.push(
                     {
                         type: 'slider',
                         name: 'Int',
