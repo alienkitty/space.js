@@ -1,7 +1,7 @@
-import { Color, ColorManagement, CubeTexture, DirectionalLight/* , EquirectangularReflectionMapping */, HemisphereLight, LinearSRGBColorSpace, MathUtils, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
+import { Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, MathUtils, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { CubeTextureLoader, Interface, Stage, TextureLoader, getFullscreenTriangle } from '@alienkitty/space.js/three';
+import { Interface, Stage, TextureLoader, getFullscreenTriangle } from '@alienkitty/space.js/three';
 
 export class WorldController {
     static init() {
@@ -67,9 +67,6 @@ export class WorldController {
         this.textureLoader = new TextureLoader();
         this.textureLoader.setPath('/examples/assets/textures/');
 
-        this.cubeTextureLoader = new CubeTextureLoader();
-        this.cubeTextureLoader.setPath('/examples/assets/textures/cube/');
-
         this.ktx2Loader = new KTX2Loader();
         this.ktx2Loader.setPath('/examples/assets/textures/cube/');
         this.ktx2Loader.setTranscoderPath('https://www.gstatic.com/basis-universal/versioned/2021-04-15-ba1c3e4/');
@@ -79,25 +76,6 @@ export class WorldController {
     }
 
     static async initBackground() {
-        /* const texture = await this.loadTexture('hiptyc_2020_8k_gal.jpg');
-        texture.mapping = EquirectangularReflectionMapping;
-        texture.colorSpace = SRGBColorSpace;
-
-        this.scene.background = texture; */
-        /* // https://jaxry.github.io/panorama-to-cubemap/
-        const cubeTexture = await this.loadCubeTexture([
-            'hiptyc_2020/hiptyc_2020_px.png', 'hiptyc_2020/hiptyc_2020_nx.png',
-            'hiptyc_2020/hiptyc_2020_py.png', 'hiptyc_2020/hiptyc_2020_ny.png',
-            'hiptyc_2020/hiptyc_2020_pz.png', 'hiptyc_2020/hiptyc_2020_nz.png'
-        ]);
-        cubeTexture.colorSpace = SRGBColorSpace; */
-        /* const cubeTexture = await this.loadCompressedCubeTexture([
-            'hiptyc_2020/hiptyc_2020_px.ktx2', 'hiptyc_2020/hiptyc_2020_nx.ktx2',
-            'hiptyc_2020/hiptyc_2020_py.ktx2', 'hiptyc_2020/hiptyc_2020_ny.ktx2',
-            'hiptyc_2020/hiptyc_2020_pz.ktx2', 'hiptyc_2020/hiptyc_2020_nz.ktx2'
-        ]);
-        cubeTexture.colorSpace = SRGBColorSpace; */
-        // const cubeTexture = await this.loadCompressedTexture('hiptyc_2020_cube.ktx2');
         const cubeTexture = await this.loadCompressedTexture('/examples/assets/textures/cube/hiptyc_2020_cube.ktx2');
         cubeTexture.colorSpace = SRGBColorSpace;
 
@@ -150,31 +128,12 @@ export class WorldController {
     };
 
     static ready = () => Promise.all([
-        this.textureLoader.ready(),
-        this.cubeTextureLoader.ready()
+        this.textureLoader.ready()
     ]);
 
     // Global handlers
 
-    static getTexture = (path, callback) => this.textureLoader.load(path, callback);
-
     static loadTexture = path => this.textureLoader.loadAsync(path);
 
-    static loadCubeTexture = paths => this.cubeTextureLoader.loadAsync(paths);
-
     static loadCompressedTexture = path => this.ktx2Loader.loadAsync(path);
-
-    // https://discourse.threejs.org/t/three-cubetexture-using-three-compressedtexture/7868/12
-    static loadCompressedCubeTexture = async paths => {
-        const images = await Promise.all([
-            this.loadCompressedTexture(paths[0]),
-            this.loadCompressedTexture(paths[1]),
-            this.loadCompressedTexture(paths[2]),
-            this.loadCompressedTexture(paths[3]),
-            this.loadCompressedTexture(paths[4]),
-            this.loadCompressedTexture(paths[5])
-        ]);
-
-        return new CubeTexture(images);
-    };
 }

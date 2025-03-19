@@ -53,7 +53,7 @@ export class App {
 
     static initWorld() {
         WorldController.init();
-        document.body.appendChild(WorldController.canvas.element);
+        Stage.add(WorldController.canvas);
     }
 
     static initViews() {
@@ -71,7 +71,7 @@ Distance from Sun: 230 million km
                 `
             }
         });
-        document.body.appendChild(this.ui.element);
+        Stage.add(this.ui);
     }
 
     static initControllers() {
@@ -163,7 +163,7 @@ Distance from Sun: 230 million km
             Stage.events.on('ui', this.onUI);
             window.addEventListener('keyup', this.onKeyUp);
         } else {
-            await wait(7000);
+            await wait(6000);
 
             this.ui.detailsInfo.animateIn();
 

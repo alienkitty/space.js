@@ -15,7 +15,7 @@ export class SunlightPanel extends Panel {
     }
 
     initPanel() {
-        const { /* hBlurMaterial, vBlurMaterial,  */vlMaterial } = RenderManager;
+        const { vlMaterial } = RenderManager;
 
         const { sun } = this.view;
 
@@ -57,18 +57,6 @@ export class SunlightPanel extends Panel {
             {
                 type: 'divider'
             },
-            /* {
-                type: 'slider',
-                name: 'Blur',
-                min: 0,
-                max: 10,
-                step: 0.1,
-                value: hBlurMaterial.uniforms.uBlurAmount.value,
-                callback: value => {
-                    hBlurMaterial.uniforms.uBlurAmount.value = value;
-                    vBlurMaterial.uniforms.uBlurAmount.value = value;
-                }
-            }, */
             {
                 type: 'slider',
                 name: 'Scale X',
@@ -214,7 +202,6 @@ export class SunlightPanel extends Panel {
                     this.setPanelValue('Color', colors.lightColor);
                     this.setPanelValue('Power', RenderManager.glowPower);
                     this.setPanelValue('Amount', RenderManager.glowAmount);
-                    // this.setPanelValue('Blur', RenderManager.blurAmount);
                     this.setPanelValue('Scale X', RenderManager.vlScale.x);
                     this.setPanelValue('Scale Y', RenderManager.vlScale.y);
                     this.setPanelValue('Swizzle', RenderManager.vlSwizzle);

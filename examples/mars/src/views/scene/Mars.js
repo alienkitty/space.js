@@ -25,7 +25,7 @@ export class Mars extends Group {
     }
 
     async initMesh() {
-        const { loadTexture/* , loadCompressedTexture */ } = WorldController;
+        const { loadTexture } = WorldController;
 
         const geometry = getSphericalCube(0.6, 40);
 
@@ -45,34 +45,8 @@ export class Mars extends Group {
                 loadTexture('cube/mars/mars_normal_ny.jpg'),
                 loadTexture('cube/mars/mars_normal_pz.jpg'),
                 loadTexture('cube/mars/mars_normal_nz.jpg')
-            ])/* ,
-            displaceFaces: await Promise.all([
-                loadTexture('cube/mars/mars_height_px.jpg'),
-                loadTexture('cube/mars/mars_height_nx.jpg'),
-                loadTexture('cube/mars/mars_height_py.jpg'),
-                loadTexture('cube/mars/mars_height_ny.jpg'),
-                loadTexture('cube/mars/mars_height_pz.jpg'),
-                loadTexture('cube/mars/mars_height_nz.jpg')
-            ]) */
-        });
-        /* const material = this.createCubeFaceMaterial({
-            mapFaces: await Promise.all([
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_px.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_nx.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_py.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_ny.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_pz.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_basecolor_nz.ktx2')
-            ]),
-            normalFaces: await Promise.all([
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_px.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_nx.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_py.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_ny.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_pz.ktx2'),
-                loadCompressedTexture('../assets/textures/cube/mars/mars_normal_nz.ktx2')
             ])
-        }); */
+        });
 
         const mesh = new Mesh(geometry, material);
         mesh.rotation.y = MathUtils.degToRad(15); // Start rotation
@@ -81,37 +55,25 @@ export class Mars extends Group {
         this.mesh = mesh;
     }
 
-    createCubeFaceMaterial({ mapFaces, normalFaces/* , displaceFaces */ }) {
+    createCubeFaceMaterial({ mapFaces, normalFaces }) {
         const { anisotropy } = WorldController;
 
         return mapFaces.map((texture, index) => {
             const map = mapFaces[index];
             const normalMap = normalFaces[index];
-            // const displacementMap = displaceFaces[index];
 
             map.colorSpace = SRGBColorSpace;
 
-            // Important: Make sure your normal map and
-            // displacement map do not have a color profile!
+            // Important: Make sure your normal map does not have a color profile!
             normalMap.colorSpace = NoColorSpace;
-            // displacementMap.colorSpace = NoColorSpace;
-
-            // map.flipY = false;
-            // normalMap.flipY = false;
 
             map.anisotropy = anisotropy;
             normalMap.anisotropy = anisotropy;
-            // displacementMap.anisotropy = anisotropy;
 
             const material = new MeshPhongMaterial({
-                // color: new Color().offsetHSL(0, 0, -0.65),
                 map,
-                // bumpMap,
-                // bumpScale: 40,
                 normalMap,
                 normalScale: new Vector2(2, -2),
-                // displacementMap,
-                // displacementScale: 0.01,
                 shininess: 0,
                 reflectivity: 0.1,
                 fog: false

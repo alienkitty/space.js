@@ -24,6 +24,8 @@ export class CameraController {
             // this.camera.position.z = 2.5;
             this.camera.position.set(-1.3, 0.7, 2);
         }
+
+        this.camera.lookAt(this.scene.position);
     };
 
     static update = () => {
