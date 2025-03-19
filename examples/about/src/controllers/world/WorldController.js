@@ -91,17 +91,17 @@ export class WorldController {
 
     static initLoaders() {
         this.textureLoader = new TextureLoader();
-        this.textureLoader.setPath('assets/textures/');
+        this.textureLoader.setPath('/examples/assets/textures/');
         /* this.textureLoader.setOptions({
             preserveData: true
         });
         this.textureLoader.cache = true; */
 
         this.environmentLoader = new EnvironmentTextureLoader(this.renderer);
-        this.environmentLoader.setPath('assets/textures/env/');
+        this.environmentLoader.setPath('/examples/assets/textures/env/');
 
         this.bufferGeometryLoader = new BufferGeometryLoader();
-        this.bufferGeometryLoader.setPath('assets/geometry/');
+        this.bufferGeometryLoader.setPath('/examples/assets/geometry/');
     }
 
     static async initEnvironment() {

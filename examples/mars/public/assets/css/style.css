@@ -135,10 +135,10 @@ canvas {
 }
 
 h1 {
-    margin: 0 0 10px -1px;
+    margin: 0 0 6px -3px;
     font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    font-size: 23px;
+    font-weight: 100;
+    font-size: 46px;
     line-height: 1;
     letter-spacing: normal;
     text-transform: uppercase;
@@ -224,7 +224,7 @@ input, pre, .info, .target, .panel, .number, .name, .type, .primary, .secondary,
     width: 44px;
 }
 
-.ui > .info {
+.preloader h2, .ui > .info {
     padding: 6px;
     font-family: var(--ui-info-font-family);
     font-weight: var(--ui-info-font-weight);

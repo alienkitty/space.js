@@ -265,6 +265,7 @@ scene.environmentIntensity = 1.2;
 [radial graph](https://space.js.org/examples/three/3d_radial_graph.html) (graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status.html) (details, graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status_thread.html) (websocket thread, graph and panel tracking)  
+[mars](https://space.js.org/examples/mars/) (details info, ambient audio)  
 
 #### audio
 
@@ -295,6 +296,7 @@ npx servez
 npm i -D eslint eslint-plugin-html
 npx eslint src
 npx eslint examples/about/src
+npx eslint examples/mars/src
 npx eslint examples/three/*.html
 npx eslint examples/*.html
 ```
