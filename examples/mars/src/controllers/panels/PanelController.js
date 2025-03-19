@@ -27,7 +27,6 @@ export class PanelController {
         const sceneOptions = {
             Mars: MarsPanel,
             Sunlight: SunlightPanel,
-            // TODO: Fix CubeTexture backgroundBlurriness
             Space: ScenePanel,
             Post: PostPanel
         };

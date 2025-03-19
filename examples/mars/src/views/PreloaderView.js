@@ -145,7 +145,7 @@ export class PreloaderView extends Interface {
 
     // Public methods
 
-    animateIn = async () => {
+    animateIn = () => {
     };
 
     animateOut = () => {

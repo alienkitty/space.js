@@ -13,7 +13,7 @@ export const layers = {
 
 export const params = {
     animate: !isDebug,
-    speed: 1
+    speed: 0.5
 };
 
 export const store = {

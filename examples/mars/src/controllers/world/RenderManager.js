@@ -1,4 +1,4 @@
-import { Color/* , HalfFloatType */, MathUtils, Mesh, MeshBasicMaterial, OrthographicCamera, Vector2, Vector3, WebGLRenderTarget } from 'three';
+import { Color, MathUtils, Mesh, MeshBasicMaterial, OrthographicCamera, Vector2, Vector3, WebGLRenderTarget } from 'three';
 import { BloomCompositeMaterial, BlurMaterial, LuminosityMaterial, SMAABlendMaterial, SMAAEdgesMaterial, SMAAWeightsMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
 
 import { WorldController } from './WorldController.js';
@@ -85,15 +85,8 @@ export class RenderManager {
         });
 
         this.renderTargetB = this.renderTargetA.clone();
-
-        this.renderTargetEdges = new WebGLRenderTarget(1, 1, {
-            // type: HalfFloatType,
-            depthBuffer: false
-        });
-        this.renderTargetWeights = new WebGLRenderTarget(1, 1, {
-            // type: HalfFloatType,
-            depthBuffer: false
-        });
+        this.renderTargetEdges = this.renderTargetA.clone();
+        this.renderTargetWeights = this.renderTargetA.clone();
 
         this.renderTargetBloomA = this.renderTargetA.clone();
         this.renderTargetBloomB = this.renderTargetA.clone();
