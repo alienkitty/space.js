@@ -1,4 +1,4 @@
-import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, clearTween, delayedCall, ticker, wait } from '@alienkitty/space.js/three';
 
 import { AudioController } from './audio/AudioController.js';
 import { WorldController } from './world/WorldController.js';
@@ -14,8 +14,6 @@ import { isDebug, store } from '../config/Config.js';
 export class App {
     static async init(loader) {
         this.loader = loader;
-
-        this.animatedIn = false;
 
         this.initThread();
         this.initWorld();
@@ -62,6 +60,112 @@ export class App {
 
         this.ui = new UI({
             fps: true,
+            detailsButton: true,
+            details: {
+                dividerLine: true,
+                width: '50vw',
+                title: 'Mars',
+                content: [
+                    {
+                        content: /* html */ `
+Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.
+                        `,
+                        links: [
+                            {
+                                title: 'Wikipedia',
+                                link: 'https://en.wikipedia.org/wiki/Mars'
+                            },
+                            {
+                                title: 'About this project',
+                                link: ''
+                            }
+                        ]
+                    },
+                    {
+                        title: 'Distance from Sun',
+                        content: '230 million km',
+                        width: 145
+                    },
+                    {
+                        title: 'Mass',
+                        content: '0.107 Earths',
+                        width: 105
+                    },
+                    {
+                        title: 'Surface gravity',
+                        content: '0.3794 Earths',
+                        width: 130
+                    },
+                    {
+                        title: ''
+                    },
+                    {
+                        title: 'About',
+                        content: /* html */ `
+This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.
+<br>
+<br>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.
+                        `,
+                        links: [
+                            {
+                                title: 'GitHub',
+                                link: 'https://github.com/alienkitty/space.js/tree/main/examples/mars'
+                            },
+                            {
+                                title: 'Back to details',
+                                link: ''
+                            }
+                        ],
+                        width: '100%'
+                    },
+                    {
+                        title: 'Textures',
+                        content: /* html */ `
+John Van Vliet
+<br>Celestia Origin
+<br>Deep Star Maps 2020
+                        `,
+                        width: 145
+                    },
+                    {
+                        title: 'Licenses',
+                        content: /* html */ `
+Source code: MIT
+<br>Art and design: CC BY
+<br>Audio: CC BY
+<br>Textures: CC BY-SA
+                        `,
+                        width: 255
+                    },
+                    {
+                        title: 'Development',
+                        content: /* html */ `
+Space.js
+<br>Alien.js
+<br>Three.js
+<br>GDAL
+<br>ImageMagick
+                        `,
+                        width: 145
+                    },
+                    {
+                        title: 'Fonts',
+                        content: /* html */ `
+Roboto
+<br>Roboto Mono
+<br>Gothic A1
+                        `,
+                        width: 105
+                    },
+                    {
+                        title: 'Audio',
+                        content: /* html */ `
+Generative.fm
+                        `,
+                        width: 130
+                    }
+                ]
+            },
             detailsInfo: {
                 title: 'Mars',
                 content: /* html */ `
@@ -71,6 +175,7 @@ Distance from Sun: 230 million km
                 `
             }
         });
+        this.ui.css({ position: 'static' });
         Stage.add(this.ui);
     }
 
@@ -123,22 +228,15 @@ Distance from Sun: 230 million km
         // console.log('FPS', this.ui.header.info.fps);
     };
 
-    static onUI = ({ open }) => {
-        if (open) {
-            this.ui.detailsInfo.animateIn();
-            this.animatedIn = true;
-        }
-    };
+    static onDetails = ({ open }) => {
+        clearTween(this.timeout);
 
-    static onKeyUp = e => {
-        if (e.keyCode === 27) { // Esc
-            if (this.animatedIn) {
-                this.ui.detailsInfo.animateOut();
-                this.animatedIn = false;
-            } else {
-                this.ui.detailsInfo.animateIn();
-                this.animatedIn = true;
-            }
+        if (open) {
+            document.documentElement.classList.add('scroll');
+        } else {
+            this.timeout = delayedCall(400, () => {
+                document.documentElement.classList.remove('scroll');
+            });
         }
     };
 
@@ -150,8 +248,6 @@ Distance from Sun: 230 million km
     };
 
     static animateIn = async () => {
-        this.animatedIn = true;
-
         WorldController.animateIn();
         CameraController.animateIn();
         SceneController.animateIn();
@@ -160,19 +256,14 @@ Distance from Sun: 230 million km
             this.ui.detailsInfo.animateIn();
             this.ui.animateIn();
 
-            Stage.events.on('ui', this.onUI);
-            window.addEventListener('keyup', this.onKeyUp);
+            Stage.events.on('details', this.onDetails);
         } else {
             await wait(6000);
-
             this.ui.detailsInfo.animateIn();
-
             await wait(3000);
-
             this.ui.animateIn();
 
-            Stage.events.on('ui', this.onUI);
-            window.addEventListener('keyup', this.onKeyUp);
+            Stage.events.on('details', this.onDetails);
         }
     };
 }
