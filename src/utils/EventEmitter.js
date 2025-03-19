@@ -54,6 +54,8 @@ export class EventEmitter {
     }
 
     destroy() {
+        this.map.clear();
+
         for (const prop in this) {
             this[prop] = null;
         }

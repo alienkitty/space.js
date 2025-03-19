@@ -96,6 +96,8 @@ export class Loader {
     }
 
     destroy() {
+        this.files.clear();
+
         this.events.destroy();
 
         for (const prop in this) {
