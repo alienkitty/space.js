@@ -7,7 +7,7 @@
                 "title": "Mars",
                 "content": [
                     {
-                        "content": "Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname \"the Red Planet\". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.",
+                        "content": "<p>Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname \"the Red Planet\". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.</p>",
                         "links": [
                             {
                                 "title": "Wikipedia",
@@ -44,7 +44,7 @@
                 "title": "About",
                 "content": [
                     {
-                        "content": "This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.<br><br>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.",
+                        "content": "<p>This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.</p><p>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.</p>",
                         "links": [
                             {
                                 "title": "GitHub",
