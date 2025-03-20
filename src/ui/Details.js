@@ -100,6 +100,19 @@ export class Details extends Interface {
 
     // Public methods
 
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        this.data = data;
+        this.content = [];
+        this.links = [];
+
+        this.container.empty();
+        this.initViews();
+    }
+
     addContent(target, data) {
         if (typeof data === 'object') {
             if (data.group !== undefined) {
