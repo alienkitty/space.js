@@ -90,7 +90,7 @@ export class App {
             detailsButton: true,
             details: {
                 dividerLine: true,
-                width: '50vw',
+                width: 'max(50vw, 250px)',
                 ...data.details
             },
             detailsInfo: {

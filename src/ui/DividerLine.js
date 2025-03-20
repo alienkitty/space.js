@@ -24,7 +24,7 @@ export class DividerLine extends Interface {
         this.top = new Interface('.line');
         this.top.css({
             position: 'absolute',
-            left: '50vw',
+            left: 'max(50vw, 250px)',
             top: 20,
             width: 1,
             height: 92,
@@ -37,7 +37,7 @@ export class DividerLine extends Interface {
         this.bottom = new Interface('.line');
         this.bottom.css({
             position: 'absolute',
-            left: '50vw',
+            left: 'max(50vw, 250px)',
             bottom: 20,
             width: 1,
             height: 92,
