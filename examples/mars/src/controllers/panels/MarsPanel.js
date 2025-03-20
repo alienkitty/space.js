@@ -175,10 +175,10 @@ export class MarsPanel extends Panel {
                 callback: () => {
                     this.setPanelValue('Speed', 0.5);
                     this.setPanelValue('Animate', !isDebug);
-                    this.setPanelValue('Hue', -2);
-                    this.setPanelValue('Saturate', -6);
+                    this.setPanelValue('Hue', -1);
+                    this.setPanelValue('Saturate', -10);
                     this.setPanelValue('Light', -3);
-                    this.setPanelValue('Bright', 5);
+                    this.setPanelValue('Bright', 6);
                     this.setPanelValue('Contrast', 10);
                     this.setPanelValue('Normal X', 2);
                     this.setPanelValue('Normal Y', -2);
