@@ -69,13 +69,15 @@ export class Details extends Interface {
         this.title = new DetailsTitle(this.data.title);
         this.container.add(this.title);
 
-        if (!Array.isArray(this.data.content)) {
-            this.data.content = [this.data.content];
-        }
+        if (this.data.content) {
+            if (!Array.isArray(this.data.content)) {
+                this.data.content = [this.data.content];
+            }
 
-        this.data.content.forEach(data => {
-            this.addContent(this.container, data);
-        });
+            this.data.content.forEach(data => {
+                this.addContent(this.container, data);
+            });
+        }
     }
 
     addListeners() {
