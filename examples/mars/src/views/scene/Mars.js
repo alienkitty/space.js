@@ -16,11 +16,18 @@ export class Mars extends Group {
         // 25 degree tilt
         this.rotation.z = MathUtils.degToRad(-25);
 
-        // HSL offset
-        this.hue = { value: -2 / 360 };
-        this.saturation = { value: -6 / 100 };
+        // HSL offset (more red)
+        // this.hue = { value: -2 / 360 };
+        // this.saturation = { value: -6 / 100 };
+        // this.lightness = { value: -3 / 100 };
+        // this.brightness = { value: 5 / 100 };
+        // this.contrast = { value: 10 / 100 };
+
+        // HSL offset (more yellow)
+        this.hue = { value: -1 / 360 };
+        this.saturation = { value: -10 / 100 };
         this.lightness = { value: -3 / 100 };
-        this.brightness = { value: 5 / 100 };
+        this.brightness = { value: 6 / 100 };
         this.contrast = { value: 10 / 100 };
     }
 
