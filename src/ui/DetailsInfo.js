@@ -57,6 +57,17 @@ export class DetailsInfo extends Interface {
 
     // Public methods
 
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        this.data = data;
+
+        this.container.empty();
+        this.initViews();
+    }
+
     setContent(content) {
         this.info.html(content);
     }

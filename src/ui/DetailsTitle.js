@@ -54,6 +54,10 @@ export class DetailsTitle extends Interface {
     }
 
     animateIn() {
+        if (!this.letters) {
+            return;
+        }
+
         shuffle(this.letters);
 
         const letters = this.letters.filter(letter => letter.text() !== '_').slice(0, 2);
