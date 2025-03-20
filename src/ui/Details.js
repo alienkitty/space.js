@@ -66,8 +66,10 @@ export class Details extends Interface {
     }
 
     initViews() {
-        this.title = new DetailsTitle(this.data.title);
-        this.container.add(this.title);
+        if (this.data.title) {
+            this.title = new DetailsTitle(this.data.title);
+            this.container.add(this.title);
+        }
 
         if (this.data.content) {
             if (!Array.isArray(this.data.content)) {
@@ -239,7 +241,9 @@ export class Details extends Interface {
             child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
 
-        this.title.animateIn();
+        if (this.title) {
+            this.title.animateIn();
+        }
 
         this.animatedIn = true;
     }
