@@ -3,6 +3,7 @@ import { Color, GLSL3, NoBlending, RawShaderMaterial } from 'three';
 import { colors } from '../config/Config.js';
 
 import blendSoftLight from '@alienkitty/alien.js/src/shaders/modules/blending/soft-light.glsl.js';
+import dither from '@alienkitty/alien.js/src/shaders/modules/dither/dither.glsl.js';
 
 const vertexShader = /* glsl */ `
 in vec3 position;
@@ -32,6 +33,7 @@ in vec2 vUv;
 out vec4 FragColor;
 
 ${blendSoftLight}
+${dither}
 
 void main() {
     FragColor = texture(tScene, vUv);
@@ -47,6 +49,10 @@ void main() {
 
     // Blend soft light background color
     FragColor = blendSoftLight(FragColor, vec4(uColor, 1.0), 0.8);
+
+    // Dithering
+    FragColor.rgb = dither(FragColor.rgb);
+    FragColor.a = 1.0;
 }
 `;
 
