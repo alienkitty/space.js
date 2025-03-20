@@ -2,7 +2,7 @@ import { AssetLoader, MultiLoader, Stage } from '@alienkitty/space.js/three';
 
 import { PreloaderView } from '../views/PreloaderView.js';
 
-import { store } from '../config/Config.js';
+import { assetPath, basePath, store } from '../config/Config.js';
 
 export class Preloader {
     static init() {
@@ -27,26 +27,27 @@ export class Preloader {
         this.view.animateIn();
 
         const assetLoader = new AssetLoader();
-        assetLoader.setPath('/examples/assets/');
+        // assetLoader.setPath(`${assetPath}/`);
         assetLoader.cache = true;
 
         assetLoader.loadAll([
-            // 'textures/cube/hiptyc_2020_cube.ktx2',
-            'textures/cube/mars/mars_basecolor_px.jpg',
-            'textures/cube/mars/mars_basecolor_nx.jpg',
-            'textures/cube/mars/mars_basecolor_py.jpg',
-            'textures/cube/mars/mars_basecolor_ny.jpg',
-            'textures/cube/mars/mars_basecolor_pz.jpg',
-            'textures/cube/mars/mars_basecolor_nz.jpg',
-            'textures/cube/mars/mars_normal_px.jpg',
-            'textures/cube/mars/mars_normal_nx.jpg',
-            'textures/cube/mars/mars_normal_py.jpg',
-            'textures/cube/mars/mars_normal_ny.jpg',
-            'textures/cube/mars/mars_normal_pz.jpg',
-            'textures/cube/mars/mars_normal_nz.jpg',
-            'textures/smaa/area.png',
-            'textures/smaa/search.png',
-            'sounds/enough_loop.mp3'
+            `${basePath}/assets/data/data.json`,
+            // `${assetPath}/textures/cube/hiptyc_2020_cube.ktx2`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_px.jpg`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_nx.jpg`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_py.jpg`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_ny.jpg`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_pz.jpg`,
+            `${assetPath}/textures/cube/mars/mars_basecolor_nz.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_px.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_nx.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_py.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_ny.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_pz.jpg`,
+            `${assetPath}/textures/cube/mars/mars_normal_nz.jpg`,
+            `${assetPath}/textures/smaa/area.png`,
+            `${assetPath}/textures/smaa/search.png`,
+            `${assetPath}/sounds/enough_loop.mp3`
         ]);
 
         this.loader = new MultiLoader();

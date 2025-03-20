@@ -1,4 +1,4 @@
-import { tween } from '@alienkitty/space.js/three';
+import { router, tween } from '@alienkitty/space.js/three';
 
 import { WorldController } from './WorldController.js';
 import { RenderManager } from './RenderManager.js';
@@ -32,7 +32,9 @@ export class CameraController {
     };
 
     static start = () => {
-        if (isDebug) {
+        const { data } = router.get(location.pathname);
+
+        if (isDebug || data.path === '/about') {
             return;
         }
 
@@ -42,7 +44,9 @@ export class CameraController {
     };
 
     static animateIn = () => {
-        if (isDebug) {
+        const { data } = router.get(location.pathname);
+
+        if (isDebug || data.path === '/about') {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
             return;

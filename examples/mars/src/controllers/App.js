@@ -1,5 +1,7 @@
-import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, clearTween, delayedCall, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, clearTween, delayedCall, router, ticker, wait } from '@alienkitty/space.js/three';
 
+import { Data } from '../data/Data.js';
+import { Page } from '../data/Page.js';
 import { AudioController } from './audio/AudioController.js';
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
@@ -9,28 +11,34 @@ import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
 import { SceneView } from '../views/SceneView.js';
 
-import { isDebug, store } from '../config/Config.js';
+import { basePath, isDebug, store } from '../config/Config.js';
 
 export class App {
     static async init(loader) {
         this.loader = loader;
 
+        this.isTransitioning = false;
+
         this.initThread();
         this.initWorld();
+
+        store.loading = 'Transfer';
+        await Promise.all([
+            document.fonts.ready,
+            this.loader.ready()
+        ]);
+
+        store.loading = 'Data';
+        this.initData();
+        this.initRouter();
         this.initViews();
         this.initControllers();
 
         this.addListeners();
         this.onResize();
 
-        store.loading = 'Transfer';
-        await Promise.all([
-            document.fonts.ready,
-            SceneController.ready(),
-            this.loader.ready()
-        ]);
-
         store.loading = 'Textures';
+        await SceneController.ready();
         await WorldController.ready();
         store.loading = 'Shaders';
         await SceneController.precompile();
@@ -54,7 +62,26 @@ export class App {
         Stage.add(WorldController.canvas);
     }
 
+    static initData() {
+        const data = this.loader.files.get(`${basePath}/assets/data/data.json`);
+
+        Data.init(data);
+    }
+
+    static initRouter() {
+        Data.pages.forEach(page => {
+            router.add(page.path, Page, page);
+        });
+
+        router.init({
+            path: basePath,
+            scrollRestoration: 'auto'
+        });
+    }
+
     static initViews() {
+        const { data } = router.get(location.pathname);
+
         this.view = new SceneView();
         WorldController.scene.add(this.view);
 
@@ -64,107 +91,7 @@ export class App {
             details: {
                 dividerLine: true,
                 width: '50vw',
-                title: 'Mars',
-                content: [
-                    {
-                        content: /* html */ `
-Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.
-                        `,
-                        links: [
-                            {
-                                title: 'Wikipedia',
-                                link: 'https://en.wikipedia.org/wiki/Mars'
-                            },
-                            {
-                                title: 'About this project',
-                                link: ''
-                            }
-                        ]
-                    },
-                    {
-                        title: 'Distance from Sun',
-                        content: '230 million km',
-                        width: 145
-                    },
-                    {
-                        title: 'Mass',
-                        content: '0.107 Earths',
-                        width: 105
-                    },
-                    {
-                        title: 'Surface gravity',
-                        content: '0.3794 Earths',
-                        width: 130
-                    },
-                    {
-                        title: ''
-                    },
-                    {
-                        title: 'About',
-                        content: /* html */ `
-This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.
-<br>
-<br>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.
-                        `,
-                        links: [
-                            {
-                                title: 'GitHub',
-                                link: 'https://github.com/alienkitty/space.js/tree/main/examples/mars'
-                            },
-                            {
-                                title: 'Back to details',
-                                link: ''
-                            }
-                        ],
-                        width: '100%'
-                    },
-                    {
-                        title: 'Textures',
-                        content: /* html */ `
-John Van Vliet
-<br>Celestia Origin
-<br>Deep Star Maps 2020
-                        `,
-                        width: 145
-                    },
-                    {
-                        title: 'Licenses',
-                        content: /* html */ `
-Source code: MIT
-<br>Art and design: CC BY
-<br>Audio: CC BY
-<br>Textures: CC BY-SA
-                        `,
-                        width: 255
-                    },
-                    {
-                        title: 'Development',
-                        content: /* html */ `
-Space.js
-<br>Alien.js
-<br>Three.js
-<br>GDAL
-<br>ImageMagick
-                        `,
-                        width: 145
-                    },
-                    {
-                        title: 'Fonts',
-                        content: /* html */ `
-Roboto
-<br>Roboto Mono
-<br>Gothic A1
-                        `,
-                        width: 105
-                    },
-                    {
-                        title: 'Audio',
-                        content: /* html */ `
-Generative.fm
-                        `,
-                        width: 130
-                    }
-                ]
+                ...data.details
             },
             detailsInfo: {
                 title: 'Mars',
@@ -176,6 +103,14 @@ Distance from Sun: 230 million km
             }
         });
         this.ui.css({ position: 'static' });
+
+        if (data.path === '/about') {
+            this.ui.details.title.css({ marginLeft: 0 });
+        }
+
+        this.ui.link = this.ui.details.links[1];
+        this.ui.link.events.on('click', this.onClick);
+
         Stage.add(this.ui);
     }
 
@@ -201,12 +136,34 @@ Distance from Sun: 230 million km
     }
 
     static addListeners() {
+        window.addEventListener('popstate', this.onPopState);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
         ticker.start();
     }
 
     // Event handlers
+
+    static onPopState = () => {
+        const { data } = router.get(location.pathname);
+
+        if (data.path === '/about' && this.ui.detailsInfo.animatedIn) {
+            this.setDetails();
+            this.ui.toggleDetails(true);
+        } else {
+            this.isTransitioning = true;
+
+            this.ui.details.animateOut(() => {
+                this.setDetails();
+
+                if (!this.ui.detailsInfo.animatedIn) {
+                    this.ui.details.animateIn();
+                }
+
+                this.isTransitioning = false;
+            });
+        }
+    };
 
     static onResize = () => {
         const width = document.documentElement.clientWidth;
@@ -236,11 +193,38 @@ Distance from Sun: 230 million km
         } else {
             this.timeout = delayedCall(400, () => {
                 document.documentElement.classList.remove('scroll');
+
+                const path = router.getPath('/');
+                router.setPath(path);
             });
         }
     };
 
+    static onClick = (e, { target }) => {
+        e.preventDefault();
+
+        const path = router.getPath(target.link);
+        router.setPath(target.link !== '/' ? `${path}/` : path);
+    };
+
     // Public methods
+
+    static setDetails = () => {
+        const { data } = router.get(location.pathname);
+
+        if (this.ui.link) {
+            this.ui.link.events.off('click', this.onClick);
+        }
+
+        this.ui.details.setData(data.details);
+
+        if (data.path === '/about') {
+            this.ui.details.title.css({ marginLeft: 0 });
+        }
+
+        this.ui.link = this.ui.details.links[1];
+        this.ui.link.events.on('click', this.onClick);
+    };
 
     static start = () => {
         AudioController.trigger('mars_start');
@@ -248,19 +232,33 @@ Distance from Sun: 230 million km
     };
 
     static animateIn = async () => {
+        const { data } = router.get(location.pathname);
+
         WorldController.animateIn();
         CameraController.animateIn();
         SceneController.animateIn();
 
-        if (isDebug) {
-            this.ui.detailsInfo.animateIn();
+        if (isDebug || data.path === '/about') {
+            if (data.path === '/' && !this.ui.details.animatedIn && !this.isTransitioning) {
+                this.ui.detailsInfo.animateIn();
+            } else if (data.path === '/about') {
+                this.ui.toggleDetails(true);
+
+                document.documentElement.classList.add('scroll');
+            }
+
             this.ui.animateIn();
 
             Stage.events.on('details', this.onDetails);
         } else {
             await wait(6000);
-            this.ui.detailsInfo.animateIn();
+
+            if (!this.ui.details.animatedIn && !this.isTransitioning) {
+                this.ui.detailsInfo.animateIn();
+            }
+
             await wait(3000);
+
             this.ui.animateIn();
 
             Stage.events.on('details', this.onDetails);

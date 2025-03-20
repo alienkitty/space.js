@@ -3,6 +3,8 @@ import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Interface, Stage, TextureLoader, getFullscreenTriangle } from '@alienkitty/space.js/three';
 
+import { assetPath } from '../../config/Config.js';
+
 export class WorldController {
     static init() {
         this.backgroundIntensity = 1.2;
@@ -65,10 +67,10 @@ export class WorldController {
 
     static initLoaders() {
         this.textureLoader = new TextureLoader();
-        this.textureLoader.setPath('/examples/assets/textures/');
+        this.textureLoader.setPath(`${assetPath}/textures/`);
 
         this.ktx2Loader = new KTX2Loader();
-        this.ktx2Loader.setPath('/examples/assets/textures/cube/');
+        this.ktx2Loader.setPath(`${assetPath}/textures/cube/`);
         this.ktx2Loader.setTranscoderPath('https://www.gstatic.com/basis-universal/versioned/2021-04-15-ba1c3e4/');
         this.ktx2Loader.detectSupport(this.renderer);
         // TODO: Fix KTX2Loader setPath()
@@ -76,7 +78,7 @@ export class WorldController {
     }
 
     static async initBackground() {
-        const cubeTexture = await this.loadCompressedTexture('/examples/assets/textures/cube/hiptyc_2020_cube.ktx2');
+        const cubeTexture = await this.loadCompressedTexture(`${assetPath}/textures/cube/hiptyc_2020_cube.ktx2`);
         cubeTexture.colorSpace = SRGBColorSpace;
 
         this.scene.background = cubeTexture;
