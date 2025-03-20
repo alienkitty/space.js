@@ -41,8 +41,10 @@ export class DetailsInfo extends Interface {
     }
 
     initViews() {
-        this.title = new DetailsTitle(this.data.title);
-        this.container.add(this.title);
+        if (this.data.title) {
+            this.title = new DetailsTitle(this.data.title);
+            this.container.add(this.title);
+        }
 
         if (this.data.content) {
             this.info = new Interface('.info', 'p');
@@ -104,7 +106,9 @@ export class DetailsInfo extends Interface {
             child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
 
-        this.title.animateIn();
+        if (this.title) {
+            this.title.animateIn();
+        }
 
         this.css({ x: -10, opacity: 0 }).tween({ x: 0, opacity: 1 }, duration, 'easeOutCubic');
 
