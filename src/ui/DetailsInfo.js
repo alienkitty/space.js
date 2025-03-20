@@ -44,13 +44,15 @@ export class DetailsInfo extends Interface {
         this.title = new DetailsTitle(this.data.title);
         this.container.add(this.title);
 
-        this.info = new Interface('.info', 'p');
-        this.info.css({
-            width: 'fit-content',
-            textTransform: 'uppercase'
-        });
-        this.info.html(this.data.content);
-        this.container.add(this.info);
+        if (this.data.content) {
+            this.info = new Interface('.info', 'p');
+            this.info.css({
+                width: 'fit-content',
+                textTransform: 'uppercase'
+            });
+            this.info.html(this.data.content);
+            this.container.add(this.info);
+        }
     }
 
     // Public methods
