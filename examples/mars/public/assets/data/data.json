@@ -1,0 +1,88 @@
+{
+    "pages": [
+        {
+            "path": "/",
+            "title": "",
+            "details": {
+                "title": "Mars",
+                "content": [
+                    {
+                        "content": "Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname \"the Red Planet\". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.",
+                        "links": [
+                            {
+                                "title": "Wikipedia",
+                                "link": "https://en.wikipedia.org/wiki/Mars"
+                            },
+                            {
+                                "title": "About this project",
+                                "link": "/about"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Distance from Sun",
+                        "content": "230 million km",
+                        "width": 145
+                    },
+                    {
+                        "title": "Mass",
+                        "content": "0.107 Earths",
+                        "width": 105
+                    },
+                    {
+                        "title": "Surface gravity",
+                        "content": "0.3794 Earths",
+                        "width": 130
+                    }
+                ]
+            }
+        },
+        {
+            "path": "/about",
+            "title": "About",
+            "details": {
+                "title": "About",
+                "content": [
+                    {
+                        "content": "This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.<br><br>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.",
+                        "links": [
+                            {
+                                "title": "GitHub",
+                                "link": "https://github.com/alienkitty/space.js/tree/main/examples/mars"
+                            },
+                            {
+                                "title": "Back to details",
+                                "link": "/"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Textures",
+                        "content": "John Van Vliet<br>Celestia Origin<br>Deep Star Maps 2020",
+                        "width": 145
+                    },
+                    {
+                        "title": "Licenses",
+                        "content": "Source code: MIT<br>Art and design: CC BY<br>Audio: CC BY<br>Textures: CC BY-SA",
+                        "width": 255
+                    },
+                    {
+                        "title": "Development",
+                        "content": "Space.js<br>Alien.js<br>Three.js<br>GDAL<br>ImageMagick",
+                        "width": 145
+                    },
+                    {
+                        "title": "Fonts",
+                        "content": "Roboto<br>Roboto Mono<br>Gothic A1",
+                        "width": 105
+                    },
+                    {
+                        "title": "Audio",
+                        "content": "Generative.fm",
+                        "width": 130
+                    }
+                ]
+            }
+        }
+    ]
+}
