@@ -198,6 +198,8 @@ Distance from Sun: 230 million km
                 router.setPath(path);
             });
         }
+
+        CameraController.setDetails(open);
     };
 
     static onClick = (e, { target }) => {
@@ -242,6 +244,7 @@ Distance from Sun: 230 million km
             if (data.path === '/' && !this.ui.details.animatedIn && !this.isTransitioning) {
                 this.ui.detailsInfo.animateIn();
             } else if (data.path === '/about') {
+                CameraController.setDetails(true, true);
                 this.ui.toggleDetails(true);
 
                 document.documentElement.classList.add('scroll');
