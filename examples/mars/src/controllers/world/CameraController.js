@@ -1,4 +1,5 @@
-import { router, tween } from '@alienkitty/space.js/three';
+import { MathUtils } from 'three';
+import { clearTween, router, tween } from '@alienkitty/space.js/three';
 
 import { WorldController } from './WorldController.js';
 import { RenderManager } from './RenderManager.js';
@@ -9,12 +10,41 @@ export class CameraController {
     static init(scene, camera) {
         this.scene = scene;
         this.camera = camera;
+
+        this.offsetX = 0;
+        this.progress = 0;
+        this.isDetailsOpen = false;
+    }
+
+    static transition(fast) {
+        clearTween(this);
+
+        if (fast) {
+            this.camera.view.offsetX = this.isDetailsOpen ? this.offsetX : 0;
+            this.camera.updateProjectionMatrix();
+        } else {
+            this.progress = 0;
+
+            tween(this, { progress: 1 }, 2000, 'easeInOutSine', null, () => {
+                this.camera.view.offsetX = MathUtils.lerp(this.camera.view.offsetX, this.isDetailsOpen ? this.offsetX : 0, this.progress);
+                this.camera.updateProjectionMatrix();
+            });
+        }
     }
 
     // Public methods
 
+    static setDetails = (open, fast) => {
+        this.isDetailsOpen = open;
+
+        this.transition(fast);
+    };
+
     static resize = (width, height) => {
+        this.offsetX = -width / 4;
+
         this.camera.aspect = width / height;
+        this.camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
         this.camera.updateProjectionMatrix();
 
         if (width < height) {
