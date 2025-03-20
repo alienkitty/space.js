@@ -19,8 +19,8 @@ export class RenderManager {
         this.view = view;
 
         // Bloom
-        this.bloomReduction = 0.02;
-        this.bloomBoost = 3;
+        this.bloomReduction = 0.3;
+        this.bloomBoost = 6;
         this.bloomClamp = 1;
         this.bloomResolutionScale = 0.25;
         this.bloomAmount = 1;
