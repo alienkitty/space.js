@@ -64,7 +64,7 @@
             },
             {
                 type: 'list',
-                name: 'Toggle',
+                name: 'List Toggle',
                 list: toggleOptions,
                 value: getKeyByValue(toggleOptions, false),
                 callback: value => {
@@ -84,7 +84,7 @@
             },
             {
                 type: 'list',
-                name: 'Select',
+                name: 'List Select',
                 list: selectOptions,
                 value: 'Never',
                 callback: value => {
@@ -220,6 +220,49 @@
                 type: 'divider'
             },
             {
+                type: 'toggle',
+                name: 'Toggle',
+                value: false,
+                callback: (value, item) => {
+                    console.log('Toggle with content callback:', value);
+
+                    if (!item.hasContent()) {
+                        const nestedPanel = new Panel();
+                        nestedPanel.animateIn(true);
+
+                        [
+                            {
+                                type: 'divider'
+                            },
+                            {
+                                type: 'color',
+                                name: 'Nested Color 3',
+                                value: backgroundColor,
+                                callback: value => {
+                                    document.body.style.backgroundColor = `#${value.getHexString()}`;
+
+                                    // Light colour is inverted
+                                    panel.invert(brightness(value) > 0.6);
+                                }
+                            }
+                        ].forEach(data => {
+                            nestedPanel.add(new PanelItem(data));
+                        });
+
+                        item.setContent(nestedPanel);
+                    }
+
+                    if (value > 0) {
+                        item.toggleContent(true);
+                    } else {
+                        item.toggleContent(false);
+                    }
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
                 type: 'content',
                 callback: (value, item) => {
                     const nestedPanel = new Panel();
@@ -228,7 +271,7 @@
                     [
                         {
                             type: 'color',
-                            name: 'Nested Color 3',
+                            name: 'Nested Color 4',
                             value: backgroundColor,
                             callback: value => {
                                 document.body.style.backgroundColor = `#${value.getHexString()}`;
@@ -265,14 +308,16 @@
                     console.log('Link callback:', value);
 
                     panel.setPanelValue('Color', backgroundColor);
-                    panel.setPanelValue('Toggle', false);
-                    panel.setPanelValue('Select', 1);
+                    panel.setPanelValue('List Toggle', false);
+                    panel.setPanelValue('List Select', 1);
                     panel.setPanelValue('List Content', 1);
                     panel.setPanelValue('Nested Color 1', backgroundColor);
                     panel.setPanelValue('Nested', 0.5);
                     panel.setPanelValue('Slider', 0);
                     panel.setPanelValue('Nested Color 2', backgroundColor);
+                    panel.setPanelValue('Toggle', false);
                     panel.setPanelValue('Nested Color 3', backgroundColor);
+                    panel.setPanelValue('Nested Color 4', backgroundColor);
                     panel.setPanelValue('Thumbnail', image);
                     // panel.setPanelValue('Thumbnail', null);
                 }

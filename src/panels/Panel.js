@@ -21,6 +21,7 @@ import { ticker } from '../tween/Ticker.js';
  *     // type: 'meter'
  *     // type: 'list'
  *     // type: 'slider'
+ *     // type: 'toggle'
  *     // type: 'content'
  *     type: 'color'
  * });

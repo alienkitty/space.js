@@ -43,6 +43,7 @@ const item = new PanelItem({
     // type: 'meter'
     // type: 'list'
     // type: 'slider'
+    // type: 'toggle'
     // type: 'content'
     type: 'color'
 });

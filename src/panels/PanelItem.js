@@ -9,6 +9,7 @@ import { PanelGraph } from './PanelGraph.js';
 import { PanelMeter } from './PanelMeter.js';
 import { List } from './List.js';
 import { Slider } from './Slider.js';
+import { Toggle } from './Toggle.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
 
@@ -26,6 +27,7 @@ import { ColorPicker } from './ColorPicker.js';
  *     // type: 'meter'
  *     // type: 'list'
  *     // type: 'slider'
+ *     // type: 'toggle'
  *     // type: 'content'
  *     // type: 'color'
  * });
@@ -102,6 +104,10 @@ export class PanelItem extends Interface {
             this.container.add(this.view);
         } else if (this.data.type === 'slider') {
             this.view = new Slider(this.data);
+            this.view.events.on('update', this.onUpdate);
+            this.container.add(this.view);
+        } else if (this.data.type === 'toggle') {
+            this.view = new Toggle(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
         } else if (this.data.type === 'content') {

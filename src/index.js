@@ -47,6 +47,7 @@ export { List } from './panels/List.js';
 export { ListToggle } from './panels/ListToggle.js';
 export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
+export { Toggle } from './panels/Toggle.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
 
