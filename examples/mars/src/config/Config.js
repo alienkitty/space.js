@@ -15,6 +15,10 @@ export const layers = {
 };
 
 export const params = {
+    redTint: false,
+    sunGlow: true,
+    lights: true,
+    stars: true,
     animate: !isDebug,
     speed: 0.5
 };

@@ -5,11 +5,10 @@ import { SunlightPanel } from './SunlightPanel.js';
 import { PostPanel } from './PostPanel.js';
 
 export class PanelController {
-    static init(renderer, scene, camera, light, view, ui) {
+    static init(renderer, scene, camera, view, ui) {
         this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
-        this.light = light;
         this.view = view;
         this.ui = ui;
 
@@ -54,11 +53,19 @@ export class PanelController {
                 value: 'Mars',
                 callback: (value, item) => {
                     switch (value) {
-                        case 'Mars':
+                        case 'Mars': {
+                            const ScenePanel = sceneOptions[value];
+
+                            const scenePanel = new ScenePanel(this.scene, this.lights, this.view);
+                            scenePanel.animateIn(true);
+
+                            item.setContent(scenePanel);
+                            break;
+                        }
                         case 'Sunlight': {
                             const ScenePanel = sceneOptions[value];
 
-                            const scenePanel = new ScenePanel(this.light, this.view);
+                            const scenePanel = new ScenePanel(this.view);
                             scenePanel.animateIn(true);
 
                             item.setContent(scenePanel);

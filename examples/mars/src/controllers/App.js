@@ -130,9 +130,9 @@ Distance from Sun: 230 million km
     }
 
     static initPanel() {
-        const { renderer, scene, camera, light } = WorldController;
+        const { renderer, scene, camera } = WorldController;
 
-        PanelController.init(renderer, scene, camera, light, this.view, this.ui);
+        PanelController.init(renderer, scene, camera, this.view, this.ui);
     }
 
     static addListeners() {
