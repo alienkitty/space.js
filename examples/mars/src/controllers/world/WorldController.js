@@ -61,8 +61,6 @@ export class WorldController {
         const light = new DirectionalLight(0xffffff, 2);
         light.position.set(-3, 1.5, -1.5);
         this.scene.add(light);
-
-        this.light = light;
     }
 
     static initLoaders() {

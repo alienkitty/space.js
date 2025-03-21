@@ -5,10 +5,9 @@ import { RenderManager } from '../world/RenderManager.js';
 import { colors } from '../../config/Config.js';
 
 export class SunlightPanel extends Panel {
-    constructor(light, view) {
+    constructor(view) {
         super();
 
-        this.light = light;
         this.view = view;
 
         this.initPanel();
