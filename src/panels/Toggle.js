@@ -17,7 +17,7 @@ export class Toggle extends Interface {
         this.callback = callback;
 
         this.init();
-        this.setValue(this.value, false);
+        this.setValue(this.value);
 
         this.addListeners();
     }
