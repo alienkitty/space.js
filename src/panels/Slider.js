@@ -40,7 +40,7 @@ export class Slider extends Interface {
         this.lastOrigin = new Vector2();
 
         this.init();
-        this.setValue(this.value, false);
+        this.setValue(this.value);
 
         this.addListeners();
     }
