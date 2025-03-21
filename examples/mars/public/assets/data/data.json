@@ -44,7 +44,7 @@
                 "title": "About",
                 "content": [
                     {
-                        "content": "<p>This is a cinematic Mars demo featuring high quality cubemaps with 2k faces.</p><p>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.</p>",
+                        "content": "<p>A cinematic Mars demo featuring high quality cubemaps with 2k&nbsp;faces.</p><p>Special thanks to Brian T. Jacobs for help with generating the cubemaps and feedback, and John Van Vliet for contributing the 32k normal map.</p>",
                         "links": [
                             {
                                 "title": "GitHub",
