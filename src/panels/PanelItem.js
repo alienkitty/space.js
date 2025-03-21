@@ -97,10 +97,6 @@ export class PanelItem extends Interface {
             this.graph = new PanelMeter(this.data);
             this.container.add(this.graph);
         } else if (this.data.type === 'list') {
-            this.container.css({
-                margin: '2px 0 0'
-            });
-
             this.view = new List(this.data);
             this.view.events.on('update', this.onUpdate);
             this.container.add(this.view);
