@@ -37,7 +37,7 @@ export class SunlightPanel extends Panel {
                 name: 'Power',
                 min: 0,
                 max: 6,
-                step: 0.05,
+                step: 0.01,
                 value: vlMaterial.uniforms.uPower.value,
                 callback: value => {
                     vlMaterial.uniforms.uPower.value = value;

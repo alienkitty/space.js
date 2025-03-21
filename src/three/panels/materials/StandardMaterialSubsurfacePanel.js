@@ -68,7 +68,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                 name: 'Ambient',
                 min: 0,
                 max: 5,
-                step: 0.05,
+                step: 0.01,
                 value: mesh.userData.subsurfaceUniforms.thicknessAmbient.value,
                 callback: value => {
                     mesh.userData.subsurfaceUniforms.thicknessAmbient.value = value;
@@ -79,7 +79,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                 name: 'Atten',
                 min: 0,
                 max: 5,
-                step: 0.05,
+                step: 0.01,
                 value: mesh.userData.subsurfaceUniforms.thicknessAttenuation.value,
                 callback: value => {
                     mesh.userData.subsurfaceUniforms.thicknessAttenuation.value = value;
