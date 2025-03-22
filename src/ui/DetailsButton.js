@@ -131,32 +131,61 @@ export class DetailsButton extends Interface {
 
     // Public methods
 
-    setData(data) {
+    setData(data, fast) {
         if (!data) {
             return;
         }
 
-        if (!this.number) {
-            this.number = new Interface('.number');
-            this.number.css({
+        if (!this.container) {
+            this.container = new Interface('.number');
+            this.container.css({
                 position: 'absolute',
                 left: 34,
                 top: 12,
+                width: 'max-content',
                 fontVariantNumeric: 'tabular-nums',
                 letterSpacing: 'var(--ui-title-letter-spacing)'
             });
-            this.number.text(data.count);
-            this.add(this.number);
+            this.add(this.container);
         }
 
-        if (String(data.count) === this.number.text()) {
+        if (data.number) {
+            if (!this.number) {
+                this.number = new Interface('.number');
+                this.number.css({
+                    cssFloat: 'left'
+                });
+                this.number.text(data.number);
+                this.container.add(this.number);
+            }
+        }
+
+        if (data.total) {
+            if (!this.total) {
+                this.total = new Interface('.total');
+                this.total.css({
+                    cssFloat: 'left',
+                    marginLeft: 1,
+                    color: 'var(--ui-secondary-color)'
+                });
+                this.container.add(this.total);
+            }
+
+            this.total.text(`/${data.total}`);
+        }
+
+        if (String(data.number) === this.number.text()) {
             return;
         }
 
-        this.number.tween({ y: -10, opacity: 0 }, 300, 'easeInSine', () => {
-            this.number.text(data.count);
-            this.number.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
-        });
+        if (fast) {
+            this.number.text(data.number);
+        } else {
+            this.number.tween({ y: -10, opacity: 0 }, 300, 'easeInSine', () => {
+                this.number.text(data.number);
+                this.number.css({ y: 10 }).tween({ y: 0, opacity: 1 }, 1000, 'easeOutCubic');
+            });
+        }
     }
 
     resize() {
