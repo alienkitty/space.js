@@ -282,30 +282,23 @@ export class UI extends Interface {
         if (this.details) {
             if (e.keyCode === 27) { // Esc
                 this.onDetailsClick();
+
+                this.isDetailsToggle = this.details && this.details.animatedIn;
+                this.isDetailsInfoToggle = this.detailsInfo && this.detailsInfo.animatedIn;
             }
         }
 
         if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
             if (this.animatedIn) {
-                if (this.details && this.details.animatedIn) {
-                    this.isDetailsToggle = true;
-                }
-
-                if (this.detailsInfo && this.detailsInfo.animatedIn) {
-                    this.isDetailsInfoToggle = true;
-                }
+                this.isDetailsToggle = this.details && this.details.animatedIn;
+                this.isDetailsInfoToggle = this.detailsInfo && this.detailsInfo.animatedIn;
 
                 this.animateOut();
             } else {
                 this.animateIn();
 
-                if (this.isDetailsToggle) {
-                    this.isDetailsToggle = false;
-                }
-
-                if (this.isDetailsInfoToggle) {
-                    this.isDetailsInfoToggle = false;
-                }
+                this.isDetailsToggle = false;
+                this.isDetailsInfoToggle = false;
             }
 
             Stage.events.emit('ui', { open: this.animatedIn, target: this });
@@ -365,11 +358,11 @@ export class UI extends Interface {
     }
 
     animateIn() {
-        if (this.details && this.isDetailsToggle) {
+        if (this.details && this.isDetailsToggle && !this.details.animatedIn) {
             this.details.animateIn();
         }
 
-        if (this.detailsInfo && this.isDetailsInfoToggle) {
+        if (this.detailsInfo && this.isDetailsInfoToggle && !this.detailsInfo.animatedIn) {
             this.detailsInfo.animateIn();
         }
 
