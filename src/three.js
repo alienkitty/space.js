@@ -67,6 +67,7 @@ export * from './three/panels/Patches.js';
 export { UI } from './ui/UI.js';
 export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
+export { Footer } from './ui/Footer.js';
 export { NavTitle } from './ui/NavTitle.js';
 export { NavLink } from './ui/NavLink.js';
 export { Details } from './ui/Details.js';
