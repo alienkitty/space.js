@@ -7,6 +7,7 @@ import { Stage } from '../utils/Stage.js';
 import { Details } from './Details.js';
 import { DetailsInfo } from './DetailsInfo.js';
 import { Header } from './Header.js';
+import { Footer } from './Footer.js';
 import { Menu } from './Menu.js';
 import { Info } from './Info.js';
 import { Thumbnail } from './Thumbnail.js';
@@ -22,6 +23,7 @@ import { ticker } from '../tween/Ticker.js';
  * const ui = new UI({
  *     fps: true
  *     // header
+ *     // footer
  *     // menu
  *     // info
  *     // details
@@ -113,6 +115,11 @@ export class UI extends Interface {
         if (this.data.header || fps || fpsOpen) {
             this.header = new Header({ ...this.data.header, fps, fpsOpen });
             this.add(this.header);
+        }
+
+        if (this.data.footer) {
+            this.footer = new Footer(this.data.footer);
+            this.add(this.footer);
         }
 
         if (this.data.menu) {
@@ -212,6 +219,10 @@ export class UI extends Interface {
 
         if (this.header) {
             this.header.resize(width, height, dpr, this.breakpoint);
+        }
+
+        if (this.footer) {
+            this.footer.resize(width, height, dpr, this.breakpoint);
         }
 
         if (this.menu) {
@@ -366,6 +377,10 @@ export class UI extends Interface {
             this.header.animateIn();
         }
 
+        if (this.footer) {
+            this.footer.animateIn();
+        }
+
         if (this.menu) {
             this.menu.animateIn();
         }
@@ -390,6 +405,10 @@ export class UI extends Interface {
 
         if (this.header) {
             this.header.animateOut();
+        }
+
+        if (this.footer) {
+            this.footer.animateOut();
         }
 
         if (this.menu) {

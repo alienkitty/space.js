@@ -68,6 +68,7 @@ import { UI } from '@alienkitty/space.js';
 const ui = new UI({
     fps: true
     // header
+    // footer
     // menu
     // info
     // details
