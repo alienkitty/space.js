@@ -8,12 +8,14 @@ export class NavTitle extends Interface {
     constructor({
         link,
         target,
+        callback,
         ...data
     }) {
         super('.title');
 
         this.link = link;
         this.target = target;
+        this.callback = callback;
         this.data = data;
 
         this.init();
@@ -29,7 +31,7 @@ export class NavTitle extends Interface {
             pointerEvents: 'auto'
         });
 
-        if (this.link) {
+        if (this.link || this.callback) {
             this.css({ cursor: 'pointer' });
         }
 
@@ -50,13 +52,13 @@ export class NavTitle extends Interface {
     }
 
     addListeners() {
-        if (this.link) {
+        if (this.link || this.callback) {
             this.element.addEventListener('click', this.onClick);
         }
     }
 
     removeListeners() {
-        if (this.link) {
+        if (this.link || this.callback) {
             this.element.removeEventListener('click', this.onClick);
         }
     }
@@ -64,7 +66,13 @@ export class NavTitle extends Interface {
     // Event handlers
 
     onClick = () => {
-        open(this.link, this.target);
+        if (this.link) {
+            open(this.link, this.target);
+        }
+
+        if (this.callback) {
+            this.callback(this);
+        }
 
         this.events.emit('click', { target: this });
     };
@@ -76,6 +84,8 @@ export class NavTitle extends Interface {
             return;
         }
 
+        this.removeListeners();
+
         if (this.name) {
             this.name.html(data.name);
         }
@@ -86,12 +96,15 @@ export class NavTitle extends Interface {
 
         this.link = data.link;
         this.target = data.target;
+        this.callback = data.callback;
 
-        if (this.link) {
+        if (this.link || this.callback) {
             this.css({ cursor: 'pointer' });
         } else {
             this.css({ cursor: '' });
         }
+
+        this.addListeners();
     }
 
     destroy() {
