@@ -101,7 +101,10 @@
                 this.ui.css({ position: 'static' });
                 this.ui.info.animateIn();
                 this.ui.instructions.animateIn();
-                this.ui.detailsButton.setData({ count: 1 });
+                this.ui.detailsButton.setData({
+                    number: 1,
+                    total: 6
+                });
                 this.ui.toggleDetails(true);
                 document.body.appendChild(this.ui.element);
             }

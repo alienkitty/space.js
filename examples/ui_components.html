@@ -267,13 +267,30 @@
                 // Details button with number (closed)
                 const detailsButton3 = new DetailsButton();
                 detailsButton3.css({ marginLeft: 20 });
-                detailsButton3.setData({ count: 1 });
+                detailsButton3.setData({ number: 1 });
 
                 // Details button with number (open)
                 const detailsButton4 = new DetailsButton();
                 detailsButton4.css({ marginLeft: 20 });
-                detailsButton4.setData({ count: 1 });
+                detailsButton4.setData({ number: 1 });
                 detailsButton4.open();
+
+                // Details button with number and total (closed)
+                const detailsButton5 = new DetailsButton();
+                detailsButton5.css({ marginLeft: 20 });
+                detailsButton5.setData({
+                    number: 1,
+                    total: 6
+                });
+
+                // Details button with number and total (open)
+                const detailsButton6 = new DetailsButton();
+                detailsButton6.css({ marginLeft: 20 });
+                detailsButton6.setData({
+                    number: 1,
+                    total: 6
+                });
+                detailsButton6.open();
 
                 // Mute button (sound on)
                 const muteButton = new MuteButton({ sound: true });
@@ -302,6 +319,8 @@
                     detailsButton2,
                     detailsButton3,
                     detailsButton4,
+                    detailsButton5,
+                    detailsButton6,
                     muteButton,
                     muteButton2,
                     link,
@@ -319,6 +338,8 @@
                 this.detailsButton2 = detailsButton2;
                 this.detailsButton3 = detailsButton3;
                 this.detailsButton4 = detailsButton4;
+                this.detailsButton5 = detailsButton5;
+                this.detailsButton6 = detailsButton6;
                 this.muteButton = muteButton;
                 this.muteButton2 = muteButton2;
             }
@@ -333,11 +354,19 @@
 
             onClick = () => {
                 this.detailsButton3.setData({
-                    count: Number(this.detailsButton3.number.text()) + 1
+                    number: Number(this.detailsButton3.number.text()) + 1
                 });
 
                 this.detailsButton4.setData({
-                    count: Number(this.detailsButton4.number.text()) + 1
+                    number: Number(this.detailsButton4.number.text()) + 1
+                });
+
+                this.detailsButton5.setData({
+                    number: Number(this.detailsButton6.number.text()) + 1
+                });
+
+                this.detailsButton6.setData({
+                    number: Number(this.detailsButton6.number.text()) + 1
                 });
             };
 
@@ -375,6 +404,8 @@
                 this.detailsButton2.resize();
                 this.detailsButton3.resize();
                 this.detailsButton4.resize();
+                this.detailsButton5.resize();
+                this.detailsButton6.resize();
                 this.muteButton.resize();
                 this.muteButton2.resize();
 
@@ -390,6 +421,8 @@
                 this.detailsButton2.update();
                 this.detailsButton3.update();
                 this.detailsButton4.update();
+                this.detailsButton5.update();
+                this.detailsButton6.update();
                 this.muteButton.update();
                 this.muteButton2.update();
             };
