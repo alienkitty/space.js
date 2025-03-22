@@ -4,7 +4,7 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class HeaderTitle extends Interface {
+export class NavTitle extends Interface {
     constructor({
         link,
         target,
