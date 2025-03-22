@@ -3,6 +3,7 @@
  */
 
 import { Interface } from '../utils/Interface.js';
+import { FooterTitle } from './FooterTitle.js';
 import { NavTitle } from './NavTitle.js';
 import { NavLink } from './NavLink.js';
 
@@ -50,7 +51,7 @@ export class Footer extends Interface {
         }
 
         if (this.data.info) {
-            this.info = new NavTitle(this.data.info);
+            this.info = new FooterTitle(this.data.info);
             this.info.css({
                 x: -10,
                 opacity: 0
