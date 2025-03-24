@@ -25,7 +25,7 @@ export class Mars extends Group {
     }
 
     async initMesh() {
-        const { loadTexture } = WorldController;
+        const { northPolarCamera, southPolarCamera, point3Camera, loadTexture } = WorldController;
 
         const geometry = getSphericalCube(0.6, 40);
 
@@ -51,6 +51,11 @@ export class Mars extends Group {
         const mesh = new Mesh(geometry, material);
         mesh.rotation.y = MathUtils.degToRad(15); // Start rotation
         this.add(mesh);
+
+        // Add cameras to the group (view from orbit)
+        this.add(northPolarCamera);
+        this.add(southPolarCamera);
+        this.add(point3Camera);
 
         this.mesh = mesh;
     }

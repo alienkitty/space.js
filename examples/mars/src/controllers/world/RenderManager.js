@@ -233,6 +233,10 @@ export class RenderManager {
 
     // Public methods
 
+    static setCamera = camera => {
+        this.camera = camera;
+    };
+
     static resize = (width, height, dpr) => {
         this.renderer.setPixelRatio(dpr);
         this.renderer.setSize(width, height);
