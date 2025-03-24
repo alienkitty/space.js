@@ -34,11 +34,54 @@ export class WorldController {
         // 3D scene
         this.scene = new Scene();
         this.scene.background = new Color(Stage.rootStyle.getPropertyValue('--bg-color').trim());
-        this.camera = new PerspectiveCamera(30);
-        this.camera.near = 0.1;
-        this.camera.far = 20000;
-        this.camera.position.set(-1.3, 0.7, 2);
-        this.camera.lookAt(this.scene.position);
+
+        // Oblique camera
+        this.obliqueCamera = new PerspectiveCamera(30);
+        this.obliqueCamera.near = 0.1;
+        this.obliqueCamera.far = 20000;
+        this.obliqueCamera.position.set(-1.3, 0.7, 2);
+        this.obliqueCamera.lookAt(this.scene.position);
+
+        // North polar camera
+        this.northPolarCamera = new PerspectiveCamera(30);
+        this.northPolarCamera.near = 0.1;
+        this.northPolarCamera.far = 20000;
+        this.northPolarCamera.position.set(0, 2.5, 0);
+        this.northPolarCamera.lookAt(this.scene.position);
+
+        // South polar camera
+        this.southPolarCamera = new PerspectiveCamera(30);
+        this.southPolarCamera.near = 0.1;
+        this.southPolarCamera.far = 20000;
+        this.southPolarCamera.position.set(0, -2.5, 0);
+        this.southPolarCamera.lookAt(this.scene.position);
+
+        // Point of interest #1 camera
+        this.point1Camera = new PerspectiveCamera(30);
+        this.point1Camera.near = 0.1;
+        this.point1Camera.far = 20000;
+        this.point1Camera.position.set(0, -0.25, 1.6);
+        this.point1Camera.rotation.y = MathUtils.degToRad(3);
+        // this.point1Camera.lookAt(this.scene.position);
+
+        // Point of interest #2 camera
+        this.point2Camera = new PerspectiveCamera(30);
+        this.point2Camera.near = 0.1;
+        this.point2Camera.far = 20000;
+        this.point2Camera.position.set(0, 0, 1.25);
+        // this.point2Camera.lookAt(this.scene.position);
+
+        // Point of interest #3 camera
+        this.point3Camera = new PerspectiveCamera(30);
+        this.point3Camera.near = 0.1;
+        this.point3Camera.far = 20000;
+        this.point3Camera.position.set(-0.62, 0, 1);
+        this.point3Camera.rotation.y = MathUtils.degToRad(-10);
+        this.point3Camera.rotation.z = MathUtils.degToRad(90);
+        // this.point3Camera.lookAt(this.scene.position);
+
+        // Output camera
+        this.camera = this.obliqueCamera;
 
         // Global geometries
         this.screenTriangle = getFullscreenTriangle();
@@ -86,8 +129,42 @@ export class WorldController {
     }
 
     static initControls() {
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
+        // Oblique camera controls
+        this.obliqueCameraControls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
+        this.obliqueCameraControls.enableDamping = true;
+        this.obliqueCameraControls.enabled = false;
+
+        // North polar camera controls
+        // this.northPolarCameraControls = new OrbitControls(this.northPolarCamera, this.renderer.domElement);
+        // this.northPolarCameraControls.enableDamping = true;
+        // this.northPolarCameraControls.maxPolarAngle = 0;
+        // this.northPolarCameraControls.enabled = false;
+
+        // South polar camera controls
+        // this.southPolarCameraControls = new OrbitControls(this.southPolarCamera, this.renderer.domElement);
+        // this.southPolarCameraControls.enableDamping = true;
+        // this.southPolarCameraControls.minPolarAngle = 180;
+        // this.southPolarCameraControls.maxPolarAngle = 180;
+        // this.southPolarCameraControls.enabled = false;
+
+        // Point of interest #1 camera controls
+        // this.point1CameraControls = new OrbitControls(this.point1Camera, this.renderer.domElement);
+        // this.point1CameraControls.enableDamping = true;
+        // this.point1CameraControls.enabled = false;
+
+        // Point of interest #2 camera controls
+        // this.point2CameraControls = new OrbitControls(this.point2Camera, this.renderer.domElement);
+        // this.point2CameraControls.enableDamping = true;
+        // this.point2CameraControls.enabled = false;
+
+        // Point of interest #3 camera controls
+        // this.point3CameraControls = new OrbitControls(this.point3Camera, this.renderer.domElement);
+        // this.point3CameraControls.enableDamping = true;
+        // this.point3CameraControls.enabled = false;
+
+        // Output camera controls
+        this.controls = this.obliqueCameraControls;
+        this.controls.enabled = true;
     }
 
     static addListeners() {
@@ -102,6 +179,22 @@ export class WorldController {
 
     // Public methods
 
+    static setCamera = (camera, controls) => {
+        this.camera = camera;
+        this.controls = controls;
+
+        this.obliqueCameraControls.enabled = false;
+        // this.northPolarCameraControls.enabled = false;
+        // this.southPolarCameraControls.enabled = false;
+        // this.point1CameraControls.enabled = false;
+        // this.point2CameraControls.enabled = false;
+        // this.point3CameraControls.enabled = false;
+
+        if (this.controls) {
+            this.controls.enabled = true;
+        }
+    };
+
     static resize = (width, height, dpr) => {
         width = Math.round(width * dpr);
         height = Math.round(height * dpr);
@@ -114,11 +207,6 @@ export class WorldController {
     static update = (time, delta, frame) => {
         this.time.value = time;
         this.frame.value = frame;
-
-        if (this.controls && this.controls.enabled) {
-            this.controls.update();
-            // console.log('update', this.camera.position);
-        }
     };
 
     static animateIn = () => {

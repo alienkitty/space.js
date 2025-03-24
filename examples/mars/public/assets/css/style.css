@@ -42,7 +42,7 @@
     --ui-title-letter-spacing: 1px;
     --ui-secondary-font-size: 10px;
     --ui-secondary-letter-spacing: 0.5px;
-    --ui-secondary-color: #868686;
+    --ui-secondary-color: rgb(255 255 255 / 0.5);
     --ui-name-font-family: 'Gothic A1', sans-serif;
     --ui-name-font-weight: 500;
     --ui-name-font-size: 13px;

@@ -11,13 +11,18 @@ import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
 import { SceneView } from '../views/SceneView.js';
 
-import { basePath, isDebug, store } from '../config/Config.js';
+import { basePath, isDebug, numViews, store } from '../config/Config.js';
 
 export class App {
     static async init(loader) {
         this.loader = loader;
 
         this.isTransitioning = false;
+        this.animatedIn = false;
+
+        const url = new URL(location.href);
+        const params = new URLSearchParams(url.search);
+        store.viewIndex = params.has('view') ? Number(params.get('view')) - 1 : 0;
 
         this.initThread();
         this.initWorld();
@@ -47,6 +52,8 @@ export class App {
         store.loading = 'Audio';
         this.initAudio();
         this.initPanel();
+        store.loading = 'View';
+        this.setView(store.viewIndex);
         store.loading = 'Nominal';
     }
 
@@ -87,6 +94,18 @@ export class App {
 
         this.ui = new UI({
             fps: true,
+            header: {
+                title: {
+                    name: 'Mars',
+                    caption: 'Oblique view'
+                }
+            },
+            footer: {
+                info: {
+                    name: 'Next view',
+                    callback: this.onNextView
+                }
+            },
             detailsButton: true,
             details: {
                 dividerLine: true,
@@ -104,6 +123,21 @@ Distance from Sun: 230 million km
         });
         this.ui.css({ position: 'static' });
 
+        this.ui.header.title.css({
+            webkitUserSelect: 'none',
+            userSelect: 'none'
+        });
+
+        this.ui.footer.info.css({
+            webkitUserSelect: 'none',
+            userSelect: 'none'
+        });
+
+        this.ui.detailsButton.setData({
+            number: 1,
+            total: numViews
+        });
+
         if (data.path === '/about') {
             this.ui.details.title.css({ marginLeft: 0 });
         }
@@ -115,9 +149,31 @@ Distance from Sun: 230 million km
     }
 
     static initControllers() {
-        const { renderer, scene, camera } = WorldController;
+        const {
+            renderer,
+            scene,
+            obliqueCamera,
+            northPolarCamera,
+            southPolarCamera,
+            point1Camera,
+            point2Camera,
+            point3Camera,
+            camera,
+            controls
+        } = WorldController;
 
-        CameraController.init(scene, camera);
+        CameraController.init(
+            scene,
+            obliqueCamera,
+            northPolarCamera,
+            southPolarCamera,
+            point1Camera,
+            point2Camera,
+            point3Camera,
+            camera,
+            controls
+        );
+
         SceneController.init(renderer, scene, camera, this.view);
         RenderManager.init(renderer, scene, camera, this.view);
     }
@@ -136,7 +192,9 @@ Distance from Sun: 230 million km
     }
 
     static addListeners() {
+        Stage.events.on('details', this.onDetails);
         window.addEventListener('popstate', this.onPopState);
+        window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
         ticker.start();
@@ -144,7 +202,32 @@ Distance from Sun: 230 million km
 
     // Event handlers
 
+    static onNextView = () => {
+        this.nextView();
+    };
+
+    static onDetails = ({ open }) => {
+        clearTween(this.timeout);
+
+        if (open) {
+            document.documentElement.classList.add('scroll');
+        } else {
+            this.timeout = delayedCall(400, () => {
+                document.documentElement.classList.remove('scroll');
+
+                const path = router.getPath('/');
+                router.setPath(path);
+            });
+        }
+
+        CameraController.setDetails(open);
+    };
+
     static onPopState = () => {
+        if (!this.animatedIn) {
+            return;
+        }
+
         const { data } = router.get(location.pathname);
 
         if (data.path === '/about' && this.ui.detailsInfo.animatedIn) {
@@ -162,6 +245,20 @@ Distance from Sun: 230 million km
 
                 this.isTransitioning = false;
             });
+        }
+    };
+
+    static onKeyUp = e => {
+        if (e.keyCode === 37) { // Left
+            this.prevView();
+        }
+
+        if (e.keyCode === 39) { // Right
+            this.nextView();
+        }
+
+        if (e.ctrlKey && e.keyCode >= 49 && e.keyCode <= 54) { // Ctrl 1-6
+            this.setView(e.keyCode - 49);
         }
     };
 
@@ -185,23 +282,6 @@ Distance from Sun: 230 million km
         // console.log('FPS', this.ui.header.info.fps);
     };
 
-    static onDetails = ({ open }) => {
-        clearTween(this.timeout);
-
-        if (open) {
-            document.documentElement.classList.add('scroll');
-        } else {
-            this.timeout = delayedCall(400, () => {
-                document.documentElement.classList.remove('scroll');
-
-                const path = router.getPath('/');
-                router.setPath(path);
-            });
-        }
-
-        CameraController.setDetails(open);
-    };
-
     static onClick = (e, { target }) => {
         e.preventDefault();
 
@@ -210,6 +290,70 @@ Distance from Sun: 230 million km
     };
 
     // Public methods
+
+    static prevView = () => {
+        let index = store.viewIndex;
+
+        if (--index < 0) {
+            index = numViews - 1;
+        }
+
+        this.setView(index);
+    };
+
+    static nextView = () => {
+        let index = store.viewIndex;
+
+        if (++index > numViews - 1) {
+            index = 0;
+        }
+
+        this.setView(index);
+    };
+
+    static setView = index => {
+        let camera;
+        let controls;
+
+        if (index === 0) {
+            camera = WorldController.obliqueCamera;
+            controls = WorldController.obliqueCameraControls;
+            this.ui.header.title.setData({ caption: 'Oblique view' });
+        } else if (index === 1) {
+            camera = WorldController.northPolarCamera;
+            controls = WorldController.northPolarCameraControls;
+            this.ui.header.title.setData({ caption: 'North polar view' });
+        } else if (index === 2) {
+            camera = WorldController.southPolarCamera;
+            controls = WorldController.southPolarCameraControls;
+            this.ui.header.title.setData({ caption: 'South polar view' });
+        } else if (index === 3) {
+            camera = WorldController.point1Camera;
+            controls = WorldController.point1CameraControls;
+            this.ui.header.title.setData({ caption: 'Southern hemisphere view' });
+        } else if (index === 4) {
+            camera = WorldController.point2Camera;
+            controls = WorldController.point2CameraControls;
+            this.ui.header.title.setData({ caption: 'Surface close-up view' });
+        } else if (index === 5) {
+            camera = WorldController.point3Camera;
+            controls = WorldController.point3CameraControls;
+            this.ui.header.title.setData({ caption: 'Horizon view' });
+        }
+
+        WorldController.setCamera(camera, controls);
+        CameraController.setCamera(camera, controls);
+        RenderManager.setCamera(camera);
+        this.ui.detailsButton.setData({ number: index + 1 }, true);
+
+        store.viewIndex = index;
+
+        /* const url = new URL(location.href);
+        const params = new URLSearchParams(url.search);
+        params.set('view', index + 1);
+
+        router.setPath(`${location.pathname}?${params.toString()}`); */
+    };
 
     static setDetails = () => {
         const { data } = router.get(location.pathname);
@@ -234,6 +378,8 @@ Distance from Sun: 230 million km
     };
 
     static animateIn = async () => {
+        this.animatedIn = true;
+
         const { data } = router.get(location.pathname);
 
         WorldController.animateIn();
@@ -251,8 +397,6 @@ Distance from Sun: 230 million km
             }
 
             this.ui.animateIn();
-
-            Stage.events.on('details', this.onDetails);
         } else {
             await wait(6000);
 
@@ -263,8 +407,6 @@ Distance from Sun: 230 million km
             await wait(3000);
 
             this.ui.animateIn();
-
-            Stage.events.on('details', this.onDetails);
         }
     };
 }

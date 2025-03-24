@@ -3,6 +3,8 @@ export const isDebug = /[?&]debug/.test(location.search);
 export const basePath = '/examples/mars/public';
 export const assetPath = '/examples/assets';
 
+export const numViews = 6;
+
 export const colors = {
     backgroundColor: 0x000000,
     lightColor: 0x3b5b89
@@ -24,5 +26,6 @@ export const params = {
 };
 
 export const store = {
-    loading: ''
+    loading: '',
+    viewIndex: 0
 };
