@@ -51,9 +51,8 @@ export class CameraController {
 
     // Public methods
 
-    static setCamera = (camera, controls) => {
+    static setCamera = camera => {
         this.camera = camera;
-        this.controls = controls;
 
         this.camera.view.offsetX = MathUtils.lerp(this.camera.view.offsetX, this.isDetailsOpen ? this.offsetX : 0, this.progress);
         this.camera.updateProjectionMatrix();
@@ -160,10 +159,8 @@ export class CameraController {
     };
 
     static update = () => {
-        if (this.controls && this.controls.enabled) {
-            this.controls.update();
-            // console.log('update', this.camera.position);
-        }
+        this.controls.update();
+        // console.log('update', this.camera.position);
     };
 
     static start = () => {

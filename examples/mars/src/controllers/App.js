@@ -313,46 +313,33 @@ Distance from Sun: 230 million km
 
     static setView = index => {
         let camera;
-        let controls;
 
         if (index === 0) {
             camera = WorldController.obliqueCamera;
-            controls = WorldController.obliqueCameraControls;
             this.ui.header.title.setData({ caption: 'Oblique view' });
         } else if (index === 1) {
             camera = WorldController.northPolarCamera;
-            controls = WorldController.northPolarCameraControls;
             this.ui.header.title.setData({ caption: 'North polar view' });
         } else if (index === 2) {
             camera = WorldController.southPolarCamera;
-            controls = WorldController.southPolarCameraControls;
             this.ui.header.title.setData({ caption: 'South polar view' });
         } else if (index === 3) {
             camera = WorldController.point1Camera;
-            controls = WorldController.point1CameraControls;
             this.ui.header.title.setData({ caption: 'Southern hemisphere view' });
         } else if (index === 4) {
             camera = WorldController.point2Camera;
-            controls = WorldController.point2CameraControls;
             this.ui.header.title.setData({ caption: 'Surface close-up view' });
         } else if (index === 5) {
             camera = WorldController.point3Camera;
-            controls = WorldController.point3CameraControls;
             this.ui.header.title.setData({ caption: 'Horizon view' });
         }
 
-        WorldController.setCamera(camera, controls);
-        CameraController.setCamera(camera, controls);
+        WorldController.setCamera(camera);
+        CameraController.setCamera(camera);
         RenderManager.setCamera(camera);
         this.ui.detailsButton.setData({ number: index + 1 }, true);
 
         store.viewIndex = index;
-
-        /* const url = new URL(location.href);
-        const params = new URLSearchParams(url.search);
-        params.set('view', index + 1);
-
-        router.setPath(`${location.pathname}?${params.toString()}`); */
     };
 
     static setDetails = () => {
