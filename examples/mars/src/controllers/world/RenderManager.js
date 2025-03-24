@@ -28,14 +28,14 @@ export class RenderManager {
         // Anamorphic light, radial glow and lens flare
         this.lightPosition = new Vector3();
         this.cameraDirection = new Vector3();
-        this.glowPower = 0.8;
-        this.glowAmount = 0.4;
+        this.glowPower = 0.3;
+        this.glowAmount = 0;
         this.vlScale = new Vector2(0.97, -1);
         this.vlSwizzle = 0;
         this.vlExposure = 0.15;
         this.vlDecay = 0.93;
         this.vlDensity = 1;
-        this.vlWeight = 0.7;
+        this.vlWeight = 1;
         this.vlClamp = 1;
         this.lensflareScale = new Vector2(2.9, 2.9);
         this.lensflareExposure = 0.3;

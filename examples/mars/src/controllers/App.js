@@ -316,21 +316,39 @@ Distance from Sun: 230 million km
 
         if (index === 0) {
             camera = WorldController.obliqueCamera;
+            this.ui.setPanelValue('Light X', -3);
+            this.ui.setPanelValue('Light Y', 1.5);
+            this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Oblique view' });
         } else if (index === 1) {
             camera = WorldController.northPolarCamera;
+            this.ui.setPanelValue('Light X', -1.5);
+            this.ui.setPanelValue('Light Y', 3);
+            this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'North polar view' });
         } else if (index === 2) {
             camera = WorldController.southPolarCamera;
+            this.ui.setPanelValue('Light X', 1.5);
+            this.ui.setPanelValue('Light Y', -3);
+            this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'South polar view' });
         } else if (index === 3) {
             camera = WorldController.point1Camera;
+            this.ui.setPanelValue('Light X', -3);
+            this.ui.setPanelValue('Light Y', 1.5);
+            this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Southern hemisphere view' });
         } else if (index === 4) {
             camera = WorldController.point2Camera;
+            this.ui.setPanelValue('Light X', -3);
+            this.ui.setPanelValue('Light Y', 1.5);
+            this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Surface close-up view' });
         } else if (index === 5) {
             camera = WorldController.point3Camera;
+            this.ui.setPanelValue('Light X', -3);
+            this.ui.setPanelValue('Light Y', 1.5);
+            this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'Horizon view' });
         }
 

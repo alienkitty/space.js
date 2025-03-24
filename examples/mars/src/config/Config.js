@@ -18,8 +18,8 @@ export const layers = {
 
 export const params = {
     redTint: false,
-    sunGlow: true,
-    lights: true,
+    sunGlow: false,
+    lights: false,
     stars: true,
     animate: !isDebug,
     speed: 0.5
