@@ -62,14 +62,12 @@ export class WorldController {
         this.point1Camera.far = 20000;
         this.point1Camera.position.set(0, -0.25, 1.6);
         this.point1Camera.rotation.y = MathUtils.degToRad(3);
-        // this.point1Camera.lookAt(this.scene.position);
 
         // Point of interest #2 camera
         this.point2Camera = new PerspectiveCamera(30);
         this.point2Camera.near = 0.1;
         this.point2Camera.far = 20000;
         this.point2Camera.position.set(0, 0, 1.25);
-        // this.point2Camera.lookAt(this.scene.position);
 
         // Point of interest #3 camera
         this.point3Camera = new PerspectiveCamera(30);
@@ -78,7 +76,6 @@ export class WorldController {
         this.point3Camera.position.set(-0.62, 0, 1);
         this.point3Camera.rotation.y = MathUtils.degToRad(-10);
         this.point3Camera.rotation.z = MathUtils.degToRad(90);
-        // this.point3Camera.lookAt(this.scene.position);
 
         // Output camera
         this.camera = this.obliqueCamera;
@@ -134,34 +131,6 @@ export class WorldController {
         this.obliqueCameraControls.enableDamping = true;
         this.obliqueCameraControls.enabled = false;
 
-        // North polar camera controls
-        // this.northPolarCameraControls = new OrbitControls(this.northPolarCamera, this.renderer.domElement);
-        // this.northPolarCameraControls.enableDamping = true;
-        // this.northPolarCameraControls.maxPolarAngle = 0;
-        // this.northPolarCameraControls.enabled = false;
-
-        // South polar camera controls
-        // this.southPolarCameraControls = new OrbitControls(this.southPolarCamera, this.renderer.domElement);
-        // this.southPolarCameraControls.enableDamping = true;
-        // this.southPolarCameraControls.minPolarAngle = 180;
-        // this.southPolarCameraControls.maxPolarAngle = 180;
-        // this.southPolarCameraControls.enabled = false;
-
-        // Point of interest #1 camera controls
-        // this.point1CameraControls = new OrbitControls(this.point1Camera, this.renderer.domElement);
-        // this.point1CameraControls.enableDamping = true;
-        // this.point1CameraControls.enabled = false;
-
-        // Point of interest #2 camera controls
-        // this.point2CameraControls = new OrbitControls(this.point2Camera, this.renderer.domElement);
-        // this.point2CameraControls.enableDamping = true;
-        // this.point2CameraControls.enabled = false;
-
-        // Point of interest #3 camera controls
-        // this.point3CameraControls = new OrbitControls(this.point3Camera, this.renderer.domElement);
-        // this.point3CameraControls.enableDamping = true;
-        // this.point3CameraControls.enabled = false;
-
         // Output camera controls
         this.controls = this.obliqueCameraControls;
         this.controls.enabled = true;
@@ -179,20 +148,8 @@ export class WorldController {
 
     // Public methods
 
-    static setCamera = (camera, controls) => {
+    static setCamera = camera => {
         this.camera = camera;
-        this.controls = controls;
-
-        this.obliqueCameraControls.enabled = false;
-        // this.northPolarCameraControls.enabled = false;
-        // this.southPolarCameraControls.enabled = false;
-        // this.point1CameraControls.enabled = false;
-        // this.point2CameraControls.enabled = false;
-        // this.point3CameraControls.enabled = false;
-
-        if (this.controls) {
-            this.controls.enabled = true;
-        }
     };
 
     static resize = (width, height, dpr) => {
