@@ -173,6 +173,8 @@ export class CameraController {
         this.scene.backgroundIntensity = 10;
         this.camera.scale.z = -1;
         RenderManager.vlMaterial.uniforms.uTransition.value = true;
+        RenderManager.vlMaterial.uniforms.uPower.value = 0.8;
+        RenderManager.vlMaterial.uniforms.uAmount.value = 0.4;
     };
 
     static animateIn = () => {
@@ -181,14 +183,36 @@ export class CameraController {
         if (isDebug || data.path === '/about') {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
+            RenderManager.vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
+            RenderManager.vlMaterial.uniforms.uAmount.value = RenderManager.glowAmount;
             return;
         }
 
         tween(this.camera.scale, { z: 1 }, 7000, 'easeInOutCubic', () => {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
+            RenderManager.vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
+            RenderManager.vlMaterial.uniforms.uAmount.value = RenderManager.glowAmount;
         }, () => {
-            this.scene.backgroundIntensity = Math.max(WorldController.backgroundIntensity, 10 * (1 - this.camera.scale.z));
+            const multiplier = 1 - this.camera.scale.z;
+
+            this.scene.backgroundIntensity = Math.max(WorldController.backgroundIntensity, 10 * multiplier);
+        });
+
+        this.progress = 0;
+
+        tween(this, { progress: 1 }, 7000, 'easeInOutCubic', 3500, null, () => {
+            RenderManager.vlMaterial.uniforms.uPower.value = MathUtils.lerp(
+                RenderManager.vlMaterial.uniforms.uPower.value,
+                RenderManager.glowPower,
+                this.progress
+            );
+
+            RenderManager.vlMaterial.uniforms.uAmount.value = MathUtils.lerp(
+                RenderManager.vlMaterial.uniforms.uAmount.value,
+                RenderManager.glowAmount,
+                this.progress
+            );
         });
     };
 }

@@ -96,10 +96,10 @@ export class WorldController {
     }
 
     static initLights() {
-        this.scene.add(new HemisphereLight(0x606060, 0x404040, 2.5));
+        this.scene.add(new HemisphereLight(0x606060, 0x404040, 0));
 
-        const light = new DirectionalLight(0xffffff, 2);
-        light.position.set(-3, 1.5, -1.5);
+        const light = new DirectionalLight(0xffffff, 3);
+        light.position.set(-3, 1.5, 3);
         this.scene.add(light);
     }
 

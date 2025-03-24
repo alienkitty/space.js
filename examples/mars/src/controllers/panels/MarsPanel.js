@@ -72,8 +72,8 @@ export class MarsPanel extends Panel {
                         vlMaterial.uniforms.uPower.value = 0.8;
                         vlMaterial.uniforms.uAmount.value = 0.4;
                     } else {
-                        vlMaterial.uniforms.uPower.value = 0.3;
-                        vlMaterial.uniforms.uAmount.value = 0;
+                        vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
+                        vlMaterial.uniforms.uAmount.value = RenderManager.glowAmount;
                     }
                 }
             },
@@ -262,8 +262,8 @@ export class MarsPanel extends Panel {
                 value: 'Reset',
                 callback: () => {
                     this.setPanelValue('Red Tint', false);
-                    this.setPanelValue('Sun Glow', true);
-                    this.setPanelValue('Lights', true);
+                    this.setPanelValue('Sun Glow', false);
+                    this.setPanelValue('Lights', false);
                     this.setPanelValue('Stars', true);
                     this.setPanelValue('Animate', !isDebug);
                     this.setPanelValue('Speed', 0.5);
@@ -271,7 +271,7 @@ export class MarsPanel extends Panel {
                     this.setPanelValue('Normal Y', -2);
                     this.setPanelValue('Light X', -3);
                     this.setPanelValue('Light Y', 1.5);
-                    this.setPanelValue('Light Z', -1.5);
+                    this.setPanelValue('Light Z', 3);
                 }
             }
         ];
