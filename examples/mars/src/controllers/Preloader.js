@@ -47,7 +47,9 @@ export class Preloader {
             `${assetPath}/textures/cube/mars/mars_normal_nz.jpg`,
             `${assetPath}/textures/smaa/area.png`,
             `${assetPath}/textures/smaa/search.png`,
-            `${assetPath}/sounds/enough_loop.mp3`
+            `${assetPath}/sounds/enough_loop.mp3`,
+            `${assetPath}/sounds/hover.mp3`,
+            `${assetPath}/sounds/click.mp3`
         ]);
 
         this.loader = new MultiLoader();

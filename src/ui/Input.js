@@ -47,20 +47,22 @@ export class Input extends Interface {
 
     addListeners() {
         this.input.events.on('hover', this.onHover);
+        this.input.events.on('click', this.onClick);
         this.input.events.on('typing', this.onTyping);
         this.input.events.on('complete', this.onComplete);
     }
 
     removeListeners() {
         this.input.events.off('hover', this.onHover);
+        this.input.events.off('click', this.onClick);
         this.input.events.off('typing', this.onTyping);
         this.input.events.off('complete', this.onComplete);
     }
 
     // Event handlers
 
-    onHover = ({ type }) => {
-        if (type === 'mouseenter') {
+    onHover = e => {
+        if (e.type === 'mouseenter') {
             this.input.tween({ opacity: 1 }, 200, 'easeOutSine');
 
             if (this.total) {
@@ -73,6 +75,12 @@ export class Input extends Interface {
                 this.total.animateOut();
             }
         }
+
+        this.events.emit('hover', e, { target: this });
+    };
+
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     onTyping = ({ text }) => {

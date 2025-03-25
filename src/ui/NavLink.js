@@ -63,14 +63,16 @@ export class NavLink extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
-        if (type === 'mouseenter') {
+    onHover = e => {
+        if (e.type === 'mouseenter') {
             this.letters.forEach((letter, i) => {
                 letter.clearTween().tween({ y: -5, opacity: 0 }, 125, 'easeOutCubic', i * 15, () => {
                     letter.css({ y: 5 }).tween({ y: 0, opacity: 1 }, 300, 'easeOutCubic');
                 });
             });
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {

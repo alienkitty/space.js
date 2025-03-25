@@ -74,7 +74,7 @@ export class MuteButton extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
+    onHover = e => {
         if (!this.animatedIn) {
             return;
         }
@@ -83,7 +83,7 @@ export class MuteButton extends Interface {
 
         this.needsUpdate = true;
 
-        if (type === 'mouseenter') {
+        if (e.type === 'mouseenter') {
             tween(this.props, { yMultiplier: this.sound ? 0.7 : 0.3 }, 275, 'easeInOutCubic', () => {
                 this.needsUpdate = false;
             });
@@ -92,9 +92,11 @@ export class MuteButton extends Interface {
                 this.needsUpdate = false;
             });
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
-    onClick = () => {
+    onClick = e => {
         clearTween(this.props);
 
         if (this.sound) {
@@ -116,6 +118,8 @@ export class MuteButton extends Interface {
         }
 
         this.setSound(this.sound);
+
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods

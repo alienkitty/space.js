@@ -123,27 +123,42 @@ Distance from Sun: 230 million km
         });
         this.ui.css({ position: 'static' });
 
+        // Header
         this.ui.header.title.css({
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
+        this.ui.header.info.events.on('hover', this.onHover);
+        this.ui.header.info.events.on('click', this.onClick);
 
+        // Footer
         this.ui.footer.info.css({
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
+        this.ui.footer.info.events.on('hover', this.onHover);
+        this.ui.footer.info.events.on('click', this.onClick);
 
+        // Details button
         this.ui.detailsButton.setData({
             number: 1,
             total: numViews
         });
+        this.ui.detailsButton.events.on('hover', this.onHover);
+        this.ui.detailsButton.events.on('click', this.onClick);
 
+        // Details
         if (data.path === '/about') {
             this.ui.details.title.css({ marginLeft: 0 });
         }
 
+        this.ui.details.links.forEach(item => {
+            item.events.on('hover', this.onHover);
+            item.events.on('click', this.onClick);
+        });
+
         this.ui.link = this.ui.details.links[1];
-        this.ui.link.events.on('click', this.onClick);
+        this.ui.link.events.on('click', this.onLinkClick);
 
         Stage.add(this.ui);
     }
@@ -282,7 +297,17 @@ Distance from Sun: 230 million km
         // console.log('FPS', this.ui.header.info.fps);
     };
 
-    static onClick = (e, { target }) => {
+    static onHover = e => {
+        if (e.type === 'mouseenter') {
+            AudioController.trigger('hover');
+        }
+    };
+
+    static onClick = () => {
+        AudioController.trigger('click');
+    };
+
+    static onLinkClick = (e, { target }) => {
         e.preventDefault();
 
         const path = router.getPath(target.link);
@@ -363,21 +388,33 @@ Distance from Sun: 230 million km
     static setDetails = () => {
         const { data } = router.get(location.pathname);
 
-        if (this.ui.link) {
-            this.ui.link.events.off('click', this.onClick);
-        }
+        // Remove listeners
+        this.ui.details.links.forEach(item => {
+            item.events.off('hover', this.onHover);
+            item.events.off('click', this.onClick);
+        });
 
+        this.ui.link.events.off('click', this.onLinkClick);
+
+        // Update details
         this.ui.details.setData(data.details);
 
         if (data.path === '/about') {
             this.ui.details.title.css({ marginLeft: 0 });
         }
 
+        // Re-add listeners
+        this.ui.details.links.forEach(item => {
+            item.events.on('hover', this.onHover);
+            item.events.on('click', this.onClick);
+        });
+
         this.ui.link = this.ui.details.links[1];
-        this.ui.link.events.on('click', this.onClick);
+        this.ui.link.events.on('click', this.onLinkClick);
     };
 
     static start = () => {
+        AudioController.trigger('click');
         AudioController.trigger('mars_start');
         CameraController.start();
     };

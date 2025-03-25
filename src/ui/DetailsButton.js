@@ -75,7 +75,7 @@ export class DetailsButton extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
+    onHover = e => {
         if (!this.animatedIn) {
             return;
         }
@@ -85,7 +85,7 @@ export class DetailsButton extends Interface {
         this.needsUpdate = true;
 
         if (this.isOpen) {
-            if (type === 'mouseenter') {
+            if (e.type === 'mouseenter') {
                 this.hoveredIn = true;
 
                 tween(this.props, { radius: this.hoverRadius }, 275, 'easeInOutCubic', () => {
@@ -99,7 +99,7 @@ export class DetailsButton extends Interface {
                 });
             }
         } else {
-            if (type === 'mouseenter') {
+            if (e.type === 'mouseenter') {
                 this.hoveredIn = true;
 
                 const start = () => {
@@ -123,10 +123,12 @@ export class DetailsButton extends Interface {
                 });
             }
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
-    onClick = () => {
-        this.events.emit('click', { target: this });
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods

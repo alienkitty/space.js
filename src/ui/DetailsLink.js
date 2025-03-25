@@ -52,8 +52,10 @@ export class DetailsLink extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
-        this.line.clearTween().tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
+    onHover = e => {
+        this.line.clearTween().tween({ x: e.type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {

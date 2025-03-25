@@ -50,6 +50,7 @@ export class Menu extends Interface {
     initViews() {
         this.names.forEach((name, index) => {
             const item = new MenuItem({ width: this.itemWidth, name, index });
+            item.events.on('hover', this.onHover);
             item.events.on('click', this.onClick);
             this.add(item);
             this.items.push(item);
@@ -58,16 +59,23 @@ export class Menu extends Interface {
 
     removeListeners() {
         this.items.forEach(item => {
+            item.events.off('hover', this.onHover);
             item.events.off('click', this.onClick);
         });
     }
 
     // Event handlers
 
-    onClick = ({ target }) => {
+    onHover = e => {
+        this.events.emit('hover', e, { target: this });
+    };
+
+    onClick = (e, { target }) => {
         this.index = target.index;
 
         this.update();
+
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods

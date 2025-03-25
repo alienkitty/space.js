@@ -58,14 +58,16 @@ export class Link extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
+    onHover = e => {
         this.line.clearTween();
 
-        if (type === 'mouseenter') {
+        if (e.type === 'mouseenter') {
             this.line.css({ transformOrigin: 'left center', scaleX: 0 }).tween({ scaleX: 1 }, 800, 'easeOutQuint');
         } else {
             this.line.css({ transformOrigin: 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {

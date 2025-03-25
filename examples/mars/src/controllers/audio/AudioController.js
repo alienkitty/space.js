@@ -23,6 +23,12 @@ export class AudioController {
 
     static trigger = event => {
         switch (event) {
+            case 'hover':
+                WebAudio.play('hover', 0.05);
+                break;
+            case 'click':
+                WebAudio.play('click', 0.04);
+                break;
             case 'mars_start':
                 WebAudio.fadeInAndPlay('enough_loop', 0.05, true, 2000, 'linear');
                 break;
