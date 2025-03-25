@@ -8,6 +8,8 @@ export class Sun extends Group {
 
         this.position.z = -18050; // ~230 million km / 12,742 km (Earth's diameter)
 
+        // this.visible = false;
+
         this.initMesh();
     }
 

@@ -50,6 +50,7 @@ export class Mars extends Group {
 
         const mesh = new Mesh(geometry, material);
         mesh.rotation.y = MathUtils.degToRad(15); // Start rotation
+        // mesh.rotation.y = MathUtils.degToRad(50);
         this.add(mesh);
 
         // Add cameras to the group (view from orbit)
