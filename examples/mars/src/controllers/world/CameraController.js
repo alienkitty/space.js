@@ -78,6 +78,7 @@ export class CameraController {
         } else {
             // this.obliqueCamera.position.z = 2.5;
             this.obliqueCamera.position.set(-1.3, 0.7, 2);
+            // this.obliqueCamera.position.set(-1.3, 0.7, 11);
         }
 
         this.obliqueCamera.lookAt(this.scene.position);
