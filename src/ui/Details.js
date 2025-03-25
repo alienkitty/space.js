@@ -176,7 +176,7 @@ export class Details extends Interface {
 
                 if (Array.isArray(data.links)) {
                     data.links.forEach(data => {
-                        const link = new DetailsLink(data.title, data.link);
+                        const link = new DetailsLink(data);
                         link.css({
                             display: 'block'
                         });

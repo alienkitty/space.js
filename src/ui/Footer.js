@@ -40,7 +40,7 @@ export class Footer extends Interface {
 
         if (Array.isArray(this.data.links)) {
             this.data.links.forEach(data => {
-                const link = new NavLink(data.title, data.link);
+                const link = new NavLink(data);
                 link.css({
                     x: -10,
                     opacity: 0
