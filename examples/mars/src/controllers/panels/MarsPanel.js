@@ -26,8 +26,8 @@ export class MarsPanel extends Panel {
                 type: 'slider',
                 name: 'Speed',
                 min: 0,
-                max: 50,
-                step: 0.1,
+                max: 1,
+                step: 0.01,
                 value: params.speed,
                 callback: value => {
                     params.speed = value;
@@ -266,7 +266,7 @@ export class MarsPanel extends Panel {
                     this.setPanelValue('Lights', false);
                     this.setPanelValue('Stars', true);
                     this.setPanelValue('Animate', !isDebug);
-                    this.setPanelValue('Speed', 0.5);
+                    this.setPanelValue('Speed', 0.2);
                     this.setPanelValue('Normal X', 2);
                     this.setPanelValue('Normal Y', -2);
 
