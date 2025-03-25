@@ -63,7 +63,7 @@
                     },
                     {
                         "title": "Licenses",
-                        "content": "Source code: MIT<br>Art and design: CC BY<<br>Audio: CC BYbr>Textures: CC BY-SA",
+                        "content": "Source code: MIT<br>Art and design: CC BY<br>Ambient audio: CC BY<br>Textures: CC BY-SA",
                         "width": 145
                     },
                     {
@@ -83,7 +83,7 @@
                     },
                     {
                         "title": "Audio",
-                        "content": "Generative.fm",
+                        "content": "Generative.fm<br>AudioMicro",
                         "width": 90
                     }
                 ]

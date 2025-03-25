@@ -53,19 +53,27 @@ export class FooterTitle extends Interface {
 
     addListeners() {
         if (this.link || this.callback) {
+            this.element.addEventListener('mouseenter', this.onHover);
+            this.element.addEventListener('mouseleave', this.onHover);
             this.element.addEventListener('click', this.onClick);
         }
     }
 
     removeListeners() {
         if (this.link || this.callback) {
+            this.element.removeEventListener('mouseenter', this.onHover);
+            this.element.removeEventListener('mouseleave', this.onHover);
             this.element.removeEventListener('click', this.onClick);
         }
     }
 
     // Event handlers
 
-    onClick = () => {
+    onHover = e => {
+        this.events.emit('hover', e, { target: this });
+    };
+
+    onClick = e => {
         if (this.link) {
             open(this.link, this.target);
         }
@@ -74,7 +82,7 @@ export class FooterTitle extends Interface {
             this.callback(this);
         }
 
-        this.events.emit('click', { target: this });
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods
