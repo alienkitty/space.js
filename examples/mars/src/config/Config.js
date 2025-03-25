@@ -22,7 +22,7 @@ export const params = {
     lights: false,
     stars: true,
     animate: !isDebug,
-    speed: 0.5
+    speed: 0.2
 };
 
 export const store = {
