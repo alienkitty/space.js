@@ -269,9 +269,32 @@ export class MarsPanel extends Panel {
                     this.setPanelValue('Speed', 0.5);
                     this.setPanelValue('Normal X', 2);
                     this.setPanelValue('Normal Y', -2);
-                    this.setPanelValue('Light X', -3);
-                    this.setPanelValue('Light Y', 1.5);
-                    this.setPanelValue('Light Z', 3);
+
+                    if (WorldController.camera === WorldController.obliqueCamera) {
+                        this.setPanelValue('Light X', -3);
+                        this.setPanelValue('Light Y', 1.5);
+                        this.setPanelValue('Light Z', 3);
+                    } else if (WorldController.camera === WorldController.northPolarCamera) {
+                        this.setPanelValue('Light X', -1.5);
+                        this.setPanelValue('Light Y', 3);
+                        this.setPanelValue('Light Z', -1.5);
+                    } else if (WorldController.camera === WorldController.southPolarCamera) {
+                        this.setPanelValue('Light X', 1.5);
+                        this.setPanelValue('Light Y', -3);
+                        this.setPanelValue('Light Z', -1.5);
+                    } else if (WorldController.camera === WorldController.point1Camera) {
+                        this.setPanelValue('Light X', -3);
+                        this.setPanelValue('Light Y', 1.5);
+                        this.setPanelValue('Light Z', 3);
+                    } else if (WorldController.camera === WorldController.point2Camera) {
+                        this.setPanelValue('Light X', -3);
+                        this.setPanelValue('Light Y', 1.5);
+                        this.setPanelValue('Light Z', 3);
+                    } else if (WorldController.camera === WorldController.point3Camera) {
+                        this.setPanelValue('Light X', -3);
+                        this.setPanelValue('Light Y', 1.5);
+                        this.setPanelValue('Light Z', -1.5);
+                    }
                 }
             }
         ];
