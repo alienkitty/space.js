@@ -39,7 +39,7 @@ export class WorldController {
         this.obliqueCamera = new PerspectiveCamera(30);
         this.obliqueCamera.near = 0.1;
         this.obliqueCamera.far = 20000;
-        this.obliqueCamera.position.set(-1.3, 0.7, 2);
+        this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
         this.obliqueCamera.lookAt(this.scene.position);
 
         // North polar camera

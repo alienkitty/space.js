@@ -28,7 +28,10 @@ export class CameraController {
         this.camera = camera;
         this.controls = controls;
 
+        this.width = 0;
+        this.height = 0;
         this.offsetX = 0;
+        this.offsetY = 0;
         this.progress = 0;
         this.isDetailsOpen = false;
     }
@@ -38,12 +41,14 @@ export class CameraController {
 
         if (fast) {
             this.camera.view.offsetX = this.isDetailsOpen ? this.offsetX : 0;
+            this.camera.view.offsetY = this.offsetY;
             this.camera.updateProjectionMatrix();
         } else {
             this.progress = 0;
 
             tween(this, { progress: 1 }, 2000, 'easeInOutSine', null, () => {
                 this.camera.view.offsetX = MathUtils.lerp(this.camera.view.offsetX, this.isDetailsOpen ? this.offsetX : 0, this.progress);
+                this.camera.view.offsetY = this.offsetY;
                 this.camera.updateProjectionMatrix();
             });
         }
@@ -54,7 +59,22 @@ export class CameraController {
     static setCamera = camera => {
         this.camera = camera;
 
+        if (this.camera === this.obliqueCamera) {
+            this.offsetY = this.width < this.height ? 50 : 0;
+        } else if (this.camera === this.northPolarCamera) {
+            this.offsetY = this.width < this.height ? 50 : 0;
+        } else if (this.camera === this.southPolarCamera) {
+            this.offsetY = this.width < this.height ? 50 : 0;
+        } else if (this.camera === this.point1Camera) {
+            this.offsetY = 0;
+        } else if (this.camera === this.point2Camera) {
+            this.offsetY = 0;
+        } else if (this.camera === this.point3Camera) {
+            this.offsetY = 0;
+        }
+
         this.camera.view.offsetX = MathUtils.lerp(this.camera.view.offsetX, this.isDetailsOpen ? this.offsetX : 0, this.progress);
+        this.camera.view.offsetY = this.offsetY;
         this.camera.updateProjectionMatrix();
     };
 
@@ -65,98 +85,104 @@ export class CameraController {
     };
 
     static resize = (width, height) => {
+        this.width = width;
+        this.height = height;
         this.offsetX = -width / 4;
+
+        let offsetY;
 
         // Oblique camera
         this.obliqueCamera.aspect = width / height;
-        this.obliqueCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.obliqueCamera.updateProjectionMatrix();
 
         if (width < height) {
-            // this.obliqueCamera.position.z = 4.5;
-            this.obliqueCamera.position.set(-1, 2.4, 3.6);
+            offsetY = 50;
+            // this.obliqueCamera.position.set(0, 0, 4.5);
+            this.obliqueCamera.position.set(-2.2, 0.9, 3.8);
         } else {
-            // this.obliqueCamera.position.z = 2.5;
-            this.obliqueCamera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            // this.obliqueCamera.position.set(0, 0, 2.5);
+            this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
             // this.obliqueCamera.position.set(-1.3, 0.7, 11);
         }
 
-        this.obliqueCamera.lookAt(this.scene.position);
+        this.obliqueCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.obliqueCamera.updateProjectionMatrix();
 
         // North polar camera
         this.northPolarCamera.aspect = width / height;
-        this.northPolarCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.northPolarCamera.updateProjectionMatrix();
 
-        /* if (width < height) {
-            // this.northPolarCamera.position.z = 4.5;
-            this.northPolarCamera.position.set(-1, 2.4, 3.6);
+        if (width < height) {
+            offsetY = 50;
+            this.northPolarCamera.position.set(0, 4.5, 0);
         } else {
-            // this.northPolarCamera.position.z = 2.5;
-            this.northPolarCamera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            this.northPolarCamera.position.set(0, 2.5, 0);
         }
 
-        this.northPolarCamera.lookAt(this.scene.position); */
+        this.northPolarCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.northPolarCamera.updateProjectionMatrix();
 
         // South polar camera
         this.southPolarCamera.aspect = width / height;
-        this.southPolarCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.southPolarCamera.updateProjectionMatrix();
 
-        /* if (width < height) {
-            // this.southPolarCamera.position.z = 4.5;
-            this.southPolarCamera.position.set(-1, 2.4, 3.6);
+        if (width < height) {
+            offsetY = 50;
+            this.southPolarCamera.position.set(0, -4.5, 0);
         } else {
-            // this.southPolarCamera.position.z = 2.5;
-            this.southPolarCamera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            this.southPolarCamera.position.set(0, -2.5, 0);
         }
 
-        this.southPolarCamera.lookAt(this.scene.position); */
+        this.southPolarCamera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.southPolarCamera.updateProjectionMatrix();
 
         // Point of interest #1 camera
         this.point1Camera.aspect = width / height;
-        this.point1Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.point1Camera.updateProjectionMatrix();
 
-        /* if (width < height) {
-            // this.point1Camera.position.z = 4.5;
-            this.point1Camera.position.set(-1, 2.4, 3.6);
+        if (width < height) {
+            offsetY = 0;
+            this.point1Camera.position.set(0, -0.25, 2.88);
+            this.point1Camera.rotation.y = MathUtils.degToRad(3);
         } else {
-            // this.point1Camera.position.z = 2.5;
-            this.point1Camera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            this.point1Camera.position.set(0, -0.25, 1.6);
+            this.point1Camera.rotation.y = MathUtils.degToRad(3);
         }
 
-        this.point1Camera.lookAt(this.scene.position); */
+        this.point1Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.point1Camera.updateProjectionMatrix();
 
         // Point of interest #2 camera
         this.point2Camera.aspect = width / height;
-        this.point2Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.point2Camera.updateProjectionMatrix();
 
-        /* if (width < height) {
-            // this.point2Camera.position.z = 4.5;
-            this.point2Camera.position.set(-1, 2.4, 3.6);
+        if (width < height) {
+            offsetY = 0;
+            this.point2Camera.position.set(0, 0, 1.25);
         } else {
-            // this.point2Camera.position.z = 2.5;
-            this.point2Camera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            this.point2Camera.position.set(0, 0, 1.25);
         }
 
-        this.point2Camera.lookAt(this.scene.position); */
+        this.point2Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.point2Camera.updateProjectionMatrix();
 
         // Point of interest #3 camera
         this.point3Camera.aspect = width / height;
-        this.point3Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, 0, width, height);
-        this.point3Camera.updateProjectionMatrix();
 
-        /* if (width < height) {
-            // this.point3Camera.position.z = 4.5;
-            this.point3Camera.position.set(-1, 2.4, 3.6);
+        if (width < height) {
+            offsetY = 0;
+            this.point3Camera.position.set(-0.62, 0, 1);
+            this.point3Camera.rotation.y = MathUtils.degToRad(-10);
+            this.point3Camera.rotation.z = MathUtils.degToRad(90);
         } else {
-            // this.point3Camera.position.z = 2.5;
-            this.point3Camera.position.set(-1.3, 0.7, 2);
+            offsetY = 0;
+            this.point3Camera.position.set(-0.62, 0, 1);
+            this.point3Camera.rotation.y = MathUtils.degToRad(-10);
+            this.point3Camera.rotation.z = MathUtils.degToRad(90);
         }
 
-        this.point3Camera.lookAt(this.scene.position); */
+        this.point3Camera.setViewOffset(width, height, this.isDetailsOpen ? this.offsetX : 0, offsetY, width, height);
+        this.point3Camera.updateProjectionMatrix();
     };
 
     static update = () => {
