@@ -1,6 +1,6 @@
 import { Interface, clearTween, tween } from '@alienkitty/space.js/three';
 
-import { store } from '../config/Config.js';
+import { isMobile, store } from '../config/Config.js';
 
 export class PreloaderView extends Interface {
     constructor() {
@@ -90,7 +90,7 @@ export class PreloaderView extends Interface {
             whiteSpace: 'nowrap',
             opacity: 0
         });
-        this.title.text(`${navigator.maxTouchPoints ? 'Tap' : 'Click'} to visit target`);
+        this.title.text(`${isMobile ? 'Tap' : 'Click'} to visit target`);
         this.container.add(this.title);
     }
 

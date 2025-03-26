@@ -10,7 +10,7 @@ import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
 import { SceneView } from '../views/SceneView.js';
 
-import { basePath, isDebug, numViews, store } from '../config/Config.js';
+import { basePath, isDebug, isMobile, numViews, store } from '../config/Config.js';
 
 export class App {
     static async init(loader) {
@@ -271,13 +271,15 @@ Distance from Sun: 230 million km
     };
 
     static onHover = e => {
-        if (e.type === 'mouseenter') {
+        if (e.type === 'mouseenter' && !isMobile) {
             AudioController.trigger('hover');
         }
     };
 
     static onClick = () => {
-        AudioController.trigger('click');
+        if (!isMobile) {
+            AudioController.trigger('click');
+        }
     };
 
     static onLinkClick = (e, { target }) => {
@@ -386,7 +388,6 @@ Distance from Sun: 230 million km
     };
 
     static start = () => {
-        AudioController.trigger('click');
         AudioController.trigger('mars_start');
         CameraController.start();
     };
