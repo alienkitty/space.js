@@ -156,6 +156,12 @@ Distance from Sun: 230 million km
             point1Camera,
             point2Camera,
             point3Camera,
+            obliqueCameraControls,
+            northPolarCameraControls,
+            southPolarCameraControls,
+            point1CameraControls,
+            point2CameraControls,
+            point3CameraControls,
             camera,
             controls
         } = WorldController;
@@ -168,6 +174,12 @@ Distance from Sun: 230 million km
             point1Camera,
             point2Camera,
             point3Camera,
+            obliqueCameraControls,
+            northPolarCameraControls,
+            southPolarCameraControls,
+            point1CameraControls,
+            point2CameraControls,
+            point3CameraControls,
             camera,
             controls
         );
@@ -314,47 +326,54 @@ Distance from Sun: 230 million km
 
     static setView = index => {
         let camera;
+        let controls;
 
         if (index === 0) {
             camera = WorldController.obliqueCamera;
+            controls = WorldController.obliqueCameraControls;
             this.ui.setPanelValue('Light X', -3);
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Oblique view' });
         } else if (index === 1) {
             camera = WorldController.northPolarCamera;
+            controls = WorldController.northPolarCameraControls;
             this.ui.setPanelValue('Light X', -1.5);
             this.ui.setPanelValue('Light Y', 3);
             this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'North polar view' });
         } else if (index === 2) {
             camera = WorldController.southPolarCamera;
+            controls = WorldController.southPolarCameraControls;
             this.ui.setPanelValue('Light X', 1.5);
             this.ui.setPanelValue('Light Y', -3);
             this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'South polar view' });
         } else if (index === 3) {
             camera = WorldController.point1Camera;
+            controls = WorldController.point1CameraControls;
             this.ui.setPanelValue('Light X', -3);
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Southern hemisphere view' });
         } else if (index === 4) {
             camera = WorldController.point2Camera;
+            controls = WorldController.point2CameraControls;
             this.ui.setPanelValue('Light X', -3);
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', 3);
             this.ui.header.title.setData({ caption: 'Surface close-up view' });
         } else if (index === 5) {
             camera = WorldController.point3Camera;
+            controls = WorldController.point3CameraControls;
             this.ui.setPanelValue('Light X', -3);
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'Horizon view' });
         }
 
-        WorldController.setCamera(camera);
-        CameraController.setCamera(camera);
+        WorldController.setCamera(camera, controls);
+        CameraController.setCamera(camera, controls);
         RenderManager.setCamera(camera);
         this.ui.detailsButton.setData({ number: index + 1 }, true);
 

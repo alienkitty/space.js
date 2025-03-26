@@ -1,6 +1,7 @@
 import { Color, ColorManagement, DirectionalLight, HemisphereLight, LinearSRGBColorSpace, MathUtils, PerspectiveCamera, SRGBColorSpace, Scene, Vector2, WebGLRenderer } from 'three';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { ArcballControls } from 'three/addons/controls/ArcballControls.js';
 import { Interface, Stage, TextureLoader, getFullscreenTriangle } from '@alienkitty/space.js/three';
 
 import { assetPath } from '../../config/Config.js';
@@ -61,7 +62,6 @@ export class WorldController {
         this.point1Camera.near = 0.1;
         this.point1Camera.far = 20000;
         this.point1Camera.position.set(0, -0.25, 1.6);
-        this.point1Camera.rotation.y = MathUtils.degToRad(3);
 
         // Point of interest #2 camera
         this.point2Camera = new PerspectiveCamera(30);
@@ -128,8 +128,39 @@ export class WorldController {
     static initControls() {
         // Oblique camera controls
         this.obliqueCameraControls = new OrbitControls(this.obliqueCamera, this.renderer.domElement);
+        this.obliqueCameraControls.rotateSpeed = 1;
         this.obliqueCameraControls.enableDamping = true;
         this.obliqueCameraControls.enabled = false;
+
+        // North polar camera controls
+        this.northPolarCameraControls = new ArcballControls(this.northPolarCamera, this.renderer.domElement);
+        this.northPolarCameraControls.rotateSpeed = 1;
+        this.northPolarCameraControls.enableAnimations = false;
+        this.northPolarCameraControls.enabled = false;
+
+        // South polar camera controls
+        this.southPolarCameraControls = new ArcballControls(this.southPolarCamera, this.renderer.domElement);
+        this.southPolarCameraControls.rotateSpeed = 1;
+        this.southPolarCameraControls.enableAnimations = false;
+        this.southPolarCameraControls.enabled = false;
+
+        // Point of interest #1 camera controls
+        this.point1CameraControls = new ArcballControls(this.point1Camera, this.renderer.domElement);
+        this.point1CameraControls.rotateSpeed = 0.5;
+        this.point1CameraControls.enableAnimations = false;
+        this.point1CameraControls.enabled = false;
+
+        // Point of interest #2 camera controls
+        this.point2CameraControls = new ArcballControls(this.point2Camera, this.renderer.domElement);
+        this.point2CameraControls.rotateSpeed = 0.25;
+        this.point2CameraControls.enableAnimations = false;
+        this.point2CameraControls.enabled = false;
+
+        // Point of interest #3 camera controls
+        this.point3CameraControls = new ArcballControls(this.point3Camera, this.renderer.domElement);
+        this.point3CameraControls.rotateSpeed = 0.25;
+        this.point3CameraControls.enableAnimations = false;
+        this.point3CameraControls.enabled = false;
 
         // Output camera controls
         this.controls = this.obliqueCameraControls;
@@ -148,8 +179,18 @@ export class WorldController {
 
     // Public methods
 
-    static setCamera = camera => {
+    static setCamera = (camera, controls) => {
         this.camera = camera;
+        this.controls = controls;
+
+        this.obliqueCameraControls.enabled = false;
+        this.northPolarCameraControls.enabled = false;
+        this.southPolarCameraControls.enabled = false;
+        this.point1CameraControls.enabled = false;
+        this.point2CameraControls.enabled = false;
+        this.point3CameraControls.enabled = false;
+
+        this.controls.enabled = true;
     };
 
     static resize = (width, height, dpr) => {
