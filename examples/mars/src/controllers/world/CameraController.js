@@ -1,5 +1,5 @@
 import { MathUtils } from 'three';
-import { clearTween, router, tween } from '@alienkitty/space.js/three';
+import { clearTween, tween } from '@alienkitty/space.js/three';
 
 import { WorldController } from './WorldController.js';
 import { RenderManager } from './RenderManager.js';
@@ -191,9 +191,7 @@ export class CameraController {
     };
 
     static start = () => {
-        const { data } = router.get(location.pathname);
-
-        if (isDebug || data.path === '/about') {
+        if (isDebug) {
             return;
         }
 
@@ -205,9 +203,7 @@ export class CameraController {
     };
 
     static animateIn = () => {
-        const { data } = router.get(location.pathname);
-
-        if (isDebug || data.path === '/about') {
+        if (isDebug) {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
             RenderManager.vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
