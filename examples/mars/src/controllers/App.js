@@ -1,7 +1,6 @@
-import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, clearTween, delayedCall, router, ticker, wait } from '@alienkitty/space.js/three';
+import { ImageBitmapLoaderThread, Stage, Thread, UI, WebAudio, clearTween, delayedCall, ticker, wait } from '@alienkitty/space.js/three';
 
 import { Data } from '../data/Data.js';
-import { Page } from '../data/Page.js';
 import { AudioController } from './audio/AudioController.js';
 import { WorldController } from './world/WorldController.js';
 import { CameraController } from './world/CameraController.js';
@@ -35,7 +34,6 @@ export class App {
 
         store.loading = 'Data';
         this.initData();
-        this.initRouter();
         this.initViews();
         this.initControllers();
 
@@ -75,19 +73,8 @@ export class App {
         Data.init(data);
     }
 
-    static initRouter() {
-        Data.pages.forEach(page => {
-            router.add(page.path, Page, page);
-        });
-
-        router.init({
-            path: basePath,
-            scrollRestoration: 'auto'
-        });
-    }
-
     static initViews() {
-        const { data } = router.get(location.pathname);
+        const data = Data.pages[0];
 
         this.view = new SceneView();
         WorldController.scene.add(this.view);
@@ -148,10 +135,6 @@ Distance from Sun: 230 million km
         this.ui.detailsButton.events.on('click', this.onClick);
 
         // Details
-        if (data.path === '/about') {
-            this.ui.details.title.css({ marginLeft: 0 });
-        }
-
         this.ui.details.links.forEach(item => {
             item.events.on('hover', this.onHover);
             item.events.on('click', this.onClick);
@@ -215,6 +198,24 @@ Distance from Sun: 230 million km
         ticker.start();
     }
 
+    static transition(data) {
+        if (!this.animatedIn) {
+            return;
+        }
+
+        this.isTransitioning = true;
+
+        this.ui.details.animateOut(() => {
+            this.setDetails(data);
+
+            if (!this.ui.detailsInfo.animatedIn) {
+                this.ui.details.animateIn();
+            }
+
+            this.isTransitioning = false;
+        });
+    }
+
     // Event handlers
 
     static onNextView = () => {
@@ -229,38 +230,10 @@ Distance from Sun: 230 million km
         } else {
             this.timeout = delayedCall(400, () => {
                 document.documentElement.classList.remove('scroll');
-
-                const path = router.getPath('/');
-                router.setPath(path);
             });
         }
 
         CameraController.setDetails(open);
-    };
-
-    static onPopState = () => {
-        if (!this.animatedIn) {
-            return;
-        }
-
-        const { data } = router.get(location.pathname);
-
-        if (data.path === '/about' && this.ui.detailsInfo.animatedIn) {
-            this.setDetails();
-            this.ui.toggleDetails(true);
-        } else {
-            this.isTransitioning = true;
-
-            this.ui.details.animateOut(() => {
-                this.setDetails();
-
-                if (!this.ui.detailsInfo.animatedIn) {
-                    this.ui.details.animateIn();
-                }
-
-                this.isTransitioning = false;
-            });
-        }
     };
 
     static onKeyUp = e => {
@@ -310,8 +283,9 @@ Distance from Sun: 230 million km
     static onLinkClick = (e, { target }) => {
         e.preventDefault();
 
-        const path = router.getPath(target.link);
-        router.setPath(target.link !== '/' ? `${path}/` : path);
+        const data = Data.get(target.link);
+
+        this.transition(data);
     };
 
     // Public methods
@@ -385,9 +359,7 @@ Distance from Sun: 230 million km
         store.viewIndex = index;
     };
 
-    static setDetails = () => {
-        const { data } = router.get(location.pathname);
-
+    static setDetails = data => {
         // Remove listeners
         this.ui.details.links.forEach(item => {
             item.events.off('hover', this.onHover);
@@ -422,20 +394,13 @@ Distance from Sun: 230 million km
     static animateIn = async () => {
         this.animatedIn = true;
 
-        const { data } = router.get(location.pathname);
-
         WorldController.animateIn();
         CameraController.animateIn();
         SceneController.animateIn();
 
-        if (isDebug || data.path === '/about') {
-            if (data.path === '/' && !this.ui.details.animatedIn && !this.isTransitioning) {
+        if (isDebug) {
+            if (!this.ui.details.animatedIn && !this.isTransitioning) {
                 this.ui.detailsInfo.animateIn();
-            } else if (data.path === '/about') {
-                CameraController.setDetails(true, true);
-                this.ui.toggleDetails(true);
-
-                document.documentElement.classList.add('scroll');
             }
 
             this.ui.animateIn();
