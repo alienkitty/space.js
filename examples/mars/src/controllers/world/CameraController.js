@@ -59,8 +59,12 @@ export class CameraController {
     static setCamera = camera => {
         this.camera = camera;
 
+        // Output camera controls
+        this.controls.enabled = false;
+
         if (this.camera === this.obliqueCamera) {
             this.offsetY = this.width < this.height ? 50 : 0;
+            this.controls.enabled = true;
         } else if (this.camera === this.northPolarCamera) {
             this.offsetY = this.width < this.height ? 50 : 0;
         } else if (this.camera === this.southPolarCamera) {
