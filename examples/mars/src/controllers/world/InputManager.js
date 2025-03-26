@@ -6,7 +6,7 @@ import { WorldController } from './WorldController.js';
 import { CameraController } from './CameraController.js';
 import { PhysicsController } from './PhysicsController.js';
 
-import { isDebug, layers } from '../../config/Config.js';
+import { isDebug, isMobile, layers } from '../../config/Config.js';
 
 export class InputManager {
     static init(scene, camera, controls) {
@@ -216,7 +216,7 @@ export class InputManager {
     };
 
     static update = time => {
-        if (!navigator.maxTouchPoints && time - this.lastRaycast > this.raycastInterval) {
+        if (!isMobile && time - this.lastRaycast > this.raycastInterval) {
             this.onPointerMove();
             this.lastRaycast = time;
         }
