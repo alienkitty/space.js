@@ -1,6 +1,6 @@
 # Mars
 
-This is a cinematic Mars demo featuring high quality cubemaps with 2k faces, meant as a starting point for more advanced travel and targets to come.
+This is a [cinematic Mars demo](https://space.js.org/examples/mars/) featuring high quality cubemaps with 2k faces, meant as a starting point for more advanced travel and targets to come.
 
 Special thanks to [John Van Vliet](http://www.celestiamotherlode.net/creatorinfo/creator_10.html) for contributing the 32k normal map, who has created many astronomical object textures for [Celestia](https://celestiaproject.space/), among many other projects.
 
