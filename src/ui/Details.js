@@ -66,12 +66,12 @@ export class Details extends Interface {
     }
 
     initViews() {
-        if (this.data.title) {
+        if (this.data.title !== undefined) {
             this.title = new DetailsTitle(this.data.title);
             this.container.add(this.title);
         }
 
-        if (this.data.content) {
+        if (this.data.content !== undefined) {
             if (!Array.isArray(this.data.content)) {
                 this.data.content = [this.data.content];
             }
