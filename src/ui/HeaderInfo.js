@@ -52,6 +52,7 @@ export class HeaderInfo extends Interface {
         Stage.events.on('color_picker', this.onColorPicker);
         this.element.addEventListener('mouseenter', this.onHover);
         this.element.addEventListener('mouseleave', this.onHover);
+        this.element.addEventListener('click', this.onClick);
         window.addEventListener('pointerdown', this.onPointerDown);
     }
 
@@ -59,6 +60,7 @@ export class HeaderInfo extends Interface {
         Stage.events.off('color_picker', this.onColorPicker);
         this.element.removeEventListener('mouseenter', this.onHover);
         this.element.removeEventListener('mouseleave', this.onHover);
+        this.element.removeEventListener('click', this.onClick);
         window.removeEventListener('pointerdown', this.onPointerDown);
     }
 
@@ -80,14 +82,20 @@ export class HeaderInfo extends Interface {
         }
     };
 
-    onHover = ({ type }) => {
+    onHover = e => {
         if (this.isOpen) {
             return;
         }
 
-        if (type === 'mouseenter') {
+        if (e.type === 'mouseenter') {
             this.animateIn();
         }
+
+        this.events.emit('hover', e, { target: this });
+    };
+
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     onPointerDown = e => {

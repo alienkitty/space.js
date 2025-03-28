@@ -7,6 +7,7 @@ import { Stage } from '../utils/Stage.js';
 import { Details } from './Details.js';
 import { DetailsInfo } from './DetailsInfo.js';
 import { Header } from './Header.js';
+import { Footer } from './Footer.js';
 import { Menu } from './Menu.js';
 import { Info } from './Info.js';
 import { Thumbnail } from './Thumbnail.js';
@@ -22,6 +23,7 @@ import { ticker } from '../tween/Ticker.js';
  * const ui = new UI({
  *     fps: true
  *     // header
+ *     // footer
  *     // menu
  *     // info
  *     // details
@@ -73,6 +75,8 @@ export class UI extends Interface {
         this.frame = 0;
 
         this.buttons = [];
+        this.isDetailsToggle = false;
+        this.isDetailsInfoToggle = false;
         this.animatedIn = false;
 
         this.init();
@@ -104,13 +108,18 @@ export class UI extends Interface {
         }
 
         if (this.data.detailsInfo) {
-            this.detailsInfo = new DetailsInfo(this.data.detailsInfo);
+            this.detailsInfo = new DetailsInfo({ ...this.data.detailsInfo, detailsButton: this.data.detailsButton });
             this.add(this.detailsInfo);
         }
 
         if (this.data.header || fps || fpsOpen) {
             this.header = new Header({ ...this.data.header, fps, fpsOpen });
             this.add(this.header);
+        }
+
+        if (this.data.footer) {
+            this.footer = new Footer(this.data.footer);
+            this.add(this.footer);
         }
 
         if (this.data.menu) {
@@ -212,6 +221,10 @@ export class UI extends Interface {
             this.header.resize(width, height, dpr, this.breakpoint);
         }
 
+        if (this.footer) {
+            this.footer.resize(width, height, dpr, this.breakpoint);
+        }
+
         if (this.menu) {
             this.menu.resize(width, height, dpr, this.breakpoint);
         }
@@ -269,18 +282,23 @@ export class UI extends Interface {
         if (this.details) {
             if (e.keyCode === 27) { // Esc
                 this.onDetailsClick();
+
+                this.isDetailsToggle = this.details && this.details.animatedIn;
+                this.isDetailsInfoToggle = this.detailsInfo && this.detailsInfo.animatedIn;
             }
         }
 
         if (e.ctrlKey && e.keyCode === 48) { // Ctrl 0
             if (this.animatedIn) {
-                this.animateOut();
+                this.isDetailsToggle = this.details && this.details.animatedIn;
+                this.isDetailsInfoToggle = this.detailsInfo && this.detailsInfo.animatedIn;
 
-                if (this.details && this.details.animatedIn) {
-                    this.toggleDetails(false);
-                }
+                this.animateOut();
             } else {
                 this.animateIn();
+
+                this.isDetailsToggle = false;
+                this.isDetailsInfoToggle = false;
             }
 
             Stage.events.emit('ui', { open: this.animatedIn, target: this });
@@ -340,8 +358,20 @@ export class UI extends Interface {
     }
 
     animateIn() {
+        if (this.details && this.isDetailsToggle && !this.details.animatedIn) {
+            this.details.animateIn();
+        }
+
+        if (this.detailsInfo && this.isDetailsInfoToggle && !this.detailsInfo.animatedIn) {
+            this.detailsInfo.animateIn();
+        }
+
         if (this.header) {
             this.header.animateIn();
+        }
+
+        if (this.footer) {
+            this.footer.animateIn();
         }
 
         if (this.menu) {
@@ -370,6 +400,10 @@ export class UI extends Interface {
             this.header.animateOut();
         }
 
+        if (this.footer) {
+            this.footer.animateOut();
+        }
+
         if (this.menu) {
             this.menu.animateOut();
         }
@@ -393,17 +427,21 @@ export class UI extends Interface {
 
     toggleDetails(show) {
         if (show) {
-            this.details.animatedIn = true;
-
             if (this.detailsButton) {
                 this.detailsButton.open();
             }
 
+            if (this.detailsInfo) {
+                this.detailsInfo.animateOut();
+            }
+
             this.details.animateIn();
         } else {
-            this.details.animatedIn = false;
-
             this.details.animateOut();
+
+            if (this.detailsInfo) {
+                this.detailsInfo.animateIn();
+            }
 
             if (this.detailsButton) {
                 this.detailsButton.close();

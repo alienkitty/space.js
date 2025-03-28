@@ -80,6 +80,7 @@ export class InputField extends Interface {
         this.input.element.addEventListener('keyup', this.onKeyUp);
         this.element.addEventListener('mouseenter', this.onHover);
         this.element.addEventListener('mouseleave', this.onHover);
+        this.element.addEventListener('click', this.onClick);
 
         if (this.forceFocus) {
             window.addEventListener('keypress', this.onForceFocus);
@@ -93,6 +94,7 @@ export class InputField extends Interface {
         this.input.element.removeEventListener('keyup', this.onKeyUp);
         this.element.removeEventListener('mouseenter', this.onHover);
         this.element.removeEventListener('mouseleave', this.onHover);
+        this.element.removeEventListener('click', this.onClick);
 
         if (this.forceFocus) {
             window.removeEventListener('keypress', this.onForceFocus);
@@ -150,7 +152,11 @@ export class InputField extends Interface {
             }
         }
 
-        this.events.emit('hover', e);
+        this.events.emit('hover', e, { target: this });
+    };
+
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     onForceFocus = () => {

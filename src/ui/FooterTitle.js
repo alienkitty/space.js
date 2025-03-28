@@ -4,16 +4,18 @@
 
 import { Interface } from '../utils/Interface.js';
 
-export class HeaderTitle extends Interface {
+export class FooterTitle extends Interface {
     constructor({
         link,
         target,
+        callback,
         ...data
     }) {
         super('.title');
 
         this.link = link;
         this.target = target;
+        this.callback = callback;
         this.data = data;
 
         this.init();
@@ -23,13 +25,13 @@ export class HeaderTitle extends Interface {
 
     init() {
         this.css({
-            cssFloat: 'left',
+            cssFloat: 'right',
             padding: 10,
             whiteSpace: 'nowrap',
             pointerEvents: 'auto'
         });
 
-        if (this.link) {
+        if (this.link || this.callback) {
             this.css({ cursor: 'pointer' });
         }
 
@@ -50,23 +52,37 @@ export class HeaderTitle extends Interface {
     }
 
     addListeners() {
-        if (this.link) {
+        if (this.link || this.callback) {
+            this.element.addEventListener('mouseenter', this.onHover);
+            this.element.addEventListener('mouseleave', this.onHover);
             this.element.addEventListener('click', this.onClick);
         }
     }
 
     removeListeners() {
-        if (this.link) {
+        if (this.link || this.callback) {
+            this.element.removeEventListener('mouseenter', this.onHover);
+            this.element.removeEventListener('mouseleave', this.onHover);
             this.element.removeEventListener('click', this.onClick);
         }
     }
 
     // Event handlers
 
-    onClick = () => {
-        open(this.link, this.target);
+    onHover = e => {
+        this.events.emit('hover', e, { target: this });
+    };
 
-        this.events.emit('click', { target: this });
+    onClick = e => {
+        if (this.link) {
+            open(this.link, this.target);
+        }
+
+        if (this.callback) {
+            this.callback(this);
+        }
+
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods
@@ -75,6 +91,8 @@ export class HeaderTitle extends Interface {
         if (!data) {
             return;
         }
+
+        this.removeListeners();
 
         if (this.name) {
             this.name.html(data.name);
@@ -86,12 +104,15 @@ export class HeaderTitle extends Interface {
 
         this.link = data.link;
         this.target = data.target;
+        this.callback = data.callback;
 
-        if (this.link) {
+        if (this.link || this.callback) {
             this.css({ cursor: 'pointer' });
         } else {
             this.css({ cursor: '' });
         }
+
+        this.addListeners();
     }
 
     destroy() {

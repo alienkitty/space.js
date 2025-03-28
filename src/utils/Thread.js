@@ -35,13 +35,13 @@ export class Thread extends EventEmitter {
     }
 
     static shared(params) {
-        if (!this.threads) {
+        if (!this.cluster) {
             this.params = params || {};
             this.params.handlers = this.handlers;
-            this.threads = new Cluster(Thread, this.count);
+            this.cluster = new Cluster(Thread, this.count);
         }
 
-        return this.threads.get();
+        return this.cluster.get();
     }
 
     constructor({
@@ -79,21 +79,27 @@ export class Thread extends EventEmitter {
             handlers.forEach(name => this.createMethod(name));
         } else {
             array.push('addEventListener(\'message\', ({ data }) => self[data.message.fn].call(self, data.message));');
+
+            handlers.forEach(object => {
+                const { name, code } = getConstructor(object);
+
+                this.createMethod(name);
+
+                array.push(`self.${name} = ${code};`);
+            });
         }
-
-        handlers.forEach(object => {
-            const { name, code } = getConstructor(object);
-
-            this.createMethod(name);
-
-            array.push(`self.${name} = ${code};`);
-        });
 
         this.worker = new Worker(URL.createObjectURL(new Blob([array.join('\n\n')], { type: 'text/javascript' })), { type: 'module' });
     }
 
     createMethod(name) {
-        this[name] = (message = {}) => new Promise(resolve => this.send(name, message, resolve));
+        if (name.startsWith('void ')) {
+            name = name.slice(5);
+
+            this[name] = (message = {}) => this.send(name, message);
+        } else {
+            this[name] = (message = {}) => new Promise(resolve => this.send(name, message, resolve));
+        }
     }
 
     addListeners() {

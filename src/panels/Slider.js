@@ -40,7 +40,7 @@ export class Slider extends Interface {
         this.lastOrigin = new Vector2();
 
         this.init();
-        this.setValue(this.value, false);
+        this.setValue(this.value);
 
         this.addListeners();
     }
@@ -84,11 +84,11 @@ export class Slider extends Interface {
     }
 
     addListeners() {
-        this.element.addEventListener('pointerdown', this.onPointerDown);
+        this.container.element.addEventListener('pointerdown', this.onPointerDown);
     }
 
     removeListeners() {
-        this.element.removeEventListener('pointerdown', this.onPointerDown);
+        this.container.element.removeEventListener('pointerdown', this.onPointerDown);
     }
 
     getPrecision(value) {

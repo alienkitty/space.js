@@ -47,6 +47,7 @@ export { List } from './panels/List.js';
 export { ListToggle } from './panels/ListToggle.js';
 export { ListSelect } from './panels/ListSelect.js';
 export { Slider } from './panels/Slider.js';
+export { Toggle } from './panels/Toggle.js';
 export { Content } from './panels/Content.js';
 export { ColorPicker } from './panels/ColorPicker.js';
 
@@ -54,7 +55,9 @@ export { ColorPicker } from './panels/ColorPicker.js';
 export { UI } from './ui/UI.js';
 export { Header } from './ui/Header.js';
 export { HeaderInfo } from './ui/HeaderInfo.js';
-export { HeaderTitle } from './ui/HeaderTitle.js';
+export { Footer } from './ui/Footer.js';
+export { FooterTitle } from './ui/FooterTitle.js';
+export { NavTitle } from './ui/NavTitle.js';
 export { NavLink } from './ui/NavLink.js';
 export { Details } from './ui/Details.js';
 export { DetailsInfo } from './ui/DetailsInfo.js';

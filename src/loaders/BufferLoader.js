@@ -14,6 +14,11 @@ import { Loader } from './Loader.js';
  * const loader = new BufferLoader();
  * await loader.loadAllAsync(['assets/sounds/gong.mp3']);
  * console.log(loader.files);
+ * @example
+ * const loader = new BufferLoader();
+ * loader.setPath('assets/sounds/');
+ * await loader.loadAllAsync(['gong.mp3']);
+ * console.log(loader.files);
  */
 export class BufferLoader extends Loader {
     constructor() {
@@ -23,7 +28,7 @@ export class BufferLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let promise;
 
@@ -37,7 +42,7 @@ export class BufferLoader extends Loader {
 
         promise.then(buffer => {
             if (this.cache) {
-                this.files[path] = buffer;
+                this.files.set(path, buffer);
             }
 
             this.increment();

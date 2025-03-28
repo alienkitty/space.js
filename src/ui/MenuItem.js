@@ -79,26 +79,28 @@ export class MenuItem extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
+    onHover = e => {
         if (this.active) {
             return;
         }
 
         this.clearTween();
 
-        if (type === 'mouseenter') {
+        if (e.type === 'mouseenter') {
             this.container.tween({ opacity: 1 }, 200, 'easeOutSine');
         } else {
             this.container.tween({ opacity: 0.5 }, 400, 'easeOutSine');
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
-    onClick = () => {
+    onClick = e => {
         if (this.active) {
             return;
         }
 
-        this.events.emit('click', { target: this });
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods

@@ -4,7 +4,7 @@
 
 import { Interface } from '../utils/Interface.js';
 import { HeaderInfo } from './HeaderInfo.js';
-import { HeaderTitle } from './HeaderTitle.js';
+import { NavTitle } from './NavTitle.js';
 import { NavLink } from './NavLink.js';
 
 export class Header extends Interface {
@@ -39,7 +39,7 @@ export class Header extends Interface {
         const fpsOpen = this.fpsOpen;
 
         if (this.data.title) {
-            this.title = new HeaderTitle(this.data.title);
+            this.title = new NavTitle(this.data.title);
             this.title.css({
                 x: -10,
                 opacity: 0
@@ -49,7 +49,7 @@ export class Header extends Interface {
 
         if (Array.isArray(this.data.links)) {
             this.data.links.forEach(data => {
-                const link = new NavLink(data.title, data.link);
+                const link = new NavLink(data);
                 link.css({
                     x: -10,
                     opacity: 0

@@ -5,11 +5,16 @@
 import { Interface } from '../utils/Interface.js';
 
 export class DetailsLink extends Interface {
-    constructor(title, link) {
+    constructor({
+        title,
+        link,
+        target = '_blank'
+    }) {
         super('.link', 'a');
 
         this.title = title;
         this.link = link;
+        this.target = target;
 
         this.init();
 
@@ -21,7 +26,10 @@ export class DetailsLink extends Interface {
             width: 'fit-content',
             whiteSpace: 'nowrap'
         });
-        this.attr({ href: this.link });
+        this.attr({
+            href: this.link,
+            target: this.target
+        });
 
         this.content = new Interface('.content');
         this.content.css({
@@ -52,8 +60,10 @@ export class DetailsLink extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
-        this.line.clearTween().tween({ x: type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
+    onHover = e => {
+        this.line.clearTween().tween({ x: e.type === 'mouseenter' ? 10 : 0 }, 200, 'easeOutCubic');
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {
@@ -62,10 +72,22 @@ export class DetailsLink extends Interface {
 
     // Public methods
 
+    setTitle(title) {
+        this.title = title;
+
+        this.content.text(this.title);
+    }
+
     setLink(link) {
         this.link = link;
 
         this.attr({ href: this.link });
+    }
+
+    setTarget(target) {
+        this.target = target;
+
+        this.attr({ target: this.target });
     }
 
     destroy() {

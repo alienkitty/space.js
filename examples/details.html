@@ -17,8 +17,6 @@
 
         body {
             position: unset;
-            -moz-osx-font-smoothing: auto;
-            -webkit-font-smoothing: auto;
         }
     </style>
 
@@ -37,9 +35,9 @@
                     details: {
                         // background: true,
                         // dividerLine: true,
-                        // width: '50vw',
+                        // width: 'max(50vw, 250px)',
                         title: 'Mars',
-                        /* content: 'Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.',
+                        /* content: '<p>Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.</p>',
                         links: [
                             {
                                 title: 'Wikipedia',
@@ -47,10 +45,10 @@
                             }
                         ], */
                         content: [
-                            // 'Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.',
+                            // '<p>Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System\'s planets with a diameter of 6,779 km.</p>',
                             {
                                 content: /* html */ `
-Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.
+<p>Mars is the fourth planet from the Sun. The surface of Mars is orange-red because it is covered in iron(III) oxide dust, giving it the nickname "the Red Planet". It is classified as a terrestrial planet and is the second smallest of the Solar System's planets with a diameter of 6,779 km.</p>
                                 `,
                                 links: [
                                     {

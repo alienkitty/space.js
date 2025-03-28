@@ -527,16 +527,15 @@
 
             static initLoader() {
                 this.loader = new BufferLoader();
+                this.loader.setPath('assets/sounds/');
                 this.loader.loadAll([
-                    'assets/sounds/metal_monk_loop.mp3',
-                    'assets/sounds/ethereal_bells.mp3',
-                    'assets/sounds/accent_transition_1.mp3',
-                    'assets/sounds/accent_transition_2.mp3',
-                    'assets/sounds/hover.mp3',
-                    'assets/sounds/click.mp3',
-                    'assets/sounds/kick.mp3',
-                    'assets/sounds/snare.mp3',
-                    'assets/sounds/hihat.mp3'
+                    'metal_monk_loop.mp3',
+                    'ethereal_bells.mp3',
+                    'accent_transition_1.mp3',
+                    'accent_transition_2.mp3',
+                    'kick.mp3',
+                    'snare.mp3',
+                    'hihat.mp3'
                 ]);
             }
 

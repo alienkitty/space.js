@@ -71,7 +71,8 @@
 
             static initLoader() {
                 this.loader = new BufferLoader();
-                this.loader.loadAll(['assets/sounds/gong.mp3']);
+                this.loader.setPath('assets/sounds/');
+                this.loader.loadAll(['gong.mp3']);
             }
 
             static initViews() {

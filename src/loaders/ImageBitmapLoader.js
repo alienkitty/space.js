@@ -20,7 +20,7 @@ export class ImageBitmapLoader extends Loader {
         super();
 
         this.defaultOptions = {
-            imageOrientation: 'none',
+            imageOrientation: 'from-image',
             premultiplyAlpha: 'none',
             colorSpaceConversion: 'none'
         };
@@ -29,13 +29,13 @@ export class ImageBitmapLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let promise;
 
         if (cached) {
             promise = Promise.resolve(cached);
-        } else if (Thread.threads) {
+        } else if (Thread.handlers) {
             promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, this.options);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
@@ -51,7 +51,7 @@ export class ImageBitmapLoader extends Loader {
             }
 
             if (this.cache) {
-                this.files[path] = bitmap;
+                this.files.set(path, bitmap);
             }
 
             this.increment();

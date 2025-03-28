@@ -32,7 +32,6 @@ export class Details extends Interface {
         this.css({
             position: 'relative',
             width: this.width,
-            pointerEvents: 'none',
             opacity: 0
         });
 
@@ -60,22 +59,27 @@ export class Details extends Interface {
             position: 'relative',
             display: 'flex',
             flexWrap: 'wrap',
-            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`
+            padding: `10vw calc(${this.width} - 10vw - 440px) 13vw 10vw`,
+            pointerEvents: 'auto'
         });
         this.add(this.container);
     }
 
     initViews() {
-        this.title = new DetailsTitle(this.data.title);
-        this.container.add(this.title);
-
-        if (!Array.isArray(this.data.content)) {
-            this.data.content = [this.data.content];
+        if (this.data.title !== undefined) {
+            this.title = new DetailsTitle(this.data.title);
+            this.container.add(this.title);
         }
 
-        this.data.content.forEach(data => {
-            this.addContent(this.container, data);
-        });
+        if (this.data.content !== undefined) {
+            if (!Array.isArray(this.data.content)) {
+                this.data.content = [this.data.content];
+            }
+
+            this.data.content.forEach(data => {
+                this.addContent(this.container, data);
+            });
+        }
     }
 
     addListeners() {
@@ -92,11 +96,24 @@ export class Details extends Interface {
 
     // Event handlers
 
-    onClick = () => {
-        this.events.emit('click', { target: this });
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
     };
 
     // Public methods
+
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        this.data = data;
+        this.content = [];
+        this.links = [];
+
+        this.container.empty();
+        this.initViews();
+    }
 
     addContent(target, data) {
         if (typeof data === 'object') {
@@ -159,7 +176,7 @@ export class Details extends Interface {
 
                 if (Array.isArray(data.links)) {
                     data.links.forEach(data => {
-                        const link = new DetailsLink(data.title, data.link);
+                        const link = new DetailsLink(data);
                         link.css({
                             display: 'block'
                         });
@@ -205,10 +222,7 @@ export class Details extends Interface {
     animateIn() {
         this.clearTween();
         this.visible();
-        this.css({
-            pointerEvents: 'auto',
-            opacity: 1
-        });
+        this.css({ opacity: 1 });
 
         const duration = 2000;
         const stagger = 175;
@@ -227,14 +241,15 @@ export class Details extends Interface {
             child.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, duration, 'easeOutCubic', delay + i * stagger);
         });
 
-        this.title.animateIn();
+        if (this.title) {
+            this.title.animateIn();
+        }
 
         this.animatedIn = true;
     }
 
     animateOut(callback) {
         this.clearTween();
-        this.css({ pointerEvents: 'none' });
 
         if (this.dividerLine) {
             this.dividerLine.animateOut();

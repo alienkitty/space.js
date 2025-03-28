@@ -5,11 +5,16 @@
 import { Interface } from '../utils/Interface.js';
 
 export class Link extends Interface {
-    constructor(title, link) {
+    constructor({
+        title,
+        link,
+        target = '_blank'
+    }) {
         super('.link', 'a');
 
         this.title = title;
         this.link = link;
+        this.target = target;
 
         this.init();
 
@@ -27,7 +32,10 @@ export class Link extends Interface {
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
-        this.attr({ href: this.link });
+        this.attr({
+            href: this.link,
+            target: this.target
+        });
         this.text(this.title);
 
         this.line = new Interface('.line');
@@ -58,14 +66,16 @@ export class Link extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
+    onHover = e => {
         this.line.clearTween();
 
-        if (type === 'mouseenter') {
+        if (e.type === 'mouseenter') {
             this.line.css({ transformOrigin: 'left center', scaleX: 0 }).tween({ scaleX: 1 }, 800, 'easeOutQuint');
         } else {
             this.line.css({ transformOrigin: 'right center' }).tween({ scaleX: 0 }, 500, 'easeOutQuint');
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {
@@ -84,6 +94,12 @@ export class Link extends Interface {
         this.link = link;
 
         this.attr({ href: this.link });
+    }
+
+    setTarget(target) {
+        this.target = target;
+
+        this.attr({ target: this.target });
     }
 
     animateIn() {

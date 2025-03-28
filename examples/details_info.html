@@ -11,19 +11,10 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
-        body {
-            -moz-osx-font-smoothing: auto;
-            -webkit-font-smoothing: auto;
-        }
-
         h1 {
-            margin: 0 0 6px -3px;
+            margin-left: -3px;
             font-weight: 100;
             font-size: 46px;
-        }
-
-        p {
-            margin: 6px 0;
         }
     </style>
 
@@ -52,8 +43,6 @@ Distance from Sun: 230 million km
                 });
                 this.ui.detailsInfo.animateIn();
                 document.body.appendChild(this.ui.element);
-
-                this.animatedIn = true;
             }
 
             static addListeners() {
@@ -74,6 +63,8 @@ Distance from Sun: 230 million km
             };
 
             static onLoad = () => {
+                this.animatedIn = true;
+
                 this.ui.animateIn();
             };
         }

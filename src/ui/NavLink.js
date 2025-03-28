@@ -5,11 +5,16 @@
 import { Interface } from '../utils/Interface.js';
 
 export class NavLink extends Interface {
-    constructor(title, link) {
+    constructor({
+        title,
+        link,
+        target = '_blank'
+    }) {
         super('.link', 'a');
 
         this.title = title;
         this.link = link;
+        this.target = target;
 
         this.letters = [];
 
@@ -30,7 +35,10 @@ export class NavLink extends Interface {
             webkitUserSelect: 'none',
             userSelect: 'none'
         });
-        this.attr({ href: this.link });
+        this.attr({
+            href: this.link,
+            target: this.target
+        });
     }
 
     initText() {
@@ -63,14 +71,16 @@ export class NavLink extends Interface {
 
     // Event handlers
 
-    onHover = ({ type }) => {
-        if (type === 'mouseenter') {
+    onHover = e => {
+        if (e.type === 'mouseenter') {
             this.letters.forEach((letter, i) => {
                 letter.clearTween().tween({ y: -5, opacity: 0 }, 125, 'easeOutCubic', i * 15, () => {
                     letter.css({ y: 5 }).tween({ y: 0, opacity: 1 }, 300, 'easeOutCubic');
                 });
             });
         }
+
+        this.events.emit('hover', e, { target: this });
     };
 
     onClick = e => {
@@ -91,6 +101,12 @@ export class NavLink extends Interface {
         this.link = link;
 
         this.attr({ href: this.link });
+    }
+
+    setTarget(target) {
+        this.target = target;
+
+        this.attr({ target: this.target });
     }
 
     animateIn() {

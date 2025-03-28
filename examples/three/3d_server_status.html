@@ -17,8 +17,6 @@
 
         body {
             position: unset;
-            -moz-osx-font-smoothing: auto;
-            -webkit-font-smoothing: auto;
         }
     </style>
 
@@ -933,11 +931,11 @@
                         detailsButton: true,
                         details: {
                             dividerLine: true,
-                            width: '50vw',
+                            width: 'max(50vw, 250px)',
                             title: 'server-status'.replace(/[\s.-]+/g, '_'),
                             content: [
                                 {
-                                    content: 'A simple status API endpoint built on Express, like the Apache status page.',
+                                    content: '<p>A simple status API endpoint built on Express, like the Apache status page.</p>',
                                     links: [
                                         {
                                             title: 'Source code',
@@ -966,7 +964,8 @@
                                                 value: 0,
                                                 width: 70,
                                                 noRange: true
-                                            }
+                                            },
+                                            width: 70
                                         }
                                     ]
                                 },
@@ -1324,6 +1323,7 @@
                 // Default camera
                 this.camera = this.mapCamera;
 
+                this.offsetX = 0;
                 this.progress = 0;
                 this.isTransitioning = false;
             }

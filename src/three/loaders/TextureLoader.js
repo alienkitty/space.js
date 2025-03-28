@@ -47,7 +47,7 @@ export class TextureLoader extends Loader {
     }
 
     load(path, callback) {
-        const cached = this.files[path];
+        const cached = this.files.get(path);
 
         let texture;
         let promise;
@@ -63,15 +63,20 @@ export class TextureLoader extends Loader {
         } else {
             texture = new Texture();
 
+            if (ColorManagement.enabled) {
+                texture.colorSpace = SRGBColorSpace;
+            }
+
             if (cached) {
                 promise = Promise.resolve(cached);
             } else {
                 const params = {
                     imageOrientation: this.options.imageOrientation,
-                    premultiplyAlpha: this.options.premultiplyAlpha
+                    premultiplyAlpha: this.options.premultiplyAlpha,
+                    colorSpaceConversion: this.options.colorSpaceConversion
                 };
 
-                if (Thread.threads) {
+                if (Thread.handlers) {
                     promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, params);
                 } else {
                     promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
@@ -88,11 +93,6 @@ export class TextureLoader extends Loader {
                 }
 
                 texture.image = bitmap;
-
-                if (ColorManagement.enabled) {
-                    texture.colorSpace = SRGBColorSpace;
-                }
-
                 texture.needsUpdate = true;
 
                 texture.onUpdate = () => {
@@ -117,7 +117,7 @@ export class TextureLoader extends Loader {
             });
 
             if (this.cache) {
-                this.files[path] = texture;
+                this.files.set(path, texture);
             }
         }
 

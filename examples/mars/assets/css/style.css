@@ -1,0 +1,243 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url(/examples/assets/fonts/Roboto-Thin.woff2) format('woff2');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url(/examples/assets/fonts/Roboto-Light.woff2) format('woff2');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    src: url(/examples/assets/fonts/RobotoMono-Medium.woff2) format('woff2');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Gothic A1';
+    src: url(/examples/assets/fonts/GothicA1-Medium.woff2) format('woff2');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Gothic A1';
+    src: url(/examples/assets/fonts/GothicA1-Bold.woff2) format('woff2');
+    font-weight: 700;
+}
+
+:root {
+    --bg-color: #000;
+    --ui-panel-width: 100px;
+    --ui-font-family: 'Roboto Mono', monospace;
+    --ui-font-weight: 400;
+    --ui-font-size: 10px;
+    --ui-line-height: 15px;
+    --ui-letter-spacing: 0.04em;
+    --ui-number-letter-spacing: 0.5px;
+    --ui-title-font-size: 11px;
+    --ui-title-line-height: 18px;
+    --ui-title-letter-spacing: 1px;
+    --ui-secondary-font-size: 10px;
+    --ui-secondary-letter-spacing: 0.5px;
+    --ui-secondary-color: rgb(255 255 255 / 0.5);
+    --ui-name-font-family: 'Gothic A1', sans-serif;
+    --ui-name-font-weight: 500;
+    --ui-name-font-size: 13px;
+    --ui-name-line-height: 18px;
+    --ui-name-letter-spacing: 0.03em;
+    --ui-caption-font-family: 'Gothic A1', sans-serif;
+    --ui-caption-font-weight: 500;
+    --ui-caption-font-size: 12px;
+    --ui-caption-line-height: 16px;
+    --ui-caption-letter-spacing: 0.03em;
+    --ui-link-font-family: 'Gothic A1', sans-serif;
+    --ui-link-font-weight: 700;
+    --ui-link-font-size: 11px;
+    --ui-link-line-height: 18px;
+    --ui-link-letter-spacing: 0.03em;
+    --ui-info-font-family: 'Gothic A1', sans-serif;
+    --ui-info-font-weight: 700;
+    --ui-info-font-size: 10px;
+    --ui-info-line-height: 20px;
+    --ui-info-letter-spacing: 0.08em;
+    --ui-info-color: rgb(255 255 255 / 0.55);
+    --ui-color: #fff;
+    --ui-color-triplet: 255 255 255;
+    --ui-color-line-opacity: 0.5;
+    --ui-color-divider-line-opacity: 0.15;
+    --ui-color-graph-bottom-line-opacity: 0.15;
+    --ui-invert-light-color: #000;
+    --ui-invert-light-color-triplet: 0 0 0;
+    --ui-invert-dark-color: #fff;
+    --ui-invert-dark-color-triplet: 255 255 255;
+    --ui-color-line: rgb(var(--ui-color-triplet) / var(--ui-color-line-opacity));
+    --ui-color-divider-line: rgb(var(--ui-color-triplet) / var(--ui-color-divider-line-opacity));
+    --ui-color-graph-bottom-line: rgb(var(--ui-color-triplet) / var(--ui-color-graph-bottom-line-opacity));
+    --ui-color-range-1: #3b528b;
+    --ui-color-range-2: #21918c;
+    --ui-color-range-3: #5ec962;
+    --ui-color-range-4: #fde725;
+}
+
+*, :after, :before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+}
+
+*:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    position: fixed;
+    font-family: 'Gothic A1', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.6;
+    letter-spacing: normal;
+    background-color: var(--bg-color);
+    color: var(--ui-color);
+    text-rendering: geometricPrecision;
+    -webkit-tap-highlight-color: transparent;
+}
+
+canvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.scroll *, .scroll :after, .scroll :before {
+    touch-action: unset;
+}
+
+.scroll body {
+    position: unset;
+    overflow-y: auto;
+}
+
+h1 {
+    margin-left: -3px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 46px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+p {
+    margin: 6px 0;
+}
+
+a {
+    color: var(--ui-color);
+    text-decoration: none;
+    text-underline-offset: 3px;
+}
+
+a:hover, a:focus {
+    color: var(--ui-color);
+    text-decoration: underline;
+}
+
+input, pre, .info, .target, .panel, .number, .name, .type, .primary, .secondary, .label, .marker {
+    font-family: var(--ui-font-family);
+    font-weight: var(--ui-font-weight);
+    font-size: var(--ui-font-size);
+    line-height: var(--ui-line-height);
+    letter-spacing: var(--ui-letter-spacing);
+}
+
+.title .name {
+    font-family: var(--ui-name-font-family);
+    font-weight: var(--ui-name-font-weight);
+    font-size: var(--ui-name-font-size);
+    line-height: var(--ui-name-line-height);
+    letter-spacing: var(--ui-name-letter-spacing);
+}
+
+.title .caption {
+    font-family: var(--ui-caption-font-family);
+    font-weight: var(--ui-caption-font-weight);
+    font-size: var(--ui-caption-font-size);
+    line-height: var(--ui-caption-line-height);
+    letter-spacing: var(--ui-caption-letter-spacing);
+    text-rendering: auto;
+}
+
+.link, .menu .item {
+    font-family: var(--ui-link-font-family);
+    font-weight: var(--ui-link-font-weight);
+    font-size: var(--ui-link-font-size);
+    line-height: var(--ui-link-line-height);
+    letter-spacing: var(--ui-link-letter-spacing);
+}
+
+.details h2 {
+    margin: 35px 0 8px 0;
+    font-size: 10.5px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #868686;
+}
+
+.details .link {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: 22px;
+    letter-spacing: inherit;
+}
+
+.details .link:first-of-type {
+    margin-top: 6px;
+}
+
+.details .link .line {
+    font-weight: 700;
+}
+
+.ui {
+    z-index: 9;
+}
+
+.ui .menu > * {
+    width: 44px;
+}
+
+.preloader h2, .ui > .info {
+    padding: 6px;
+    font-family: var(--ui-info-font-family);
+    font-weight: var(--ui-info-font-weight);
+    font-size: var(--ui-info-font-size);
+    line-height: var(--ui-info-line-height);
+    letter-spacing: var(--ui-info-letter-spacing);
+}
+
+.trackers {
+    z-index: 10;
+}
+
+::selection {
+    background-color: var(--ui-color);
+    color: var(--bg-color);
+}

@@ -29,7 +29,7 @@
 
             static addListeners() {
                 document.addEventListener('visibilitychange', this.onVisibility);
-                document.addEventListener('pointerdown', this.onPointerDown);
+                document.addEventListener('click', this.onClick);
 
                 this.ui.instructions.animateIn();
             }
@@ -44,8 +44,8 @@
                 }
             };
 
-            static onPointerDown = () => {
-                document.removeEventListener('pointerdown', this.onPointerDown);
+            static onClick = () => {
+                document.removeEventListener('click', this.onClick);
 
                 WebAudio.resume();
 
