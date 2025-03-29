@@ -21,20 +21,6 @@ export class MarsPanel extends Panel {
 
         const { mars } = this.view;
 
-        const animateItems = [
-            {
-                type: 'slider',
-                name: 'Speed',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: params.speed,
-                callback: value => {
-                    params.speed = value;
-                }
-            }
-        ];
-
         const items = [
             {
                 type: 'divider'
@@ -111,25 +97,19 @@ export class MarsPanel extends Panel {
                 type: 'toggle',
                 name: 'Animate',
                 value: params.animate,
-                callback: (value, item) => {
-                    if (!item.hasContent()) {
-                        const animatePanel = new Panel();
-                        animatePanel.animateIn(true);
-
-                        animateItems.forEach(data => {
-                            animatePanel.add(new PanelItem(data));
-                        });
-
-                        item.setContent(animatePanel);
-                    }
-
+                callback: value => {
                     params.animate = value;
-
-                    if (value) {
-                        item.toggleContent(true);
-                    } else {
-                        item.toggleContent(false);
-                    }
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Speed',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: params.speed,
+                callback: value => {
+                    params.speed = value;
                 }
             },
             {

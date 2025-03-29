@@ -17,20 +17,19 @@ export class PostPanel extends Panel {
             On: true
         };
 
-        const dirtOptions = {
-            Off: false,
-            Dirt: true
-        };
-
-        const toneMappingOptions = {
-            Off: false,
-            Tone: true
-        };
-
-        const gammaOptions = {
-            Off: false,
-            Gamma: true
-        };
+        const toneMappingItems = [
+            {
+                type: 'slider',
+                name: 'Exp',
+                min: 0,
+                max: 2,
+                step: 0.01,
+                value: compositeMaterial.uniforms.uExposure.value,
+                callback: value => {
+                    compositeMaterial.uniforms.uExposure.value = value;
+                }
+            }
+        ];
 
         const postItems = [
             {
@@ -119,46 +118,44 @@ export class PostPanel extends Panel {
                 }
             },
             {
-                type: 'list',
-                list: dirtOptions,
-                value: getKeyByValue(dirtOptions, compositeMaterial.uniforms.uLensDirt.value),
+                type: 'toggle',
+                name: 'Dirt',
+                value: compositeMaterial.uniforms.uLensDirt.value,
                 callback: value => {
-                    compositeMaterial.uniforms.uLensDirt.value = dirtOptions[value];
+                    compositeMaterial.uniforms.uLensDirt.value = value;
                 }
             },
             {
-                type: 'divider'
-            },
-            {
-                type: 'list',
+                type: 'toggle',
                 name: 'Tone',
-                list: toneMappingOptions,
-                value: getKeyByValue(toneMappingOptions, compositeMaterial.uniforms.uToneMapping.value),
-                callback: value => {
-                    compositeMaterial.uniforms.uToneMapping.value = toneMappingOptions[value];
+                value: compositeMaterial.uniforms.uToneMapping.value,
+                callback: (value, item) => {
+                    if (!item.hasContent()) {
+                        const toneMappingPanel = new Panel();
+                        toneMappingPanel.animateIn(true);
+
+                        toneMappingItems.forEach(data => {
+                            toneMappingPanel.add(new PanelItem(data));
+                        });
+
+                        item.setContent(toneMappingPanel);
+                    }
+
+                    compositeMaterial.uniforms.uToneMapping.value = value;
+
+                    if (value) {
+                        item.toggleContent(true);
+                    } else {
+                        item.toggleContent(false);
+                    }
                 }
             },
             {
-                type: 'slider',
-                name: 'Exp',
-                min: 0,
-                max: 2,
-                step: 0.01,
-                value: compositeMaterial.uniforms.uExposure.value,
-                callback: value => {
-                    compositeMaterial.uniforms.uExposure.value = value;
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
-                type: 'list',
+                type: 'toggle',
                 name: 'Gamma',
-                list: gammaOptions,
-                value: getKeyByValue(gammaOptions, compositeMaterial.uniforms.uGamma.value),
+                value: compositeMaterial.uniforms.uGamma.value,
                 callback: value => {
-                    compositeMaterial.uniforms.uGamma.value = gammaOptions[value];
+                    compositeMaterial.uniforms.uGamma.value = value;
                 }
             }
         ];

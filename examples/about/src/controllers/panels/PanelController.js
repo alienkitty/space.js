@@ -54,16 +54,6 @@ export class PanelController {
         const vector3 = new Vector3();
         const gravity = physics.getGravity();
 
-        const physicsOptions = {
-            Off: false,
-            Physics: true
-        };
-
-        const animateOptions = {
-            Off: false,
-            Animate: true
-        };
-
         const sceneOptions = {
             Scene: ScenePanel,
             Post: PostPanel
@@ -100,11 +90,20 @@ export class PanelController {
                 type: 'divider'
             },
             {
-                type: 'list',
-                list: physicsOptions,
-                value: getKeyByValue(physicsOptions, PhysicsController.enabled),
+                type: 'toggle',
+                name: 'Animate',
+                value: params.animate,
                 callback: value => {
-                    PhysicsController.enabled = physicsOptions[value];
+                    params.animate = value;
+                    drawBuffers.saveState = params.animate;
+                }
+            },
+            {
+                type: 'toggle',
+                name: 'Physics',
+                value: PhysicsController.enabled,
+                callback: value => {
+                    PhysicsController.enabled = value;
 
                     // Reset
                     vector3.set(0, 0, 0);
@@ -129,18 +128,6 @@ export class PanelController {
                 callback: value => {
                     gravity.y = -value;
                     physics.setGravity(gravity);
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
-                type: 'list',
-                list: animateOptions,
-                value: getKeyByValue(animateOptions, params.animate),
-                callback: value => {
-                    params.animate = animateOptions[value];
-                    drawBuffers.saveState = params.animate;
                 }
             },
             {
