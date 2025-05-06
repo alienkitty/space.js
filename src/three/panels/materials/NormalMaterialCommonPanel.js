@@ -26,21 +26,21 @@ export class NormalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
+                name: 'Wire',
+                list: WireframeOptions,
+                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
+                callback: value => {
+                    mesh.material.wireframe = WireframeOptions[value];
+                }
+            },
+            {
+                type: 'list',
                 name: 'Flat',
                 list: FlatShadingOptions,
                 value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
                 callback: value => {
                     mesh.material.flatShading = FlatShadingOptions[value];
                     mesh.material.needsUpdate = true;
-                }
-            },
-            {
-                type: 'list',
-                name: 'Wire',
-                list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
-                callback: value => {
-                    mesh.material.wireframe = WireframeOptions[value];
                 }
             }
         ];
