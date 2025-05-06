@@ -11,16 +11,34 @@ import { StandardMaterialPatches } from '../Patches.js';
 
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
-import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { RoughnessMapPanel } from '../textures/RoughnessMapPanel.js';
+import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const StandardMaterialOptions = {
     Common: StandardMaterialCommonPanel,
     Map: MapPanel,
+    Light: LightMapPanel,
+    AO: AOMapPanel,
+    Emissive: EmissiveMapPanel,
+    Bump: BumpMapPanel,
+    Normal: NormalMapPanel,
+    Displace: DisplacementMapPanel,
+    Rough: RoughnessMapPanel,
+    Metal: MetalnessMapPanel,
+    Alpha: AlphaMapPanel,
     Subsurface: StandardMaterialSubsurfacePanel,
-    Env: StandardMaterialEnvPanel,
+    Env: EnvMapPanel,
     Helper: MeshHelperPanel,
     Physics: OimoPhysicsPanel
 };

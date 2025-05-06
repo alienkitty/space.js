@@ -5,6 +5,8 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
+import { MapPanel } from '../textures/MapPanel.js';
+
 export class PhysicalMaterialSheenPanel extends Panel {
     constructor(mesh) {
         super();
@@ -33,6 +35,29 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 }
             },
             {
+                type: 'divider'
+            },
+            {
+                type: 'color',
+                name: 'Sheen Color',
+                value: mesh.material.sheenColor,
+                callback: value => {
+                    mesh.material.sheenColor.copy(value);
+                }
+            },
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'sheenColorMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
                 type: 'slider',
                 name: 'Rough',
                 min: 0,
@@ -44,14 +69,14 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 }
             },
             {
-                type: 'color',
-                name: 'Sheen Color',
-                value: mesh.material.sheenColor,
-                callback: value => {
-                    mesh.material.sheenColor.copy(value);
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'sheenRoughnessMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

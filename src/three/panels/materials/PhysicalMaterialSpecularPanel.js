@@ -7,7 +7,7 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 
 import { MapPanel } from '../textures/MapPanel.js';
 
-export class PhysicalMaterialAnisotropyPanel extends Panel {
+export class PhysicalMaterialSpecularPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -24,31 +24,40 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 type: 'divider'
             },
             {
-                type: 'slider',
-                name: 'Int',
-                min: 0,
-                max: 1,
-                step: 0.01,
-                value: mesh.material.anisotropy,
+                type: 'color',
+                name: 'Specular Color',
+                value: mesh.material.specularColor,
                 callback: value => {
-                    mesh.material.anisotropy = value;
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Angle',
-                min: 0,
-                max: Math.PI / 2,
-                step: 0.01,
-                value: mesh.material.anisotropyRotation,
-                callback: value => {
-                    mesh.material.anisotropyRotation = value;
+                    mesh.material.specularColor.copy(value);
                 }
             },
             {
                 type: 'content',
                 callback: (value, item) => {
-                    const materialPanel = new MapPanel(mesh, 'anisotropyMap');
+                    const materialPanel = new MapPanel(mesh, 'specularColorMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'Int',
+                min: 0,
+                max: 32,
+                step: 0.1,
+                value: mesh.material.specularIntensity,
+                callback: value => {
+                    mesh.material.specularIntensity = value;
+                }
+            },
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'specularIntensityMap');
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);

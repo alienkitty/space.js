@@ -12,10 +12,26 @@ import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
+import { GradientMapPanel } from '../textures/GradientMapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const ToonMaterialOptions = {
     Common: ToonMaterialCommonPanel,
     Map: MapPanel,
+    Gradient: GradientMapPanel,
+    Light: LightMapPanel,
+    AO: AOMapPanel,
+    Emissive: EmissiveMapPanel,
+    Bump: BumpMapPanel,
+    Normal: NormalMapPanel,
+    Displace: DisplacementMapPanel,
+    Alpha: AlphaMapPanel,
     Helper: MeshHelperPanel,
     Physics: OimoPhysicsPanel
 };

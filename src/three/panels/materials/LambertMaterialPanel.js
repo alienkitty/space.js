@@ -9,15 +9,31 @@ import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
-import { LambertMaterialEnvPanel } from './LambertMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const LambertMaterialOptions = {
     Common: LambertMaterialCommonPanel,
     Map: MapPanel,
-    Env: LambertMaterialEnvPanel,
+    Light: LightMapPanel,
+    AO: AOMapPanel,
+    Emissive: EmissiveMapPanel,
+    Bump: BumpMapPanel,
+    Normal: NormalMapPanel,
+    Displace: DisplacementMapPanel,
+    Specular: SpecularMapPanel,
+    Alpha: AlphaMapPanel,
+    Env: EnvMapPanel,
     Helper: MeshHelperPanel,
     Physics: OimoPhysicsPanel
 };

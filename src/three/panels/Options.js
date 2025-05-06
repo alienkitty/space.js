@@ -13,8 +13,10 @@ import {
     MixOperation,
     MultiplyOperation,
     NoColorSpace,
+    ObjectSpaceNormalMap,
     RepeatWrapping,
-    SRGBColorSpace
+    SRGBColorSpace,
+    TangentSpaceNormalMap
 } from 'three';
 
 export const VisibleOptions = {
@@ -69,6 +71,11 @@ export const ColorSpaceOptions = {
     None: NoColorSpace,
     SRGB: SRGBColorSpace,
     Linear: LinearSRGBColorSpace
+};
+
+export const NormalMapOptions = {
+    Tan: TangentSpaceNormalMap,
+    Obj: ObjectSpaceNormalMap
 };
 
 export const HelperOptions = {

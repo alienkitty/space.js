@@ -11,9 +11,15 @@ import { MaterialPanels } from '../Custom.js';
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
 
 export const NormalMaterialOptions = {
     Common: NormalMaterialCommonPanel,
+    Bump: BumpMapPanel,
+    Normal: NormalMapPanel,
+    Displace: DisplacementMapPanel,
     Helper: MeshHelperPanel,
     Physics: OimoPhysicsPanel
 };

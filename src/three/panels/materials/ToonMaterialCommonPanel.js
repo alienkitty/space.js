@@ -59,7 +59,6 @@ export class ToonMaterialCommonPanel extends Panel {
                     mesh.material.toneMapped = ToneMappedOptions[value];
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

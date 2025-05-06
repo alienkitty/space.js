@@ -5,6 +5,8 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
+import { MapPanel } from '../textures/MapPanel.js';
+
 export class PhysicalMaterialTransmissionPanel extends Panel {
     constructor(mesh) {
         super();
@@ -33,6 +35,18 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 }
             },
             {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'transmissionMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
                 type: 'slider',
                 name: 'Thick',
                 min: -10,
@@ -42,6 +56,18 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 callback: value => {
                     mesh.material.thickness = value;
                 }
+            },
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'thicknessMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
+                type: 'divider'
             },
             {
                 type: 'color',
@@ -61,6 +87,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 callback: value => {
                     mesh.material.attenuationDistance = value;
                 }
+            },
+            {
+                type: 'divider'
             },
             {
                 type: 'slider',
@@ -95,7 +124,6 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                     mesh.material.reflectivity = value;
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

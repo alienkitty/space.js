@@ -10,26 +10,46 @@ import { MaterialPanels } from '../Custom.js';
 import { StandardMaterialPatches } from '../Patches.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
+import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
 import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
-import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
-import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
+import { PhysicalMaterialSpecularPanel } from './PhysicalMaterialSpecularPanel.js';
+import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MapPanel } from '../textures/MapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { RoughnessMapPanel } from '../textures/RoughnessMapPanel.js';
+import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const PhysicalMaterialOptions = {
     Common: PhysicalMaterialCommonPanel,
     Map: MapPanel,
+    Light: LightMapPanel,
+    AO: AOMapPanel,
+    Emissive: EmissiveMapPanel,
+    Bump: BumpMapPanel,
+    Normal: NormalMapPanel,
+    Displace: DisplacementMapPanel,
+    Rough: RoughnessMapPanel,
+    Metal: MetalnessMapPanel,
+    Alpha: AlphaMapPanel,
+    Anisotropy: PhysicalMaterialAnisotropyPanel,
     Clearcoat: PhysicalMaterialClearcoatPanel,
     Iridescence: PhysicalMaterialIridescencePanel,
-    Anisotropy: PhysicalMaterialAnisotropyPanel,
     Sheen: PhysicalMaterialSheenPanel,
-    Subsurface: PhysicalMaterialSubsurfacePanel,
     Transmission: PhysicalMaterialTransmissionPanel,
+    Specular: PhysicalMaterialSpecularPanel,
+    Subsurface: PhysicalMaterialSubsurfacePanel,
     Env: PhysicalMaterialEnvPanel,
     Helper: MeshHelperPanel,
     Physics: OimoPhysicsPanel
