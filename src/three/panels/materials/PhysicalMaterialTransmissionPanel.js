@@ -64,6 +64,17 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
             },
             {
                 type: 'slider',
+                name: 'Chroma',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: mesh.material.dispersion,
+                callback: value => {
+                    mesh.material.dispersion = value;
+                }
+            },
+            {
+                type: 'slider',
                 name: 'IOR',
                 min: 1,
                 max: 2.333,
