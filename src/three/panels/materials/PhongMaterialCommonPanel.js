@@ -4,7 +4,7 @@
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { FlatShadingOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
+import { FlatShadingOptions, FogOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -76,6 +76,15 @@ export class PhongMaterialCommonPanel extends Panel {
                 value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
                 callback: value => {
                     mesh.material.wireframe = WireframeOptions[value];
+                }
+            },
+            {
+                type: 'list',
+                name: 'Fog',
+                list: FogOptions,
+                value: getKeyByValue(FogOptions, mesh.material.fog),
+                callback: value => {
+                    mesh.material.fog = FogOptions[value];
                 }
             },
             {

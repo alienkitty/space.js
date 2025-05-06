@@ -43,6 +43,11 @@ export const WireframeOptions = {
     Wire: true
 };
 
+export const FogOptions = {
+    Off: false,
+    Fog: true
+};
+
 export const ToneMappedOptions = {
     Off: false,
     Tone: true

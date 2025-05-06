@@ -4,7 +4,7 @@
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { FlatShadingOptions, ToneMappedOptions } from '../Options.js';
+import { FlatShadingOptions, FogOptions, ToneMappedOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -40,6 +40,15 @@ export class MatcapMaterialCommonPanel extends Panel {
                 callback: value => {
                     mesh.material.flatShading = FlatShadingOptions[value];
                     mesh.material.needsUpdate = true;
+                }
+            },
+            {
+                type: 'list',
+                name: 'Fog',
+                list: FogOptions,
+                value: getKeyByValue(FogOptions, mesh.material.fog),
+                callback: value => {
+                    mesh.material.fog = FogOptions[value];
                 }
             },
             {

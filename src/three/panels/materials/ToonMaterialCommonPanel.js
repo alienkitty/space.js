@@ -4,7 +4,7 @@
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { ToneMappedOptions } from '../Options.js';
+import { FogOptions, ToneMappedOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -30,6 +30,15 @@ export class ToonMaterialCommonPanel extends Panel {
                 value: mesh.material.color,
                 callback: value => {
                     mesh.material.color.copy(value);
+                }
+            },
+            {
+                type: 'list',
+                name: 'Fog',
+                list: FogOptions,
+                value: getKeyByValue(FogOptions, mesh.material.fog),
+                callback: value => {
+                    mesh.material.fog = FogOptions[value];
                 }
             },
             {
