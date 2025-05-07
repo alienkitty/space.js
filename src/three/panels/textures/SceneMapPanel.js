@@ -2,13 +2,13 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { SRGBColorSpace, Texture } from 'three';
+import { MathUtils, SRGBColorSpace, Texture } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { ColorSpaceOptions, WrapOptions } from '../Options.js';
+import { ColorSpaceOptions, MappingOptions, WrapOptions } from '../Options.js';
 
-import { getKeyByValue } from '../../../utils/Utils.js';
+import { TwoPI, getKeyByValue } from '../../../utils/Utils.js';
 
 export class SceneMapPanel extends Panel {
     constructor(scene, key = 'background') {
@@ -121,6 +121,197 @@ export class SceneMapPanel extends Panel {
                                 value: scene[key].repeat.y,
                                 callback: value => {
                                     scene[key].repeat.setY(value);
+                                }
+                            },
+                            {
+                                type: 'divider'
+                            },
+                            {
+                                type: 'list',
+                                name: 'Mapping',
+                                list: MappingOptions,
+                                value: getKeyByValue(MappingOptions, scene[key].mapping),
+                                callback: (value, item) => {
+                                    scene[key].mapping = MappingOptions[value];
+                                    scene[key].needsUpdate = true;
+
+                                    switch (value) {
+                                        case 'UV': {
+                                            const mappingPanel = new Panel();
+                                            mappingPanel.animateIn(true);
+
+                                            const mappingItems = [];
+
+                                            if (key === 'background') {
+                                                mappingItems.push(
+                                                    {
+                                                        type: 'divider'
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Int',
+                                                        min: 0,
+                                                        max: 10,
+                                                        step: 0.1,
+                                                        value: scene.backgroundIntensity,
+                                                        callback: value => {
+                                                            scene.backgroundIntensity = value;
+                                                        }
+                                                    }
+                                                );
+                                            } else {
+                                                mappingItems.push(
+                                                    {
+                                                        type: 'divider'
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Int',
+                                                        min: 0,
+                                                        max: 10,
+                                                        step: 0.1,
+                                                        value: scene.environmentIntensity,
+                                                        callback: value => {
+                                                            scene.environmentIntensity = value;
+                                                        }
+                                                    }
+                                                );
+                                            }
+
+                                            mappingItems.forEach(data => {
+                                                mappingPanel.add(new PanelItem(data));
+                                            });
+
+                                            item.setContent(mappingPanel);
+                                            break;
+                                        }
+                                        default: {
+                                            const mappingPanel = new Panel();
+                                            mappingPanel.animateIn(true);
+
+                                            const mappingItems = [];
+
+                                            if (key === 'background') {
+                                                mappingItems.push(
+                                                    {
+                                                        type: 'divider'
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Blur',
+                                                        min: 0,
+                                                        max: 1,
+                                                        step: 0.01,
+                                                        value: scene.backgroundBlurriness,
+                                                        callback: value => {
+                                                            scene.backgroundBlurriness = value;
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Int',
+                                                        min: 0,
+                                                        max: 10,
+                                                        step: 0.1,
+                                                        value: scene.backgroundIntensity,
+                                                        callback: value => {
+                                                            scene.backgroundIntensity = value;
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate X',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.backgroundRotation.x + (scene.backgroundRotation.x < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.backgroundRotation.x = MathUtils.degToRad(value);
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate Y',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.backgroundRotation.y + (scene.backgroundRotation.y < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.backgroundRotation.y = MathUtils.degToRad(value);
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate Z',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.backgroundRotation.z + (scene.backgroundRotation.z < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.backgroundRotation.z = MathUtils.degToRad(value);
+                                                        }
+                                                    }
+                                                );
+                                            } else {
+                                                mappingItems.push(
+                                                    {
+                                                        type: 'divider'
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Int',
+                                                        min: 0,
+                                                        max: 10,
+                                                        step: 0.1,
+                                                        value: scene.environmentIntensity,
+                                                        callback: value => {
+                                                            scene.environmentIntensity = value;
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate X',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.environmentRotation.x = MathUtils.degToRad(value);
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate Y',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.environmentRotation.y = MathUtils.degToRad(value);
+                                                        }
+                                                    },
+                                                    {
+                                                        type: 'slider',
+                                                        name: 'Rotate Z',
+                                                        min: 0,
+                                                        max: 360,
+                                                        step: 1,
+                                                        value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
+                                                        callback: value => {
+                                                            scene.environmentRotation.z = MathUtils.degToRad(value);
+                                                        }
+                                                    }
+                                                );
+                                            }
+
+                                            mappingItems.forEach(data => {
+                                                mappingPanel.add(new PanelItem(data));
+                                            });
+
+                                            item.setContent(mappingPanel);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         );

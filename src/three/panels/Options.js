@@ -6,9 +6,6 @@ import {
     AddOperation,
     BackSide,
     ClampToEdgeWrapping,
-    CubeReflectionMapping,
-    CubeRefractionMapping,
-    CubeUVReflectionMapping,
     DoubleSide,
     EquirectangularReflectionMapping,
     EquirectangularRefractionMapping,
@@ -69,11 +66,8 @@ export const CombineOptions = {
 
 export const MappingOptions = {
     UV: UVMapping,
-    CubeReflect: CubeReflectionMapping,
-    CubeRefract: CubeRefractionMapping,
-    EquirectReflect: EquirectangularReflectionMapping,
-    EquirectRefract: EquirectangularRefractionMapping,
-    CubeUV: CubeUVReflectionMapping
+    Reflect: EquirectangularReflectionMapping,
+    Refract: EquirectangularRefractionMapping
 };
 
 export const WrapOptions = {
