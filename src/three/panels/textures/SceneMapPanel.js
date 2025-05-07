@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { ColorManagement, SRGBColorSpace, Texture } from 'three';
+import { SRGBColorSpace, Texture } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
@@ -50,10 +50,7 @@ export class SceneMapPanel extends Panel {
                             scene[key].repeat.copy(item.data.repeat);
                         } else {
                             scene[key] = new Texture(value);
-
-                            if (ColorManagement.enabled) {
-                                scene[key].colorSpace = SRGBColorSpace;
-                            }
+                            scene[key].colorSpace = SRGBColorSpace;
                         }
 
                         scene[key].needsUpdate = true;

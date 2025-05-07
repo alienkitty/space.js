@@ -11,7 +11,7 @@ import { MaterialPanels } from '../Custom.js';
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { GradientMapPanel } from '../textures/GradientMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
@@ -23,7 +23,7 @@ import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const ToonMaterialOptions = {
     Common: ToonMaterialCommonPanel,
-    Map: MapPanel,
+    Texture: TextureMapPanel,
     Gradient: GradientMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,

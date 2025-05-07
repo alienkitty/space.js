@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { MathUtils } from 'three';
+import { MathUtils, SRGBColorSpace } from 'three';
 
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { CombineOptions } from '../Options.js';
@@ -13,7 +13,7 @@ import { TwoPI, getKeyByValue } from '../../../utils/Utils.js';
 
 export class EnvMapPanel extends MapPanel {
     constructor(mesh) {
-        super(mesh, 'envMap');
+        super(mesh, 'envMap', SRGBColorSpace);
     }
 
     initPanel() {

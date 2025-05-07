@@ -20,7 +20,7 @@ import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePan
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
 import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
@@ -33,7 +33,7 @@ import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const PhysicalMaterialOptions = {
     Common: PhysicalMaterialCommonPanel,
-    Map: MapPanel,
+    Texture: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Emissive: EmissiveMapPanel,

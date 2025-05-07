@@ -6,7 +6,7 @@
  * Based on https://github.com/mrdoob/three.js/blob/dev/src/loaders/CubeTextureLoader.js
  */
 
-import { ColorManagement, CubeTexture, SRGBColorSpace } from 'three';
+import { CubeTexture } from 'three';
 
 import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
@@ -56,10 +56,6 @@ export class CubeTextureLoader extends Loader {
 
     load(paths, callback) {
         const texture = new CubeTexture();
-
-        if (ColorManagement.enabled) {
-            texture.colorSpace = SRGBColorSpace;
-        }
 
         let loaded = 0;
 

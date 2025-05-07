@@ -13,7 +13,7 @@ import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
 import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
@@ -27,7 +27,7 @@ import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const StandardMaterialOptions = {
     Common: StandardMaterialCommonPanel,
-    Map: MapPanel,
+    Texture: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Emissive: EmissiveMapPanel,

@@ -11,7 +11,7 @@ import { MaterialPanels } from '../Custom.js';
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
 import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
@@ -20,7 +20,7 @@ import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const BasicMaterialOptions = {
     Common: BasicMaterialCommonPanel,
-    Map: MapPanel,
+    Texture: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Specular: SpecularMapPanel,

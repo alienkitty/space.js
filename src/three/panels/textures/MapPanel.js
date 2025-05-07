@@ -2,7 +2,7 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { ColorManagement, SRGBColorSpace, Texture } from 'three';
+import { NoColorSpace, Texture } from 'three';
 
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
@@ -12,11 +12,12 @@ import { ColorSpaceOptions, WrapOptions } from '../Options.js';
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MapPanel extends Panel {
-    constructor(mesh, key = 'map') {
+    constructor(mesh, key, colorSpace = NoColorSpace) {
         super();
 
         this.mesh = mesh;
         this.key = key;
+        this.colorSpace = colorSpace;
 
         this.initPanel();
     }
@@ -79,11 +80,7 @@ export class MapPanel extends Panel {
                             mesh.material[key].repeat.copy(item.data.repeat);
                         } else {
                             mesh.material[key] = new Texture(value);
-
-                            if (ColorManagement.enabled) {
-                                mesh.material[key].colorSpace = SRGBColorSpace;
-                            }
-
+                            mesh.material[key].colorSpace = this.colorSpace;
                             mesh.material[key].anisotropy = Point3D.anisotropy;
                         }
 

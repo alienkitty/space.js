@@ -11,8 +11,8 @@ import { MaterialPanels } from '../Custom.js';
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MatcapPanel } from '../textures/MatcapPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { MatcapMapPanel } from '../textures/MatcapMapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { BumpMapPanel } from '../textures/BumpMapPanel.js';
 import { NormalMapPanel } from '../textures/NormalMapPanel.js';
 import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
@@ -20,8 +20,8 @@ import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const MatcapMaterialOptions = {
     Common: MatcapMaterialCommonPanel,
-    Matcap: MatcapPanel,
-    Map: MapPanel,
+    Matcap: MatcapMapPanel,
+    Texture: TextureMapPanel,
     Bump: BumpMapPanel,
     Normal: NormalMapPanel,
     Displace: DisplacementMapPanel,
