@@ -879,7 +879,7 @@
                                 object.point.deactivate();
 
                                 this.timeout = delayedCall(300, () => {
-                                    item.setValue(this.ui.details.animatedIn ? 'Map' : 'Details');
+                                    item.setValue(this.ui.details.animatedIn ? 'Map' : 'Details', false);
                                 });
                             }
                         }
