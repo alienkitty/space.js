@@ -64,8 +64,13 @@ export const CombineOptions = {
     Add: AddOperation
 };
 
-export const MappingOptions = {
+export const BackgroundMappingOptions = {
     UV: UVMapping,
+    Reflect: EquirectangularReflectionMapping,
+    Refract: EquirectangularRefractionMapping
+};
+
+export const EnvironmentMappingOptions = {
     Reflect: EquirectangularReflectionMapping,
     Refract: EquirectangularRefractionMapping
 };
@@ -85,11 +90,6 @@ export const ColorSpaceOptions = {
 export const NormalMapOptions = {
     Tan: TangentSpaceNormalMap,
     Obj: ObjectSpaceNormalMap
-};
-
-export const EnvironmentMapOptions = {
-    Off: false,
-    PMREM: true
 };
 
 export const HelperOptions = {

@@ -5,7 +5,7 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-import { SceneMapPanel } from '../textures/SceneMapPanel.js';
+import { BackgroundMapPanel } from '../textures/BackgroundMapPanel.js';
 
 import { brightness } from '../../../utils/Utils.js';
 
@@ -51,7 +51,7 @@ export class BackgroundPanel extends Panel {
             {
                 type: 'content',
                 callback: (value, item) => {
-                    const materialPanel = new SceneMapPanel(scene);
+                    const materialPanel = new BackgroundMapPanel(scene);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);

@@ -84,7 +84,6 @@ export class MapPanel extends Panel {
                             mesh.material[key].anisotropy = Point3D.anisotropy;
                         }
 
-                        mesh.material[key].needsUpdate = true;
                         mesh.material.needsUpdate = true;
                     } else if (mesh.material[key]) {
                         mesh.material[key].dispose();

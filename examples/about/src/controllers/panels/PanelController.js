@@ -47,7 +47,6 @@ export class PanelController {
     static initPanel() {
         const { drawBuffers } = RenderManager;
 
-        const renderer = this.renderer;
         const scene = this.scene;
         const physics = this.physics;
 
@@ -152,7 +151,7 @@ export class PanelController {
                         case 'Env': {
                             const ScenePanel = sceneOptions[value];
 
-                            const scenePanel = new ScenePanel(renderer, scene);
+                            const scenePanel = new ScenePanel(scene);
                             scenePanel.animateIn(true);
 
                             item.setContent(scenePanel);
