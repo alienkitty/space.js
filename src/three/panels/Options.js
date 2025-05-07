@@ -6,7 +6,12 @@ import {
     AddOperation,
     BackSide,
     ClampToEdgeWrapping,
+    CubeReflectionMapping,
+    CubeRefractionMapping,
+    CubeUVReflectionMapping,
     DoubleSide,
+    EquirectangularReflectionMapping,
+    EquirectangularRefractionMapping,
     FrontSide,
     LinearSRGBColorSpace,
     MirroredRepeatWrapping,
@@ -16,7 +21,8 @@ import {
     ObjectSpaceNormalMap,
     RepeatWrapping,
     SRGBColorSpace,
-    TangentSpaceNormalMap
+    TangentSpaceNormalMap,
+    UVMapping
 } from 'three';
 
 export const VisibleOptions = {
@@ -59,6 +65,15 @@ export const CombineOptions = {
     Multiply: MultiplyOperation,
     Mix: MixOperation,
     Add: AddOperation
+};
+
+export const MappingOptions = {
+    UV: UVMapping,
+    CubeReflect: CubeReflectionMapping,
+    CubeRefract: CubeRefractionMapping,
+    EquirectReflect: EquirectangularReflectionMapping,
+    EquirectRefract: EquirectangularRefractionMapping,
+    CubeUV: CubeUVReflectionMapping
 };
 
 export const WrapOptions = {

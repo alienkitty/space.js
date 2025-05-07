@@ -6,10 +6,11 @@ import { MathUtils } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
+import { MappingOptions } from '../Options.js';
 
 import { SceneMapPanel } from '../textures/SceneMapPanel.js';
 
-import { TwoPI, brightness } from '../../../utils/Utils.js';
+import { TwoPI, brightness, getKeyByValue } from '../../../utils/Utils.js';
 
 export class BackgroundPanel extends Panel {
     constructor(scene, ui) {
@@ -31,34 +32,7 @@ export class BackgroundPanel extends Panel {
     initPanel() {
         const scene = this.scene;
 
-        const items = [
-            {
-                type: 'divider'
-            },
-            {
-                type: 'color',
-                value: scene.background,
-                callback: value => {
-                    if (scene.background && scene.background.isColor) {
-                        scene.background.copy(value);
-
-                        this.setInvert(value);
-                    } else if (this.lastValue && this.lastValue.isColor) {
-                        this.lastValue.copy(value);
-
-                        this.setInvert(value);
-                    }
-                }
-            },
-            {
-                type: 'content',
-                callback: (value, item) => {
-                    const materialPanel = new SceneMapPanel(scene);
-                    materialPanel.animateIn(true);
-
-                    item.setContent(materialPanel);
-                }
-            },
+        const environmentMapItems = [
             {
                 type: 'divider'
             },
@@ -71,17 +45,6 @@ export class BackgroundPanel extends Panel {
                 value: scene.backgroundBlurriness,
                 callback: value => {
                     scene.backgroundBlurriness = value;
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Int',
-                min: 0,
-                max: 10,
-                step: 0.1,
-                value: scene.backgroundIntensity,
-                callback: value => {
-                    scene.backgroundIntensity = value;
                 }
             },
             {
@@ -115,6 +78,81 @@ export class BackgroundPanel extends Panel {
                 value: MathUtils.radToDeg(scene.backgroundRotation.z + (scene.backgroundRotation.z < 0 ? TwoPI : 0)),
                 callback: value => {
                     scene.backgroundRotation.z = MathUtils.degToRad(value);
+                }
+            }
+        ];
+
+        const items = [
+            {
+                type: 'divider'
+            },
+            {
+                type: 'color',
+                value: scene.background,
+                callback: value => {
+                    if (scene.background && scene.background.isColor) {
+                        scene.background.copy(value);
+
+                        this.setInvert(value);
+                    } else if (this.lastValue && this.lastValue.isColor) {
+                        this.lastValue.copy(value);
+
+                        this.setInvert(value);
+                    }
+                }
+            },
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new SceneMapPanel(scene);
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'list',
+                name: 'Mapping',
+                list: MappingOptions,
+                value: getKeyByValue(MappingOptions, scene.background && scene.background.isTexture && scene.background.mapping),
+                callback: (value, item) => {
+                    if (!item.hasContent()) {
+                        const environmentMapPanel = new Panel();
+                        environmentMapPanel.animateIn(true);
+
+                        environmentMapItems.forEach(data => {
+                            environmentMapPanel.add(new PanelItem(data));
+                        });
+
+                        item.setContent(environmentMapPanel);
+                    }
+
+                    if (scene.background && scene.background.isTexture) {
+                        scene.background.mapping = MappingOptions[value];
+
+                        if (scene.background.mapping !== MappingOptions.UV) {
+                            item.toggleContent(true);
+                        } else {
+                            item.toggleContent(false);
+                        }
+                    }
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'Int',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: scene.backgroundIntensity,
+                callback: value => {
+                    scene.backgroundIntensity = value;
                 }
             }
         ];
