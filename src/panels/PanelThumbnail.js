@@ -358,30 +358,30 @@ export class PanelThumbnail extends Interface {
             this.add(this.wrapper);
         }
 
-        const content = new Interface(this.value);
-        content.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none'
-        });
+        if (this.value && this.value.nodeName) {
+            const content = new Interface(this.value);
+            content.css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                pointerEvents: 'none'
+            });
 
-        const oldWrapper = this.wrapper;
-        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
+            const oldWrapper = this.wrapper;
+            oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
 
-        const newWrapper = this.wrapper.clone();
-        newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
-        newWrapper.add(content);
+            const newWrapper = this.wrapper.clone();
+            newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
+            newWrapper.add(content);
 
-        this.replace(oldWrapper, newWrapper);
-        this.wrapper = newWrapper;
+            this.replace(oldWrapper, newWrapper);
+            this.wrapper = newWrapper;
 
-        oldWrapper.destroy();
+            oldWrapper.destroy();
 
-        if (this.value) {
             this.wrapper.show();
         } else {
             this.wrapper.hide();
