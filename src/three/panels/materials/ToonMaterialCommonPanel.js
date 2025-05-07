@@ -33,6 +33,14 @@ export class ToonMaterialCommonPanel extends Panel {
                 }
             },
             {
+                type: 'color',
+                name: 'Emissive',
+                value: mesh.material.emissive,
+                callback: value => {
+                    mesh.material.emissive.copy(value);
+                }
+            },
+            {
                 type: 'list',
                 name: 'Wire',
                 list: WireframeOptions,
