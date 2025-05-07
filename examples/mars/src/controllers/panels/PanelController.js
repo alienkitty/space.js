@@ -1,4 +1,4 @@
-import { LightOptions, LightPanelController, PanelItem, ScenePanel, getKeyByLight } from '@alienkitty/space.js/three';
+import { BackgroundPanel, LightOptions, LightPanelController, PanelItem, getKeyByLight } from '@alienkitty/space.js/three';
 
 import { MarsPanel } from './MarsPanel.js';
 import { SunlightPanel } from './SunlightPanel.js';
@@ -26,7 +26,7 @@ export class PanelController {
         const sceneOptions = {
             Mars: MarsPanel,
             Sunlight: SunlightPanel,
-            Space: ScenePanel,
+            Space: BackgroundPanel,
             Post: PostPanel
         };
 

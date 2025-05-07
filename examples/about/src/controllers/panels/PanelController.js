@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { DisplayOptions, LightOptions, LightPanelController, PanelItem, Point3D, ScenePanel, Stage, brightness, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
+import { BackgroundPanel, DisplayOptions, EnvironmentPanel, LightOptions, LightPanelController, PanelItem, Point3D, Stage, getKeyByLight, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
 import { PhysicsController } from '../world/PhysicsController.js';
@@ -24,7 +24,6 @@ export class PanelController {
 
         this.initControllers();
         this.initPanel();
-        this.setInvert(this.scene.background);
     }
 
     static initControllers() {
@@ -48,6 +47,7 @@ export class PanelController {
     static initPanel() {
         const { drawBuffers } = RenderManager;
 
+        const renderer = this.renderer;
         const scene = this.scene;
         const physics = this.physics;
 
@@ -55,7 +55,8 @@ export class PanelController {
         const gravity = physics.getGravity();
 
         const sceneOptions = {
-            Scene: ScenePanel,
+            BG: BackgroundPanel,
+            Env: EnvironmentPanel,
             Post: PostPanel
         };
 
@@ -134,32 +135,33 @@ export class PanelController {
                 type: 'divider'
             },
             {
-                type: 'color',
-                // value: scene.background,
-                value: RenderManager.currentBackground,
-                callback: value => {
-                    // scene.background.copy(value);
-                    RenderManager.currentBackground.copy(value);
-
-                    Stage.root.style.setProperty('--bg-color', `#${value.getHexString()}`);
-
-                    this.setInvert(value);
-                }
-            },
-            {
-                type: 'divider'
-            },
-            {
                 type: 'list',
                 list: sceneOptions,
-                value: 'Scene',
+                value: 'BG',
                 callback: (value, item) => {
                     switch (value) {
-                        case 'Scene':
+                        case 'BG': {
+                            const ScenePanel = sceneOptions[value];
+
+                            const scenePanel = new ScenePanel(scene, this.ui);
+                            scenePanel.animateIn(true);
+
+                            item.setContent(scenePanel);
+                            break;
+                        }
+                        case 'Env': {
+                            const ScenePanel = sceneOptions[value];
+
+                            const scenePanel = new ScenePanel(renderer, scene);
+                            scenePanel.animateIn(true);
+
+                            item.setContent(scenePanel);
+                            break;
+                        }
                         case 'Post': {
                             const ScenePanel = sceneOptions[value];
 
-                            const scenePanel = new ScenePanel(scene);
+                            const scenePanel = new ScenePanel();
                             scenePanel.animateIn(true);
 
                             item.setContent(scenePanel);
@@ -199,17 +201,6 @@ export class PanelController {
         this.camera = camera;
 
         Point3D.setCamera(camera);
-    };
-
-    static setInvert = value => {
-        // Light colour is inverted
-        const invert = brightness(value) > 0.6;
-
-        if (invert !== this.lastInvert) {
-            this.lastInvert = invert;
-
-            this.ui.invert(invert);
-        }
     };
 
     static update = time => {

@@ -35,9 +35,11 @@ export { NormalMaterialCommonPanel } from './materials/NormalMaterialCommonPanel
 export { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
 export { MeshHelperPanel } from './objects/MeshHelperPanel.js';
 export { OimoPhysicsPanel } from './physics/OimoPhysicsPanel.js';
-export { ScenePanel } from './scene/ScenePanel.js';
-export { MatcapPanel } from './textures/MatcapPanel.js';
+export { BackgroundPanel } from './scene/BackgroundPanel.js';
+export { EnvironmentPanel } from './scene/EnvironmentPanel.js';
+export { SceneMapPanel } from './textures/SceneMapPanel.js';
 export { MapPanel } from './textures/MapPanel.js';
+export { MatcapPanel } from './textures/MatcapPanel.js';
 export { GradientMapPanel } from './textures/GradientMapPanel.js';
 export { LightMapPanel } from './textures/LightMapPanel.js';
 export { AOMapPanel } from './textures/AOMapPanel.js';

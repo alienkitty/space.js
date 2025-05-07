@@ -78,6 +78,11 @@ export const NormalMapOptions = {
     Obj: ObjectSpaceNormalMap
 };
 
+export const EnvironmentMapOptions = {
+    Off: false,
+    PMREM: true
+};
+
 export const HelperOptions = {
     Off: false,
     Helper: true
