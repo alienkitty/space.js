@@ -2,21 +2,22 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { NoColorSpace, Texture } from 'three';
+import { NoColorSpace, Texture, UVMapping } from 'three';
 
 import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { ColorSpaceOptions, WrapOptions } from '../Options.js';
+import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MapPanel extends Panel {
-    constructor(mesh, key, colorSpace = NoColorSpace) {
+    constructor(mesh, key, mapping = UVMapping, colorSpace = NoColorSpace) {
         super();
 
         this.mesh = mesh;
         this.key = key;
+        this.mapping = mapping;
         this.colorSpace = colorSpace;
 
         this.initPanel();
@@ -73,6 +74,7 @@ export class MapPanel extends Panel {
                         if (mesh.material[key]) {
                             mesh.material[key].dispose();
                             mesh.material[key] = new Texture(value);
+                            mesh.material[key].mapping = item.data.mapping;
                             mesh.material[key].colorSpace = item.data.colorSpace;
                             mesh.material[key].anisotropy = item.data.anisotropy;
                             mesh.material[key].wrapS = item.data.wrapS;
@@ -80,10 +82,12 @@ export class MapPanel extends Panel {
                             mesh.material[key].repeat.copy(item.data.repeat);
                         } else {
                             mesh.material[key] = new Texture(value);
+                            mesh.material[key].mapping = this.mapping;
                             mesh.material[key].colorSpace = this.colorSpace;
                             mesh.material[key].anisotropy = Point3D.anisotropy;
                         }
 
+                        mesh.material[key].needsUpdate = true;
                         mesh.material.needsUpdate = true;
                     } else if (mesh.material[key]) {
                         mesh.material[key].dispose();
@@ -93,69 +97,88 @@ export class MapPanel extends Panel {
 
                     item.setData(mesh.material[key] || {});
 
-                    if (mesh.material[key]) {
-                        mapItems.push(
-                            {
-                                type: 'spacer'
-                            },
-                            {
-                                type: 'list',
-                                name: 'Color Space',
-                                list: ColorSpaceOptions,
-                                value: getKeyByValue(ColorSpaceOptions, mesh.material[key].colorSpace),
-                                callback: value => {
-                                    mesh.material[key].colorSpace = ColorSpaceOptions[value];
-                                    mesh.material[key].needsUpdate = true;
+                    if (mesh.material[key] && !(key === 'envMap' && (mesh.material.isMeshStandardMaterial || mesh.material.isMeshPhysicalMaterial))) {
+                        if (mesh.material[key].mapping !== UVMapping) {
+                            mapItems.push(
+                                {
+                                    type: 'spacer'
+                                },
+                                {
+                                    type: 'list',
+                                    name: 'Mapping',
+                                    list: RefractionMappingOptions,
+                                    value: getKeyByValue(RefractionMappingOptions, mesh.material[key].mapping),
+                                    callback: value => {
+                                        mesh.material[key].mapping = RefractionMappingOptions[value];
+                                        mesh.material[key].needsUpdate = true;
+                                        mesh.material.needsUpdate = true;
+                                    }
                                 }
-                            },
-                            {
-                                type: 'slider',
-                                name: 'Anisotropy',
-                                min: 1,
-                                max: 16,
-                                step: 1,
-                                value: mesh.material[key].anisotropy,
-                                callback: value => {
-                                    mesh.material[key].anisotropy = value;
-                                    mesh.material[key].needsUpdate = true;
-                                }
-                            },
-                            {
-                                type: 'list',
-                                name: 'Wrap',
-                                list: WrapOptions,
-                                value: getKeyByValue(WrapOptions, mesh.material[key].wrapS),
-                                callback: value => {
-                                    const wrapping = WrapOptions[value];
+                            );
+                        } else {
+                            mapItems.push(
+                                {
+                                    type: 'spacer'
+                                },
+                                {
+                                    type: 'list',
+                                    name: 'Color Space',
+                                    list: ColorSpaceOptions,
+                                    value: getKeyByValue(ColorSpaceOptions, mesh.material[key].colorSpace),
+                                    callback: value => {
+                                        mesh.material[key].colorSpace = ColorSpaceOptions[value];
+                                        mesh.material[key].needsUpdate = true;
+                                    }
+                                },
+                                {
+                                    type: 'slider',
+                                    name: 'Anisotropy',
+                                    min: 1,
+                                    max: 16,
+                                    step: 1,
+                                    value: mesh.material[key].anisotropy,
+                                    callback: value => {
+                                        mesh.material[key].anisotropy = value;
+                                        mesh.material[key].needsUpdate = true;
+                                    }
+                                },
+                                {
+                                    type: 'list',
+                                    name: 'Wrap',
+                                    list: WrapOptions,
+                                    value: getKeyByValue(WrapOptions, mesh.material[key].wrapS),
+                                    callback: value => {
+                                        const wrapping = WrapOptions[value];
 
-                                    mesh.material[key].wrapS = wrapping;
-                                    mesh.material[key].wrapT = wrapping;
-                                    mesh.material[key].needsUpdate = true;
+                                        mesh.material[key].wrapS = wrapping;
+                                        mesh.material[key].wrapT = wrapping;
+                                        mesh.material[key].needsUpdate = true;
+                                    }
+                                },
+                                {
+                                    type: 'slider',
+                                    name: 'X',
+                                    min: 1,
+                                    max: 16,
+                                    step: 1,
+                                    value: mesh.material[key].repeat.x,
+                                    callback: value => {
+                                        mesh.material[key].repeat.setX(value);
+                                    }
+                                },
+                                {
+                                    type: 'slider',
+                                    name: 'Y',
+                                    min: 1,
+                                    max: 16,
+                                    step: 1,
+                                    value: mesh.material[key].repeat.y,
+                                    callback: value => {
+                                        mesh.material[key].repeat.setY(value);
+                                    }
                                 }
-                            },
-                            {
-                                type: 'slider',
-                                name: 'X',
-                                min: 1,
-                                max: 16,
-                                step: 1,
-                                value: mesh.material[key].repeat.x,
-                                callback: value => {
-                                    mesh.material[key].repeat.setX(value);
-                                }
-                            },
-                            {
-                                type: 'slider',
-                                name: 'Y',
-                                min: 1,
-                                max: 16,
-                                step: 1,
-                                value: mesh.material[key].repeat.y,
-                                callback: value => {
-                                    mesh.material[key].repeat.setY(value);
-                                }
-                            }
-                        );
+                            );
+                        }
                     }
 
                     const mapPanel = new Panel();

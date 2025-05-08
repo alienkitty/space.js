@@ -6,9 +6,8 @@ import { EquirectangularReflectionMapping, MathUtils, SRGBColorSpace, Texture } 
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { EnvironmentMappingOptions } from '../Options.js';
 
-import { TwoPI, getKeyByValue } from '../../../utils/Utils.js';
+import { TwoPI } from '../../../utils/Utils.js';
 
 export class EnvironmentMapPanel extends Panel {
     constructor(scene) {
@@ -48,6 +47,8 @@ export class EnvironmentMapPanel extends Panel {
                             scene.environment.mapping = EquirectangularReflectionMapping;
                             scene.environment.colorSpace = SRGBColorSpace;
                         }
+
+                        scene.environment.needsUpdate = true;
                     } else if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture) {
                         scene.environment.dispose();
                         scene.environment = this.lastValue;
@@ -58,75 +59,50 @@ export class EnvironmentMapPanel extends Panel {
                     if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture) {
                         mapItems.push(
                             {
-                                type: 'spacer'
+                                type: 'divider'
                             },
                             {
-                                type: 'list',
-                                name: 'Mapping',
-                                list: EnvironmentMappingOptions,
-                                value: getKeyByValue(EnvironmentMappingOptions, scene.environment.mapping),
-                                callback: (value, item) => {
-                                    scene.environment.mapping = EnvironmentMappingOptions[value];
-                                    scene.environment.needsUpdate = true;
-
-                                    const mappingPanel = new Panel();
-                                    mappingPanel.animateIn(true);
-
-                                    const mappingItems = [
-                                        {
-                                            type: 'divider'
-                                        },
-                                        {
-                                            type: 'slider',
-                                            name: 'Int',
-                                            min: 0,
-                                            max: 10,
-                                            step: 0.1,
-                                            value: scene.environmentIntensity,
-                                            callback: value => {
-                                                scene.environmentIntensity = value;
-                                            }
-                                        },
-                                        {
-                                            type: 'slider',
-                                            name: 'Rotate X',
-                                            min: 0,
-                                            max: 360,
-                                            step: 1,
-                                            value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
-                                            callback: value => {
-                                                scene.environmentRotation.x = MathUtils.degToRad(value);
-                                            }
-                                        },
-                                        {
-                                            type: 'slider',
-                                            name: 'Rotate Y',
-                                            min: 0,
-                                            max: 360,
-                                            step: 1,
-                                            value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
-                                            callback: value => {
-                                                scene.environmentRotation.y = MathUtils.degToRad(value);
-                                            }
-                                        },
-                                        {
-                                            type: 'slider',
-                                            name: 'Rotate Z',
-                                            min: 0,
-                                            max: 360,
-                                            step: 1,
-                                            value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
-                                            callback: value => {
-                                                scene.environmentRotation.z = MathUtils.degToRad(value);
-                                            }
-                                        }
-                                    ];
-
-                                    mappingItems.forEach(data => {
-                                        mappingPanel.add(new PanelItem(data));
-                                    });
-
-                                    item.setContent(mappingPanel);
+                                type: 'slider',
+                                name: 'Int',
+                                min: 0,
+                                max: 10,
+                                step: 0.1,
+                                value: scene.environmentIntensity,
+                                callback: value => {
+                                    scene.environmentIntensity = value;
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate X',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    scene.environmentRotation.x = MathUtils.degToRad(value);
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate Y',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    scene.environmentRotation.y = MathUtils.degToRad(value);
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate Z',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    scene.environmentRotation.z = MathUtils.degToRad(value);
                                 }
                             }
                         );

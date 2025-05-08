@@ -66,12 +66,11 @@ export const CombineOptions = {
 
 export const BackgroundMappingOptions = {
     UV: UVMapping,
-    Reflect: EquirectangularReflectionMapping,
-    Refract: EquirectangularRefractionMapping
+    Reflect: EquirectangularReflectionMapping
 };
 
-export const EnvironmentMappingOptions = {
-    Reflect: EquirectangularReflectionMapping,
+export const RefractionMappingOptions = {
+    Off: EquirectangularReflectionMapping,
     Refract: EquirectangularRefractionMapping
 };
 

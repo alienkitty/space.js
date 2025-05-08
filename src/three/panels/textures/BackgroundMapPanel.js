@@ -41,6 +41,7 @@ export class BackgroundMapPanel extends Panel {
                         if (scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture) {
                             scene.background.dispose();
                             scene.background = new Texture(value);
+                            scene.background.mapping = item.data.mapping;
                             scene.background.colorSpace = item.data.colorSpace;
                             scene.background.anisotropy = item.data.anisotropy;
                             scene.background.wrapS = item.data.wrapS;
@@ -50,6 +51,8 @@ export class BackgroundMapPanel extends Panel {
                             scene.background = new Texture(value);
                             scene.background.colorSpace = SRGBColorSpace;
                         }
+
+                        scene.background.needsUpdate = true;
                     } else if (scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture) {
                         scene.background.dispose();
                         scene.background = this.lastValue;
@@ -77,6 +80,9 @@ export class BackgroundMapPanel extends Panel {
                                             mappingPanel.animateIn(true);
 
                                             const mappingItems = [
+                                                {
+                                                    type: 'divider'
+                                                },
                                                 {
                                                     type: 'list',
                                                     name: 'Color Space',
