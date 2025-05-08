@@ -157,7 +157,7 @@ export class MapPanel extends Panel {
                                 },
                                 {
                                     type: 'slider',
-                                    name: 'X',
+                                    name: 'U',
                                     min: 1,
                                     max: 16,
                                     step: 1,
@@ -168,7 +168,7 @@ export class MapPanel extends Panel {
                                 },
                                 {
                                     type: 'slider',
-                                    name: 'Y',
+                                    name: 'V',
                                     min: 1,
                                     max: 16,
                                     step: 1,
