@@ -31,6 +31,15 @@ export class BackgroundPanel extends Panel {
 
         const items = [
             {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new BackgroundMapPanel(scene);
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
                 type: 'divider'
             },
             {
@@ -46,15 +55,6 @@ export class BackgroundPanel extends Panel {
 
                         this.setInvert(value);
                     }
-                }
-            },
-            {
-                type: 'content',
-                callback: (value, item) => {
-                    const materialPanel = new BackgroundMapPanel(scene);
-                    materialPanel.animateIn(true);
-
-                    item.setContent(materialPanel);
                 }
             }
         ];

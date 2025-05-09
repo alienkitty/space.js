@@ -26,7 +26,7 @@ import { RectAreaLightPanel } from './RectAreaLightPanel.js';
 
 export const LightOptions = {
     Ambient: [AmbientLight, AmbientLightPanel],
-    Hemis: [HemisphereLight, HemisphereLightPanel],
+    Hemi: [HemisphereLight, HemisphereLightPanel],
     Direct: [DirectionalLight, DirectionalLightPanel],
     Point: [PointLight, PointLightPanel],
     Spot: [SpotLight, SpotLightPanel],

@@ -23,7 +23,7 @@ import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const ToonMaterialOptions = {
     Common: ToonMaterialCommonPanel,
-    Texture: TextureMapPanel,
+    Map: TextureMapPanel,
     Gradient: GradientMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,

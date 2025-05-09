@@ -5,7 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-export class PhysicalMaterialSpecularPanel extends Panel {
+import { MapPanel } from '../textures/MapPanel.js';
+
+export class PhysicalMaterialSpecularIntensityPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -19,15 +21,16 @@ export class PhysicalMaterialSpecularPanel extends Panel {
 
         const items = [
             {
-                type: 'divider'
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'specularIntensityMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
             },
             {
-                type: 'color',
-                name: 'Specular Color',
-                value: mesh.material.specularColor,
-                callback: value => {
-                    mesh.material.specularColor.copy(value);
-                }
+                type: 'divider'
             },
             {
                 type: 'slider',

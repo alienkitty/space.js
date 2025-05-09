@@ -24,7 +24,7 @@ import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const LambertMaterialOptions = {
     Common: LambertMaterialCommonPanel,
-    Texture: TextureMapPanel,
+    Map: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Emissive: EmissiveMapPanel,

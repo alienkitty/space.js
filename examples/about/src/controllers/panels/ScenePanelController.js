@@ -34,9 +34,9 @@ export class ScenePanelController {
         abstractCube.point.mesh.scale.multiplyScalar(0.9);
 
         // Debug
-        // darkPlanet.point.setPanelIndex('Standard', 4);
+        // darkPlanet.point.setPanelIndex('Standard', 13);
         // darkPlanet.point.setPanelValue('UV', true);
-        // darkPlanet.point.setPanelValue('UV', true, [['Standard', 4]]);
+        // darkPlanet.point.setPanelValue('UV', true, [['Standard', 13]]);
     }
 
     static addListeners() {

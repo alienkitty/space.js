@@ -26,7 +26,7 @@ import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const PhongMaterialOptions = {
     Common: PhongMaterialCommonPanel,
-    Texture: TextureMapPanel,
+    Map: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Emissive: EmissiveMapPanel,

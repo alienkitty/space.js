@@ -20,7 +20,7 @@ import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export const BasicMaterialOptions = {
     Common: BasicMaterialCommonPanel,
-    Texture: TextureMapPanel,
+    Map: TextureMapPanel,
     Light: LightMapPanel,
     AO: AOMapPanel,
     Specular: SpecularMapPanel,

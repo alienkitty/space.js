@@ -5,9 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-import { EnvMapPanel } from '../textures/EnvMapPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
-export class PhysicalMaterialEnvPanel extends Panel {
+export class PhysicalMaterialClearcoatRoughnessPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -23,7 +23,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             {
                 type: 'content',
                 callback: (value, item) => {
-                    const materialPanel = new EnvMapPanel(mesh);
+                    const materialPanel = new MapPanel(mesh, 'clearcoatRoughnessMap');
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -34,24 +34,13 @@ export class PhysicalMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                name: 'IOR',
-                min: 1,
-                max: 2.333,
-                step: 0.01,
-                value: mesh.material.ior,
-                callback: value => {
-                    mesh.material.ior = value;
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Reflect',
+                name: 'Rough',
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.reflectivity,
+                value: mesh.material.clearcoatRoughness,
                 callback: value => {
-                    mesh.material.reflectivity = value;
+                    mesh.material.clearcoatRoughness = value;
                 }
             }
         ];

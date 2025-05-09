@@ -5,9 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-import { EnvMapPanel } from '../textures/EnvMapPanel.js';
+import { MapPanel } from '../textures/MapPanel.js';
 
-export class PhysicalMaterialEnvPanel extends Panel {
+export class PhysicalMaterialIridescenceThicknessPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -23,7 +23,7 @@ export class PhysicalMaterialEnvPanel extends Panel {
             {
                 type: 'content',
                 callback: (value, item) => {
-                    const materialPanel = new EnvMapPanel(mesh);
+                    const materialPanel = new MapPanel(mesh, 'iridescenceThicknessMap');
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -34,24 +34,24 @@ export class PhysicalMaterialEnvPanel extends Panel {
             },
             {
                 type: 'slider',
-                name: 'IOR',
-                min: 1,
-                max: 2.333,
-                step: 0.01,
-                value: mesh.material.ior,
+                name: 'Thick Min',
+                min: 0,
+                max: 1400,
+                step: 100,
+                value: mesh.material.iridescenceThicknessRange[0],
                 callback: value => {
-                    mesh.material.ior = value;
+                    mesh.material.iridescenceThicknessRange[0] = value;
                 }
             },
             {
                 type: 'slider',
-                name: 'Reflect',
+                name: 'Thick Max',
                 min: 0,
-                max: 1,
-                step: 0.01,
-                value: mesh.material.reflectivity,
+                max: 1400,
+                step: 100,
+                value: mesh.material.iridescenceThicknessRange[1],
                 callback: value => {
-                    mesh.material.reflectivity = value;
+                    mesh.material.iridescenceThicknessRange[1] = value;
                 }
             }
         ];

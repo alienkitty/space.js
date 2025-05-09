@@ -12,10 +12,19 @@ import { StandardMaterialPatches } from '../Patches.js';
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
+import { PhysicalMaterialClearcoatRoughnessPanel } from './PhysicalMaterialClearcoatRoughnessPanel.js';
+import { PhysicalMaterialClearcoatNormalPanel } from './PhysicalMaterialClearcoatNormalPanel.js';
 import { PhysicalMaterialIridescencePanel } from './PhysicalMaterialIridescencePanel.js';
+import { PhysicalMaterialIridescenceThicknessPanel } from './PhysicalMaterialIridescenceThicknessPanel.js';
 import { PhysicalMaterialSheenPanel } from './PhysicalMaterialSheenPanel.js';
+import { PhysicalMaterialSheenColorPanel } from './PhysicalMaterialSheenColorPanel.js';
+import { PhysicalMaterialSheenRoughnessPanel } from './PhysicalMaterialSheenRoughnessPanel.js';
 import { PhysicalMaterialTransmissionPanel } from './PhysicalMaterialTransmissionPanel.js';
+import { PhysicalMaterialTransmissionIntensityPanel } from './PhysicalMaterialTransmissionIntensityPanel.js';
+import { PhysicalMaterialTransmissionThicknessPanel } from './PhysicalMaterialTransmissionThicknessPanel.js';
 import { PhysicalMaterialSpecularPanel } from './PhysicalMaterialSpecularPanel.js';
+import { PhysicalMaterialSpecularColorPanel } from './PhysicalMaterialSpecularColorPanel.js';
+import { PhysicalMaterialSpecularIntensityPanel } from './PhysicalMaterialSpecularIntensityPanel.js';
 import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
@@ -32,27 +41,36 @@ import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
 export const PhysicalMaterialOptions = {
-    Common: PhysicalMaterialCommonPanel,
-    Texture: TextureMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Emissive: EmissiveMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Rough: RoughnessMapPanel,
-    Metal: MetalnessMapPanel,
-    Alpha: AlphaMapPanel,
-    Anisotropy: PhysicalMaterialAnisotropyPanel,
-    Clearcoat: PhysicalMaterialClearcoatPanel,
-    Iridescence: PhysicalMaterialIridescencePanel,
-    Sheen: PhysicalMaterialSheenPanel,
-    Transmission: PhysicalMaterialTransmissionPanel,
-    Specular: PhysicalMaterialSpecularPanel,
-    Subsurface: PhysicalMaterialSubsurfacePanel,
-    Env: PhysicalMaterialEnvPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
+    'Common': PhysicalMaterialCommonPanel,
+    'Map': TextureMapPanel,
+    'Light': LightMapPanel,
+    'AO': AOMapPanel,
+    'Emissive': EmissiveMapPanel,
+    'Bump': BumpMapPanel,
+    'Normal': NormalMapPanel,
+    'Displace': DisplacementMapPanel,
+    'Rough': RoughnessMapPanel,
+    'Metal': MetalnessMapPanel,
+    'Alpha': AlphaMapPanel,
+    'Anis': PhysicalMaterialAnisotropyPanel,
+    'Clear': PhysicalMaterialClearcoatPanel,
+    'Clear Rough': PhysicalMaterialClearcoatRoughnessPanel,
+    'Clear Normal': PhysicalMaterialClearcoatNormalPanel,
+    'Irid': PhysicalMaterialIridescencePanel,
+    'Irid Thick': PhysicalMaterialIridescenceThicknessPanel,
+    'Sheen': PhysicalMaterialSheenPanel,
+    'Sheen Color': PhysicalMaterialSheenColorPanel,
+    'Sheen Rough': PhysicalMaterialSheenRoughnessPanel,
+    'Trans': PhysicalMaterialTransmissionPanel,
+    'Trans Int': PhysicalMaterialTransmissionIntensityPanel,
+    'Trans Thick': PhysicalMaterialTransmissionThicknessPanel,
+    'Specular': PhysicalMaterialSpecularPanel,
+    'Specular Color': PhysicalMaterialSpecularColorPanel,
+    'Specular Int': PhysicalMaterialSpecularIntensityPanel,
+    'Subsurface': PhysicalMaterialSubsurfacePanel,
+    'Env': PhysicalMaterialEnvPanel,
+    'Helper': MeshHelperPanel,
+    'Physics': OimoPhysicsPanel
 };
 
 export class PhysicalMaterialPanel extends Panel {

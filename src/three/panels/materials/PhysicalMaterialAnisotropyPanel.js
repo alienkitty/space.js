@@ -21,6 +21,15 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
 
         const items = [
             {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, 'anisotropyMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
+            {
                 type: 'divider'
             },
             {
@@ -43,15 +52,6 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 value: mesh.material.anisotropyRotation,
                 callback: value => {
                     mesh.material.anisotropyRotation = value;
-                }
-            },
-            {
-                type: 'content',
-                callback: (value, item) => {
-                    const materialPanel = new MapPanel(mesh, 'anisotropyMap');
-                    materialPanel.animateIn(true);
-
-                    item.setContent(materialPanel);
                 }
             }
         ];

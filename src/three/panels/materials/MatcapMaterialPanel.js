@@ -21,7 +21,7 @@ import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 export const MatcapMaterialOptions = {
     Common: MatcapMaterialCommonPanel,
     Matcap: MatcapMapPanel,
-    Texture: TextureMapPanel,
+    Map: TextureMapPanel,
     Bump: BumpMapPanel,
     Normal: NormalMapPanel,
     Displace: DisplacementMapPanel,
