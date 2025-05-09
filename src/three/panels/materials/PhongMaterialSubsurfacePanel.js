@@ -6,6 +6,8 @@ import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { PhongMaterialPatches } from '../Patches.js';
 
+import { SubsurfaceMapPanel } from '../textures/SubsurfaceMapPanel.js';
+
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class PhongMaterialSubsurfacePanel extends Panel {
@@ -25,6 +27,8 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             mesh.userData.subsurface = false;
 
             mesh.userData.subsurfaceUniforms = {
+                thicknessMap: { value: null },
+                thicknessUseMap: { value: false },
                 thicknessDistortion: { value: 0.1 },
                 thicknessAmbient: { value: 0 },
                 thicknessAttenuation: { value: 0.8 },
@@ -49,6 +53,15 @@ export class PhongMaterialSubsurfacePanel extends Panel {
         };
 
         const subsurfaceItems = [
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new SubsurfaceMapPanel(mesh);
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
             {
                 type: 'divider'
             },
@@ -107,7 +120,6 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                     mesh.userData.subsurfaceUniforms.thicknessScale.value = value;
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         const items = [

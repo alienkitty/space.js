@@ -48,6 +48,7 @@ export { BackgroundPanel } from './scene/BackgroundPanel.js';
 export { EnvironmentPanel } from './scene/EnvironmentPanel.js';
 export { BackgroundMapPanel } from './textures/BackgroundMapPanel.js';
 export { EnvironmentMapPanel } from './textures/EnvironmentMapPanel.js';
+export { SubsurfaceMapPanel } from './textures/SubsurfaceMapPanel.js';
 export { MapPanel } from './textures/MapPanel.js';
 export { TextureMapPanel } from './textures/TextureMapPanel.js';
 export { MatcapMapPanel } from './textures/MatcapMapPanel.js';
