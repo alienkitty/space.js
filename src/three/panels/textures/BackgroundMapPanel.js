@@ -17,8 +17,14 @@ export class BackgroundMapPanel extends Panel {
         this.scene = scene;
 
         this.lastValue = this.scene.background;
+        this.supported = false;
 
+        this.setSupported(this.scene.background);
         this.initPanel();
+    }
+
+    setSupported(texture) {
+        this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
     }
 
     initPanel() {
@@ -32,13 +38,13 @@ export class BackgroundMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture ? scene.background : {},
-                value: scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture && scene.background.source.data,
+                data: this.supported ? scene.background : {},
+                value: this.supported ? scene.background.source.data : null,
                 callback: (value, item) => {
                     const mapItems = [];
 
                     if (value) {
-                        if (scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture) {
+                        if (this.supported) {
                             scene.background.dispose();
                             scene.background = new Texture(value);
                             scene.background.mapping = item.data.mapping;
@@ -53,14 +59,16 @@ export class BackgroundMapPanel extends Panel {
                         }
 
                         scene.background.needsUpdate = true;
-                    } else if (scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture) {
+                    } else if (this.supported) {
                         scene.background.dispose();
                         scene.background = this.lastValue;
                     }
 
-                    item.setData(scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture ? scene.background : {});
+                    this.setSupported(scene.background);
 
-                    if (scene.background && scene.background.isTexture && !scene.background.isRenderTargetTexture && !scene.background.isCubeTexture) {
+                    item.setData(this.supported ? scene.background : {});
+
+                    if (this.supported) {
                         mapItems.push(
                             {
                                 type: 'spacer'

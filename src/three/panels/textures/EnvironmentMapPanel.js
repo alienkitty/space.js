@@ -16,8 +16,14 @@ export class EnvironmentMapPanel extends Panel {
         this.scene = scene;
 
         this.lastValue = this.scene.environment;
+        this.supported = false;
 
+        this.setSupported(this.scene.environment);
         this.initPanel();
+    }
+
+    setSupported(texture) {
+        this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
     }
 
     initPanel() {
@@ -31,13 +37,13 @@ export class EnvironmentMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture ? scene.environment : {},
-                value: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture && scene.environment.source.data,
+                data: this.supported ? scene.environment : {},
+                value: this.supported ? scene.environment.source.data : null,
                 callback: (value, item) => {
                     const mapItems = [];
 
                     if (value) {
-                        if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
+                        if (this.supported) {
                             scene.environment.dispose();
                             scene.environment = new Texture(value);
                             scene.environment.mapping = item.data.mapping;
@@ -49,14 +55,16 @@ export class EnvironmentMapPanel extends Panel {
                         }
 
                         scene.environment.needsUpdate = true;
-                    } else if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
+                    } else if (this.supported) {
                         scene.environment.dispose();
                         scene.environment = this.lastValue;
                     }
 
-                    item.setData(scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture ? scene.environment : {});
+                    this.setSupported(scene.environment);
 
-                    if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
+                    item.setData(this.supported ? scene.environment : {});
+
+                    if (this.supported) {
                         mapItems.push(
                             {
                                 type: 'divider'
