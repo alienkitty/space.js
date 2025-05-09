@@ -31,13 +31,13 @@ export class EnvironmentMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture ? scene.environment : {},
-                value: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && scene.environment.source.data,
+                data: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture ? scene.environment : {},
+                value: scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture && scene.environment.source.data,
                 callback: (value, item) => {
                     const mapItems = [];
 
                     if (value) {
-                        if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture) {
+                        if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
                             scene.environment.dispose();
                             scene.environment = new Texture(value);
                             scene.environment.mapping = item.data.mapping;
@@ -49,14 +49,14 @@ export class EnvironmentMapPanel extends Panel {
                         }
 
                         scene.environment.needsUpdate = true;
-                    } else if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture) {
+                    } else if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
                         scene.environment.dispose();
                         scene.environment = this.lastValue;
                     }
 
-                    item.setData(scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture ? scene.environment : {});
+                    item.setData(scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture ? scene.environment : {});
 
-                    if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture) {
+                    if (scene.environment && scene.environment.isTexture && !scene.environment.isRenderTargetTexture && !scene.environment.isCubeTexture) {
                         mapItems.push(
                             {
                                 type: 'divider'

@@ -41,8 +41,8 @@ export class MapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture ? mesh.material[key] : {},
-                value: mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && mesh.material[key].source.data,
+                data: mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && !mesh.material[key].isCubeTexture ? mesh.material[key] : {},
+                value: mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && !mesh.material[key].isCubeTexture && mesh.material[key].source.data,
                 callback: (value, item) => {
                     const mapItems = [];
 
@@ -71,7 +71,7 @@ export class MapPanel extends Panel {
                             }
                         }
                     } else if (value) {
-                        if (mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture) {
+                        if (mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && !mesh.material[key].isCubeTexture) {
                             mesh.material[key].dispose();
                             mesh.material[key] = new Texture(value);
                             mesh.material[key].mapping = item.data.mapping;
@@ -89,18 +89,19 @@ export class MapPanel extends Panel {
 
                         mesh.material[key].needsUpdate = true;
                         mesh.material.needsUpdate = true;
-                    } else if (mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture) {
+                    } else if (mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && !mesh.material[key].isCubeTexture) {
                         mesh.material[key].dispose();
                         mesh.material[key] = null;
                         mesh.material.needsUpdate = true;
                     }
 
-                    item.setData(mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture ? mesh.material[key] : {});
+                    item.setData(mesh.material[key] && mesh.material[key].isTexture && !mesh.material[key].isRenderTargetTexture && !mesh.material[key].isCubeTexture ? mesh.material[key] : {});
 
                     if (
                         mesh.material[key] &&
                         mesh.material[key].isTexture &&
                         !mesh.material[key].isRenderTargetTexture &&
+                        !mesh.material[key].isCubeTexture &&
                         !(key === 'envMap' && (mesh.material.isMeshStandardMaterial || mesh.material.isMeshPhysicalMaterial))
                     ) {
                         if (mesh.material[key].mapping !== UVMapping) {
