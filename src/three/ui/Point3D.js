@@ -108,7 +108,6 @@ export class Point3D extends Group {
 
         this.initCanvas();
         this.initTextures();
-        this.initDragAndDrop();
 
         this.addListeners();
         this.onResize();
@@ -134,17 +133,12 @@ export class Point3D extends Group {
         }
     }
 
-    static initDragAndDrop() {
-        this.reader = new FileReader();
-    }
-
     static addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
         Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.on('invert', this.onInvert);
         this.container.element.addEventListener('dragover', this.onDragOver);
         this.container.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onLoad);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
         window.addEventListener('pointermove', this.onPointerMove);
@@ -158,7 +152,6 @@ export class Point3D extends Group {
         Stage.events.off('invert', this.onInvert);
         this.container.element.removeEventListener('dragover', this.onDragOver);
         this.container.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onLoad);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
@@ -166,37 +159,40 @@ export class Point3D extends Group {
         window.removeEventListener('keyup', this.onKeyUp);
     }
 
-    static loadImage(path) {
-        const image = new Image();
+    static loadFile(file) {
+        const reader = new FileReader();
 
-        image.onload = () => {
-            const selected = this.getSelected();
+        const promise = new Promise(resolve => {
+            reader.onload = () => {
+                const image = new Image();
 
-            if (selected.length) {
-                const ui = selected[0];
-                const material = ui.object.material;
+                image.onload = () => {
+                    resolve(image);
 
-                if (material.isMeshBasicMaterial) {
-                    ui.setPanelValue('Map', image, [['Basic', 1]]);
-                } else if (material.isMeshLambertMaterial) {
-                    ui.setPanelValue('Map', image, [['Lambert', 1]]);
-                } else if (material.isMeshMatcapMaterial) {
-                    ui.setPanelValue('Map', image, [['Matcap', 1]]);
-                } else if (material.isMeshPhongMaterial) {
-                    ui.setPanelValue('Map', image, [['Phong', 1]]);
-                } else if (material.isMeshToonMaterial) {
-                    ui.setPanelValue('Map', image, [['Toon', 1]]);
-                } else if (material.isMeshPhysicalMaterial) {
-                    ui.setPanelValue('Map', image, [['Physical', 1]]);
-                } else if (material.isMeshStandardMaterial) {
-                    ui.setPanelValue('Map', image, [['Standard', 1]]);
-                }
+                    image.onload = null;
+                };
+
+                image.src = reader.result;
+
+                reader.onload = null;
+            };
+        });
+
+        reader.readAsDataURL(file);
+
+        return promise;
+    }
+
+    static loadFiles(files) {
+        const array = [];
+
+        for (const file of files) {
+            if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
+                array.push(this.loadFile(file));
             }
+        }
 
-            image.onload = null;
-        };
-
-        image.src = path;
+        return Promise.all(array);
     }
 
     // Event handlers
@@ -228,18 +224,37 @@ export class Point3D extends Group {
         }
     };
 
-    static onDrop = e => {
+    static onDrop = async e => {
         e.preventDefault();
 
         const selected = this.getSelected();
 
         if (selected.length) {
-            this.reader.readAsDataURL(e.dataTransfer.files[0]);
-        }
-    };
+            const images = await this.loadFiles(e.dataTransfer.files);
 
-    static onLoad = e => {
-        this.loadImage(e.target.result);
+            if (images.length) {
+                const ui = selected[0];
+                const material = ui.object.material;
+
+                if (material.isMeshBasicMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Basic', 1]]);
+                } else if (material.isMeshLambertMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Lambert', 1]]);
+                } else if (material.isMeshMatcapMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Matcap', 1]]);
+                } else if (material.isMeshPhongMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Phong', 1]]);
+                } else if (material.isMeshToonMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Toon', 1]]);
+                } else if (material.isMeshPhysicalMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Physical', 1]]);
+                } else if (material.isMeshStandardMaterial) {
+                    ui.setPanelValue('Map', images[0], [['Standard', 1]]);
+                }
+
+                Stage.events.emit('images_drop', { images, target: this });
+            }
+        }
     };
 
     static onResize = () => {

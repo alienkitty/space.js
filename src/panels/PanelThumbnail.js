@@ -40,7 +40,6 @@ export class PanelThumbnail extends Interface {
         this.duplicate = null;
 
         this.init();
-        this.initDragAndDrop();
         this.setValue(this.value);
 
         this.addListeners();
@@ -80,12 +79,9 @@ export class PanelThumbnail extends Interface {
         this.input = new Interface(null, 'input');
         this.input.attr({
             type: 'file',
-            accept: 'image/*'
+            accept: 'image/*',
+            multiple: ''
         });
-    }
-
-    initDragAndDrop() {
-        this.reader = new FileReader();
     }
 
     addListeners() {
@@ -94,7 +90,6 @@ export class PanelThumbnail extends Interface {
         this.input.element.addEventListener('change', this.onChange);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onLoad);
         window.addEventListener('keyup', this.onKeyUp);
     }
 
@@ -104,7 +99,6 @@ export class PanelThumbnail extends Interface {
         this.input.element.removeEventListener('change', this.onChange);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onLoad);
         window.removeEventListener('keyup', this.onKeyUp);
     }
 
@@ -125,16 +119,46 @@ export class PanelThumbnail extends Interface {
         return canvas;
     }
 
-    loadImage(path) {
-        const image = new Image();
+    loadFile(file) {
+        const reader = new FileReader();
 
-        image.onload = () => {
-            this.setValue(image);
+        const promise = new Promise(resolve => {
+            reader.onload = () => {
+                const image = new Image();
 
-            image.onload = null;
-        };
+                image.onload = () => {
+                    resolve(image);
 
-        image.src = path;
+                    image.onload = null;
+                };
+
+                image.src = reader.result;
+
+                reader.onload = null;
+            };
+        });
+
+        reader.readAsDataURL(file);
+
+        return promise;
+    }
+
+    async loadFiles(files) {
+        const array = [];
+
+        for (const file of files) {
+            if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
+                array.push(this.loadFile(file));
+            }
+        }
+
+        const images = await Promise.all(array);
+
+        if (images.length) {
+            this.setValue(images[0]);
+
+            Stage.events.emit('images_drop', { images, target: this });
+        }
     }
 
     // Event handlers
@@ -266,21 +290,18 @@ export class PanelThumbnail extends Interface {
     };
 
     onDrop = e => {
+        e.stopPropagation();
         e.preventDefault();
 
-        this.reader.readAsDataURL(e.dataTransfer.files[0]);
+        this.loadFiles(e.dataTransfer.files);
     };
 
     onChange = e => {
         e.preventDefault();
 
         if (e.target.files.length) {
-            this.reader.readAsDataURL(e.target.files[0]);
+            this.loadFiles(e.target.files);
         }
-    };
-
-    onLoad = e => {
-        this.loadImage(e.target.result);
     };
 
     onUpdate = e => {

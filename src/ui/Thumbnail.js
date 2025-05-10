@@ -58,7 +58,6 @@ export class Thumbnail extends Interface {
             this.initCanvas();
         }
 
-        this.initDragAndDrop();
         this.setThumbnail(this.image, this.noCanvas);
 
         this.addListeners();
@@ -96,34 +95,56 @@ export class Thumbnail extends Interface {
         this.context = this.canvas.element.getContext('2d');
     }
 
-    initDragAndDrop() {
-        this.reader = new FileReader();
-    }
-
     addListeners() {
         this.element.addEventListener('pointerdown', this.onPointerDown);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onLoad);
     }
 
     removeListeners() {
         this.element.removeEventListener('pointerdown', this.onPointerDown);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onLoad);
     }
 
-    loadImage(path) {
-        const image = new Image();
+    loadFile(file) {
+        const reader = new FileReader();
 
-        image.onload = () => {
-            this.setThumbnail(image, true);
+        const promise = new Promise(resolve => {
+            reader.onload = () => {
+                const image = new Image();
 
-            image.onload = null;
-        };
+                image.onload = () => {
+                    resolve(image);
 
-        image.src = path;
+                    image.onload = null;
+                };
+
+                image.src = reader.result;
+
+                reader.onload = null;
+            };
+        });
+
+        reader.readAsDataURL(file);
+
+        return promise;
+    }
+
+    async loadFiles(files) {
+        const array = [];
+
+        for (const file of files) {
+            if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
+                array.push(this.loadFile(file));
+            }
+        }
+
+        const images = await Promise.all(array);
+
+        if (images.length) {
+            this.setThumbnail(images[0], true);
+        }
     }
 
     // Event handlers
@@ -174,11 +195,7 @@ export class Thumbnail extends Interface {
     onDrop = e => {
         e.preventDefault();
 
-        this.reader.readAsDataURL(e.dataTransfer.files[0]);
-    };
-
-    onLoad = e => {
-        this.loadImage(e.target.result);
+        this.loadFiles(e.dataTransfer.files);
     };
 
     // Public methods
