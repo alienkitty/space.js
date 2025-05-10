@@ -127,11 +127,6 @@ export class Panel extends Interface {
                 return;
             }
 
-            if (view.name === name && view.setIndex) {
-                view.setIndex(index);
-                return;
-            }
-
             if (path.length) {
                 const [pathName, pathIndex] = path[0];
 
@@ -142,6 +137,9 @@ export class Panel extends Interface {
 
                     path.shift();
                 }
+            } else if (view.name === name && view.setIndex) {
+                view.setIndex(index);
+                return;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
@@ -156,11 +154,6 @@ export class Panel extends Interface {
                 return;
             }
 
-            if (view.name === name && view.setValue) {
-                view.setValue(value);
-                return;
-            }
-
             if (path.length) {
                 const [pathName, pathIndex] = path[0];
 
@@ -171,6 +164,9 @@ export class Panel extends Interface {
 
                     path.shift();
                 }
+            } else if (view.name === name && view.setValue) {
+                view.setValue(value);
+                return;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
