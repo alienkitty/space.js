@@ -108,6 +108,7 @@ export class Point3D extends Group {
 
         this.initCanvas();
         this.initTextures();
+        this.initDragAndDrop();
 
         this.addListeners();
         this.onResize();
@@ -133,10 +134,17 @@ export class Point3D extends Group {
         }
     }
 
+    static initDragAndDrop() {
+        this.reader = new FileReader();
+    }
+
     static addListeners() {
         Stage.events.on('color_picker', this.onColorPicker);
         Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.on('invert', this.onInvert);
+        this.container.element.addEventListener('dragover', this.onDragOver);
+        this.container.element.addEventListener('drop', this.onDrop);
+        this.reader.addEventListener('load', this.onLoad);
         window.addEventListener('resize', this.onResize);
         window.addEventListener('pointerdown', this.onPointerDown);
         window.addEventListener('pointermove', this.onPointerMove);
@@ -148,11 +156,47 @@ export class Point3D extends Group {
         Stage.events.off('color_picker', this.onColorPicker);
         Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.off('invert', this.onInvert);
+        this.container.element.removeEventListener('dragover', this.onDragOver);
+        this.container.element.removeEventListener('drop', this.onDrop);
+        this.reader.removeEventListener('load', this.onLoad);
         window.removeEventListener('resize', this.onResize);
         window.removeEventListener('pointerdown', this.onPointerDown);
         window.removeEventListener('pointermove', this.onPointerMove);
         window.removeEventListener('pointerup', this.onPointerUp);
         window.removeEventListener('keyup', this.onKeyUp);
+    }
+
+    static loadImage(path) {
+        const image = new Image();
+
+        image.onload = () => {
+            const selected = this.getSelected();
+
+            if (selected.length) {
+                const ui = selected[0];
+                const material = ui.object.material;
+
+                if (material.isMeshBasicMaterial) {
+                    ui.setPanelValue('Map', image, [['Basic', 1]]);
+                } else if (material.isMeshLambertMaterial) {
+                    ui.setPanelValue('Map', image, [['Lambert', 1]]);
+                } else if (material.isMeshMatcapMaterial) {
+                    ui.setPanelValue('Map', image, [['Matcap', 1]]);
+                } else if (material.isMeshPhongMaterial) {
+                    ui.setPanelValue('Map', image, [['Phong', 1]]);
+                } else if (material.isMeshToonMaterial) {
+                    ui.setPanelValue('Map', image, [['Toon', 1]]);
+                } else if (material.isMeshPhysicalMaterial) {
+                    ui.setPanelValue('Map', image, [['Physical', 1]]);
+                } else if (material.isMeshStandardMaterial) {
+                    ui.setPanelValue('Map', image, [['Standard', 1]]);
+                }
+            }
+
+            image.onload = null;
+        };
+
+        image.src = path;
     }
 
     // Event handlers
@@ -171,6 +215,31 @@ export class Point3D extends Group {
 
     static onInvert = () => {
         this.points.forEach(ui => ui.theme());
+    };
+
+    static onDragOver = e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'none';
+
+        const selected = this.getSelected();
+
+        if (selected.length) {
+            e.dataTransfer.dropEffect = 'copy';
+        }
+    };
+
+    static onDrop = e => {
+        e.preventDefault();
+
+        const selected = this.getSelected();
+
+        if (selected.length) {
+            this.reader.readAsDataURL(e.dataTransfer.files[0]);
+        }
+    };
+
+    static onLoad = e => {
+        this.loadImage(e.target.result);
     };
 
     static onResize = () => {
