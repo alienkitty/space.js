@@ -22,7 +22,7 @@ export function getFullscreenTriangle() {
     return geometry;
 }
 
-export function getSphericalCube(radius, segments) {
+export function getSphericalCube(radius = 1, segments = 16) {
     const geometry = new BoxGeometry(radius, radius, radius, segments, segments, segments);
     const vertices = geometry.getAttribute('position');
     const normals = geometry.getAttribute('normal');
