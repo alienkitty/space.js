@@ -16,11 +16,16 @@ export class PhongMaterialSubsurfacePanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
 
         // Defaults
         if (mesh.userData.subsurface === undefined) {
@@ -37,15 +42,17 @@ export class PhongMaterialSubsurfacePanel extends Panel {
             };
         }
 
-        if (!mesh.material.userData.onBeforeCompile) {
-            mesh.material.userData.onBeforeCompile = {};
+        materials.forEach(material => {
+            if (!material.userData.onBeforeCompile) {
+                material.userData.onBeforeCompile = {};
 
-            mesh.material.onBeforeCompile = shader => {
-                for (const key in mesh.material.userData.onBeforeCompile) {
-                    mesh.material.userData.onBeforeCompile[key](shader, mesh);
-                }
-            };
-        }
+                material.onBeforeCompile = shader => {
+                    for (const key in material.userData.onBeforeCompile) {
+                        material.userData.onBeforeCompile[key](shader, mesh);
+                    }
+                };
+            }
+        });
 
         const subsurfaceOptions = {
             Off: false,
@@ -146,17 +153,19 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                     mesh.userData.subsurface = subsurfaceOptions[value];
 
                     if (mesh.userData.subsurface) {
-                        mesh.material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
+                        materials.forEach(material => material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface);
 
                         item.toggleContent(true);
                     } else {
-                        delete mesh.material.userData.onBeforeCompile.subsurface;
+                        materials.forEach(material => delete material.userData.onBeforeCompile.subsurface);
 
                         item.toggleContent(false);
                     }
 
-                    mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
-                    mesh.material.needsUpdate = true;
+                    materials.forEach(material => {
+                        material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                        material.needsUpdate = true;
+                    });
                 }
             }
         ];

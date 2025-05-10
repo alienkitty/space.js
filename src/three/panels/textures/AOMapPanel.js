@@ -14,7 +14,8 @@ export class AOMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,9 +27,9 @@ export class AOMapPanel extends MapPanel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.aoMapIntensity,
+                value: material.aoMapIntensity,
                 callback: value => {
-                    mesh.material.aoMapIntensity = value;
+                    materials.forEach(material => material.aoMapIntensity = value);
                 }
             }
         ];

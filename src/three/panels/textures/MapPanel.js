@@ -20,9 +20,11 @@ export class MapPanel extends Panel {
         this.mapping = mapping;
         this.colorSpace = colorSpace;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
         this.supported = false;
 
-        this.setSupported(this.mesh.material[key]);
+        this.setSupported(this.material[key]);
         this.initPanel();
     }
 
@@ -33,6 +35,9 @@ export class MapPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const key = this.key;
+
+        const materials = this.materials;
+        const material = this.material;
 
         let point;
 
@@ -48,8 +53,8 @@ export class MapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: this.supported ? mesh.material[key] : {},
-                value: this.supported ? mesh.material[key].source.data : null,
+                data: this.supported ? material[key] : {},
+                value: this.supported ? material[key].source.data : null,
                 callback: (value, item) => {
                     const mapItems = [];
 
@@ -63,51 +68,58 @@ export class MapPanel extends Panel {
 
                     if (point && point.uvTexture) {
                         if (value) {
-                            if (mesh.material[key] && item.data.isTexture && !item.data.userData.uv) {
+                            if (material[key] && item.data.isTexture && !item.data.userData.uv) {
                                 mesh.userData.uv = false;
                                 point.toggleUVHelper(false);
                             }
-                        } else if (mesh.material[key]) {
+                        } else if (material[key]) {
                             mesh.userData.uv = false;
                             point.toggleUVHelper(false);
 
-                            if (mesh.material[key] && mesh.material[key].source.data) {
-                                item.setData(mesh.material[key]);
-                                item.setValue(mesh.material[key].source.data);
+                            if (material[key] && material[key].source.data) {
+                                item.setData(material[key]);
+                                item.setValue(material[key].source.data);
                                 return;
                             }
                         }
                     } else if (value) {
                         if (this.supported) {
-                            mesh.material[key].dispose();
-                            mesh.material[key] = new Texture(value);
-                            mesh.material[key].mapping = item.data.mapping;
-                            mesh.material[key].colorSpace = item.data.colorSpace;
-                            mesh.material[key].anisotropy = item.data.anisotropy;
-                            mesh.material[key].wrapS = item.data.wrapS;
-                            mesh.material[key].wrapT = item.data.wrapT;
-                            mesh.material[key].repeat.copy(item.data.repeat);
+                            material[key].dispose();
+                            material[key] = new Texture(value);
+                            material[key].mapping = item.data.mapping;
+                            material[key].colorSpace = item.data.colorSpace;
+                            material[key].anisotropy = item.data.anisotropy;
+                            material[key].wrapS = item.data.wrapS;
+                            material[key].wrapT = item.data.wrapT;
+                            material[key].repeat.copy(item.data.repeat);
                         } else {
-                            mesh.material[key] = new Texture(value);
-                            mesh.material[key].mapping = this.mapping;
-                            mesh.material[key].colorSpace = this.colorSpace;
-                            mesh.material[key].anisotropy = Point3D.anisotropy;
+                            material[key] = new Texture(value);
+                            material[key].mapping = this.mapping;
+                            material[key].colorSpace = this.colorSpace;
+                            material[key].anisotropy = Point3D.anisotropy;
                         }
 
-                        mesh.material[key].needsUpdate = true;
-                        mesh.material.needsUpdate = true;
+                        if (!value.complete) {
+                            value.onload = () => {
+                                material[key].needsUpdate = true;
+
+                                value.onload = null;
+                            };
+                        }
+
+                        material.needsUpdate = true;
                     } else if (this.supported) {
-                        mesh.material[key].dispose();
-                        mesh.material[key] = null;
-                        mesh.material.needsUpdate = true;
+                        material[key].dispose();
+                        material[key] = null;
+                        material.needsUpdate = true;
                     }
 
-                    this.setSupported(mesh.material[key]);
+                    this.setSupported(material[key]);
 
-                    item.setData(this.supported ? mesh.material[key] : {});
+                    item.setData(this.supported ? material[key] : {});
 
-                    if (this.supported && !(key === 'envMap' && mesh.material.isMeshStandardMaterial)) {
-                        if (mesh.material[key].mapping !== UVMapping) {
+                    if (this.supported && !(key === 'envMap' && material.isMeshStandardMaterial)) {
+                        if (material[key].mapping !== UVMapping) {
                             mapItems.push(
                                 {
                                     type: 'spacer'
@@ -116,11 +128,17 @@ export class MapPanel extends Panel {
                                     type: 'list',
                                     name: 'Mapping',
                                     list: RefractionMappingOptions,
-                                    value: getKeyByValue(RefractionMappingOptions, mesh.material[key].mapping),
+                                    value: getKeyByValue(RefractionMappingOptions, material[key].mapping),
                                     callback: value => {
-                                        mesh.material[key].mapping = RefractionMappingOptions[value];
-                                        mesh.material[key].needsUpdate = true;
-                                        mesh.material.needsUpdate = true;
+                                        materials.forEach(material => {
+                                            material[key].mapping = RefractionMappingOptions[value];
+
+                                            if (material[key].source.data.complete) {
+                                                material[key].needsUpdate = true;
+                                            }
+
+                                            material.needsUpdate = true;
+                                        });
                                     }
                                 }
                             );
@@ -133,10 +151,15 @@ export class MapPanel extends Panel {
                                     type: 'list',
                                     name: 'Color Space',
                                     list: ColorSpaceOptions,
-                                    value: getKeyByValue(ColorSpaceOptions, mesh.material[key].colorSpace),
+                                    value: getKeyByValue(ColorSpaceOptions, material[key].colorSpace),
                                     callback: value => {
-                                        mesh.material[key].colorSpace = ColorSpaceOptions[value];
-                                        mesh.material[key].needsUpdate = true;
+                                        materials.forEach(material => {
+                                            material[key].colorSpace = ColorSpaceOptions[value];
+
+                                            if (material[key].source.data.complete) {
+                                                material[key].needsUpdate = true;
+                                            }
+                                        });
                                     }
                                 },
                                 {
@@ -145,23 +168,33 @@ export class MapPanel extends Panel {
                                     min: 1,
                                     max: 16,
                                     step: 1,
-                                    value: mesh.material[key].anisotropy,
+                                    value: material[key].anisotropy,
                                     callback: value => {
-                                        mesh.material[key].anisotropy = value;
-                                        mesh.material[key].needsUpdate = true;
+                                        materials.forEach(material => {
+                                            material[key].anisotropy = value;
+
+                                            if (material[key].source.data.complete) {
+                                                material[key].needsUpdate = true;
+                                            }
+                                        });
                                     }
                                 },
                                 {
                                     type: 'list',
                                     name: 'Wrap',
                                     list: WrapOptions,
-                                    value: getKeyByValue(WrapOptions, mesh.material[key].wrapS),
+                                    value: getKeyByValue(WrapOptions, material[key].wrapS),
                                     callback: value => {
                                         const wrapping = WrapOptions[value];
 
-                                        mesh.material[key].wrapS = wrapping;
-                                        mesh.material[key].wrapT = wrapping;
-                                        mesh.material[key].needsUpdate = true;
+                                        materials.forEach(material => {
+                                            material[key].wrapS = wrapping;
+                                            material[key].wrapT = wrapping;
+
+                                            if (material[key].source.data.complete) {
+                                                material[key].needsUpdate = true;
+                                            }
+                                        });
                                     }
                                 },
                                 {
@@ -170,9 +203,9 @@ export class MapPanel extends Panel {
                                     min: 1,
                                     max: 16,
                                     step: 1,
-                                    value: mesh.material[key].repeat.x,
+                                    value: material[key].repeat.x,
                                     callback: value => {
-                                        mesh.material[key].repeat.setX(value);
+                                        materials.forEach(material => material[key].repeat.setX(value));
                                     }
                                 },
                                 {
@@ -181,9 +214,9 @@ export class MapPanel extends Panel {
                                     min: 1,
                                     max: 16,
                                     step: 1,
-                                    value: mesh.material[key].repeat.y,
+                                    value: material[key].repeat.y,
                                     callback: value => {
-                                        mesh.material[key].repeat.setY(value);
+                                        materials.forEach(material => material[key].repeat.setY(value));
                                     }
                                 }
                             );

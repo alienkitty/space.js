@@ -13,11 +13,17 @@ export class PhysicalMaterialClearcoatRoughnessPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -38,9 +44,9 @@ export class PhysicalMaterialClearcoatRoughnessPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.clearcoatRoughness,
+                value: material.clearcoatRoughness,
                 callback: value => {
-                    mesh.material.clearcoatRoughness = value;
+                    materials.forEach(material => material.clearcoatRoughness = value);
                 }
             }
         ];

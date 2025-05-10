@@ -13,11 +13,17 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -38,9 +44,9 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.anisotropy,
+                value: material.anisotropy,
                 callback: value => {
-                    mesh.material.anisotropy = value;
+                    materials.forEach(material => material.anisotropy = value);
                 }
             },
             {
@@ -49,9 +55,9 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 min: 0,
                 max: Math.PI / 2,
                 step: 0.01,
-                value: mesh.material.anisotropyRotation,
+                value: material.anisotropyRotation,
                 callback: value => {
-                    mesh.material.anisotropyRotation = value;
+                    materials.forEach(material => material.anisotropyRotation = value);
                 }
             }
         ];

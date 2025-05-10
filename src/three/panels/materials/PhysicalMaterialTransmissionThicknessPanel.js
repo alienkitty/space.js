@@ -13,11 +13,17 @@ export class PhysicalMaterialTransmissionThicknessPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -38,9 +44,9 @@ export class PhysicalMaterialTransmissionThicknessPanel extends Panel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.thickness,
+                value: material.thickness,
                 callback: value => {
-                    mesh.material.thickness = value;
+                    materials.forEach(material => material.thickness = value);
                 }
             }
         ];

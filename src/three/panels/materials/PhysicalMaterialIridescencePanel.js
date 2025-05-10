@@ -13,11 +13,17 @@ export class PhysicalMaterialIridescencePanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -38,9 +44,9 @@ export class PhysicalMaterialIridescencePanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.iridescence,
+                value: material.iridescence,
                 callback: value => {
-                    mesh.material.iridescence = value;
+                    materials.forEach(material => material.iridescence = value);
                 }
             },
             {
@@ -49,9 +55,9 @@ export class PhysicalMaterialIridescencePanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: mesh.material.iridescenceIOR,
+                value: material.iridescenceIOR,
                 callback: value => {
-                    mesh.material.iridescenceIOR = value;
+                    materials.forEach(material => material.iridescenceIOR = value);
                 }
             }
         ];

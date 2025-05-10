@@ -14,7 +14,8 @@ export class DisplacementMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,9 +27,9 @@ export class DisplacementMapPanel extends MapPanel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.displacementScale,
+                value: material.displacementScale,
                 callback: value => {
-                    mesh.material.displacementScale = value;
+                    materials.forEach(material => material.displacementScale = value);
                 }
             },
             {
@@ -37,9 +38,9 @@ export class DisplacementMapPanel extends MapPanel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.displacementBias,
+                value: material.displacementBias,
                 callback: value => {
-                    mesh.material.displacementBias = value;
+                    materials.forEach(material => material.displacementBias = value);
                 }
             }
         ];

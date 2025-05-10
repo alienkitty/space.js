@@ -14,7 +14,8 @@ export class BumpMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,9 +27,9 @@ export class BumpMapPanel extends MapPanel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.bumpScale,
+                value: material.bumpScale,
                 callback: value => {
-                    mesh.material.bumpScale = value;
+                    materials.forEach(material => material.bumpScale = value);
                 }
             }
         ];

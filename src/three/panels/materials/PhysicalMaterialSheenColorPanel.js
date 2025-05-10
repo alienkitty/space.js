@@ -13,11 +13,17 @@ export class PhysicalMaterialSheenColorPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -35,9 +41,9 @@ export class PhysicalMaterialSheenColorPanel extends Panel {
             {
                 type: 'color',
                 name: 'Sheen Color',
-                value: mesh.material.sheenColor,
+                value: material.sheenColor,
                 callback: value => {
-                    mesh.material.sheenColor.copy(value);
+                    materials.forEach(material => material.sheenColor.copy(value));
                 }
             }
         ];

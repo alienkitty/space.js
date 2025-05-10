@@ -53,7 +53,8 @@ export class MaterialPanelController {
         this.ui = ui;
         this.materialOptions = materialOptions;
 
-        this.lastMaterialPanel = null;
+        this.properties = [];
+        this.lastPanel = null;
 
         this.initPanel();
     }
@@ -63,7 +64,8 @@ export class MaterialPanelController {
         const ui = this.ui;
         const materialOptions = this.materialOptions;
 
-        const materialProperties = {};
+        this.materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        this.material = this.materials[0];
 
         const materialItems = [
             {
@@ -75,129 +77,144 @@ export class MaterialPanelController {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.opacity,
+                value: this.material.opacity,
                 callback: value => {
-                    if (value < 1) {
-                        mesh.material.transparent = true;
-                        mesh.material.needsUpdate = true;
-                    }
+                    this.materials.forEach(material => {
+                        if (value < 1) {
+                            material.transparent = true;
+                            material.needsUpdate = true;
+                        }
 
-                    mesh.material.opacity = value;
+                        material.opacity = value;
+                    });
                 }
             },
             {
                 type: 'list',
                 name: 'Side',
                 list: SideOptions,
-                value: getKeyByValue(SideOptions, mesh.material.side),
+                value: getKeyByValue(SideOptions, this.material.side),
                 callback: value => {
-                    mesh.material.side = SideOptions[value];
-                    mesh.material.needsUpdate = true;
+                    this.materials.forEach(material => {
+                        material.side = SideOptions[value];
+                        material.needsUpdate = true;
+                    });
                 }
             },
             {
                 type: 'list',
                 name: 'Material',
                 list: materialOptions,
-                value: getKeyByMaterial(materialOptions, mesh.material),
+                value: getKeyByMaterial(materialOptions, this.material),
                 callback: (value, item) => {
                     const [Material, MaterialPanel] = materialOptions[value];
 
-                    const currentMaterialPanel = this.lastMaterialPanel || MaterialPanel;
+                    const currentPanel = this.lastPanel || MaterialPanel;
 
-                    materialProperties.transparent = mesh.material.transparent;
-                    materialProperties.opacity = mesh.material.opacity;
-                    materialProperties.side = mesh.material.side;
-
-                    currentMaterialPanel.properties.forEach(key => {
-                        if (key in mesh.material) {
-                            const value = mesh.material[key];
-
-                            if (value && (
-                                value.isVector2 ||
-                                value.isVector3 ||
-                                value.isVector4 ||
-                                value.isMatrix3 ||
-                                value.isMatrix4 ||
-                                value.isColor
-                            )) {
-                                if (!materialProperties[key]) {
-                                    materialProperties[key] = value.clone();
-                                } else {
-                                    materialProperties[key].copy(value);
-                                }
-                            } else if (Array.isArray(value)) {
-                                materialProperties[key] = Array.from(value);
-                            } else {
-                                materialProperties[key] = value;
-                            }
+                    const target = this.materials.map((material, i) => {
+                        if (!this.properties[i]) {
+                            this.properties[i] = {};
                         }
-                    });
 
-                    materialProperties.map = mesh.material.map;
+                        const properties = this.properties[i];
 
-                    mesh.material = new Material();
+                        properties.transparent = material.transparent;
+                        properties.opacity = material.opacity;
+                        properties.side = material.side;
 
-                    mesh.material.transparent = materialProperties.transparent;
-                    mesh.material.opacity = materialProperties.opacity;
-                    mesh.material.side = materialProperties.side;
+                        currentPanel.properties.forEach(key => {
+                            if (key in material) {
+                                const value = material[key];
 
-                    MaterialPanel.properties.forEach(key => {
-                        if (key in mesh.material && key in materialProperties) {
-                            const value = materialProperties[key];
-
-                            if (key === 'clippingPlanes' && Array.isArray(value)) {
-                                const length = value.length;
-                                const array = new Array(length);
-
-                                for (let i = 0; i < length; i++) {
-                                    array[i] = value[i].clone();
-                                }
-
-                                mesh.material.clippingPlanes = array;
-                            } else if (key === 'userData') {
-                                mesh.material.userData = value;
-                                mesh.material.userData.onBeforeCompile = {};
-
-                                mesh.material.onBeforeCompile = shader => {
-                                    for (const key in mesh.material.userData.onBeforeCompile) {
-                                        mesh.material.userData.onBeforeCompile[key](shader, mesh);
+                                if (value && (
+                                    value.isVector2 ||
+                                    value.isVector3 ||
+                                    value.isVector4 ||
+                                    value.isMatrix3 ||
+                                    value.isMatrix4 ||
+                                    value.isColor
+                                )) {
+                                    if (!properties[key]) {
+                                        properties[key] = value.clone();
+                                    } else {
+                                        properties[key].copy(value);
                                     }
-                                };
-                            } else if (value && (
-                                value.isVector2 ||
-                                value.isVector3 ||
-                                value.isVector4 ||
-                                value.isMatrix3 ||
-                                value.isMatrix4 ||
-                                value.isColor
-                            )) {
-                                mesh.material[key].copy(value);
-                            } else {
-                                mesh.material[key] = value;
+                                } else if (Array.isArray(value)) {
+                                    properties[key] = Array.from(value);
+                                } else {
+                                    properties[key] = value;
+                                }
+                            }
+                        });
+
+                        const target = new Material();
+
+                        target.transparent = properties.transparent;
+                        target.opacity = properties.opacity;
+                        target.side = properties.side;
+
+                        MaterialPanel.properties.forEach(key => {
+                            if (key in target && key in properties) {
+                                const value = properties[key];
+
+                                if (key === 'clippingPlanes' && Array.isArray(value)) {
+                                    const length = value.length;
+                                    const array = new Array(length);
+
+                                    for (let i = 0; i < length; i++) {
+                                        array[i] = value[i].clone();
+                                    }
+
+                                    target.clippingPlanes = array;
+                                } else if (key === 'userData') {
+                                    target.userData = value;
+                                    target.userData.onBeforeCompile = {};
+
+                                    target.onBeforeCompile = shader => {
+                                        for (const key in target.userData.onBeforeCompile) {
+                                            target.userData.onBeforeCompile[key](shader, mesh);
+                                        }
+                                    };
+                                } else if (value && (
+                                    value.isVector2 ||
+                                    value.isVector3 ||
+                                    value.isVector4 ||
+                                    value.isMatrix3 ||
+                                    value.isMatrix4 ||
+                                    value.isColor
+                                )) {
+                                    target[key].copy(value);
+                                } else {
+                                    target[key] = value;
+                                }
+                            }
+                        });
+
+                        if (MaterialPanel.type in MaterialPatches) {
+                            for (const key in MaterialPatches[MaterialPanel.type]) {
+                                target.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
                             }
                         }
+
+                        if (ui.uvTexture) {
+                            target.map = ui.uvTexture;
+                        }
+
+                        target.customProgramCacheKey = () => Object.keys(target.userData.onBeforeCompile).join('|');
+                        target.needsUpdate = true;
+
+                        return target;
                     });
 
-                    if (MaterialPanel.type in MaterialPatches) {
-                        for (const key in MaterialPatches[MaterialPanel.type]) {
-                            mesh.material.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
-                        }
-                    }
+                    mesh.material = Array.isArray(mesh.material) ? target : target[0];
 
-                    if (ui.uvTexture) {
-                        mesh.material.map = ui.uvTexture;
-                    } else {
-                        mesh.material.map = materialProperties.map;
-                    }
-
-                    mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
-                    mesh.material.needsUpdate = true;
+                    this.materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                    this.material = this.materials[0];
 
                     if (ui.point && ui.isDefault) {
                         ui.point.setData({
                             name: mesh.geometry.type,
-                            type: mesh.material.type
+                            type: this.material.type
                         });
                     }
 
@@ -206,7 +223,7 @@ export class MaterialPanelController {
 
                     item.setContent(materialPanel);
 
-                    this.lastMaterialPanel = MaterialPanel;
+                    this.lastPanel = MaterialPanel;
                 }
             }
         ];

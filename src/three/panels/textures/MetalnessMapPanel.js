@@ -14,7 +14,8 @@ export class MetalnessMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,9 +27,9 @@ export class MetalnessMapPanel extends MapPanel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.metalness,
+                value: material.metalness,
                 callback: value => {
-                    mesh.material.metalness = value;
+                    materials.forEach(material => material.metalness = value);
                 }
             }
         ];

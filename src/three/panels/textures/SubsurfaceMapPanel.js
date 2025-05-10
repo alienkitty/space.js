@@ -13,6 +13,7 @@ export class SubsurfaceMapPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.uniforms = this.mesh.userData.subsurfaceUniforms;
         this.supported = false;
 
@@ -25,8 +26,7 @@ export class SubsurfaceMapPanel extends Panel {
     }
 
     initPanel() {
-        const mesh = this.mesh;
-
+        const materials = this.materials;
         const uniforms = this.uniforms;
 
         const items = [
@@ -50,13 +50,13 @@ export class SubsurfaceMapPanel extends Panel {
 
                         uniforms.thicknessMap.value.needsUpdate = true;
                         uniforms.thicknessUseMap.value = true;
-                        mesh.material.needsUpdate = true;
                     } else if (this.supported) {
                         uniforms.thicknessMap.value.dispose();
                         uniforms.thicknessMap.value = null;
                         uniforms.thicknessUseMap.value = false;
-                        mesh.material.needsUpdate = true;
                     }
+
+                    materials.forEach(material => material.needsUpdate = true);
 
                     this.setSupported(uniforms.thicknessMap.value);
 

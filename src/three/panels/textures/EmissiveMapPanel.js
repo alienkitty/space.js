@@ -14,7 +14,8 @@ export class EmissiveMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -23,9 +24,9 @@ export class EmissiveMapPanel extends MapPanel {
             {
                 type: 'color',
                 name: 'Emissive',
-                value: mesh.material.emissive,
+                value: material.emissive,
                 callback: value => {
-                    mesh.material.emissive.copy(value);
+                    materials.forEach(material => material.emissive.copy(value));
                 }
             },
             {
@@ -34,9 +35,9 @@ export class EmissiveMapPanel extends MapPanel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.emissiveIntensity,
+                value: material.emissiveIntensity,
                 callback: value => {
-                    mesh.material.emissiveIntensity = value;
+                    materials.forEach(material => material.emissiveIntensity = value);
                 }
             }
         ];

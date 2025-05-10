@@ -56,11 +56,16 @@ export class StandardMaterialPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
 
         if (!Point3D.points) {
             delete StandardMaterialOptions.Helper;
@@ -71,10 +76,11 @@ export class StandardMaterialPanel extends Panel {
         }
 
         if (mesh.userData.subsurface) {
-            mesh.material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
-
-            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
-            mesh.material.needsUpdate = true;
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [

@@ -14,7 +14,8 @@ export class RoughnessMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,9 +27,9 @@ export class RoughnessMapPanel extends MapPanel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: mesh.material.roughness,
+                value: material.roughness,
                 callback: value => {
-                    mesh.material.roughness = value;
+                    materials.forEach(material => material.roughness = value);
                 }
             }
         ];

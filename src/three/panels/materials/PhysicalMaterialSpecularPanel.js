@@ -11,11 +11,15 @@ export class PhysicalMaterialSpecularPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -24,9 +28,9 @@ export class PhysicalMaterialSpecularPanel extends Panel {
             {
                 type: 'color',
                 name: 'Specular Color',
-                value: mesh.material.specularColor,
+                value: material.specularColor,
                 callback: value => {
-                    mesh.material.specularColor.copy(value);
+                    materials.forEach(material => material.specularColor.copy(value));
                 }
             },
             {
@@ -35,9 +39,9 @@ export class PhysicalMaterialSpecularPanel extends Panel {
                 min: 0,
                 max: 32,
                 step: 0.1,
-                value: mesh.material.specularIntensity,
+                value: material.specularIntensity,
                 callback: value => {
-                    mesh.material.specularIntensity = value;
+                    materials.forEach(material => material.specularIntensity = value);
                 }
             }
         ];

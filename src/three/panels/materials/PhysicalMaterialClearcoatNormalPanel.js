@@ -13,11 +13,17 @@ export class PhysicalMaterialClearcoatNormalPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -38,9 +44,9 @@ export class PhysicalMaterialClearcoatNormalPanel extends Panel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.clearcoatNormalScale.x,
+                value: material.clearcoatNormalScale.x,
                 callback: value => {
-                    mesh.material.clearcoatNormalScale.x = value;
+                    materials.forEach(material => material.clearcoatNormalScale.x = value);
                 }
             },
             {
@@ -49,9 +55,9 @@ export class PhysicalMaterialClearcoatNormalPanel extends Panel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.clearcoatNormalScale.y,
+                value: material.clearcoatNormalScale.y,
                 callback: value => {
-                    mesh.material.clearcoatNormalScale.y = value;
+                    materials.forEach(material => material.clearcoatNormalScale.y = value);
                 }
             }
         ];

@@ -17,7 +17,8 @@ export class NormalMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -27,10 +28,12 @@ export class NormalMapPanel extends MapPanel {
                 type: 'list',
                 name: 'Type',
                 list: NormalMapOptions,
-                value: getKeyByValue(NormalMapOptions, mesh.material.normalMapType),
+                value: getKeyByValue(NormalMapOptions, material.normalMapType),
                 callback: value => {
-                    mesh.material.normalMapType = NormalMapOptions[value];
-                    mesh.material.needsUpdate = true;
+                    materials.forEach(material => {
+                        material.normalMapType = NormalMapOptions[value];
+                        material.needsUpdate = true;
+                    });
                 }
             },
             {
@@ -42,9 +45,9 @@ export class NormalMapPanel extends MapPanel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.normalScale.x,
+                value: material.normalScale.x,
                 callback: value => {
-                    mesh.material.normalScale.x = value;
+                    materials.forEach(material => material.normalScale.x = value);
                 }
             },
             {
@@ -53,9 +56,9 @@ export class NormalMapPanel extends MapPanel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.normalScale.y,
+                value: material.normalScale.y,
                 callback: value => {
-                    mesh.material.normalScale.y = value;
+                    materials.forEach(material => material.normalScale.y = value);
                 }
             }
         ];

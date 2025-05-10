@@ -19,7 +19,8 @@ export class EnvMapPanel extends MapPanel {
     initPanel() {
         super.initPanel();
 
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -31,9 +32,9 @@ export class EnvMapPanel extends MapPanel {
                 min: 0,
                 max: 360,
                 step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.x + (mesh.material.envMapRotation.x < 0 ? TwoPI : 0)),
+                value: MathUtils.radToDeg(material.envMapRotation.x + (material.envMapRotation.x < 0 ? TwoPI : 0)),
                 callback: value => {
-                    mesh.material.envMapRotation.x = MathUtils.degToRad(value);
+                    materials.forEach(material => material.envMapRotation.x = MathUtils.degToRad(value));
                 }
             },
             {
@@ -42,9 +43,9 @@ export class EnvMapPanel extends MapPanel {
                 min: 0,
                 max: 360,
                 step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.y + (mesh.material.envMapRotation.y < 0 ? TwoPI : 0)),
+                value: MathUtils.radToDeg(material.envMapRotation.y + (material.envMapRotation.y < 0 ? TwoPI : 0)),
                 callback: value => {
-                    mesh.material.envMapRotation.y = MathUtils.degToRad(value);
+                    materials.forEach(material => material.envMapRotation.y = MathUtils.degToRad(value));
                 }
             },
             {
@@ -53,14 +54,14 @@ export class EnvMapPanel extends MapPanel {
                 min: 0,
                 max: 360,
                 step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.z + (mesh.material.envMapRotation.z < 0 ? TwoPI : 0)),
+                value: MathUtils.radToDeg(material.envMapRotation.z + (material.envMapRotation.z < 0 ? TwoPI : 0)),
                 callback: value => {
-                    mesh.material.envMapRotation.z = MathUtils.degToRad(value);
+                    materials.forEach(material => material.envMapRotation.z = MathUtils.degToRad(value));
                 }
             }
         ];
 
-        if (mesh.material.envMapIntensity !== undefined) {
+        if (material.envMapIntensity !== undefined) {
             items.push(
                 {
                     type: 'slider',
@@ -68,15 +69,15 @@ export class EnvMapPanel extends MapPanel {
                     min: 0,
                     max: 10,
                     step: 0.1,
-                    value: mesh.material.envMapIntensity,
+                    value: material.envMapIntensity,
                     callback: value => {
-                        mesh.material.envMapIntensity = value;
+                        materials.forEach(material => material.envMapIntensity = value);
                     }
                 }
             );
         }
 
-        if (mesh.material.combine !== undefined) {
+        if (material.combine !== undefined) {
             items.push(
                 {
                     type: 'divider'
@@ -85,10 +86,12 @@ export class EnvMapPanel extends MapPanel {
                     type: 'list',
                     name: 'Combine',
                     list: CombineOptions,
-                    value: getKeyByValue(CombineOptions, mesh.material.combine),
+                    value: getKeyByValue(CombineOptions, material.combine),
                     callback: value => {
-                        mesh.material.combine = CombineOptions[value];
-                        mesh.material.needsUpdate = true;
+                        materials.forEach(material => {
+                            material.combine = CombineOptions[value];
+                            material.needsUpdate = true;
+                        });
                     }
                 },
                 {
@@ -97,9 +100,9 @@ export class EnvMapPanel extends MapPanel {
                     min: 0,
                     max: 1,
                     step: 0.01,
-                    value: mesh.material.reflectivity,
+                    value: material.reflectivity,
                     callback: value => {
-                        mesh.material.reflectivity = value;
+                        materials.forEach(material => material.reflectivity = value);
                     }
                 },
                 {
@@ -108,9 +111,9 @@ export class EnvMapPanel extends MapPanel {
                     min: 0,
                     max: 1,
                     step: 0.01,
-                    value: mesh.material.refractionRatio,
+                    value: material.refractionRatio,
                     callback: value => {
-                        mesh.material.refractionRatio = value;
+                        materials.forEach(material => material.refractionRatio = value);
                     }
                 }
             );
