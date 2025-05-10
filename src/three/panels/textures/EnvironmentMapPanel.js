@@ -17,6 +17,7 @@ export class EnvironmentMapPanel extends Panel {
 
         this.lastValue = this.scene.environment;
         this.supported = false;
+        this.initialized = false;
 
         this.setSupported(this.scene.environment);
         this.initPanel();
@@ -42,27 +43,29 @@ export class EnvironmentMapPanel extends Panel {
                 callback: (value, item) => {
                     const mapItems = [];
 
-                    if (value) {
-                        if (this.supported) {
+                    if (this.initialized) {
+                        if (value) {
+                            if (this.supported) {
+                                scene.environment.dispose();
+                                scene.environment = new Texture(value);
+                                scene.environment.mapping = item.data.mapping;
+                                scene.environment.colorSpace = item.data.colorSpace;
+                            } else {
+                                scene.environment = new Texture(value);
+                                scene.environment.mapping = EquirectangularReflectionMapping;
+                                scene.environment.colorSpace = SRGBColorSpace;
+                            }
+
+                            scene.environment.needsUpdate = true;
+                        } else if (this.supported) {
                             scene.environment.dispose();
-                            scene.environment = new Texture(value);
-                            scene.environment.mapping = item.data.mapping;
-                            scene.environment.colorSpace = item.data.colorSpace;
-                        } else {
-                            scene.environment = new Texture(value);
-                            scene.environment.mapping = EquirectangularReflectionMapping;
-                            scene.environment.colorSpace = SRGBColorSpace;
+                            scene.environment = this.lastValue;
                         }
 
-                        scene.environment.needsUpdate = true;
-                    } else if (this.supported) {
-                        scene.environment.dispose();
-                        scene.environment = this.lastValue;
+                        this.setSupported(scene.environment);
+
+                        item.setData(this.supported ? scene.environment : {});
                     }
-
-                    this.setSupported(scene.environment);
-
-                    item.setData(this.supported ? scene.environment : {});
 
                     if (this.supported) {
                         mapItems.push(
@@ -77,7 +80,9 @@ export class EnvironmentMapPanel extends Panel {
                                 step: 0.1,
                                 value: scene.environmentIntensity,
                                 callback: value => {
-                                    scene.environmentIntensity = value;
+                                    if (this.initialized) {
+                                        scene.environmentIntensity = value;
+                                    }
                                 }
                             },
                             {
@@ -88,7 +93,9 @@ export class EnvironmentMapPanel extends Panel {
                                 step: 1,
                                 value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
                                 callback: value => {
-                                    scene.environmentRotation.x = MathUtils.degToRad(value);
+                                    if (this.initialized) {
+                                        scene.environmentRotation.x = MathUtils.degToRad(value);
+                                    }
                                 }
                             },
                             {
@@ -99,7 +106,9 @@ export class EnvironmentMapPanel extends Panel {
                                 step: 1,
                                 value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
                                 callback: value => {
-                                    scene.environmentRotation.y = MathUtils.degToRad(value);
+                                    if (this.initialized) {
+                                        scene.environmentRotation.y = MathUtils.degToRad(value);
+                                    }
                                 }
                             },
                             {
@@ -110,7 +119,9 @@ export class EnvironmentMapPanel extends Panel {
                                 step: 1,
                                 value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
                                 callback: value => {
-                                    scene.environmentRotation.z = MathUtils.degToRad(value);
+                                    if (this.initialized) {
+                                        scene.environmentRotation.z = MathUtils.degToRad(value);
+                                    }
                                 }
                             }
                         );
@@ -124,6 +135,10 @@ export class EnvironmentMapPanel extends Panel {
                     });
 
                     item.setContent(mapPanel);
+
+                    if (!this.initialized) {
+                        this.initialized = true;
+                    }
                 }
             }
         ];

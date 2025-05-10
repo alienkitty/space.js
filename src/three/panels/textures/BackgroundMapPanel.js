@@ -18,6 +18,7 @@ export class BackgroundMapPanel extends Panel {
 
         this.lastValue = this.scene.background;
         this.supported = false;
+        this.initialized = false;
 
         this.setSupported(this.scene.background);
         this.initPanel();
@@ -43,30 +44,32 @@ export class BackgroundMapPanel extends Panel {
                 callback: (value, item) => {
                     const mapItems = [];
 
-                    if (value) {
-                        if (this.supported) {
+                    if (this.initialized) {
+                        if (value) {
+                            if (this.supported) {
+                                scene.background.dispose();
+                                scene.background = new Texture(value);
+                                scene.background.mapping = item.data.mapping;
+                                scene.background.colorSpace = item.data.colorSpace;
+                                scene.background.anisotropy = item.data.anisotropy;
+                                scene.background.wrapS = item.data.wrapS;
+                                scene.background.wrapT = item.data.wrapT;
+                                scene.background.repeat.copy(item.data.repeat);
+                            } else {
+                                scene.background = new Texture(value);
+                                scene.background.colorSpace = SRGBColorSpace;
+                            }
+
+                            scene.background.needsUpdate = true;
+                        } else if (this.supported) {
                             scene.background.dispose();
-                            scene.background = new Texture(value);
-                            scene.background.mapping = item.data.mapping;
-                            scene.background.colorSpace = item.data.colorSpace;
-                            scene.background.anisotropy = item.data.anisotropy;
-                            scene.background.wrapS = item.data.wrapS;
-                            scene.background.wrapT = item.data.wrapT;
-                            scene.background.repeat.copy(item.data.repeat);
-                        } else {
-                            scene.background = new Texture(value);
-                            scene.background.colorSpace = SRGBColorSpace;
+                            scene.background = this.lastValue;
                         }
 
-                        scene.background.needsUpdate = true;
-                    } else if (this.supported) {
-                        scene.background.dispose();
-                        scene.background = this.lastValue;
+                        this.setSupported(scene.background);
+
+                        item.setData(this.supported ? scene.background : {});
                     }
-
-                    this.setSupported(scene.background);
-
-                    item.setData(this.supported ? scene.background : {});
 
                     if (this.supported) {
                         mapItems.push(
@@ -97,8 +100,10 @@ export class BackgroundMapPanel extends Panel {
                                                     list: ColorSpaceOptions,
                                                     value: getKeyByValue(ColorSpaceOptions, scene.background.colorSpace),
                                                     callback: value => {
-                                                        scene.background.colorSpace = ColorSpaceOptions[value];
-                                                        scene.background.needsUpdate = true;
+                                                        if (this.initialized) {
+                                                            scene.background.colorSpace = ColorSpaceOptions[value];
+                                                            scene.background.needsUpdate = true;
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -109,8 +114,10 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: scene.background.anisotropy,
                                                     callback: value => {
-                                                        scene.background.anisotropy = value;
-                                                        scene.background.needsUpdate = true;
+                                                        if (this.initialized) {
+                                                            scene.background.anisotropy = value;
+                                                            scene.background.needsUpdate = true;
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -119,11 +126,13 @@ export class BackgroundMapPanel extends Panel {
                                                     list: WrapOptions,
                                                     value: getKeyByValue(WrapOptions, scene.background.wrapS),
                                                     callback: value => {
-                                                        const wrapping = WrapOptions[value];
+                                                        if (this.initialized) {
+                                                            const wrapping = WrapOptions[value];
 
-                                                        scene.background.wrapS = wrapping;
-                                                        scene.background.wrapT = wrapping;
-                                                        scene.background.needsUpdate = true;
+                                                            scene.background.wrapS = wrapping;
+                                                            scene.background.wrapT = wrapping;
+                                                            scene.background.needsUpdate = true;
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -134,7 +143,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: scene.background.repeat.x,
                                                     callback: value => {
-                                                        scene.background.repeat.setX(value);
+                                                        if (this.initialized) {
+                                                            scene.background.repeat.setX(value);
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -145,7 +156,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: scene.background.repeat.y,
                                                     callback: value => {
-                                                        scene.background.repeat.setY(value);
+                                                        if (this.initialized) {
+                                                            scene.background.repeat.setY(value);
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -159,7 +172,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 0.1,
                                                     value: scene.backgroundIntensity,
                                                     callback: value => {
-                                                        scene.backgroundIntensity = value;
+                                                        if (this.initialized) {
+                                                            scene.backgroundIntensity = value;
+                                                        }
                                                     }
                                                 }
                                             ];
@@ -187,7 +202,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 0.01,
                                                     value: scene.backgroundBlurriness,
                                                     callback: value => {
-                                                        scene.backgroundBlurriness = value;
+                                                        if (this.initialized) {
+                                                            scene.backgroundBlurriness = value;
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -198,7 +215,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 0.1,
                                                     value: scene.backgroundIntensity,
                                                     callback: value => {
-                                                        scene.backgroundIntensity = value;
+                                                        if (this.initialized) {
+                                                            scene.backgroundIntensity = value;
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -209,7 +228,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: MathUtils.radToDeg(scene.backgroundRotation.x + (scene.backgroundRotation.x < 0 ? TwoPI : 0)),
                                                     callback: value => {
-                                                        scene.backgroundRotation.x = MathUtils.degToRad(value);
+                                                        if (this.initialized) {
+                                                            scene.backgroundRotation.x = MathUtils.degToRad(value);
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -220,7 +241,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: MathUtils.radToDeg(scene.backgroundRotation.y + (scene.backgroundRotation.y < 0 ? TwoPI : 0)),
                                                     callback: value => {
-                                                        scene.backgroundRotation.y = MathUtils.degToRad(value);
+                                                        if (this.initialized) {
+                                                            scene.backgroundRotation.y = MathUtils.degToRad(value);
+                                                        }
                                                     }
                                                 },
                                                 {
@@ -231,7 +254,9 @@ export class BackgroundMapPanel extends Panel {
                                                     step: 1,
                                                     value: MathUtils.radToDeg(scene.backgroundRotation.z + (scene.backgroundRotation.z < 0 ? TwoPI : 0)),
                                                     callback: value => {
-                                                        scene.backgroundRotation.z = MathUtils.degToRad(value);
+                                                        if (this.initialized) {
+                                                            scene.backgroundRotation.z = MathUtils.degToRad(value);
+                                                        }
                                                     }
                                                 }
                                             ];
@@ -257,6 +282,10 @@ export class BackgroundMapPanel extends Panel {
                     });
 
                     item.setContent(mapPanel);
+
+                    if (!this.initialized) {
+                        this.initialized = true;
+                    }
                 }
             }
         ];

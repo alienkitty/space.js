@@ -16,6 +16,7 @@ export class SubsurfaceMapPanel extends Panel {
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.uniforms = this.mesh.userData.subsurfaceUniforms;
         this.supported = false;
+        this.initialized = false;
 
         this.setSupported(this.uniforms.thicknessMap.value);
         this.initPanel();
@@ -40,27 +41,33 @@ export class SubsurfaceMapPanel extends Panel {
                 data: this.supported ? uniforms.thicknessMap.value : {},
                 value: this.supported ? uniforms.thicknessMap.value.source.data : null,
                 callback: (value, item) => {
-                    if (value) {
-                        if (this.supported) {
+                    if (this.initialized) {
+                        if (value) {
+                            if (this.supported) {
+                                uniforms.thicknessMap.value.dispose();
+                                uniforms.thicknessMap.value = new Texture(value);
+                            } else {
+                                uniforms.thicknessMap.value = new Texture(value);
+                            }
+
+                            uniforms.thicknessMap.value.needsUpdate = true;
+                            uniforms.thicknessUseMap.value = true;
+                        } else if (this.supported) {
                             uniforms.thicknessMap.value.dispose();
-                            uniforms.thicknessMap.value = new Texture(value);
-                        } else {
-                            uniforms.thicknessMap.value = new Texture(value);
+                            uniforms.thicknessMap.value = null;
+                            uniforms.thicknessUseMap.value = false;
                         }
 
-                        uniforms.thicknessMap.value.needsUpdate = true;
-                        uniforms.thicknessUseMap.value = true;
-                    } else if (this.supported) {
-                        uniforms.thicknessMap.value.dispose();
-                        uniforms.thicknessMap.value = null;
-                        uniforms.thicknessUseMap.value = false;
+                        materials.forEach(material => material.needsUpdate = true);
+
+                        this.setSupported(uniforms.thicknessMap.value);
+
+                        item.setData(this.supported ? uniforms.thicknessMap.value : {});
                     }
 
-                    materials.forEach(material => material.needsUpdate = true);
-
-                    this.setSupported(uniforms.thicknessMap.value);
-
-                    item.setData(this.supported ? uniforms.thicknessMap.value : {});
+                    if (!this.initialized) {
+                        this.initialized = true;
+                    }
                 }
             }
         ];

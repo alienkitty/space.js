@@ -23,6 +23,7 @@ export class MapPanel extends Panel {
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[0];
         this.supported = false;
+        this.initialized = false;
 
         this.setSupported(this.material[key]);
         this.initPanel();
@@ -58,65 +59,67 @@ export class MapPanel extends Panel {
                 callback: (value, item) => {
                     const mapItems = [];
 
-                    if (item.data.isTexture && item.data.userData.uv && !mesh.userData.uv) {
-                        mesh.userData.uv = true;
+                    if (this.initialized) {
+                        if (item.data.isTexture && item.data.userData.uv && !mesh.userData.uv) {
+                            mesh.userData.uv = true;
 
-                        if (point) {
-                            point.toggleUVHelper(true);
+                            if (point) {
+                                point.toggleUVHelper(true);
+                            }
                         }
-                    }
 
-                    if (point && point.uvTexture) {
-                        if (value) {
-                            if (material[key] && item.data.isTexture && !item.data.userData.uv) {
+                        if (point && point.uvTexture) {
+                            if (value) {
+                                if (material[key] && item.data.isTexture && !item.data.userData.uv) {
+                                    mesh.userData.uv = false;
+                                    point.toggleUVHelper(false);
+                                }
+                            } else if (material[key]) {
                                 mesh.userData.uv = false;
                                 point.toggleUVHelper(false);
-                            }
-                        } else if (material[key]) {
-                            mesh.userData.uv = false;
-                            point.toggleUVHelper(false);
 
-                            if (material[key] && material[key].source.data) {
-                                item.setData(material[key]);
-                                item.setValue(material[key].source.data);
-                                return;
+                                if (material[key] && material[key].source.data) {
+                                    item.setData(material[key]);
+                                    item.setValue(material[key].source.data);
+                                    return;
+                                }
                             }
-                        }
-                    } else if (value) {
-                        if (this.supported) {
+                        } else if (value) {
+                            if (this.supported) {
+                                material[key].dispose();
+                                material[key] = new Texture(value);
+                                material[key].mapping = item.data.mapping;
+                                material[key].colorSpace = item.data.colorSpace;
+                                material[key].anisotropy = item.data.anisotropy;
+                                material[key].wrapS = item.data.wrapS;
+                                material[key].wrapT = item.data.wrapT;
+                                material[key].repeat.copy(item.data.repeat);
+                            } else {
+                                material[key] = new Texture(value);
+                                material[key].mapping = this.mapping;
+                                material[key].colorSpace = this.colorSpace;
+                                material[key].anisotropy = Point3D.anisotropy;
+                            }
+
+                            if (!value.complete) {
+                                value.onload = () => {
+                                    material[key].needsUpdate = true;
+
+                                    value.onload = null;
+                                };
+                            }
+
+                            material.needsUpdate = true;
+                        } else if (this.supported) {
                             material[key].dispose();
-                            material[key] = new Texture(value);
-                            material[key].mapping = item.data.mapping;
-                            material[key].colorSpace = item.data.colorSpace;
-                            material[key].anisotropy = item.data.anisotropy;
-                            material[key].wrapS = item.data.wrapS;
-                            material[key].wrapT = item.data.wrapT;
-                            material[key].repeat.copy(item.data.repeat);
-                        } else {
-                            material[key] = new Texture(value);
-                            material[key].mapping = this.mapping;
-                            material[key].colorSpace = this.colorSpace;
-                            material[key].anisotropy = Point3D.anisotropy;
+                            material[key] = null;
+                            material.needsUpdate = true;
                         }
 
-                        if (!value.complete) {
-                            value.onload = () => {
-                                material[key].needsUpdate = true;
+                        this.setSupported(material[key]);
 
-                                value.onload = null;
-                            };
-                        }
-
-                        material.needsUpdate = true;
-                    } else if (this.supported) {
-                        material[key].dispose();
-                        material[key] = null;
-                        material.needsUpdate = true;
+                        item.setData(this.supported ? material[key] : {});
                     }
-
-                    this.setSupported(material[key]);
-
-                    item.setData(this.supported ? material[key] : {});
 
                     if (this.supported && !(key === 'envMap' && material.isMeshStandardMaterial)) {
                         if (material[key].mapping !== UVMapping) {
@@ -130,15 +133,13 @@ export class MapPanel extends Panel {
                                     list: RefractionMappingOptions,
                                     value: getKeyByValue(RefractionMappingOptions, material[key].mapping),
                                     callback: value => {
-                                        materials.forEach(material => {
-                                            material[key].mapping = RefractionMappingOptions[value];
-
-                                            if (material[key].source.data.complete) {
+                                        if (this.initialized) {
+                                            materials.forEach(material => {
+                                                material[key].mapping = RefractionMappingOptions[value];
                                                 material[key].needsUpdate = true;
-                                            }
-
-                                            material.needsUpdate = true;
-                                        });
+                                                material.needsUpdate = true;
+                                            });
+                                        }
                                     }
                                 }
                             );
@@ -153,13 +154,12 @@ export class MapPanel extends Panel {
                                     list: ColorSpaceOptions,
                                     value: getKeyByValue(ColorSpaceOptions, material[key].colorSpace),
                                     callback: value => {
-                                        materials.forEach(material => {
-                                            material[key].colorSpace = ColorSpaceOptions[value];
-
-                                            if (material[key].source.data.complete) {
+                                        if (this.initialized) {
+                                            materials.forEach(material => {
+                                                material[key].colorSpace = ColorSpaceOptions[value];
                                                 material[key].needsUpdate = true;
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 },
                                 {
@@ -170,13 +170,12 @@ export class MapPanel extends Panel {
                                     step: 1,
                                     value: material[key].anisotropy,
                                     callback: value => {
-                                        materials.forEach(material => {
-                                            material[key].anisotropy = value;
-
-                                            if (material[key].source.data.complete) {
+                                        if (this.initialized) {
+                                            materials.forEach(material => {
+                                                material[key].anisotropy = value;
                                                 material[key].needsUpdate = true;
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 },
                                 {
@@ -185,16 +184,15 @@ export class MapPanel extends Panel {
                                     list: WrapOptions,
                                     value: getKeyByValue(WrapOptions, material[key].wrapS),
                                     callback: value => {
-                                        const wrapping = WrapOptions[value];
+                                        if (this.initialized) {
+                                            const wrapping = WrapOptions[value];
 
-                                        materials.forEach(material => {
-                                            material[key].wrapS = wrapping;
-                                            material[key].wrapT = wrapping;
-
-                                            if (material[key].source.data.complete) {
+                                            materials.forEach(material => {
+                                                material[key].wrapS = wrapping;
+                                                material[key].wrapT = wrapping;
                                                 material[key].needsUpdate = true;
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 },
                                 {
@@ -205,7 +203,9 @@ export class MapPanel extends Panel {
                                     step: 1,
                                     value: material[key].repeat.x,
                                     callback: value => {
-                                        materials.forEach(material => material[key].repeat.setX(value));
+                                        if (this.initialized) {
+                                            materials.forEach(material => material[key].repeat.setX(value));
+                                        }
                                     }
                                 },
                                 {
@@ -216,7 +216,9 @@ export class MapPanel extends Panel {
                                     step: 1,
                                     value: material[key].repeat.y,
                                     callback: value => {
-                                        materials.forEach(material => material[key].repeat.setY(value));
+                                        if (this.initialized) {
+                                            materials.forEach(material => material[key].repeat.setY(value));
+                                        }
                                     }
                                 }
                             );
@@ -231,6 +233,10 @@ export class MapPanel extends Panel {
                     });
 
                     item.setContent(mapPanel);
+
+                    if (!this.initialized) {
+                        this.initialized = true;
+                    }
                 }
             }
         ];
