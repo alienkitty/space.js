@@ -50,7 +50,7 @@ export class LambertMaterialCommonPanel extends Panel {
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, material.wireframe),
                 callback: value => {
-                    materials.forEach(material => material.wireframe = WireframeOptions[value]);
+                    materials.forEach(material => material.wireframe = WireframeOptions.get(value));
                 }
             },
             {
@@ -60,7 +60,7 @@ export class LambertMaterialCommonPanel extends Panel {
                 value: getKeyByValue(FlatShadingOptions, material.flatShading),
                 callback: value => {
                     materials.forEach(material => {
-                        material.flatShading = FlatShadingOptions[value];
+                        material.flatShading = FlatShadingOptions.get(value);
                         material.needsUpdate = true;
                     });
                 }
@@ -71,7 +71,7 @@ export class LambertMaterialCommonPanel extends Panel {
                 list: FogOptions,
                 value: getKeyByValue(FogOptions, material.fog),
                 callback: value => {
-                    materials.forEach(material => material.fog = FogOptions[value]);
+                    materials.forEach(material => material.fog = FogOptions.get(value));
                 }
             },
             {
@@ -80,7 +80,7 @@ export class LambertMaterialCommonPanel extends Panel {
                 list: ToneMappedOptions,
                 value: getKeyByValue(ToneMappedOptions, material.toneMapped),
                 callback: value => {
-                    materials.forEach(material => material.toneMapped = ToneMappedOptions[value]);
+                    materials.forEach(material => material.toneMapped = ToneMappedOptions.get(value));
                 }
             }
         ];

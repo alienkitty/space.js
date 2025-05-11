@@ -24,22 +24,22 @@ import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const PhongMaterialOptions = {
-    Common: PhongMaterialCommonPanel,
-    Map: TextureMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Emissive: EmissiveMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Specular: SpecularMapPanel,
-    Alpha: AlphaMapPanel,
-    Subsurface: PhongMaterialSubsurfacePanel,
-    Env: EnvMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const PhongMaterialOptions = new Map([
+    ['Common', PhongMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Specular', SpecularMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Subsurface', PhongMaterialSubsurfacePanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class PhongMaterialPanel extends Panel {
     static type = 'Phong';
@@ -66,11 +66,11 @@ export class PhongMaterialPanel extends Panel {
         const materials = this.materials;
 
         if (!Point3D.points) {
-            delete PhongMaterialOptions.Helper;
+            PhongMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete PhongMaterialOptions.Physics;
+            PhongMaterialOptions.delete('Physics');
         }
 
         if (mesh.userData.subsurface) {
@@ -91,7 +91,7 @@ export class PhongMaterialPanel extends Panel {
                 list: PhongMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = PhongMaterialOptions[value];
+                    const MaterialPanel = PhongMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

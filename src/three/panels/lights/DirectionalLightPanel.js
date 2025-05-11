@@ -33,7 +33,7 @@ export class DirectionalLightPanel extends Panel {
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
-                    light.userData.helper = HelperOptions[value];
+                    light.userData.helper = HelperOptions.get(value);
 
                     this.panel.toggleDirectionalLightHelper(light, light.userData.helper);
                 }
@@ -87,7 +87,7 @@ export class DirectionalLightPanel extends Panel {
                         item.setContent(lightPanel);
                     }
 
-                    light.visible = VisibleOptions[value];
+                    light.visible = VisibleOptions.get(value);
 
                     if (light.visible) {
                         item.toggleContent(true);

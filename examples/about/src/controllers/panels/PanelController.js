@@ -53,17 +53,17 @@ export class PanelController {
         const vector3 = new Vector3();
         const gravity = physics.getGravity();
 
-        const sceneOptions = {
-            BG: BackgroundPanel,
-            Env: EnvironmentPanel,
-            Post: PostPanel
-        };
+        const sceneOptions = new Map([
+            ['BG', BackgroundPanel],
+            ['Env', EnvironmentPanel],
+            ['Post', PostPanel]
+        ]);
 
         scene.traverse(object => {
             if (object.isLight) {
                 const key = getKeyByLight(LightOptions, object);
 
-                sceneOptions[key] = [object, LightOptions[key][1]];
+                sceneOptions.set(key, [object, LightOptions.get(key)[1]]);
 
                 this.lights.push(object);
             }
@@ -83,7 +83,7 @@ export class PanelController {
                 list: DisplayOptions,
                 value: getKeyByValue(DisplayOptions, RenderManager.display),
                 callback: value => {
-                    RenderManager.display = DisplayOptions[value];
+                    RenderManager.display = DisplayOptions.get(value);
                 }
             },
             {
@@ -140,7 +140,7 @@ export class PanelController {
                 callback: (value, item) => {
                     switch (value) {
                         case 'BG': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(scene, this.ui);
                             scenePanel.animateIn(true);
@@ -149,7 +149,7 @@ export class PanelController {
                             break;
                         }
                         case 'Env': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(scene);
                             scenePanel.animateIn(true);
@@ -158,7 +158,7 @@ export class PanelController {
                             break;
                         }
                         case 'Post': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel();
                             scenePanel.animateIn(true);
@@ -167,7 +167,7 @@ export class PanelController {
                             break;
                         }
                         case 'Grid': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(this.view.floor.gridHelper);
                             scenePanel.animateIn(true);
@@ -176,7 +176,7 @@ export class PanelController {
                             break;
                         }
                         default: {
-                            const [light, LightPanel] = sceneOptions[value];
+                            const [light, LightPanel] = sceneOptions.get(value);
 
                             const lightPanel = new LightPanel(LightPanelController, light);
                             lightPanel.animateIn(true);

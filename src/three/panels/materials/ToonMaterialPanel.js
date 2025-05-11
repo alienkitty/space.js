@@ -21,20 +21,20 @@ import { NormalMapPanel } from '../textures/NormalMapPanel.js';
 import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
-export const ToonMaterialOptions = {
-    Common: ToonMaterialCommonPanel,
-    Map: TextureMapPanel,
-    Gradient: GradientMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Emissive: EmissiveMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Alpha: AlphaMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const ToonMaterialOptions = new Map([
+    ['Common', ToonMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Gradient', GradientMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class ToonMaterialPanel extends Panel {
     static type = 'Toon';
@@ -56,11 +56,11 @@ export class ToonMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         if (!Point3D.points) {
-            delete ToonMaterialOptions.Helper;
+            ToonMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete ToonMaterialOptions.Physics;
+            ToonMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -73,7 +73,7 @@ export class ToonMaterialPanel extends Panel {
                 list: ToonMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = ToonMaterialOptions[value];
+                    const MaterialPanel = ToonMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

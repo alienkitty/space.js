@@ -25,7 +25,7 @@ export class RenderManager {
         this.bloomDistortion = 2.2;
 
         // Debug
-        this.display = DisplayOptions.Default;
+        this.display = DisplayOptions.get('Default');
 
         this.enabled = false;
 
@@ -217,7 +217,7 @@ export class RenderManager {
 
         this.drawBuffers.update();
 
-        if (this.display === DisplayOptions.Velocity) {
+        if (this.display === DisplayOptions.get('Velocity')) {
             // Debug pass (render to screen)
             this.copyMaterial.uniforms.tMap.value = this.drawBuffers.renderTarget.textures[1];
             this.screen.material = this.copyMaterial;
@@ -240,28 +240,28 @@ export class RenderManager {
         renderer.setClearColor(this.clearColor, 1);
 
         // Debug override material passes (render to screen)
-        if (this.display === DisplayOptions.Depth) {
+        if (this.display === DisplayOptions.get('Depth')) {
             scene.overrideMaterial = this.depthMaterial;
             renderer.setRenderTarget(null);
             renderer.clear();
             renderer.render(scene, camera);
             this.restoreRendererState();
             return;
-        } else if (this.display === DisplayOptions.Geometry) {
+        } else if (this.display === DisplayOptions.get('Geometry')) {
             scene.overrideMaterial = this.normalMaterial;
             renderer.setRenderTarget(null);
             renderer.clear();
             renderer.render(scene, camera);
             this.restoreRendererState();
             return;
-        } else if (this.display === DisplayOptions.Matcap1) {
+        } else if (this.display === DisplayOptions.get('Matcap1')) {
             scene.overrideMaterial = this.matcap1Material;
             renderer.setRenderTarget(null);
             renderer.clear();
             renderer.render(scene, camera);
             this.restoreRendererState();
             return;
-        } else if (this.display === DisplayOptions.Matcap2) {
+        } else if (this.display === DisplayOptions.get('Matcap2')) {
             scene.overrideMaterial = this.matcap2Material;
             renderer.setRenderTarget(null);
             renderer.clear();
@@ -280,7 +280,7 @@ export class RenderManager {
         // Extract bright areas
         this.luminosityMaterial.uniforms.tMap.value = renderTargetB.texture;
 
-        if (this.display === DisplayOptions.Luma) {
+        if (this.display === DisplayOptions.get('Luma')) {
             // Debug pass (render to screen)
             this.screen.material = this.blackoutMaterial;
             renderer.setRenderTarget(null);
@@ -323,7 +323,7 @@ export class RenderManager {
         // Composite all the mips
         this.screen.material = this.bloomCompositeMaterial;
 
-        if (this.display === DisplayOptions.Bloom) {
+        if (this.display === DisplayOptions.get('Bloom')) {
             // Debug pass (render to screen)
             renderer.setRenderTarget(null);
             renderer.clear();

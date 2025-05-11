@@ -158,7 +158,7 @@
                         list: InstanceOptions,
                         value: 'Mesh',
                         callback: (value, item) => {
-                            if (InstanceOptions[value]) {
+                            if (InstanceOptions.get(value)) {
                                 const index = point.instances[0].index;
 
                                 const instanceItems = [

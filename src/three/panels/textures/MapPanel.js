@@ -30,7 +30,7 @@ export class MapPanel extends Panel {
 
     initPanel() {
         if (Array.isArray(this.mesh.material)) {
-            const options = Object.fromEntries(this.materials.map((material, i) => [material.name, i]));
+            const options = new Map(this.materials.map((material, i) => [material.name, i]));
 
             const items = [
                 {
@@ -42,7 +42,7 @@ export class MapPanel extends Panel {
                     list: options,
                     value: getKeyByValue(options, 0),
                     callback: (value, item) => {
-                        const index = options[value];
+                        const index = options.get(value);
 
                         const indexPanel = new Panel();
                         indexPanel.animateIn(true);
@@ -166,7 +166,7 @@ export class MapPanel extends Panel {
                                     value: getKeyByValue(RefractionMappingOptions, material[key].mapping),
                                     callback: value => {
                                         if (this.initialized) {
-                                            material[key].mapping = RefractionMappingOptions[value];
+                                            material[key].mapping = RefractionMappingOptions.get(value);
                                             material[key].needsUpdate = true;
                                             material.needsUpdate = true;
                                         }
@@ -185,7 +185,7 @@ export class MapPanel extends Panel {
                                     value: getKeyByValue(ColorSpaceOptions, material[key].colorSpace),
                                     callback: value => {
                                         if (this.initialized) {
-                                            material[key].colorSpace = ColorSpaceOptions[value];
+                                            material[key].colorSpace = ColorSpaceOptions.get(value);
                                             material[key].needsUpdate = true;
                                         }
                                     }
@@ -211,7 +211,7 @@ export class MapPanel extends Panel {
                                     value: getKeyByValue(WrapOptions, material[key].wrapS),
                                     callback: value => {
                                         if (this.initialized) {
-                                            const wrapping = WrapOptions[value];
+                                            const wrapping = WrapOptions.get(value);
 
                                             material[key].wrapS = wrapping;
                                             material[key].wrapT = wrapping;

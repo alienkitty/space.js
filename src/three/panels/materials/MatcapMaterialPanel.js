@@ -18,17 +18,17 @@ import { NormalMapPanel } from '../textures/NormalMapPanel.js';
 import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
-export const MatcapMaterialOptions = {
-    Common: MatcapMaterialCommonPanel,
-    Matcap: MatcapMapPanel,
-    Map: TextureMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Alpha: AlphaMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const MatcapMaterialOptions = new Map([
+    ['Common', MatcapMaterialCommonPanel],
+    ['Matcap', MatcapMapPanel],
+    ['Map', TextureMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class MatcapMaterialPanel extends Panel {
     static type = 'Matcap';
@@ -50,11 +50,11 @@ export class MatcapMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         if (!Point3D.points) {
-            delete MatcapMaterialOptions.Helper;
+            MatcapMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete MatcapMaterialOptions.Physics;
+            MatcapMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -67,7 +67,7 @@ export class MatcapMaterialPanel extends Panel {
                 list: MatcapMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = MatcapMaterialOptions[value];
+                    const MaterialPanel = MatcapMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

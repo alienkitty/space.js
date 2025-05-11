@@ -34,7 +34,7 @@ export class NormalMaterialCommonPanel extends Panel {
                 list: WireframeOptions,
                 value: getKeyByValue(WireframeOptions, material.wireframe),
                 callback: value => {
-                    materials.forEach(material => material.wireframe = WireframeOptions[value]);
+                    materials.forEach(material => material.wireframe = WireframeOptions.get(value));
                 }
             },
             {
@@ -44,7 +44,7 @@ export class NormalMaterialCommonPanel extends Panel {
                 value: getKeyByValue(FlatShadingOptions, material.flatShading),
                 callback: value => {
                     materials.forEach(material => {
-                        material.flatShading = FlatShadingOptions[value];
+                        material.flatShading = FlatShadingOptions.get(value);
                         material.needsUpdate = true;
                     });
                 }

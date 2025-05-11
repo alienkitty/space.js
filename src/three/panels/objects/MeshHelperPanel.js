@@ -50,7 +50,7 @@ export class MeshHelperPanel extends Panel {
                 list: NormalsHelperOptions,
                 value: getKeyByValue(NormalsHelperOptions, mesh.userData.normals),
                 callback: value => {
-                    mesh.userData.normals = NormalsHelperOptions[value];
+                    mesh.userData.normals = NormalsHelperOptions.get(value);
 
                     if (point) {
                         point.toggleNormalsHelper(mesh.userData.normals);
@@ -67,7 +67,7 @@ export class MeshHelperPanel extends Panel {
                     list: TangentsHelperOptions,
                     value: getKeyByValue(TangentsHelperOptions, mesh.userData.tangents),
                     callback: value => {
-                        mesh.userData.tangents = TangentsHelperOptions[value];
+                        mesh.userData.tangents = TangentsHelperOptions.get(value);
 
                         if (point) {
                             point.toggleTangentsHelper(mesh.userData.tangents);
@@ -85,7 +85,7 @@ export class MeshHelperPanel extends Panel {
                     list: UVHelperOptions,
                     value: getKeyByValue(UVHelperOptions, mesh.userData.uv),
                     callback: value => {
-                        mesh.userData.uv = UVHelperOptions[value];
+                        mesh.userData.uv = UVHelperOptions.get(value);
                         point.toggleUVHelper(mesh.userData.uv);
                     }
                 }

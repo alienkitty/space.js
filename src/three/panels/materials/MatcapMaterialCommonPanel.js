@@ -43,7 +43,7 @@ export class MatcapMaterialCommonPanel extends Panel {
                 value: getKeyByValue(FlatShadingOptions, material.flatShading),
                 callback: value => {
                     materials.forEach(material => {
-                        material.flatShading = FlatShadingOptions[value];
+                        material.flatShading = FlatShadingOptions.get(value);
                         material.needsUpdate = true;
                     });
                 }
@@ -54,7 +54,7 @@ export class MatcapMaterialCommonPanel extends Panel {
                 list: FogOptions,
                 value: getKeyByValue(FogOptions, material.fog),
                 callback: value => {
-                    materials.forEach(material => material.fog = FogOptions[value]);
+                    materials.forEach(material => material.fog = FogOptions.get(value));
                 }
             },
             {
@@ -63,7 +63,7 @@ export class MatcapMaterialCommonPanel extends Panel {
                 list: ToneMappedOptions,
                 value: getKeyByValue(ToneMappedOptions, material.toneMapped),
                 callback: value => {
-                    materials.forEach(material => material.toneMapped = ToneMappedOptions[value]);
+                    materials.forEach(material => material.toneMapped = ToneMappedOptions.get(value));
                 }
             }
         ];

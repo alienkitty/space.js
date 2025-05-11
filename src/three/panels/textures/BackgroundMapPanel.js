@@ -81,7 +81,7 @@ export class BackgroundMapPanel extends Panel {
                                 list: BackgroundMappingOptions,
                                 value: getKeyByValue(BackgroundMappingOptions, scene.background.mapping),
                                 callback: (value, item) => {
-                                    scene.background.mapping = BackgroundMappingOptions[value];
+                                    scene.background.mapping = BackgroundMappingOptions.get(value);
                                     scene.background.needsUpdate = true;
 
                                     switch (value) {
@@ -100,7 +100,7 @@ export class BackgroundMapPanel extends Panel {
                                                     value: getKeyByValue(ColorSpaceOptions, scene.background.colorSpace),
                                                     callback: value => {
                                                         if (this.initialized) {
-                                                            scene.background.colorSpace = ColorSpaceOptions[value];
+                                                            scene.background.colorSpace = ColorSpaceOptions.get(value);
                                                             scene.background.needsUpdate = true;
                                                         }
                                                     }
@@ -126,7 +126,7 @@ export class BackgroundMapPanel extends Panel {
                                                     value: getKeyByValue(WrapOptions, scene.background.wrapS),
                                                     callback: value => {
                                                         if (this.initialized) {
-                                                            const wrapping = WrapOptions[value];
+                                                            const wrapping = WrapOptions.get(value);
 
                                                             scene.background.wrapS = wrapping;
                                                             scene.background.wrapT = wrapping;

@@ -30,19 +30,23 @@ import { PhysicalMaterialPanel } from './PhysicalMaterialPanel.js';
 import { NormalMaterialPanel } from './NormalMaterialPanel.js';
 
 // https://threejs.org/docs/scenes/material-browser.html
-export const MaterialOptions = {
-    Basic: [MeshBasicMaterial, BasicMaterialPanel],
-    Lambert: [MeshLambertMaterial, LambertMaterialPanel],
-    Matcap: [MeshMatcapMaterial, MatcapMaterialPanel],
-    Phong: [MeshPhongMaterial, PhongMaterialPanel],
-    Toon: [MeshToonMaterial, ToonMaterialPanel],
-    Standard: [MeshStandardMaterial, StandardMaterialPanel],
-    Physical: [MeshPhysicalMaterial, PhysicalMaterialPanel],
-    Normal: [MeshNormalMaterial, NormalMaterialPanel]
-};
+export const MaterialOptions = new Map([
+    ['Basic', [MeshBasicMaterial, BasicMaterialPanel]],
+    ['Lambert', [MeshLambertMaterial, LambertMaterialPanel]],
+    ['Matcap', [MeshMatcapMaterial, MatcapMaterialPanel]],
+    ['Phong', [MeshPhongMaterial, PhongMaterialPanel]],
+    ['Toon', [MeshToonMaterial, ToonMaterialPanel]],
+    ['Standard', [MeshStandardMaterial, StandardMaterialPanel]],
+    ['Physical', [MeshPhysicalMaterial, PhysicalMaterialPanel]],
+    ['Normal', [MeshNormalMaterial, NormalMaterialPanel]]
+]);
 
 export function getKeyByMaterial(materialOptions, material) {
-    return Object.keys(materialOptions).reverse().find(key => material instanceof materialOptions[key][0]);
+    for (const [key, value] of materialOptions.entries()) {
+        if (material instanceof value[0]) {
+            return key;
+        }
+    }
 }
 
 export class MaterialPanelController {
@@ -96,7 +100,7 @@ export class MaterialPanelController {
                 value: getKeyByValue(SideOptions, this.material.side),
                 callback: value => {
                     this.materials.forEach(material => {
-                        material.side = SideOptions[value];
+                        material.side = SideOptions.get(value);
                         material.needsUpdate = true;
                     });
                 }
@@ -107,7 +111,7 @@ export class MaterialPanelController {
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, this.material),
                 callback: (value, item) => {
-                    const [Material, MaterialPanel] = materialOptions[value];
+                    const [Material, MaterialPanel] = materialOptions.get(value);
 
                     const currentPanel = this.lastPanel || MaterialPanel;
 
@@ -249,7 +253,7 @@ export class MaterialPanelController {
                         item.setContent(materialPanel);
                     }
 
-                    mesh.visible = VisibleOptions[value];
+                    mesh.visible = VisibleOptions.get(value);
 
                     if (mesh.visible) {
                         item.toggleContent(true);

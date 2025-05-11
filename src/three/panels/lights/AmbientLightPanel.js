@@ -67,7 +67,7 @@ export class AmbientLightPanel extends Panel {
                         item.setContent(lightPanel);
                     }
 
-                    light.visible = VisibleOptions[value];
+                    light.visible = VisibleOptions.get(value);
 
                     if (light.visible) {
                         item.toggleContent(true);

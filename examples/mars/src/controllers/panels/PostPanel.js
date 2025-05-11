@@ -19,10 +19,10 @@ export class PostPanel extends Panel {
             compositeMaterial
         } = RenderManager;
 
-        const postOptions = {
-            Off: false,
-            On: true
-        };
+        const postOptions = new Map([
+            ['Off', false],
+            ['On', true]
+        ]);
 
         const toneMappingItems = [
             {
@@ -239,7 +239,7 @@ export class PostPanel extends Panel {
                         item.setContent(postPanel);
                     }
 
-                    RenderManager.enabled = postOptions[value];
+                    RenderManager.enabled = postOptions.get(value);
 
                     if (RenderManager.enabled) {
                         item.toggleContent(true);

@@ -25,23 +25,23 @@ import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const StandardMaterialOptions = {
-    Common: StandardMaterialCommonPanel,
-    Map: TextureMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Emissive: EmissiveMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Rough: RoughnessMapPanel,
-    Metal: MetalnessMapPanel,
-    Alpha: AlphaMapPanel,
-    Subsurface: StandardMaterialSubsurfacePanel,
-    Env: EnvMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const StandardMaterialOptions = new Map([
+    ['Common', StandardMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Rough', RoughnessMapPanel],
+    ['Metal', MetalnessMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Subsurface', StandardMaterialSubsurfacePanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class StandardMaterialPanel extends Panel {
     static type = 'Standard';
@@ -68,11 +68,11 @@ export class StandardMaterialPanel extends Panel {
         const materials = this.materials;
 
         if (!Point3D.points) {
-            delete StandardMaterialOptions.Helper;
+            StandardMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete StandardMaterialOptions.Physics;
+            StandardMaterialOptions.delete('Physics');
         }
 
         if (mesh.userData.subsurface) {
@@ -93,7 +93,7 @@ export class StandardMaterialPanel extends Panel {
                 list: StandardMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = StandardMaterialOptions[value];
+                    const MaterialPanel = StandardMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

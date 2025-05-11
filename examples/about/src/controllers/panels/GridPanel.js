@@ -12,10 +12,10 @@ export class GridPanel extends Panel {
     initPanel() {
         const helper = this.helper;
 
-        const gridOptions = {
-            Off: false,
-            On: true
-        };
+        const gridOptions = new Map([
+            ['Off', false],
+            ['On', true]
+        ]);
 
         const items = [
             {
@@ -26,7 +26,7 @@ export class GridPanel extends Panel {
                 list: gridOptions,
                 value: getKeyByValue(gridOptions, helper.visible),
                 callback: value => {
-                    helper.visible = gridOptions[value];
+                    helper.visible = gridOptions.get(value);
                 }
             }
         ];

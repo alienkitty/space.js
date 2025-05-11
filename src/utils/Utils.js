@@ -199,8 +199,12 @@ export function absolute(path) {
     return `${location.protocol}//${location.hostname}${port}${pathname}`;
 }
 
-export function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
+export function getKeyByValue(map, searchValue) {
+    for (const [key, value] of map.entries()) {
+        if (value === searchValue) {
+            return key;
+        }
+    }
 }
 
 export function getConstructor(object) {

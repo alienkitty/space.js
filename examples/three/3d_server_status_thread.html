@@ -843,11 +843,11 @@
                     });
                     object.add(object.point);
 
-                    const graphOptions = {
-                        'Latency': 0,
-                        'Load': 1,
-                        'Clients': 2
-                    };
+                    const graphOptions = new Map([
+                        ['Latency', 0],
+                        ['Load', 1],
+                        ['Clients', 2]
+                    ]);
 
                     const items = [
                         {
@@ -859,7 +859,7 @@
                             list: graphOptions,
                             value: 'Load',
                             callback: value => {
-                                const index = graphOptions[value];
+                                const index = graphOptions.get(value);
 
                                 object.graph.setIndex(index);
                             }

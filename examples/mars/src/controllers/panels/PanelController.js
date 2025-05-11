@@ -24,18 +24,18 @@ export class PanelController {
     }
 
     static initPanel() {
-        const sceneOptions = {
-            Mars: MarsPanel,
-            Sunlight: SunlightPanel,
-            Space: SpacePanel,
-            Post: PostPanel
-        };
+        const sceneOptions = new Map([
+            ['Mars', MarsPanel],
+            ['Sunlight', SunlightPanel],
+            ['Space', SpacePanel],
+            ['Post', PostPanel]
+        ]);
 
         this.scene.traverse(object => {
             if (object.isLight) {
                 const key = getKeyByLight(LightOptions, object);
 
-                sceneOptions[key] = [object, LightOptions[key][1]];
+                sceneOptions.set(key, [object, LightOptions.get(key)[1]]);
 
                 this.lights.push(object);
             }
@@ -55,7 +55,7 @@ export class PanelController {
                 callback: (value, item) => {
                     switch (value) {
                         case 'Mars': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(this.scene, this.lights, this.view);
                             scenePanel.animateIn(true);
@@ -64,7 +64,7 @@ export class PanelController {
                             break;
                         }
                         case 'Sunlight': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(this.view);
                             scenePanel.animateIn(true);
@@ -74,7 +74,7 @@ export class PanelController {
                         }
                         case 'Space':
                         case 'Post': {
-                            const ScenePanel = sceneOptions[value];
+                            const ScenePanel = sceneOptions.get(value);
 
                             const scenePanel = new ScenePanel(this.scene, this.ui);
                             scenePanel.animateIn(true);
@@ -83,7 +83,7 @@ export class PanelController {
                             break;
                         }
                         default: {
-                            const [light, LightPanel] = sceneOptions[value];
+                            const [light, LightPanel] = sceneOptions.get(value);
 
                             const lightPanel = new LightPanel(LightPanelController, light);
                             lightPanel.animateIn(true);

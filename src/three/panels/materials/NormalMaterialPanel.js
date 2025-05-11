@@ -15,14 +15,14 @@ import { BumpMapPanel } from '../textures/BumpMapPanel.js';
 import { NormalMapPanel } from '../textures/NormalMapPanel.js';
 import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
 
-export const NormalMaterialOptions = {
-    Common: NormalMaterialCommonPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const NormalMaterialOptions = new Map([
+    ['Common', NormalMaterialCommonPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class NormalMaterialPanel extends Panel {
     static type = 'Normal';
@@ -44,11 +44,11 @@ export class NormalMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         if (!Point3D.points) {
-            delete NormalMaterialOptions.Helper;
+            NormalMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete NormalMaterialOptions.Physics;
+            NormalMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -61,7 +61,7 @@ export class NormalMaterialPanel extends Panel {
                 list: NormalMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = NormalMaterialOptions[value];
+                    const MaterialPanel = NormalMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

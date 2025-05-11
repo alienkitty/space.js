@@ -33,7 +33,7 @@ export class HemisphereLightPanel extends Panel {
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
-                    light.userData.helper = HelperOptions[value];
+                    light.userData.helper = HelperOptions.get(value);
 
                     this.panel.toggleHemisphereLightHelper(light, light.userData.helper);
                 }
@@ -99,7 +99,7 @@ export class HemisphereLightPanel extends Panel {
                         item.setContent(lightPanel);
                     }
 
-                    light.visible = VisibleOptions[value];
+                    light.visible = VisibleOptions.get(value);
 
                     if (light.visible) {
                         item.toggleContent(true);

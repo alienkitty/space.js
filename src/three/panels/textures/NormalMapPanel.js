@@ -31,7 +31,7 @@ export class NormalMapPanel extends MapPanel {
                 value: getKeyByValue(NormalMapOptions, material.normalMapType),
                 callback: value => {
                     materials.forEach(material => {
-                        material.normalMapType = NormalMapOptions[value];
+                        material.normalMapType = NormalMapOptions.get(value);
                         material.needsUpdate = true;
                     });
                 }

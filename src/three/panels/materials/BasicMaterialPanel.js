@@ -18,17 +18,17 @@ import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const BasicMaterialOptions = {
-    Common: BasicMaterialCommonPanel,
-    Map: TextureMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Specular: SpecularMapPanel,
-    Alpha: AlphaMapPanel,
-    Env: EnvMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const BasicMaterialOptions = new Map([
+    ['Common', BasicMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Specular', SpecularMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class BasicMaterialPanel extends Panel {
     static type = 'Basic';
@@ -50,11 +50,11 @@ export class BasicMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         if (!Point3D.points) {
-            delete BasicMaterialOptions.Helper;
+            BasicMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete BasicMaterialOptions.Physics;
+            BasicMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -67,7 +67,7 @@ export class BasicMaterialPanel extends Panel {
                 list: BasicMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = BasicMaterialOptions[value];
+                    const MaterialPanel = BasicMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

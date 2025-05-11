@@ -40,38 +40,38 @@ import { RoughnessMapPanel } from '../textures/RoughnessMapPanel.js';
 import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 
-export const PhysicalMaterialOptions = {
-    'Common': PhysicalMaterialCommonPanel,
-    'Map': TextureMapPanel,
-    'Light': LightMapPanel,
-    'AO': AOMapPanel,
-    'Emissive': EmissiveMapPanel,
-    'Bump': BumpMapPanel,
-    'Normal': NormalMapPanel,
-    'Displace': DisplacementMapPanel,
-    'Rough': RoughnessMapPanel,
-    'Metal': MetalnessMapPanel,
-    'Alpha': AlphaMapPanel,
-    'Anis': PhysicalMaterialAnisotropyPanel,
-    'Clear': PhysicalMaterialClearcoatPanel,
-    'Clear Rough': PhysicalMaterialClearcoatRoughnessPanel,
-    'Clear Normal': PhysicalMaterialClearcoatNormalPanel,
-    'Irid': PhysicalMaterialIridescencePanel,
-    'Irid Thick': PhysicalMaterialIridescenceThicknessPanel,
-    'Sheen': PhysicalMaterialSheenPanel,
-    'Sheen Color': PhysicalMaterialSheenColorPanel,
-    'Sheen Rough': PhysicalMaterialSheenRoughnessPanel,
-    'Trans': PhysicalMaterialTransmissionPanel,
-    'Trans Int': PhysicalMaterialTransmissionIntensityPanel,
-    'Trans Thick': PhysicalMaterialTransmissionThicknessPanel,
-    'Specular': PhysicalMaterialSpecularPanel,
-    'Specular Color': PhysicalMaterialSpecularColorPanel,
-    'Specular Int': PhysicalMaterialSpecularIntensityPanel,
-    'Subsurface': PhysicalMaterialSubsurfacePanel,
-    'Env': PhysicalMaterialEnvPanel,
-    'Helper': MeshHelperPanel,
-    'Physics': OimoPhysicsPanel
-};
+export const PhysicalMaterialOptions = new Map([
+    ['Common', PhysicalMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Rough', RoughnessMapPanel],
+    ['Metal', MetalnessMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Anis', PhysicalMaterialAnisotropyPanel],
+    ['Clear', PhysicalMaterialClearcoatPanel],
+    ['Clear Rough', PhysicalMaterialClearcoatRoughnessPanel],
+    ['Clear Normal', PhysicalMaterialClearcoatNormalPanel],
+    ['Irid', PhysicalMaterialIridescencePanel],
+    ['Irid Thick', PhysicalMaterialIridescenceThicknessPanel],
+    ['Sheen', PhysicalMaterialSheenPanel],
+    ['Sheen Color', PhysicalMaterialSheenColorPanel],
+    ['Sheen Rough', PhysicalMaterialSheenRoughnessPanel],
+    ['Trans', PhysicalMaterialTransmissionPanel],
+    ['Trans Int', PhysicalMaterialTransmissionIntensityPanel],
+    ['Trans Thick', PhysicalMaterialTransmissionThicknessPanel],
+    ['Specular', PhysicalMaterialSpecularPanel],
+    ['Specular Color', PhysicalMaterialSpecularColorPanel],
+    ['Specular Int', PhysicalMaterialSpecularIntensityPanel],
+    ['Subsurface', PhysicalMaterialSubsurfacePanel],
+    ['Env', PhysicalMaterialEnvPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class PhysicalMaterialPanel extends Panel {
     static type = 'Physical';
@@ -99,11 +99,11 @@ export class PhysicalMaterialPanel extends Panel {
         const materials = this.materials;
 
         if (!Point3D.points) {
-            delete PhysicalMaterialOptions.Helper;
+            PhysicalMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete PhysicalMaterialOptions.Physics;
+            PhysicalMaterialOptions.delete('Physics');
         }
 
         if (mesh.userData.subsurface) {
@@ -124,7 +124,7 @@ export class PhysicalMaterialPanel extends Panel {
                 list: PhysicalMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = PhysicalMaterialOptions[value];
+                    const MaterialPanel = PhysicalMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

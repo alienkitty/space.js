@@ -89,7 +89,7 @@ export class EnvMapPanel extends MapPanel {
                     value: getKeyByValue(CombineOptions, material.combine),
                     callback: value => {
                         materials.forEach(material => {
-                            material.combine = CombineOptions[value];
+                            material.combine = CombineOptions.get(value);
                             material.needsUpdate = true;
                         });
                     }

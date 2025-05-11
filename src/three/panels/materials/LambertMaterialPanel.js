@@ -22,21 +22,21 @@ import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
 import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
 import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const LambertMaterialOptions = {
-    Common: LambertMaterialCommonPanel,
-    Map: TextureMapPanel,
-    Light: LightMapPanel,
-    AO: AOMapPanel,
-    Emissive: EmissiveMapPanel,
-    Bump: BumpMapPanel,
-    Normal: NormalMapPanel,
-    Displace: DisplacementMapPanel,
-    Specular: SpecularMapPanel,
-    Alpha: AlphaMapPanel,
-    Env: EnvMapPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const LambertMaterialOptions = new Map([
+    ['Common', LambertMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Specular', SpecularMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class LambertMaterialPanel extends Panel {
     static type = 'Lambert';
@@ -58,11 +58,11 @@ export class LambertMaterialPanel extends Panel {
         const mesh = this.mesh;
 
         if (!Point3D.points) {
-            delete LambertMaterialOptions.Helper;
+            LambertMaterialOptions.delete('Helper');
         }
 
         if (!Point3D.physics) {
-            delete LambertMaterialOptions.Physics;
+            LambertMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -75,7 +75,7 @@ export class LambertMaterialPanel extends Panel {
                 list: LambertMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = LambertMaterialOptions[value];
+                    const MaterialPanel = LambertMaterialOptions.get(value);
 
                     const materialPanel = new MaterialPanel(mesh);
                     materialPanel.animateIn(true);

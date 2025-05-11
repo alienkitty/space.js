@@ -54,10 +54,10 @@ export class StandardMaterialSubsurfacePanel extends Panel {
             }
         });
 
-        const subsurfaceOptions = {
-            Off: false,
-            On: true
-        };
+        const subsurfaceOptions = new Map([
+            ['Off', false],
+            ['On', true]
+        ]);
 
         const subsurfaceItems = [
             {
@@ -150,7 +150,7 @@ export class StandardMaterialSubsurfacePanel extends Panel {
                         item.setContent(subsurfacePanel);
                     }
 
-                    mesh.userData.subsurface = subsurfaceOptions[value];
+                    mesh.userData.subsurface = subsurfaceOptions.get(value);
 
                     if (mesh.userData.subsurface) {
                         materials.forEach(material => material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface);

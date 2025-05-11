@@ -17,8 +17,8 @@ export class List extends Interface {
 
         this.name = name;
         this.list = list;
-        this.keys = Object.keys(this.list);
-        this.values = Object.values(this.list);
+        this.keys = Array.from(this.list.keys());
+        this.values = Array.from(this.list.values());
         this.index = this.keys.indexOf(value);
         this.callback = callback;
 

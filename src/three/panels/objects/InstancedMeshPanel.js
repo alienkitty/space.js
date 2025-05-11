@@ -38,7 +38,7 @@ export class InstancedMeshPanel extends Panel {
                 list: InstanceOptions,
                 value: 'Mesh',
                 callback: (value, item) => {
-                    if (InstanceOptions[value]) {
+                    if (InstanceOptions.get(value)) {
                         mesh.getColorAt(point.instances[0].index, color);
 
                         const instanceItems = [

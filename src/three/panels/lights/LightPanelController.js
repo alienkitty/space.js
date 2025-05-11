@@ -24,17 +24,21 @@ import { PointLightPanel } from './PointLightPanel.js';
 import { SpotLightPanel } from './SpotLightPanel.js';
 import { RectAreaLightPanel } from './RectAreaLightPanel.js';
 
-export const LightOptions = {
-    Ambient: [AmbientLight, AmbientLightPanel],
-    Hemi: [HemisphereLight, HemisphereLightPanel],
-    Direct: [DirectionalLight, DirectionalLightPanel],
-    Point: [PointLight, PointLightPanel],
-    Spot: [SpotLight, SpotLightPanel],
-    Rect: [RectAreaLight, RectAreaLightPanel]
-};
+export const LightOptions = new Map([
+    ['Ambient', [AmbientLight, AmbientLightPanel]],
+    ['Hemi', [HemisphereLight, HemisphereLightPanel]],
+    ['Direct', [DirectionalLight, DirectionalLightPanel]],
+    ['Point', [PointLight, PointLightPanel]],
+    ['Spot', [SpotLight, SpotLightPanel]],
+    ['Rect', [RectAreaLight, RectAreaLightPanel]]
+]);
 
 export function getKeyByLight(lightOptions, light) {
-    return Object.keys(lightOptions).reverse().find(key => light instanceof lightOptions[key][0]);
+    for (const [key, value] of lightOptions.entries()) {
+        if (light instanceof value[0]) {
+            return key;
+        }
+    }
 }
 
 export class LightPanelController {
@@ -53,7 +57,7 @@ export class LightPanelController {
         const scene = this.scene;
         const ui = this.ui;
 
-        const lightOptions = {};
+        const lightOptions = new Map();
 
         scene.traverse(object => {
             if (object.isLight) {
@@ -74,11 +78,11 @@ export class LightPanelController {
             let count = 1;
             let lightKey = `${key}${counts[key] > 1 ? count++ : ''}`;
 
-            while (Object.keys(lightOptions).includes(lightKey)) {
+            while (Array.from(lightOptions.keys()).includes(lightKey)) {
                 lightKey = `${key}${count++}`;
             }
 
-            lightOptions[lightKey] = [light, LightOptions[key][1]];
+            lightOptions.set(lightKey, [light, LightOptions.get(key)[1]]);
         });
 
         const items = [
@@ -89,9 +93,9 @@ export class LightPanelController {
                 type: 'list',
                 name: 'Light',
                 list: lightOptions,
-                value: Object.keys(lightOptions)[0],
+                value: Array.from(lightOptions.keys())[0],
                 callback: (value, item) => {
-                    const [light, LightPanel] = lightOptions[value];
+                    const [light, LightPanel] = lightOptions.get(value);
 
                     const lightPanel = new LightPanel(this, light);
                     lightPanel.animateIn(true);
