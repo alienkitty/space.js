@@ -185,16 +185,30 @@ export class Point3D extends Group {
         return promise;
     }
 
-    static loadFiles(files) {
+    static async loadFiles(files) {
         const array = [];
+        const names = [];
 
-        for (const file of files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
             if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
                 array.push(this.loadFile(file));
+
+                const match = file.name.match(/[-_]([^-_]*)\./);
+
+                if (match) {
+                    names.push(match.pop());
+                } else {
+                    names.push((i + 1).toString());
+                }
             }
         }
 
-        return Promise.all(array);
+        return [
+            await Promise.all(array),
+            names
+        ];
     }
 
     // Event handlers
@@ -215,7 +229,7 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = ({ images }) => {
+    static onImagesDrop = ({ images, names }) => {
         const selected = this.getSelected();
 
         if (selected.length) {
@@ -228,7 +242,7 @@ export class Point3D extends Group {
             if (!Array.isArray(ui.object.material)) {
                 ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
                     const material = ui.object.material.clone();
-                    material.name = i + 1;
+                    material.name = names[i];
 
                     return material;
                 });
@@ -275,13 +289,13 @@ export class Point3D extends Group {
         const selected = this.getSelected();
 
         if (selected.length) {
-            const images = await this.loadFiles(e.dataTransfer.files);
+            const [images, names] = await this.loadFiles(e.dataTransfer.files);
 
             if (images.length) {
                 const ui = selected[0];
 
                 if (images.length > 1) {
-                    Stage.events.emit('images_drop', { images, target: this });
+                    Stage.events.emit('images_drop', { images, names, target: this });
                 } else {
                     const image = images[0];
 

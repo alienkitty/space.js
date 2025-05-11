@@ -144,10 +144,21 @@ export class PanelThumbnail extends Interface {
 
     async loadFiles(files) {
         const array = [];
+        const names = [];
 
-        for (const file of files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
             if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
                 array.push(this.loadFile(file));
+
+                const match = file.name.match(/[-_]([^-_]*)\./);
+
+                if (match) {
+                    names.push(match.pop());
+                } else {
+                    names.push((i + 1).toString());
+                }
             }
         }
 
@@ -155,7 +166,7 @@ export class PanelThumbnail extends Interface {
 
         if (images.length) {
             if (images.length > 1) {
-                Stage.events.emit('images_drop', { images, target: this });
+                Stage.events.emit('images_drop', { images, names, target: this });
             } else {
                 this.setValue(images[0]);
             }
