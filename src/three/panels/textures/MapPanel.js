@@ -129,7 +129,6 @@ export class MapPanel extends Panel {
                                 material[key] = new Texture(value);
                                 material[key].mapping = this.mapping;
                                 material[key].colorSpace = this.colorSpace;
-                                material[key].anisotropy = Point3D.anisotropy;
                             }
 
                             if (!value.complete) {
