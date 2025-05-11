@@ -37,7 +37,6 @@ export class SubsurfaceMapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                flipY: true,
                 data: this.supported ? uniforms.thicknessMap.value : {},
                 value: this.supported ? uniforms.thicknessMap.value.source.data : null,
                 callback: (value, item) => {

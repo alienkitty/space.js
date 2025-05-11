@@ -9,7 +9,6 @@ import { Stage } from '../utils/Stage.js';
 export class PanelThumbnail extends Interface {
     constructor({
         name,
-        flipY = false,
         data,
         value,
         callback
@@ -17,7 +16,6 @@ export class PanelThumbnail extends Interface {
         super('.panel-thumbnail');
 
         this.name = name;
-        this.flipY = flipY;
         this.data = data;
         this.value = value;
         this.callback = callback;
@@ -110,7 +108,7 @@ export class PanelThumbnail extends Interface {
 
         const context = canvas.getContext('2d');
 
-        if (this.flipY) {
+        if (image instanceof ImageBitmap) {
             context.translate(0, canvas.height);
             context.scale(1, -1);
         }

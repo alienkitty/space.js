@@ -38,7 +38,6 @@ export class BackgroundMapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                flipY: true,
                 data: this.supported ? scene.background : {},
                 value: this.supported ? scene.background.source.data : null,
                 callback: (value, item) => {

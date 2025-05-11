@@ -83,7 +83,6 @@ export class MapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                flipY: true,
                 data: this.supported ? this.textures[index] : {},
                 value: this.supported ? this.thumbnails[index] : null,
                 callback: (value, item) => {

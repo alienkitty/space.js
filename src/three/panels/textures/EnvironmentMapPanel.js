@@ -37,7 +37,6 @@ export class EnvironmentMapPanel extends Panel {
             {
                 type: 'thumbnail',
                 name: 'Map',
-                flipY: true,
                 data: this.supported ? scene.environment : {},
                 value: this.supported ? scene.environment.source.data : null,
                 callback: (value, item) => {
