@@ -356,7 +356,7 @@ export class PanelThumbnail extends Interface {
     }
 
     setValue(value, notify = true) {
-        if (value instanceof ImageBitmap) {
+        if ((value instanceof Image && !value.src.startsWith('data:')) || value instanceof ImageBitmap) {
             this.value = this.imageToCanvas(value);
         } else if (value && value.nodeName) {
             this.value = value.cloneNode();
