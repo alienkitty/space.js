@@ -40,6 +40,7 @@ export class PanelThumbnail extends Interface {
         this.duplicate = null;
 
         this.init();
+        this.setData(this.data);
         this.setValue(this.value);
 
         this.addListeners();
