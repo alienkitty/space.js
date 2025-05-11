@@ -27,7 +27,7 @@ export class List extends Interface {
         this.init();
         this.initViews();
 
-        this.update();
+        this.setIndex(this.index);
     }
 
     init() {
@@ -110,8 +110,8 @@ export class List extends Interface {
         }
     }
 
-    setValue(value, notify = true) {
-        this.index = this.values.indexOf(value);
+    setIndex(index, notify = true) {
+        this.index = index;
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);
@@ -120,8 +120,8 @@ export class List extends Interface {
         this.update(notify);
     }
 
-    setIndex(index, notify = true) {
-        this.index = index;
+    setValue(value, notify = true) {
+        this.index = this.values.indexOf(value);
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);
