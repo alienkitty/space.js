@@ -66,7 +66,7 @@ export class BackgroundPanel extends Panel {
 
     // Public methods
 
-    setInvert = value => {
+    setInvert(value) {
         if (!this.ui) {
             return;
         }
@@ -79,5 +79,5 @@ export class BackgroundPanel extends Panel {
 
             this.ui.invert(invert);
         }
-    };
+    }
 }
