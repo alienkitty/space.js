@@ -156,9 +156,11 @@ export class PanelThumbnail extends Interface {
         const images = await Promise.all(array);
 
         if (images.length) {
-            this.setValue(images[0]);
-
-            Stage.events.emit('images_drop', { images, target: this });
+            if (images.length > 1) {
+                Stage.events.emit('images_drop', { images, target: this });
+            } else {
+                this.setValue(images[0]);
+            }
         }
     }
 

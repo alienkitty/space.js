@@ -25,19 +25,49 @@ export class MapPanel extends Panel {
         this.supported = false;
         this.initialized = false;
 
-        this.setSupported(this.material[key]);
         this.initPanel();
     }
 
-    setSupported(texture) {
-        this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
+    initPanel() {
+        if (Array.isArray(this.mesh.material)) {
+            const options = Object.fromEntries(this.materials.map((material, i) => [material.name, i]));
+
+            const items = [
+                {
+                    type: 'divider'
+                },
+                {
+                    type: 'list',
+                    name: 'Index',
+                    list: options,
+                    value: getKeyByValue(options, 0),
+                    callback: (value, item) => {
+                        const index = options[value];
+
+                        const indexPanel = new Panel();
+                        indexPanel.animateIn(true);
+
+                        this.initThumbnailPanel(index, indexPanel);
+
+                        item.setContent(indexPanel);
+                    }
+                }
+            ];
+
+            items.forEach(data => {
+                this.add(new PanelItem(data));
+            });
+        } else {
+            this.initThumbnailPanel(0, this);
+        }
     }
 
-    initPanel() {
+    initThumbnailPanel(index, panel) {
+        this.update(index);
+
         const mesh = this.mesh;
         const key = this.key;
 
-        const materials = this.materials;
         const material = this.material;
 
         let point;
@@ -54,13 +84,15 @@ export class MapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 flipY: true,
-                data: this.supported ? material[key] : {},
-                value: this.supported ? material[key].source.data : null,
+                data: this.supported ? this.textures[index] : {},
+                value: this.supported ? this.thumbnails[index] : null,
                 callback: (value, item) => {
+                    const data = item.data;
+
                     const mapItems = [];
 
                     if (this.initialized) {
-                        if (item.data.isTexture && item.data.userData.uv && !mesh.userData.uv) {
+                        if (data.isTexture && data.userData.uv && !mesh.userData.uv) {
                             mesh.userData.uv = true;
 
                             if (point) {
@@ -70,7 +102,7 @@ export class MapPanel extends Panel {
 
                         if (point && point.uvTexture) {
                             if (value) {
-                                if (material[key] && item.data.isTexture && !item.data.userData.uv) {
+                                if (material[key] && data.isTexture && !data.userData.uv) {
                                     mesh.userData.uv = false;
                                     point.toggleUVHelper(false);
                                 }
@@ -88,12 +120,12 @@ export class MapPanel extends Panel {
                             if (this.supported) {
                                 material[key].dispose();
                                 material[key] = new Texture(value);
-                                material[key].mapping = item.data.mapping;
-                                material[key].colorSpace = item.data.colorSpace;
-                                material[key].anisotropy = item.data.anisotropy;
-                                material[key].wrapS = item.data.wrapS;
-                                material[key].wrapT = item.data.wrapT;
-                                material[key].repeat.copy(item.data.repeat);
+                                material[key].mapping = data.mapping;
+                                material[key].colorSpace = data.colorSpace;
+                                material[key].anisotropy = data.anisotropy;
+                                material[key].wrapS = data.wrapS;
+                                material[key].wrapT = data.wrapT;
+                                material[key].repeat.copy(data.repeat);
                             } else {
                                 material[key] = new Texture(value);
                                 material[key].mapping = this.mapping;
@@ -107,6 +139,8 @@ export class MapPanel extends Panel {
 
                                     value.onload = null;
                                 };
+                            } else {
+                                material[key].needsUpdate = true;
                             }
 
                             material.needsUpdate = true;
@@ -116,7 +150,7 @@ export class MapPanel extends Panel {
                             material.needsUpdate = true;
                         }
 
-                        this.setSupported(material[key]);
+                        this.update(index);
 
                         item.setData(this.supported ? material[key] : {});
                     }
@@ -134,11 +168,9 @@ export class MapPanel extends Panel {
                                     value: getKeyByValue(RefractionMappingOptions, material[key].mapping),
                                     callback: value => {
                                         if (this.initialized) {
-                                            materials.forEach(material => {
-                                                material[key].mapping = RefractionMappingOptions[value];
-                                                material[key].needsUpdate = true;
-                                                material.needsUpdate = true;
-                                            });
+                                            material[key].mapping = RefractionMappingOptions[value];
+                                            material[key].needsUpdate = true;
+                                            material.needsUpdate = true;
                                         }
                                     }
                                 }
@@ -155,10 +187,8 @@ export class MapPanel extends Panel {
                                     value: getKeyByValue(ColorSpaceOptions, material[key].colorSpace),
                                     callback: value => {
                                         if (this.initialized) {
-                                            materials.forEach(material => {
-                                                material[key].colorSpace = ColorSpaceOptions[value];
-                                                material[key].needsUpdate = true;
-                                            });
+                                            material[key].colorSpace = ColorSpaceOptions[value];
+                                            material[key].needsUpdate = true;
                                         }
                                     }
                                 },
@@ -171,10 +201,8 @@ export class MapPanel extends Panel {
                                     value: material[key].anisotropy,
                                     callback: value => {
                                         if (this.initialized) {
-                                            materials.forEach(material => {
-                                                material[key].anisotropy = value;
-                                                material[key].needsUpdate = true;
-                                            });
+                                            material[key].anisotropy = value;
+                                            material[key].needsUpdate = true;
                                         }
                                     }
                                 },
@@ -187,11 +215,9 @@ export class MapPanel extends Panel {
                                         if (this.initialized) {
                                             const wrapping = WrapOptions[value];
 
-                                            materials.forEach(material => {
-                                                material[key].wrapS = wrapping;
-                                                material[key].wrapT = wrapping;
-                                                material[key].needsUpdate = true;
-                                            });
+                                            material[key].wrapS = wrapping;
+                                            material[key].wrapT = wrapping;
+                                            material[key].needsUpdate = true;
                                         }
                                     }
                                 },
@@ -204,7 +230,7 @@ export class MapPanel extends Panel {
                                     value: material[key].repeat.x,
                                     callback: value => {
                                         if (this.initialized) {
-                                            materials.forEach(material => material[key].repeat.setX(value));
+                                            material[key].repeat.setX(value);
                                         }
                                     }
                                 },
@@ -217,7 +243,7 @@ export class MapPanel extends Panel {
                                     value: material[key].repeat.y,
                                     callback: value => {
                                         if (this.initialized) {
-                                            materials.forEach(material => material[key].repeat.setY(value));
+                                            material[key].repeat.setY(value);
                                         }
                                     }
                                 }
@@ -242,7 +268,19 @@ export class MapPanel extends Panel {
         ];
 
         items.forEach(data => {
-            this.add(new PanelItem(data));
+            panel.add(new PanelItem(data));
         });
+    }
+
+    update(index) {
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[index];
+        this.textures = this.materials.map(material => material[this.key]);
+        this.thumbnails = this.textures.map(texture => texture && texture.source.data);
+
+        const texture = this.textures[index];
+
+        this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
+        this.initialized = false;
     }
 }

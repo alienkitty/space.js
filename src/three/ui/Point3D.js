@@ -137,6 +137,7 @@ export class Point3D extends Group {
         Stage.events.on('color_picker', this.onColorPicker);
         Stage.events.on('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.on('invert', this.onInvert);
+        Stage.events.on('images_drop', this.onImagesDrop);
         this.container.element.addEventListener('dragover', this.onDragOver);
         this.container.element.addEventListener('drop', this.onDrop);
         window.addEventListener('resize', this.onResize);
@@ -150,6 +151,7 @@ export class Point3D extends Group {
         Stage.events.off('color_picker', this.onColorPicker);
         Stage.events.off('thumbnail_dragging', this.onThumbnailDragging);
         Stage.events.off('invert', this.onInvert);
+        Stage.events.off('images_drop', this.onImagesDrop);
         this.container.element.removeEventListener('dragover', this.onDragOver);
         this.container.element.removeEventListener('drop', this.onDrop);
         window.removeEventListener('resize', this.onResize);
@@ -213,6 +215,49 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
+    static onImagesDrop = ({ images }) => {
+        const selected = this.getSelected();
+
+        if (selected.length) {
+            const ui = selected[0];
+
+            if (ui.object.material.isMeshNormalMaterial) {
+                return;
+            }
+
+            if (!Array.isArray(ui.object.material)) {
+                ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
+                    const material = ui.object.material.clone();
+                    material.name = i + 1;
+
+                    return material;
+                });
+            }
+
+            images.forEach((image, i) => {
+                const material = ui.object.material[i];
+
+                if (material) {
+                    if (material.isMeshBasicMaterial) {
+                        ui.setPanelValue('Map', image, [['Basic', 1], ['Index', i]]);
+                    } else if (material.isMeshLambertMaterial) {
+                        ui.setPanelValue('Map', image, [['Lambert', 1], ['Index', i]]);
+                    } else if (material.isMeshMatcapMaterial) {
+                        ui.setPanelValue('Map', image, [['Matcap', 1], ['Index', i]]);
+                    } else if (material.isMeshPhongMaterial) {
+                        ui.setPanelValue('Map', image, [['Phong', 1], ['Index', i]]);
+                    } else if (material.isMeshToonMaterial) {
+                        ui.setPanelValue('Map', image, [['Toon', 1], ['Index', i]]);
+                    } else if (material.isMeshPhysicalMaterial) {
+                        ui.setPanelValue('Map', image, [['Physical', 1], ['Index', i]]);
+                    } else if (material.isMeshStandardMaterial) {
+                        ui.setPanelValue('Map', image, [['Standard', 1], ['Index', i]]);
+                    }
+                }
+            });
+        }
+    };
+
     static onDragOver = e => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'none';
@@ -234,25 +279,50 @@ export class Point3D extends Group {
 
             if (images.length) {
                 const ui = selected[0];
-                const material = ui.object.material;
 
-                if (material.isMeshBasicMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Basic', 1]]);
-                } else if (material.isMeshLambertMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Lambert', 1]]);
-                } else if (material.isMeshMatcapMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Matcap', 1]]);
-                } else if (material.isMeshPhongMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Phong', 1]]);
-                } else if (material.isMeshToonMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Toon', 1]]);
-                } else if (material.isMeshPhysicalMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Physical', 1]]);
-                } else if (material.isMeshStandardMaterial) {
-                    ui.setPanelValue('Map', images[0], [['Standard', 1]]);
+                if (images.length > 1) {
+                    Stage.events.emit('images_drop', { images, target: this });
+                } else {
+                    const image = images[0];
+
+                    if (Array.isArray(ui.object.material)) {
+                        const material = ui.object.material[0];
+
+                        if (material.isMeshBasicMaterial) {
+                            ui.setPanelValue('Map', image, [['Basic', 1], ['Index', 0]]);
+                        } else if (material.isMeshLambertMaterial) {
+                            ui.setPanelValue('Map', image, [['Lambert', 1], ['Index', 0]]);
+                        } else if (material.isMeshMatcapMaterial) {
+                            ui.setPanelValue('Map', image, [['Matcap', 1], ['Index', 0]]);
+                        } else if (material.isMeshPhongMaterial) {
+                            ui.setPanelValue('Map', image, [['Phong', 1], ['Index', 0]]);
+                        } else if (material.isMeshToonMaterial) {
+                            ui.setPanelValue('Map', image, [['Toon', 1], ['Index', 0]]);
+                        } else if (material.isMeshPhysicalMaterial) {
+                            ui.setPanelValue('Map', image, [['Physical', 1], ['Index', 0]]);
+                        } else if (material.isMeshStandardMaterial) {
+                            ui.setPanelValue('Map', image, [['Standard', 1], ['Index', 0]]);
+                        }
+                    } else {
+                        const material = ui.object.material;
+
+                        if (material.isMeshBasicMaterial) {
+                            ui.setPanelValue('Map', image, [['Basic', 1]]);
+                        } else if (material.isMeshLambertMaterial) {
+                            ui.setPanelValue('Map', image, [['Lambert', 1]]);
+                        } else if (material.isMeshMatcapMaterial) {
+                            ui.setPanelValue('Map', image, [['Matcap', 1]]);
+                        } else if (material.isMeshPhongMaterial) {
+                            ui.setPanelValue('Map', image, [['Phong', 1]]);
+                        } else if (material.isMeshToonMaterial) {
+                            ui.setPanelValue('Map', image, [['Toon', 1]]);
+                        } else if (material.isMeshPhysicalMaterial) {
+                            ui.setPanelValue('Map', image, [['Physical', 1]]);
+                        } else if (material.isMeshStandardMaterial) {
+                            ui.setPanelValue('Map', image, [['Standard', 1]]);
+                        }
+                    }
                 }
-
-                Stage.events.emit('images_drop', { images, target: this });
             }
         }
     };
@@ -588,20 +658,23 @@ export class Point3D extends Group {
     }
 
     constructor(mesh, {
-        name = mesh.material.name || mesh.geometry.type,
-        type = mesh.material.type,
+        name,
+        type,
         graph = null,
         noTracker = false
     } = {}) {
         super();
 
+        const geometry = mesh.geometry;
+        const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+
         this.object = mesh;
-        this.name = name;
-        this.type = type;
+        this.name = name || material.name || geometry.type;
+        this.type = type || material.type;
         this.graph = graph;
         this.noTracker = noTracker;
         this.isInstanced = mesh.isInstancedMesh;
-        this.isDefault = name === mesh.geometry.type && type === mesh.material.type;
+        this.isDefault = !!(!name && !type);
         this.isMultiple = false;
         this.camera = Point3D.camera;
         this.halfScreen = Point3D.halfScreen;
