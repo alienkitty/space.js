@@ -10,6 +10,7 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
+import { getMaterialName } from '../../loaders/TextureFileUtils.js';
 
 export class MapPanel extends Panel {
     constructor(mesh, key, mapping = UVMapping, colorSpace = NoColorSpace) {
@@ -30,7 +31,7 @@ export class MapPanel extends Panel {
 
     initPanel() {
         if (Array.isArray(this.mesh.material)) {
-            this.options = new Map(this.materials.map((material, i) => [material.name, i]));
+            this.updateOptions();
 
             const items = [
                 {
@@ -142,16 +143,7 @@ export class MapPanel extends Panel {
                             }
 
                             if (data.name) {
-                                const names = this.materials.map(material => material.name);
-
-                                let count = 1;
-                                let name = data.name;
-
-                                while (names.includes(name)) {
-                                    name = `${name}${++count}`;
-                                }
-
-                                material.name = name;
+                                material.name = getMaterialName(this.materials, data.name, (index + 1).toString());
                             }
 
                             material.needsUpdate = true;
@@ -165,7 +157,7 @@ export class MapPanel extends Panel {
                         this.update(index);
 
                         if (parent) {
-                            this.options = new Map(this.materials.map((material, i) => [material.name, i]));
+                            this.updateOptions();
 
                             parent.setList(this.options);
                         }
@@ -300,5 +292,9 @@ export class MapPanel extends Panel {
 
         this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
         this.initialized = false;
+    }
+
+    updateOptions() {
+        this.options = new Map(this.materials.map((material, i) => [material.name || (i + 1).toString(), i]));
     }
 }

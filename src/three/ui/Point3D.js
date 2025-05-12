@@ -18,7 +18,7 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 import { loadFiles } from '../../loaders/FileUtils.js';
-import { setPanelTexture } from '../loaders/TextureFileUtils.js';
+import { getMaterialName, getTextureName, setPanelTexture } from '../loaders/TextureFileUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -181,7 +181,7 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = ({ images, names }) => {
+    static onImagesDrop = ({ images, filenames }) => {
         const selected = this.getSelected();
 
         if (selected.length) {
@@ -194,16 +194,19 @@ export class Point3D extends Group {
             if (!Array.isArray(ui.object.material)) {
                 ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
                     const material = ui.object.material.clone();
-                    material.name = names[i];
+                    material.name = (i + 1).toString();
 
                     return material;
                 });
             }
 
-            images.forEach((image, i) => {
-                const material = ui.object.material[i];
+            ui.object.material.forEach((material, i) => {
+                const image = images[i];
+                const filename = filenames[i];
 
-                if (material) {
+                if (image) {
+                    material.name = getMaterialName(ui.object.material, filename, (i + 1).toString());
+
                     setPanelTexture(ui, material, image, ['Index', i]);
                 }
             });
@@ -227,22 +230,25 @@ export class Point3D extends Group {
         const selected = this.getSelected();
 
         if (selected.length) {
-            const [images, names, filenames] = await loadFiles(e.dataTransfer.files);
+            const [images, filenames] = await loadFiles(e.dataTransfer.files);
 
             if (images.length) {
                 const ui = selected[0];
 
                 if (images.length > 1) {
-                    Stage.events.emit('images_drop', { images, names, filenames, target: this });
+                    Stage.events.emit('images_drop', { images, filenames, target: this });
                 } else {
                     const image = images[0];
+                    const filename = filenames[0];
 
                     if (Array.isArray(ui.object.material)) {
                         const material = ui.object.material[0];
+                        material.name = getMaterialName(ui.object.material, filename, '1');
 
                         setPanelTexture(ui, material, image, ['Index', 0]);
                     } else {
                         const material = ui.object.material;
+                        material.name = getMaterialName([material], filename, '1');
 
                         setPanelTexture(ui, material, image);
                     }

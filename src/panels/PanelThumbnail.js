@@ -121,17 +121,17 @@ export class PanelThumbnail extends Interface {
     }
 
     async loadFiles(files) {
-        const [images, names, filenames] = await loadFiles(files);
+        const [images, filenames] = await loadFiles(files);
 
         if (images.length) {
             if (images.length > 1) {
-                Stage.events.emit('images_drop', { images, names, filenames, target: this });
+                Stage.events.emit('images_drop', { images, filenames, target: this });
             } else {
                 if (!this.data) {
                     this.data = {};
                 }
 
-                this.data.name = names[0];
+                this.data.name = filenames[0];
 
                 this.setValue(images[0]);
             }

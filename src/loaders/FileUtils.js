@@ -28,7 +28,6 @@ export function loadFile(file) {
 
 export async function loadFiles(files) {
     const array = [];
-    const names = [];
     const filenames = [];
 
     for (let i = 0; i < files.length; i++) {
@@ -36,31 +35,12 @@ export async function loadFiles(files) {
 
         if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
             array.push(loadFile(file));
-
-            const match = file.name.match(/[-_]([^-_]*)\./);
-
-            let name;
-
-            if (match) {
-                name = match.pop();
-            } else {
-                name = (i + 1).toString();
-            }
-
-            let count = 1;
-
-            while (names.includes(name)) {
-                name = `${name}${++count}`;
-            }
-
-            names.push(name);
             filenames.push(file.name);
         }
     }
 
     return [
         await Promise.all(array),
-        names,
         filenames
     ];
 }

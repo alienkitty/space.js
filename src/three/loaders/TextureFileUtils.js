@@ -2,6 +2,28 @@
  * @author pschroen / https://ufo.ai/
  */
 
+export function getMaterialName(materials, name, index) {
+    const names = materials.map(material => material.name);
+    const match = name.match(/[-_]([^-_]*)\./);
+
+    let materialName;
+
+    if (match) {
+        const suffix = match.pop();
+
+        let count = 1;
+        materialName = suffix;
+
+        while (names.includes(materialName)) {
+            materialName = `${suffix}${++count}`;
+        }
+    } else {
+        materialName = index;
+    }
+
+    return materialName;
+}
+
 export function setPanelTexture(panel, material, image, index = []) {
     if (index.length) {
         index = [index];
