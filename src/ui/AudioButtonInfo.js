@@ -74,7 +74,7 @@ export class AudioButtonInfo extends Interface {
         newWrapper.add(title);
 
         if (data.image) {
-            const thumbnail = new Interface();
+            const thumbnail = new Interface('.thumbnail');
             thumbnail.css({
                 position: 'absolute',
                 left: -40,
