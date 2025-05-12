@@ -5,6 +5,7 @@ export { BufferLoader } from './loaders/BufferLoader.js';
 export { MultiLoader } from './loaders/MultiLoader.js';
 export { ImageBitmapLoader } from './loaders/ImageBitmapLoader.js';
 export { ImageBitmapLoaderThread } from './loaders/ImageBitmapLoaderThread.js';
+export * from './loaders/FileUtils.js';
 export { TextureLoader } from './three/loaders/TextureLoader.js';
 export { CubeTextureLoader } from './three/loaders/CubeTextureLoader.js';
 export { EnvironmentTextureLoader } from './three/loaders/EnvironmentTextureLoader.js';

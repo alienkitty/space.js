@@ -5,6 +5,7 @@ export { BufferLoader } from './loaders/BufferLoader.js';
 export { MultiLoader } from './loaders/MultiLoader.js';
 export { ImageBitmapLoader } from './loaders/ImageBitmapLoader.js';
 export { ImageBitmapLoaderThread } from './loaders/ImageBitmapLoaderThread.js';
+export * from './loaders/FileUtils.js';
 
 // Math
 export { Color } from './math/Color.js';

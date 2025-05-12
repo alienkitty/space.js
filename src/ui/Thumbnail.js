@@ -5,6 +5,8 @@
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 
+import { loadFiles } from '../loaders/FileUtils.js';
+
 export class Thumbnail extends Interface {
     constructor(data) {
         super('.thumbnail');
@@ -107,40 +109,8 @@ export class Thumbnail extends Interface {
         this.element.removeEventListener('drop', this.onDrop);
     }
 
-    loadFile(file) {
-        const reader = new FileReader();
-
-        const promise = new Promise(resolve => {
-            reader.onload = () => {
-                const image = new Image();
-
-                image.onload = () => {
-                    resolve(image);
-
-                    image.onload = null;
-                };
-
-                image.src = reader.result;
-
-                reader.onload = null;
-            };
-        });
-
-        reader.readAsDataURL(file);
-
-        return promise;
-    }
-
     async loadFiles(files) {
-        const array = [];
-
-        for (const file of files) {
-            if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
-                array.push(this.loadFile(file));
-            }
-        }
-
-        const images = await Promise.all(array);
+        const [images] = await loadFiles(files);
 
         if (images.length) {
             this.setThumbnail(images[0], true);

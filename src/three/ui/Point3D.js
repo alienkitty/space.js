@@ -17,6 +17,7 @@ import { Point } from '../../ui/Point.js';
 
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
+import { loadFiles } from '../../loaders/FileUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -161,56 +162,6 @@ export class Point3D extends Group {
         window.removeEventListener('keyup', this.onKeyUp);
     }
 
-    static loadFile(file) {
-        const reader = new FileReader();
-
-        const promise = new Promise(resolve => {
-            reader.onload = () => {
-                const image = new Image();
-
-                image.onload = () => {
-                    resolve(image);
-
-                    image.onload = null;
-                };
-
-                image.src = reader.result;
-
-                reader.onload = null;
-            };
-        });
-
-        reader.readAsDataURL(file);
-
-        return promise;
-    }
-
-    static async loadFiles(files) {
-        const array = [];
-        const names = [];
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-
-            if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
-                array.push(this.loadFile(file));
-
-                const match = file.name.match(/[-_]([^-_]*)\./);
-
-                if (match) {
-                    names.push(match.pop());
-                } else {
-                    names.push((i + 1).toString());
-                }
-            }
-        }
-
-        return [
-            await Promise.all(array),
-            names
-        ];
-    }
-
     // Event handlers
 
     static onColorPicker = ({ open, target }) => {
@@ -289,7 +240,7 @@ export class Point3D extends Group {
         const selected = this.getSelected();
 
         if (selected.length) {
-            const [images, names] = await this.loadFiles(e.dataTransfer.files);
+            const [images, names] = await loadFiles(e.dataTransfer.files);
 
             if (images.length) {
                 const ui = selected[0];
