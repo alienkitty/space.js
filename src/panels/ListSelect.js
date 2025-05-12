@@ -96,6 +96,12 @@ export class ListSelect extends Interface {
 
     // Public methods
 
+    setList(list) {
+        this.list = list;
+
+        this.setIndex(this.index);
+    }
+
     setIndex(index) {
         this.index = index;
 

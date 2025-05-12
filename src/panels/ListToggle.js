@@ -96,6 +96,13 @@ export class ListToggle extends Interface {
 
     // Public methods
 
+    setName(name) {
+        this.name = name;
+
+        this.content.text(this.name);
+        this.over.text(this.name);
+    }
+
     activate() {
         this.active = true;
 

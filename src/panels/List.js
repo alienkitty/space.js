@@ -110,6 +110,20 @@ export class List extends Interface {
         }
     }
 
+    setList(list) {
+        this.list = list;
+        this.keys = Array.from(this.list.keys());
+        this.values = Array.from(this.list.values());
+
+        if (this.keys.length > 2) {
+            this.items[0].setList(this.keys);
+        } else {
+            this.items.forEach((item, index) => {
+                item.setName(this.keys[index]);
+            });
+        }
+    }
+
     setIndex(index, notify = true) {
         this.index = index;
 
