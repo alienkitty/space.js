@@ -127,6 +127,12 @@ export class PanelThumbnail extends Interface {
             if (images.length > 1) {
                 Stage.events.emit('images_drop', { images, names, target: this });
             } else {
+                if (!this.data) {
+                    this.data = {};
+                }
+
+                this.data.name = names[0];
+
                 this.setValue(images[0]);
             }
         }
