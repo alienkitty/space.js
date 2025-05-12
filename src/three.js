@@ -11,6 +11,7 @@ export { CubeTextureLoader } from './three/loaders/CubeTextureLoader.js';
 export { EnvironmentTextureLoader } from './three/loaders/EnvironmentTextureLoader.js';
 export { BufferGeometryLoader } from './three/loaders/BufferGeometryLoader.js';
 export { BufferGeometryLoaderThread } from './three/loaders/BufferGeometryLoaderThread.js';
+export * from './three/loaders/TextureFileUtils.js';
 
 // Math
 export { Color } from './math/Color.js';

@@ -18,6 +18,7 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 import { loadFiles } from '../../loaders/FileUtils.js';
+import { setPanelTexture } from '../loaders/TextureFileUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -203,21 +204,7 @@ export class Point3D extends Group {
                 const material = ui.object.material[i];
 
                 if (material) {
-                    if (material.isMeshBasicMaterial) {
-                        ui.setPanelValue('Map', image, [['Basic', 1], ['Index', i]]);
-                    } else if (material.isMeshLambertMaterial) {
-                        ui.setPanelValue('Map', image, [['Lambert', 1], ['Index', i]]);
-                    } else if (material.isMeshMatcapMaterial) {
-                        ui.setPanelValue('Map', image, [['Matcap', 1], ['Index', i]]);
-                    } else if (material.isMeshPhongMaterial) {
-                        ui.setPanelValue('Map', image, [['Phong', 1], ['Index', i]]);
-                    } else if (material.isMeshToonMaterial) {
-                        ui.setPanelValue('Map', image, [['Toon', 1], ['Index', i]]);
-                    } else if (material.isMeshPhysicalMaterial) {
-                        ui.setPanelValue('Map', image, [['Physical', 1], ['Index', i]]);
-                    } else if (material.isMeshStandardMaterial) {
-                        ui.setPanelValue('Map', image, [['Standard', 1], ['Index', i]]);
-                    }
+                    setPanelTexture(ui, material, image, ['Index', i]);
                 }
             });
         }
@@ -253,39 +240,11 @@ export class Point3D extends Group {
                     if (Array.isArray(ui.object.material)) {
                         const material = ui.object.material[0];
 
-                        if (material.isMeshBasicMaterial) {
-                            ui.setPanelValue('Map', image, [['Basic', 1], ['Index', 0]]);
-                        } else if (material.isMeshLambertMaterial) {
-                            ui.setPanelValue('Map', image, [['Lambert', 1], ['Index', 0]]);
-                        } else if (material.isMeshMatcapMaterial) {
-                            ui.setPanelValue('Map', image, [['Matcap', 1], ['Index', 0]]);
-                        } else if (material.isMeshPhongMaterial) {
-                            ui.setPanelValue('Map', image, [['Phong', 1], ['Index', 0]]);
-                        } else if (material.isMeshToonMaterial) {
-                            ui.setPanelValue('Map', image, [['Toon', 1], ['Index', 0]]);
-                        } else if (material.isMeshPhysicalMaterial) {
-                            ui.setPanelValue('Map', image, [['Physical', 1], ['Index', 0]]);
-                        } else if (material.isMeshStandardMaterial) {
-                            ui.setPanelValue('Map', image, [['Standard', 1], ['Index', 0]]);
-                        }
+                        setPanelTexture(ui, material, image, ['Index', 0]);
                     } else {
                         const material = ui.object.material;
 
-                        if (material.isMeshBasicMaterial) {
-                            ui.setPanelValue('Map', image, [['Basic', 1]]);
-                        } else if (material.isMeshLambertMaterial) {
-                            ui.setPanelValue('Map', image, [['Lambert', 1]]);
-                        } else if (material.isMeshMatcapMaterial) {
-                            ui.setPanelValue('Map', image, [['Matcap', 1]]);
-                        } else if (material.isMeshPhongMaterial) {
-                            ui.setPanelValue('Map', image, [['Phong', 1]]);
-                        } else if (material.isMeshToonMaterial) {
-                            ui.setPanelValue('Map', image, [['Toon', 1]]);
-                        } else if (material.isMeshPhysicalMaterial) {
-                            ui.setPanelValue('Map', image, [['Physical', 1]]);
-                        } else if (material.isMeshStandardMaterial) {
-                            ui.setPanelValue('Map', image, [['Standard', 1]]);
-                        }
+                        setPanelTexture(ui, material, image);
                     }
                 }
             }
