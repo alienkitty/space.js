@@ -30,7 +30,7 @@ export class MapPanel extends Panel {
 
     initPanel() {
         if (Array.isArray(this.mesh.material)) {
-            const options = new Map(this.materials.map((material, i) => [material.name, i]));
+            this.options = new Map(this.materials.map((material, i) => [material.name, i]));
 
             const items = [
                 {
@@ -39,15 +39,15 @@ export class MapPanel extends Panel {
                 {
                     type: 'list',
                     name: 'Index',
-                    list: options,
-                    value: getKeyByValue(options, 0),
+                    list: this.options,
+                    value: getKeyByValue(this.options, 0),
                     callback: (value, item) => {
-                        const index = options.get(value);
+                        const index = this.options.get(value);
 
                         const indexPanel = new Panel();
                         indexPanel.animateIn(true);
 
-                        this.initThumbnailPanel(index, indexPanel);
+                        this.initThumbnailPanel(index, indexPanel, item);
 
                         item.setContent(indexPanel);
                     }
@@ -62,7 +62,7 @@ export class MapPanel extends Panel {
         }
     }
 
-    initThumbnailPanel(index, panel) {
+    initThumbnailPanel(index, panel, parent) {
         this.update(index);
 
         const mesh = this.mesh;
@@ -141,14 +141,34 @@ export class MapPanel extends Panel {
                                 material[key].needsUpdate = true;
                             }
 
+                            if (data.name) {
+                                const names = this.materials.map(material => material.name);
+
+                                let count = 1;
+                                let name = data.name;
+
+                                while (names.includes(name)) {
+                                    name = `${name}${++count}`;
+                                }
+
+                                material.name = name;
+                            }
+
                             material.needsUpdate = true;
                         } else if (this.supported) {
                             material[key].dispose();
                             material[key] = null;
+                            material.name = (index + 1).toString();
                             material.needsUpdate = true;
                         }
 
                         this.update(index);
+
+                        if (parent) {
+                            this.options = new Map(this.materials.map((material, i) => [material.name, i]));
+
+                            parent.setList(this.options);
+                        }
 
                         item.setData(this.supported ? material[key] : {});
                     }
