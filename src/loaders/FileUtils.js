@@ -38,11 +38,21 @@ export async function loadFiles(files) {
 
             const match = file.name.match(/[-_]([^-_]*)\./);
 
+            let name;
+
             if (match) {
-                names.push(match.pop());
+                name = match.pop();
             } else {
-                names.push((i + 1).toString());
+                name = (i + 1).toString();
             }
+
+            let count = 1;
+
+            while (names.includes(name)) {
+                name = `${name}${++count}`;
+            }
+
+            names.push(name);
         }
     }
 
