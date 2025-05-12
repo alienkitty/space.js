@@ -240,13 +240,13 @@ export class Point3D extends Group {
         const selected = this.getSelected();
 
         if (selected.length) {
-            const [images, names] = await loadFiles(e.dataTransfer.files);
+            const [images, names, filenames] = await loadFiles(e.dataTransfer.files);
 
             if (images.length) {
                 const ui = selected[0];
 
                 if (images.length > 1) {
-                    Stage.events.emit('images_drop', { images, names, target: this });
+                    Stage.events.emit('images_drop', { images, names, filenames, target: this });
                 } else {
                     const image = images[0];
 

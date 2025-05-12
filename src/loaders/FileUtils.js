@@ -29,6 +29,7 @@ export function loadFile(file) {
 export async function loadFiles(files) {
     const array = [];
     const names = [];
+    const filenames = [];
 
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -53,11 +54,13 @@ export async function loadFiles(files) {
             }
 
             names.push(name);
+            filenames.push(file.name);
         }
     }
 
     return [
         await Promise.all(array),
-        names
+        names,
+        filenames
     ];
 }
