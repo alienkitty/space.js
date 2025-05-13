@@ -132,15 +132,7 @@ export class MapPanel extends Panel {
                                 material[key].colorSpace = this.colorSpace;
                             }
 
-                            if (!value.complete) {
-                                value.onload = () => {
-                                    material[key].needsUpdate = true;
-
-                                    value.onload = null;
-                                };
-                            } else {
-                                material[key].needsUpdate = true;
-                            }
+                            material[key].needsUpdate = true;
 
                             if (data.name) {
                                 material.name = getMaterialName(this.materials, data.name, (index + 1).toString());
