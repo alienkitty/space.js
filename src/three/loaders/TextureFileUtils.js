@@ -4,7 +4,7 @@
 
 export function getMaterialName(materials, name, index) {
     const names = materials.map(material => material.name);
-    const match = name.match(/[-_]([^-_]*)\./);
+    const match = name.match(/[-_\s]([^-_\s]*)\./);
 
     let materialName;
 
