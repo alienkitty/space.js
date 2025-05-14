@@ -44,13 +44,13 @@ export class AssetLoader extends Loader {
 
         if (cached) {
             promise = Promise.resolve(cached);
-        } else if (/\.(jpe?g|png|webp|gif|svg)/i.test(path)) {
+        } else if (/\.jpe?g|png|webp|gif|svg/i.test(path)) {
             promise = this.loadImage(path);
         } else if (/\.json/i.test(path)) {
             promise = this.loadData(path);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
-                if (/\.(mp3|m4a|ogg|wav|aiff?)/i.test(path)) {
+                if (/\.mp3|m4a|ogg|wav|aiff?/i.test(path)) {
                     return response.arrayBuffer();
                 } else {
                     return response.text();

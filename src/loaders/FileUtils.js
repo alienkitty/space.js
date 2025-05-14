@@ -33,7 +33,7 @@ export async function loadFiles(files) {
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
-        if (/\.(jpe?g|png|webp|gif|svg)/i.test(file.name)) {
+        if (/\.jpe?g|png|webp|gif|svg/i.test(file.name)) {
             array.push(loadFile(file));
             filenames.push(file.name);
         }
