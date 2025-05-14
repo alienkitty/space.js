@@ -121,10 +121,39 @@ export class Panel extends Interface {
         return super.add(item);
     }
 
-    setPanelIndex(name, index, path = []) {
-        this.items.forEach(({ view }) => {
+    getPanelIndex(name) {
+        let index;
+
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
             if (!view) {
-                return;
+                continue;
+            }
+
+            if (view.name === name && view.setIndex) {
+                index = view.index;
+                break;
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
+                index = view.group.children[0].getPanelIndex(name);
+
+                if (index !== undefined) {
+                    break;
+                }
+            }
+        }
+
+        return index;
+    }
+
+    setPanelIndex(name, index, path = []) {
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
+            if (!view) {
+                continue;
             }
 
             if (path.length) {
@@ -136,19 +165,21 @@ export class Panel extends Interface {
                 }
             } else if (view.name === name && view.setIndex) {
                 view.setIndex(index);
-                return;
+                break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
                 view.group.children[0].setPanelIndex(name, index, path);
             }
-        });
+        }
     }
 
     setPanelValue(name, value, path = []) {
-        this.items.forEach(({ view }) => {
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
             if (!view) {
-                return;
+                continue;
             }
 
             if (path.length) {
@@ -160,13 +191,13 @@ export class Panel extends Interface {
                 }
             } else if (view.name === name && view.setValue) {
                 view.setValue(value);
-                return;
+                break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
                 view.group.children[0].setPanelValue(name, value, path);
             }
-        });
+        }
     }
 
     invert(isInverted) {

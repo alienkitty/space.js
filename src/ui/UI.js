@@ -319,6 +319,10 @@ export class UI extends Interface {
         this.header.info.addPanel(item);
     }
 
+    getPanelIndex(name) {
+        return this.header.info.panel.getPanelIndex(name);
+    }
+
     setPanelIndex(name, index, path) {
         this.header.info.panel.setPanelIndex(name, index, path);
     }

@@ -242,10 +242,11 @@ export class Point3D extends Group {
                     const filename = filenames[0];
 
                     if (Array.isArray(ui.object.material)) {
-                        const material = ui.object.material[0];
-                        material.name = getMaterialName(ui.object.material, filename, '1');
+                        const index = ui.getPanelIndex('Index') || 0;
+                        const material = ui.object.material[index];
+                        material.name = getMaterialName(ui.object.material, filename, (index + 1).toString());
 
-                        setPanelTexture(ui, material, image, ['Index', 0]);
+                        setPanelTexture(ui, material, image, ['Index', index]);
                     } else {
                         const material = ui.object.material;
                         material.name = getMaterialName([material], filename, '1');
@@ -885,6 +886,10 @@ export class Point3D extends Group {
             this.panel = this.point.info.panel;
             this.panel.events.on('update', this.onUpdate);
         }
+    }
+
+    getPanelIndex(name) {
+        return this.panel.getPanelIndex(name);
     }
 
     setPanelIndex(name, index, path) {
