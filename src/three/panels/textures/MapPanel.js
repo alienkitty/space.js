@@ -158,6 +158,11 @@ export class MapPanel extends Panel {
                     }
 
                     if (this.supported && !(key === 'envMap' && material.isMeshStandardMaterial)) {
+                        if (key === 'alphaMap') {
+                            material.transparent = true;
+                            material.needsUpdate = true;
+                        }
+
                         if (material[key].mapping !== UVMapping) {
                             mapItems.push(
                                 {
