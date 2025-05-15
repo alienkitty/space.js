@@ -84,34 +84,36 @@ export function getTextureName(name) {
     }
 }
 
-export function isCubeTextures(names) {
-    return names.find(name => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(name));
+export function isCubeTextures(data) {
+    return data.find(data => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(data.filename));
 }
 
-export function sortCubeTextures(images, names) {
-    names = names.map(name => {
-        if (/^PosX|PX|[-_\s]PosX|PX/i.test(name)) {
-            return 'px';
-        } else if (/^NegX|NX|[-_\s]NegX|NX/i.test(name)) {
-            return 'nx';
-        } else if (/^PosY|PY|[-_\s]PosY|PY/i.test(name)) {
-            return 'py';
-        } else if (/^NegY|NY|[-_\s]NegY|NY/i.test(name)) {
-            return 'ny';
-        } else if (/^PosZ|PZ|[-_\s]PosZ|PZ/i.test(name)) {
-            return 'pz';
-        } else if (/^NegZ|NZ|[-_\s]NegZ|NZ/i.test(name)) {
-            return 'nz';
+export function sortCubeTextures(data) {
+    data.forEach(data => {
+        if (/^PosX|PX|[-_\s]PosX|PX/i.test(data.filename)) {
+            data.key = 'px';
+            return;
+        } else if (/^NegX|NX|[-_\s]NegX|NX/i.test(data.filename)) {
+            data.key = 'nx';
+            return;
+        } else if (/^PosY|PY|[-_\s]PosY|PY/i.test(data.filename)) {
+            data.key = 'py';
+            return;
+        } else if (/^NegY|NY|[-_\s]NegY|NY/i.test(data.filename)) {
+            data.key = 'ny';
+            return;
+        } else if (/^PosZ|PZ|[-_\s]PosZ|PZ/i.test(data.filename)) {
+            data.key = 'pz';
+            return;
+        } else if (/^NegZ|NZ|[-_\s]NegZ|NZ/i.test(data.filename)) {
+            data.key = 'nz';
+            return;
         }
     });
 
-    const map = new Map(images.map((image, i) => [names[i], image]));
+    const order = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
 
-    images = ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map(name => map.get(name));
-
-    map.clear();
-
-    return images;
+    return data.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 }
 
 export function setPanelTexture(panel, material, image, name = 'Map', index = []) {

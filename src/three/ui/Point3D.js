@@ -181,7 +181,7 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = ({ images, filenames }) => {
+    static onImagesDrop = ({ data }) => {
         const selected = this.getSelected();
 
         if (selected.length) {
@@ -191,8 +191,8 @@ export class Point3D extends Group {
                 return;
             }
 
-            if (isCubeTextures(filenames)) {
-                images = sortCubeTextures(images, filenames);
+            if (isCubeTextures(data)) {
+                sortCubeTextures(data);
 
                 if (!Array.isArray(ui.object.material)) {
                     ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
@@ -204,8 +204,7 @@ export class Point3D extends Group {
                 }
 
                 ui.object.material.forEach((material, i) => {
-                    const image = images[i];
-                    const filename = filenames[i];
+                    const { image, filename } = data[i];
                     const name = getTextureName(filename);
 
                     if (image) {
@@ -215,8 +214,7 @@ export class Point3D extends Group {
                     }
                 });
             } else {
-                images.forEach((image, i) => {
-                    const filename = filenames[i];
+                data.forEach(({ image, filename }) => {
                     const name = getTextureName(filename);
 
                     setPanelTexture(ui, ui.object.material, image, name);
@@ -242,16 +240,15 @@ export class Point3D extends Group {
         const selected = this.getSelected();
 
         if (selected.length) {
-            const [images, filenames] = await loadFiles(e.dataTransfer.files);
+            const data = await loadFiles(e.dataTransfer.files);
 
-            if (images.length) {
+            if (data.length) {
                 const ui = selected[0];
 
-                if (images.length > 1) {
-                    Stage.events.emit('images_drop', { images, filenames, target: this });
+                if (data.length > 1) {
+                    Stage.events.emit('images_drop', { data, target: this });
                 } else {
-                    const image = images[0];
-                    const filename = filenames[0];
+                    const { image, filename } = data[0];
                     const name = getTextureName(filename);
 
                     if (Array.isArray(ui.object.material)) {

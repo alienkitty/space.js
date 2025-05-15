@@ -110,10 +110,12 @@ export class Thumbnail extends Interface {
     }
 
     async loadFiles(files) {
-        const [images] = await loadFiles(files);
+        const data = await loadFiles(files);
 
-        if (images.length) {
-            this.setThumbnail(images[0], true);
+        if (data.length) {
+            const { image } = data[0];
+
+            this.setThumbnail(image, true);
         }
     }
 
