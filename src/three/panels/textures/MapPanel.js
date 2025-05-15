@@ -133,22 +133,20 @@ export class MapPanel extends Panel {
                             }
 
                             material[key].needsUpdate = true;
-
-                            if (data.name) {
-                                material.name = getMaterialName(this.materials, data.name, (index + 1).toString());
-                            }
-
                             material.needsUpdate = true;
                         } else if (this.supported) {
                             material[key].dispose();
                             material[key] = null;
-                            material.name = (index + 1).toString();
                             material.needsUpdate = true;
                         }
 
                         this.update(index);
 
                         if (parent) {
+                            if (data.name) {
+                                material.name = getMaterialName(this.materials, data.name, (index + 1).toString());
+                            }
+
                             this.updateOptions();
 
                             parent.setList(this.options);

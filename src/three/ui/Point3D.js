@@ -18,7 +18,7 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 import { loadFiles } from '../../loaders/FileUtils.js';
-import { getMaterialName, getTextureName, setPanelTexture } from '../loaders/TextureFileUtils.js';
+import { getMaterialName, getTextureName, isCubeTextures, setPanelTexture } from '../loaders/TextureFileUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -191,26 +191,35 @@ export class Point3D extends Group {
                 return;
             }
 
-            if (!Array.isArray(ui.object.material)) {
-                ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
-                    const material = ui.object.material.clone();
-                    material.name = (i + 1).toString();
+            if (isCubeTextures(filenames)) {
+                if (!Array.isArray(ui.object.material)) {
+                    ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
+                        const material = ui.object.material.clone();
+                        material.name = (i + 1).toString();
 
-                    return material;
+                        return material;
+                    });
+                }
+
+                ui.object.material.forEach((material, i) => {
+                    const image = images[i];
+                    const filename = filenames[i];
+                    const name = getTextureName(filename);
+
+                    if (image) {
+                        material.name = getMaterialName(ui.object.material, filename, (i + 1).toString());
+
+                        setPanelTexture(ui, material, image, name, ['Index', i]);
+                    }
+                });
+            } else {
+                images.forEach((image, i) => {
+                    const filename = filenames[i];
+                    const name = getTextureName(filename);
+
+                    setPanelTexture(ui, ui.object.material, image, name);
                 });
             }
-
-            ui.object.material.forEach((material, i) => {
-                const image = images[i];
-                const filename = filenames[i];
-                const name = getTextureName(filename);
-
-                if (image) {
-                    material.name = getMaterialName(ui.object.material, filename, (i + 1).toString());
-
-                    setPanelTexture(ui, material, image, name, ['Index', i]);
-                }
-            });
         }
     };
 
@@ -250,10 +259,7 @@ export class Point3D extends Group {
 
                         setPanelTexture(ui, material, image, name, ['Index', index]);
                     } else {
-                        const material = ui.object.material;
-                        material.name = getMaterialName([material], filename, '1');
-
-                        setPanelTexture(ui, material, image, name);
+                        setPanelTexture(ui, ui.object.material, image, name);
                     }
                 }
             }

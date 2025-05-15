@@ -84,6 +84,10 @@ export function getTextureName(name) {
     }
 }
 
+export function isCubeTextures(names) {
+    return names.find(name => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(name));
+}
+
 export function setPanelTexture(panel, material, image, name = 'Map', index = []) {
     if (index.length) {
         index = [index];
