@@ -2,6 +2,14 @@
  * @author pschroen / https://ufo.ai/
  */
 
+import { BasicMaterialOptions } from '../panels/materials/BasicMaterialPanel.js';
+import { LambertMaterialOptions } from '../panels/materials/LambertMaterialPanel.js';
+import { MatcapMaterialOptions } from '../panels/materials/MatcapMaterialPanel.js';
+import { PhongMaterialOptions } from '../panels/materials/PhongMaterialPanel.js';
+import { ToonMaterialOptions } from '../panels/materials/ToonMaterialPanel.js';
+import { StandardMaterialOptions } from '../panels/materials/StandardMaterialPanel.js';
+import { PhysicalMaterialOptions } from '../panels/materials/PhysicalMaterialPanel.js';
+
 export function getMaterialName(materials, name, index) {
     const names = materials.map(material => material.name);
     const match = name.match(/[-_\s]([^-_\s]*)\./);
@@ -24,24 +32,87 @@ export function getMaterialName(materials, name, index) {
     return materialName;
 }
 
-export function setPanelTexture(panel, material, image, index = []) {
+export function getTextureName(name) {
+    if (/[-_\s]Light/i.test(name)) {
+        return 'Light';
+    } else if (/[-_\s]Occ/i.test(name)) {
+        return 'AO';
+    } else if (/[-_\s]Emission/i.test(name)) {
+        return 'Emissive';
+    } else if (/[-_\s]Bump/i.test(name)) {
+        return 'Bump';
+    } else if (/[-_\s]Normal/i.test(name)) {
+        return 'Normal';
+    } else if (/[-_\s]Height|Displace/i.test(name)) {
+        return 'Displace';
+    } else if (/[-_\s]Rough/i.test(name)) {
+        return 'Rough';
+    } else if (/[-_\s]Metal/i.test(name)) {
+        return 'Metal';
+    } else if (/[-_\s]Alpha/i.test(name)) {
+        return 'Alpha';
+    } else if (/[-_\s]Anis/i.test(name)) {
+        return 'Anis';
+    } else if (/[-_\s]\w+?Coat[-_\s]Rough/i.test(name)) {
+        return 'Coat Rough';
+    } else if (/[-_\s]\w+?Coat[-_\s]Normal/i.test(name)) {
+        return 'Coat Normal';
+    } else if (/[-_\s]\w+?Coat/i.test(name)) {
+        return 'Coat';
+    } else if (/[-_\s]Irid\w+?[-_\s]Thick/i.test(name)) {
+        return 'Irid Thick';
+    } else if (/[-_\s]Irid/i.test(name)) {
+        return 'Irid';
+    } else if (/[-_\s]Sheen[-_\s]Rough/i.test(name)) {
+        return 'Sheen Rough';
+    } else if (/[-_\s]Sheen/i.test(name)) {
+        return 'Sheen Color';
+    } else if (/[-_\s]Trans\w+?[-_\s]Thick/i.test(name)) {
+        return 'Trans Thick';
+    } else if (/[-_\s]Trans/i.test(name)) {
+        return 'Trans Int';
+    } else if (/[-_\s]Specular[-_\s]Int/i.test(name)) {
+        return 'Specular Int';
+    } else if (/[-_\s]Specular/i.test(name)) {
+        return 'Specular Color';
+    } else if (/[-_\s]Thick/i.test(name)) {
+        return 'Subsurface';
+    } else if (/[-_\s]Env/i.test(name)) {
+        return 'Env';
+    } else if (/[-_\s]Albedo|Base|Color|Diffuse/i.test(name)) {
+        return 'Map';
+    }
+}
+
+export function setPanelTexture(panel, material, image, name = 'Map', index = []) {
     if (index.length) {
         index = [index];
     }
 
+    let type, options;
+
     if (material.isMeshBasicMaterial) {
-        panel.setPanelValue('Map', image, [['Basic', 1], ...index]);
+        type = 'Basic';
+        options = BasicMaterialOptions;
     } else if (material.isMeshLambertMaterial) {
-        panel.setPanelValue('Map', image, [['Lambert', 1], ...index]);
+        type = 'Lambert';
+        options = LambertMaterialOptions;
     } else if (material.isMeshMatcapMaterial) {
-        panel.setPanelValue('Map', image, [['Matcap', 1], ...index]);
+        type = 'Matcap';
+        options = MatcapMaterialOptions;
     } else if (material.isMeshPhongMaterial) {
-        panel.setPanelValue('Map', image, [['Phong', 1], ...index]);
+        type = 'Phong';
+        options = PhongMaterialOptions;
     } else if (material.isMeshToonMaterial) {
-        panel.setPanelValue('Map', image, [['Toon', 1], ...index]);
+        type = 'Toon';
+        options = ToonMaterialOptions;
     } else if (material.isMeshPhysicalMaterial) {
-        panel.setPanelValue('Map', image, [['Physical', 1], ...index]);
+        type = 'Physical';
+        options = PhysicalMaterialOptions;
     } else if (material.isMeshStandardMaterial) {
-        panel.setPanelValue('Map', image, [['Standard', 1], ...index]);
+        type = 'Standard';
+        options = StandardMaterialOptions;
     }
+
+    panel.setPanelValue('Map', image, [[type, Array.from(options.keys()).indexOf(name)], ...index]);
 }
