@@ -20,7 +20,7 @@
     </script>
 
     <script type="module">
-        import { BoxGeometry, Color, HemisphereLight, Mesh, MeshNormalMaterial, MeshPhongMaterial, PerspectiveCamera, SRGBColorSpace, Scene, TextureLoader, Vector2, WebGLRenderer } from 'three';
+        import { Color, HemisphereLight, Mesh, MeshNormalMaterial, PerspectiveCamera, Scene, TextureLoader, WebGLRenderer } from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { getSphericalCube } from '../../src/three.js';
 
@@ -54,32 +54,7 @@
         const geometry = getSphericalCube(0.65);
         geometry.computeTangents();
 
-        const material = createCubeFaceMaterial({
-            nameFaces: [
-                'px',
-                'nx',
-                'py',
-                'ny',
-                'pz',
-                'nz'
-            ],
-            mapFaces: await Promise.all([
-                textureLoader.loadAsync('cube/mars/mars_basecolor_px.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_basecolor_nx.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_basecolor_py.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_basecolor_ny.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_basecolor_pz.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_basecolor_nz.jpg')
-            ]),
-            normalFaces: await Promise.all([
-                textureLoader.loadAsync('cube/mars/mars_normal_px.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_normal_nx.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_normal_py.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_normal_ny.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_normal_pz.jpg'),
-                textureLoader.loadAsync('cube/mars/mars_normal_nz.jpg')
-            ])
-        });
+        const material = new MeshNormalMaterial();
 
         const mesh = new Mesh(geometry, material);
         scene.add(mesh);
@@ -125,30 +100,6 @@
             camera.updateProjectionMatrix();
 
             renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // helpers
-
-        function createCubeFaceMaterial({ nameFaces, mapFaces, normalFaces }) {
-            return nameFaces.map((texture, index) => {
-                const name = nameFaces[index];
-                const map = mapFaces[index];
-                const normalMap = normalFaces[index];
-
-                map.colorSpace = SRGBColorSpace;
-
-                const material = new MeshPhongMaterial({
-                    name,
-                    map,
-                    normalMap,
-                    normalScale: new Vector2(2, -2),
-                    shininess: 0,
-                    reflectivity: 0.1,
-                    fog: false
-                });
-
-                return material;
-            });
         }
     </script>
 </head>
