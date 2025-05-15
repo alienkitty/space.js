@@ -88,6 +88,32 @@ export function isCubeTextures(names) {
     return names.find(name => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(name));
 }
 
+export function sortCubeTextures(images, names) {
+    names = names.map(name => {
+        if (/^PosX|PX|[-_\s]PosX|PX/i.test(name)) {
+            return 'px';
+        } else if (/^NegX|NX|[-_\s]NegX|NX/i.test(name)) {
+            return 'nx';
+        } else if (/^PosY|PY|[-_\s]PosY|PY/i.test(name)) {
+            return 'py';
+        } else if (/^NegY|NY|[-_\s]NegY|NY/i.test(name)) {
+            return 'ny';
+        } else if (/^PosZ|PZ|[-_\s]PosZ|PZ/i.test(name)) {
+            return 'pz';
+        } else if (/^NegZ|NZ|[-_\s]NegZ|NZ/i.test(name)) {
+            return 'nz';
+        }
+    });
+
+    const map = new Map(images.map((image, i) => [names[i], image]));
+
+    images = ['px', 'nx', 'py', 'ny', 'pz', 'nz'].map(name => map.get(name));
+
+    map.clear();
+
+    return images;
+}
+
 export function setPanelTexture(panel, material, image, name = 'Map', index = []) {
     if (index.length) {
         index = [index];

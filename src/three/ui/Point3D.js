@@ -18,7 +18,7 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 import { loadFiles } from '../../loaders/FileUtils.js';
-import { getMaterialName, getTextureName, isCubeTextures, setPanelTexture } from '../loaders/TextureFileUtils.js';
+import { getMaterialName, getTextureName, isCubeTextures, setPanelTexture, sortCubeTextures } from '../loaders/TextureFileUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,
@@ -192,6 +192,8 @@ export class Point3D extends Group {
             }
 
             if (isCubeTextures(filenames)) {
+                images = sortCubeTextures(images, filenames);
+
                 if (!Array.isArray(ui.object.material)) {
                     ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
                         const material = ui.object.material.clone();
