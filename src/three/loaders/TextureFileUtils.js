@@ -10,20 +10,20 @@ import { ToonMaterialOptions } from '../panels/materials/ToonMaterialPanel.js';
 import { StandardMaterialOptions } from '../panels/materials/StandardMaterialPanel.js';
 import { PhysicalMaterialOptions } from '../panels/materials/PhysicalMaterialPanel.js';
 
-export function getMaterialName(materials, name, index) {
+export function getMaterialName(materials, filename, index) {
     const names = materials.map(material => material.name);
-    const match = name.match(/[-_\s]([^-_\s]*)\./);
+    const match = filename.match(/[-_\s]([^-_\s]*)\./);
 
     let materialName;
 
     if (match) {
-        const suffix = match.pop();
+        const name = match.pop();
 
         let count = 1;
-        materialName = suffix;
+        materialName = name;
 
         while (names.includes(materialName)) {
-            materialName = `${suffix}${++count}`;
+            materialName = `${name}${++count}`;
         }
     } else {
         materialName = index;
@@ -32,54 +32,54 @@ export function getMaterialName(materials, name, index) {
     return materialName;
 }
 
-export function getTextureName(name) {
-    if (/[-_\s]Light/i.test(name)) {
+export function getTextureName(filename) {
+    if (/[-_\s]Light/i.test(filename)) {
         return 'Light';
-    } else if (/[-_\s]Occ/i.test(name)) {
+    } else if (/[-_\s]Occ/i.test(filename)) {
         return 'AO';
-    } else if (/[-_\s]Emission/i.test(name)) {
+    } else if (/[-_\s]Emission/i.test(filename)) {
         return 'Emissive';
-    } else if (/[-_\s]Bump/i.test(name)) {
+    } else if (/[-_\s]Bump/i.test(filename)) {
         return 'Bump';
-    } else if (/[-_\s]Normal/i.test(name)) {
+    } else if (/[-_\s]Normal/i.test(filename)) {
         return 'Normal';
-    } else if (/[-_\s]Height|Displace/i.test(name)) {
+    } else if (/[-_\s]Height|Displace/i.test(filename)) {
         return 'Displace';
-    } else if (/[-_\s]Rough/i.test(name)) {
+    } else if (/[-_\s]Rough/i.test(filename)) {
         return 'Rough';
-    } else if (/[-_\s]Metal/i.test(name)) {
+    } else if (/[-_\s]Metal/i.test(filename)) {
         return 'Metal';
-    } else if (/[-_\s]Alpha/i.test(name)) {
+    } else if (/[-_\s]Alpha/i.test(filename)) {
         return 'Alpha';
-    } else if (/[-_\s]Anis/i.test(name)) {
+    } else if (/[-_\s]Anis/i.test(filename)) {
         return 'Anis';
-    } else if (/[-_\s]\w+?Coat[-_\s]Rough/i.test(name)) {
+    } else if (/[-_\s]\w+?Coat[-_\s]Rough/i.test(filename)) {
         return 'Coat Rough';
-    } else if (/[-_\s]\w+?Coat[-_\s]Normal/i.test(name)) {
+    } else if (/[-_\s]\w+?Coat[-_\s]Normal/i.test(filename)) {
         return 'Coat Normal';
-    } else if (/[-_\s]\w+?Coat/i.test(name)) {
+    } else if (/[-_\s]\w+?Coat/i.test(filename)) {
         return 'Coat';
-    } else if (/[-_\s]Irid\w+?[-_\s]Thick/i.test(name)) {
+    } else if (/[-_\s]Irid\w+?[-_\s]Thick/i.test(filename)) {
         return 'Irid Thick';
-    } else if (/[-_\s]Irid/i.test(name)) {
+    } else if (/[-_\s]Irid/i.test(filename)) {
         return 'Irid';
-    } else if (/[-_\s]Sheen[-_\s]Rough/i.test(name)) {
+    } else if (/[-_\s]Sheen[-_\s]Rough/i.test(filename)) {
         return 'Sheen Rough';
-    } else if (/[-_\s]Sheen/i.test(name)) {
+    } else if (/[-_\s]Sheen/i.test(filename)) {
         return 'Sheen Color';
-    } else if (/[-_\s]Trans\w+?[-_\s]Thick/i.test(name)) {
+    } else if (/[-_\s]Trans\w+?[-_\s]Thick/i.test(filename)) {
         return 'Trans Thick';
-    } else if (/[-_\s]Trans/i.test(name)) {
+    } else if (/[-_\s]Trans/i.test(filename)) {
         return 'Trans Int';
-    } else if (/[-_\s]Specular[-_\s]Int/i.test(name)) {
+    } else if (/[-_\s]Specular[-_\s]Int/i.test(filename)) {
         return 'Specular Int';
-    } else if (/[-_\s]Specular/i.test(name)) {
+    } else if (/[-_\s]Specular/i.test(filename)) {
         return 'Specular Color';
-    } else if (/[-_\s]Thick/i.test(name)) {
+    } else if (/[-_\s]Thick/i.test(filename)) {
         return 'Subsurface';
-    } else if (/[-_\s]Env/i.test(name)) {
+    } else if (/[-_\s]Env/i.test(filename)) {
         return 'Env';
-    } else if (/[-_\s]Albedo|Base|Color|Diffuse/i.test(name)) {
+    } else if (/[-_\s]Albedo|Base|Color|Diffuse/i.test(filename)) {
         return 'Map';
     }
 }
