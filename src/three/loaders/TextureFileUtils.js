@@ -14,11 +14,20 @@ export function getMaterialName(materials, filename, index) {
     const names = materials.map(material => material.name);
     const match = filename.match(/[-_\s]([^-_\s]*)\./);
 
+    let name;
     let materialName;
 
     if (match) {
-        const name = match.pop();
+        name = match.pop();
+    } else if (filename.length < 16) {
+        const match = filename.match(/(.*)\./);
 
+        if (match) {
+            name = match.pop().replace(/[-_\s]+/g, '');
+        }
+    }
+
+    if (name) {
         let count = 1;
         materialName = name;
 
