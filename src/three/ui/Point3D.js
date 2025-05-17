@@ -193,7 +193,7 @@ export class Point3D extends Group {
             }
 
             if (isCubeTextures(data)) {
-                sortCubeTextures(data);
+                data = sortCubeTextures(data.filter(({ image }) => image instanceof Image));
 
                 if (!Array.isArray(ui.object.material)) {
                     ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
@@ -207,14 +207,11 @@ export class Point3D extends Group {
                 ui.object.material.forEach((material, i) => {
                     if (data[i]) {
                         const { image, filename, key } = data[i];
+                        const name = getTextureName(filename);
 
-                        if (image instanceof Image) {
-                            const name = getTextureName(filename);
+                        material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
 
-                            material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
-
-                            setPanelTexture(ui, material, image, name, ['Index', i]);
-                        }
+                        setPanelTexture(ui, material, image, name, ['Index', i]);
                     }
                 });
 
