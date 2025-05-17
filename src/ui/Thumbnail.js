@@ -115,7 +115,9 @@ export class Thumbnail extends Interface {
         if (data.length) {
             const { image } = data[0];
 
-            this.setThumbnail(image, true);
+            if (image instanceof Image) {
+                this.setThumbnail(image, true);
+            }
         }
     }
 

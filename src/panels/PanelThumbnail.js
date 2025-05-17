@@ -133,9 +133,11 @@ export class PanelThumbnail extends Interface {
 
                 const { image, filename } = data[0];
 
-                this.data.name = filename;
+                if (image instanceof Image) {
+                    this.data.name = filename;
 
-                this.setValue(image);
+                    this.setValue(image);
+                }
             }
         }
     }

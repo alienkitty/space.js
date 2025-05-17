@@ -7,15 +7,19 @@ export function loadFile(file) {
 
     const promise = new Promise(resolve => {
         reader.onload = () => {
-            const image = new Image();
+            if (/\.jpe?g|png|webp|gif|svg/i.test(file.name)) {
+                const image = new Image();
 
-            image.onload = () => {
-                resolve(image);
+                image.onload = () => {
+                    resolve(image);
 
-                image.onload = null;
-            };
+                    image.onload = null;
+                };
 
-            image.src = reader.result;
+                image.src = reader.result;
+            } else {
+                resolve(reader.result);
+            }
 
             reader.onload = null;
         };
@@ -33,10 +37,8 @@ export async function loadFiles(files) {
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
-        if (/\.jpe?g|png|webp|gif|svg/i.test(file.name)) {
-            array.push(loadFile(file));
-            filenames.push(file.name);
-        }
+        array.push(loadFile(file));
+        filenames.push(file.name);
     }
 
     return (await Promise.all(array)).map((image, i) => ({ image, filename: filenames[i] }));

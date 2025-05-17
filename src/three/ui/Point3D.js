@@ -205,22 +205,27 @@ export class Point3D extends Group {
                 }
 
                 ui.object.material.forEach((material, i) => {
-                    const { image, filename, key } = data[i];
-                    const name = getTextureName(filename);
+                    if (data[i]) {
+                        const { image, filename, key } = data[i];
 
-                    if (image) {
-                        material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
+                        if (image instanceof Image) {
+                            const name = getTextureName(filename);
 
-                        setPanelTexture(ui, material, image, name, ['Index', i]);
+                            material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
+
+                            setPanelTexture(ui, material, image, name, ['Index', i]);
+                        }
                     }
                 });
 
                 ui.setPanelIndex('Index', 0);
             } else {
                 data.forEach(({ image, filename }) => {
-                    const name = getTextureName(filename);
+                    if (image instanceof Image) {
+                        const name = getTextureName(filename);
 
-                    setPanelTexture(ui, ui.object.material, image, name);
+                        setPanelTexture(ui, ui.object.material, image, name);
+                    }
                 });
             }
         }
@@ -252,16 +257,19 @@ export class Point3D extends Group {
                     Stage.events.emit('images_drop', { data, target: this });
                 } else {
                     const { image, filename } = data[0];
-                    const name = getTextureName(filename);
 
-                    if (Array.isArray(ui.object.material)) {
-                        const index = ui.getPanelIndex('Index') || 0;
-                        const material = ui.object.material[index];
-                        material.name = getMaterialName(ui.object.material, filename, (index + 1).toString());
+                    if (image instanceof Image) {
+                        const name = getTextureName(filename);
 
-                        setPanelTexture(ui, material, image, name, ['Index', index]);
-                    } else {
-                        setPanelTexture(ui, ui.object.material, image, name);
+                        if (Array.isArray(ui.object.material)) {
+                            const index = ui.getPanelIndex('Index') || 0;
+                            const material = ui.object.material[index];
+                            material.name = getMaterialName(ui.object.material, filename, (index + 1).toString());
+
+                            setPanelTexture(ui, material, image, name, ['Index', index]);
+                        } else {
+                            setPanelTexture(ui, ui.object.material, image, name);
+                        }
                     }
                 }
             }
