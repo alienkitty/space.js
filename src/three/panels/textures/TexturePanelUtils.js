@@ -10,9 +10,9 @@ import { ToonMaterialOptions } from '../materials/ToonMaterialPanel.js';
 import { StandardMaterialOptions } from '../materials/StandardMaterialPanel.js';
 import { PhysicalMaterialOptions } from '../materials/PhysicalMaterialPanel.js';
 
-export function setPanelTexture(panel, material, texture, name = 'Map', index = []) {
-    if (index.length) {
-        index = [index];
+export function setPanelTexture(panel, material, texture, name = 'Map', path = []) {
+    if (path.length) {
+        path = [path];
     }
 
     let type, options;
@@ -40,5 +40,9 @@ export function setPanelTexture(panel, material, texture, name = 'Map', index = 
         options = StandardMaterialOptions;
     }
 
-    panel.setPanelValue('Map', texture, [[type, Array.from(options.keys()).indexOf(name)], ...index]);
+    const index = Array.from(options.keys()).indexOf(name);
+
+    if (~index) {
+        panel.setPanelValue('Map', texture, [[type, index], ...path]);
+    }
 }
