@@ -136,10 +136,11 @@
         };
 
         class InstancedMeshPanel extends Panel {
-            constructor(mesh, materialItems) {
+            constructor(mesh, ui, materialItems) {
                 super();
 
                 this.mesh = mesh;
+                this.ui = ui;
                 this.materialItems = materialItems;
 
                 this.initPanel();
@@ -147,9 +148,14 @@
 
             initPanel() {
                 const mesh = this.mesh;
+                const ui = this.ui;
                 const materialItems = this.materialItems;
 
-                const point = Point3D.getPoint(mesh);
+                let point;
+
+                if (ui.constructor.points) {
+                    point = ui.constructor.getPoint(mesh);
+                }
 
                 const items = [
                     {

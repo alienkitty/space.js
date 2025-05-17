@@ -7,7 +7,7 @@ import { SRGBColorSpace, UVMapping } from 'three';
 import { MapPanel } from './MapPanel.js';
 
 export class TextureMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'map', UVMapping, SRGBColorSpace);
+    constructor(mesh, ui) {
+        super(mesh, ui, 'map', UVMapping, SRGBColorSpace);
     }
 }

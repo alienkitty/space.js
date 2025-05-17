@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class BumpMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'bumpMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'bumpMap');
     }
 
     initPanel() {

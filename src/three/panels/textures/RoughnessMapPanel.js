@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class RoughnessMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'roughnessMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'roughnessMap');
     }
 
     initPanel() {

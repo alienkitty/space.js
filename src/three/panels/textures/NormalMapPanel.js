@@ -10,8 +10,8 @@ import { MapPanel } from './MapPanel.js';
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class NormalMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'normalMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'normalMap');
     }
 
     initPanel() {

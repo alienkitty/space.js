@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class AOMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'aoMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'aoMap');
     }
 
     initPanel() {

@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class DisplacementMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'displacementMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'displacementMap');
     }
 
     initPanel() {

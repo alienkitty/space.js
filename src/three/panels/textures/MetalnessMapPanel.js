@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class MetalnessMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'metalnessMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'metalnessMap');
     }
 
     initPanel() {

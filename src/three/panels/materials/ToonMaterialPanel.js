@@ -2,7 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
@@ -44,22 +43,24 @@ export class ToonMaterialPanel extends Panel {
         ...MaterialProperties.Toon
     ];
 
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
-        if (!Point3D.points) {
+        if (!ui || !ui.constructor.points) {
             ToonMaterialOptions.delete('Helper');
         }
 
-        if (!Point3D.physics) {
+        if (!ui || !ui.constructor.physics) {
             ToonMaterialOptions.delete('Physics');
         }
 
@@ -75,7 +76,7 @@ export class ToonMaterialPanel extends Panel {
                 callback: (value, item) => {
                     const MaterialPanel = ToonMaterialOptions.get(value);
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -92,7 +93,7 @@ export class ToonMaterialPanel extends Panel {
                     callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
-                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        const materialPanel = new InstancedMeshPanel(mesh, ui, materialItems);
                         materialPanel.animateIn(true);
 
                         item.setContent(materialPanel);

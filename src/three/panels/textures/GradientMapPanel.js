@@ -5,7 +5,7 @@
 import { MapPanel } from './MapPanel.js';
 
 export class GradientMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'gradientMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'gradientMap');
     }
 }

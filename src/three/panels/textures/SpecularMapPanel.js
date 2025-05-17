@@ -5,7 +5,7 @@
 import { MapPanel } from './MapPanel.js';
 
 export class SpecularMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'specularMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'specularMap');
     }
 }

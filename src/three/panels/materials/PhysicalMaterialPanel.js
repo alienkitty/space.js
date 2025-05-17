@@ -2,7 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
@@ -82,10 +81,11 @@ export class PhysicalMaterialPanel extends Panel {
         ...MaterialProperties.Physical
     ];
 
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[0];
@@ -95,14 +95,15 @@ export class PhysicalMaterialPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
         const materials = this.materials;
 
-        if (!Point3D.points) {
+        if (!ui || !ui.constructor.points) {
             PhysicalMaterialOptions.delete('Helper');
         }
 
-        if (!Point3D.physics) {
+        if (!ui || !ui.constructor.physics) {
             PhysicalMaterialOptions.delete('Physics');
         }
 
@@ -126,7 +127,7 @@ export class PhysicalMaterialPanel extends Panel {
                 callback: (value, item) => {
                     const MaterialPanel = PhysicalMaterialOptions.get(value);
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -143,7 +144,7 @@ export class PhysicalMaterialPanel extends Panel {
                     callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
-                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        const materialPanel = new InstancedMeshPanel(mesh, ui, materialItems);
                         materialPanel.animateIn(true);
 
                         item.setContent(materialPanel);

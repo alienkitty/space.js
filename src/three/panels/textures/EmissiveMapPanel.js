@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class EmissiveMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'emissiveMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'emissiveMap');
     }
 
     initPanel() {

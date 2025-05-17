@@ -7,8 +7,8 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from './MapPanel.js';
 
 export class LightMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'lightMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'lightMap');
     }
 
     initPanel() {

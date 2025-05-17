@@ -8,10 +8,11 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { MapPanel } from '../textures/MapPanel.js';
 
 export class PhysicalMaterialClearcoatNormalPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[0];
@@ -21,6 +22,7 @@ export class PhysicalMaterialClearcoatNormalPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
         const materials = this.materials;
         const material = this.material;
@@ -29,7 +31,7 @@ export class PhysicalMaterialClearcoatNormalPanel extends Panel {
             {
                 type: 'content',
                 callback: (value, item) => {
-                    const materialPanel = new MapPanel(mesh, 'clearcoatNormalMap');
+                    const materialPanel = new MapPanel(mesh, ui, 'clearcoatNormalMap');
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);

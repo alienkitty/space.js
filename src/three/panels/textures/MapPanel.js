@@ -4,7 +4,6 @@
 
 import { NoColorSpace, Texture, UVMapping } from 'three';
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
@@ -13,10 +12,11 @@ import { getKeyByValue } from '../../../utils/Utils.js';
 import { getMaterialName } from '../../loaders/TextureFileUtils.js';
 
 export class MapPanel extends Panel {
-    constructor(mesh, key, mapping = UVMapping, colorSpace = NoColorSpace) {
+    constructor(mesh, ui, key, mapping = UVMapping, colorSpace = NoColorSpace) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
         this.key = key;
         this.mapping = mapping;
         this.colorSpace = colorSpace;
@@ -67,14 +67,15 @@ export class MapPanel extends Panel {
         this.update(index);
 
         const mesh = this.mesh;
+        const ui = this.ui;
         const key = this.key;
 
         const material = this.material;
 
         let point;
 
-        if (Point3D.points) {
-            point = Point3D.getPoint(mesh);
+        if (ui.constructor.points) {
+            point = ui.constructor.getPoint(mesh);
         }
 
         const items = [

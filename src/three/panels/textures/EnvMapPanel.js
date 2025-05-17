@@ -12,8 +12,8 @@ import { MapPanel } from './MapPanel.js';
 import { TwoPI, getKeyByValue } from '../../../utils/Utils.js';
 
 export class EnvMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'envMap', EquirectangularReflectionMapping, SRGBColorSpace);
+    constructor(mesh, ui) {
+        super(mesh, ui, 'envMap', EquirectangularReflectionMapping, SRGBColorSpace);
     }
 
     initPanel() {

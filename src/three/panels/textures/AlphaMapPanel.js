@@ -5,7 +5,7 @@
 import { MapPanel } from './MapPanel.js';
 
 export class AlphaMapPanel extends MapPanel {
-    constructor(mesh) {
-        super(mesh, 'alphaMap');
+    constructor(mesh, ui) {
+        super(mesh, ui, 'alphaMap');
     }
 }

@@ -2,21 +2,23 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
 export class OimoPhysicsPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.initPanel();
     }
 
     initPanel() {
-        const { physics } = Point3D;
+        const ui = this.ui;
+
+        const { physics } = ui.constructor;
 
         let object = this.mesh;
 

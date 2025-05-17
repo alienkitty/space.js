@@ -2,7 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from '../Options.js';
@@ -10,21 +9,23 @@ import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from '..
 import { getKeyByValue } from '../../../utils/Utils.js';
 
 export class MeshHelperPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
         let point;
 
-        if (Point3D.points) {
-            point = Point3D.getPoint(mesh);
+        if (ui.constructor.points) {
+            point = ui.constructor.getPoint(mesh);
         }
 
         // Defaults
@@ -77,7 +78,7 @@ export class MeshHelperPanel extends Panel {
             );
         }
 
-        if (Point3D.uvHelper) {
+        if (ui.constructor.uvHelper) {
             items.push(
                 {
                     type: 'list',

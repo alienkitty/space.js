@@ -222,7 +222,7 @@ export class MaterialPanelController {
                         });
                     }
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
