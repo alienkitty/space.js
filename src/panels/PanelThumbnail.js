@@ -80,7 +80,6 @@ export class PanelThumbnail extends Interface {
         this.input = new Interface(null, 'input');
         this.input.attr({
             type: 'file',
-            accept: 'image/*',
             multiple: ''
         });
     }
@@ -124,21 +123,7 @@ export class PanelThumbnail extends Interface {
         const data = await loadFiles(files);
 
         if (data.length) {
-            if (data.length > 1) {
-                Stage.events.emit('images_drop', { data, target: this });
-            } else {
-                if (!this.data) {
-                    this.data = {};
-                }
-
-                const { image, filename } = data[0];
-
-                if (image instanceof Image) {
-                    this.data.name = filename;
-
-                    this.setValue(image);
-                }
-            }
+            Stage.events.emit('images_drop', { data, target: this });
         }
     }
 

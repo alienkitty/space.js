@@ -3,6 +3,7 @@
  */
 
 import { Group, Matrix4, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
 import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.js';
 
@@ -62,7 +63,8 @@ export class Point3D extends Group {
         headerSnap = false,
         dividerSnap = false,
         physics = null,
-        loader = new TextureLoader(),
+        textureLoader = new TextureLoader(),
+        rgbeLoader = new RGBELoader(),
         uvTexturePath = 'assets/textures/uv.jpg',
         uvHelper = false,
         debug = false
@@ -77,7 +79,8 @@ export class Point3D extends Group {
         this.headerSnap = headerSnap;
         this.dividerSnap = dividerSnap;
         this.physics = physics;
-        this.loader = loader;
+        this.textureLoader = textureLoader;
+        this.rgbeLoader = rgbeLoader;
         this.uvTexturePath = uvTexturePath;
         this.uvHelper = uvHelper;
         this.debug = debug;
@@ -130,7 +133,7 @@ export class Point3D extends Group {
 
     static initTextures() {
         if (this.uvHelper) {
-            this.uvTexture = this.loader.load(this.uvTexturePath);
+            this.uvTexture = this.getTexture(this.uvTexturePath);
             this.uvTexture.anisotropy = this.anisotropy;
             this.uvTexture.userData.uv = true;
         }
@@ -182,7 +185,7 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = ({ data }) => {
+    static onImagesDrop = async ({ data }) => {
         const selected = this.getSelected();
 
         if (selected.length) {
@@ -192,8 +195,10 @@ export class Point3D extends Group {
                 return;
             }
 
-            if (isCubeTextures(data)) {
-                data = sortCubeTextures(data.filter(({ image }) => image instanceof Image));
+            data = data.filter(({ filename }) => /\.jpe?g|png|webp|gif|svg|hdr/i.test(filename));
+
+            if (data.length >= 6 && isCubeTextures(data)) {
+                sortCubeTextures(data);
 
                 if (!Array.isArray(ui.object.material)) {
                     ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
@@ -204,26 +209,44 @@ export class Point3D extends Group {
                     });
                 }
 
-                ui.object.material.forEach((material, i) => {
+                for (let i = 0, l = ui.object.material.length; i < l; i++) {
                     if (data[i]) {
                         const { image, filename, key } = data[i];
+
+                        let texture;
+
+                        if (image instanceof Image) {
+                            texture = image;
+                        } else if (/\.hdr/i.test(filename)) {
+                            texture = await this.loadHDRTexture(image);
+                        }
+
+                        const material = ui.object.material[i];
                         const name = getTextureName(filename);
 
                         material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
 
-                        setPanelTexture(ui, material, image, name, ['Index', i]);
+                        setPanelTexture(ui, material, texture, name, ['Index', i]);
                     }
-                });
+                }
 
                 ui.setPanelIndex('Index', 0);
             } else {
-                data.forEach(({ image, filename }) => {
-                    if (image instanceof Image) {
-                        const name = getTextureName(filename);
+                for (let i = 0, l = data.length; i < l; i++) {
+                    const { image, filename } = data[i];
 
-                        setPanelTexture(ui, ui.object.material, image, name);
+                    let texture;
+
+                    if (image instanceof Image) {
+                        texture = image;
+                    } else if (/\.hdr/i.test(filename)) {
+                        texture = await this.loadHDRTexture(image);
                     }
-                });
+
+                    const name = getTextureName(filename);
+
+                    setPanelTexture(ui, ui.object.material, texture, name);
+                }
             }
         }
     };
@@ -248,27 +271,7 @@ export class Point3D extends Group {
             const data = await loadFiles(e.dataTransfer.files);
 
             if (data.length) {
-                const ui = selected[0];
-
-                if (data.length > 1) {
-                    Stage.events.emit('images_drop', { data, target: this });
-                } else {
-                    const { image, filename } = data[0];
-
-                    if (image instanceof Image) {
-                        const name = getTextureName(filename);
-
-                        if (Array.isArray(ui.object.material)) {
-                            const index = ui.getPanelIndex('Index') || 0;
-                            const material = ui.object.material[index];
-                            material.name = getMaterialName(ui.object.material, filename, (index + 1).toString());
-
-                            setPanelTexture(ui, material, image, name, ['Index', index]);
-                        } else {
-                            setPanelTexture(ui, ui.object.material, image, name);
-                        }
-                    }
-                }
+                Stage.events.emit('images_drop', { data, target: this });
             }
         }
     };
@@ -602,6 +605,14 @@ export class Point3D extends Group {
 
         return null;
     }
+
+    // Global handlers
+
+    static getTexture = (path, callback) => this.textureLoader.load(path, callback);
+
+    static loadTexture = path => this.textureLoader.loadAsync(path);
+
+    static loadHDRTexture = path => this.rgbeLoader.loadAsync(path);
 
     constructor(mesh, {
         name,

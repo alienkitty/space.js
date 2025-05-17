@@ -9,7 +9,6 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
-import { getMaterialName } from '../../loaders/TextureFileUtils.js';
 
 export class MapPanel extends Panel {
     constructor(mesh, ui, key, mapping = UVMapping, colorSpace = NoColorSpace) {
@@ -120,17 +119,17 @@ export class MapPanel extends Panel {
                         } else if (value) {
                             if (this.supported) {
                                 material[key].dispose();
-                                material[key] = new Texture(value);
+                                material[key] = value instanceof Texture ? value : new Texture(value);
                                 material[key].mapping = data.mapping;
-                                material[key].colorSpace = data.colorSpace;
+                                material[key].colorSpace = value instanceof Texture ? value.colorSpace : this.colorSpace;
                                 material[key].anisotropy = data.anisotropy;
                                 material[key].wrapS = data.wrapS;
                                 material[key].wrapT = data.wrapT;
                                 material[key].repeat.copy(data.repeat);
                             } else {
-                                material[key] = new Texture(value);
+                                material[key] = value instanceof Texture ? value : new Texture(value);
                                 material[key].mapping = this.mapping;
-                                material[key].colorSpace = this.colorSpace;
+                                material[key].colorSpace = value instanceof Texture ? value.colorSpace : this.colorSpace;
                             }
 
                             material[key].needsUpdate = true;
@@ -144,16 +143,13 @@ export class MapPanel extends Panel {
                         this.update(index);
 
                         if (parent) {
-                            if (data.name) {
-                                material.name = getMaterialName(this.materials, data.name, (index + 1).toString());
-                            }
-
                             this.updateOptions();
 
                             parent.setList(this.options);
                         }
 
                         item.setData(this.supported ? material[key] : {});
+                        item.setValue(this.supported ? material[key].userData.thumbnail : null);
                     }
 
                     if (this.supported && !(key === 'envMap' && material.isMeshStandardMaterial)) {

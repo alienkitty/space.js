@@ -34,7 +34,7 @@ export class PanelController {
             container: this.ui,
             headerSnap: true,
             physics: this.physics,
-            loader: textureLoader,
+            textureLoader,
             uvTexturePath: 'uv.jpg',
             uvHelper: true
         });
