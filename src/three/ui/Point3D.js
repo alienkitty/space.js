@@ -18,7 +18,8 @@ import { Point } from '../../ui/Point.js';
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
 import { loadFiles } from '../../loaders/FileUtils.js';
-import { getMaterialName, getTextureName, isCubeTextures, setPanelTexture, sortCubeTextures } from '../loaders/TextureFileUtils.js';
+import { getMaterialName, getTextureName, isCubeTextures, sortCubeTextures } from '../loaders/TextureFileUtils.js';
+import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
 
 /**
  * A UI and panel container for various components in 3D space,

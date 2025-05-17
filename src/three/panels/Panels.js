@@ -64,3 +64,4 @@ export { MetalnessMapPanel } from './textures/MetalnessMapPanel.js';
 export { SpecularMapPanel } from './textures/SpecularMapPanel.js';
 export { AlphaMapPanel } from './textures/AlphaMapPanel.js';
 export { EnvMapPanel } from './textures/EnvMapPanel.js';
+export * from './textures/TexturePanelUtils.js';
