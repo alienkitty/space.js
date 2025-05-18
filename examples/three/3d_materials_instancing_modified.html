@@ -179,7 +179,7 @@
                                         step: 0.01,
                                         value: mesh.geometry.attributes.instanceOpacity.getX(index),
                                         callback: value => {
-                                            if (value < 1) {
+                                            if (!mesh.material.transparent) {
                                                 mesh.material.transparent = true;
                                                 mesh.material.needsUpdate = true;
                                             }

@@ -84,7 +84,7 @@ export class MaterialPanelController {
                 value: this.material.opacity,
                 callback: value => {
                     this.materials.forEach(material => {
-                        if (value < 1) {
+                        if (!material.transparent) {
                             material.transparent = true;
                             material.needsUpdate = true;
                         }
