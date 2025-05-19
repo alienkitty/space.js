@@ -9,14 +9,8 @@ export function loadFile(file) {
         reader.onload = () => {
             if (/\.jpe?g|png|webp|gif|svg/i.test(file.name)) {
                 const image = new Image();
-
-                image.onload = () => {
-                    resolve(image);
-
-                    image.onload = null;
-                };
-
                 image.src = reader.result;
+                resolve(image);
             } else {
                 resolve(reader.result);
             }

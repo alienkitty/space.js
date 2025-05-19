@@ -9,7 +9,7 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
-import { loadThumbnail } from './MapPanelUtils.js';
+import { getThumbnail } from './MapPanelUtils.js';
 
 export class MapPanel extends Panel {
     constructor(mesh, ui, key, mapping = UVMapping, colorSpace = NoColorSpace) {
@@ -87,7 +87,7 @@ export class MapPanel extends Panel {
                 name: 'Map',
                 data: this.supported ? this.textures[index] : {},
                 value: this.supported ? this.thumbnails[index] : null,
-                callback: async (value, item) => {
+                callback: (value, item) => {
                     const data = item.data;
 
                     const mapItems = [];
@@ -136,7 +136,7 @@ export class MapPanel extends Panel {
                             if (material[key].source.data instanceof Image) {
                                 material[key].userData.thumbnail = material[key].source.data;
                             } else {
-                                material[key].userData.thumbnail = await loadThumbnail(material[key]);
+                                material[key].userData.thumbnail = getThumbnail(material[key]);
                             }
 
                             material[key].needsUpdate = true;

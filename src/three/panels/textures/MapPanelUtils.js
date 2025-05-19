@@ -11,7 +11,7 @@ let camera;
 let screen;
 let ball;
 
-export function loadThumbnail(texture, size = 200) {
+export function getThumbnail(texture, size = 200) {
     if (!renderer) {
         renderer = new WebGLRenderer({
             alpha: true,
@@ -59,16 +59,7 @@ export function loadThumbnail(texture, size = 200) {
     }
 
     const image = new Image();
-
-    const promise = new Promise(resolve => {
-        image.onload = () => {
-            resolve(image);
-
-            image.onload = null;
-        };
-    });
-
     image.src = renderer.domElement.toDataURL();
 
-    return promise;
+    return image;
 }
