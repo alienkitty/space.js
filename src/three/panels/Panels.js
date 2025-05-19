@@ -50,6 +50,7 @@ export { BackgroundMapPanel } from './textures/BackgroundMapPanel.js';
 export { EnvironmentMapPanel } from './textures/EnvironmentMapPanel.js';
 export { SubsurfaceMapPanel } from './textures/SubsurfaceMapPanel.js';
 export { MapPanel } from './textures/MapPanel.js';
+export * from './textures/MapPanelUtils.js';
 export { TextureMapPanel } from './textures/TextureMapPanel.js';
 export { MatcapMapPanel } from './textures/MatcapMapPanel.js';
 export { GradientMapPanel } from './textures/GradientMapPanel.js';
