@@ -323,6 +323,10 @@ export class UI extends Interface {
         return this.header.info.panel.getPanelIndex(name);
     }
 
+    getPanelValue(name) {
+        return this.header.info.panel.getPanelValue(name);
+    }
+
     setPanelIndex(name, index, path) {
         this.header.info.panel.setPanelIndex(name, index, path);
     }

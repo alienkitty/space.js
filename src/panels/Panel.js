@@ -121,6 +121,7 @@ export class Panel extends Interface {
         return super.add(item);
     }
 
+    // TODO: Support all panel types
     getPanelIndex(name) {
         let index;
 
@@ -146,6 +147,34 @@ export class Panel extends Interface {
         }
 
         return index;
+    }
+
+    // TODO: Support all panel types
+    getPanelValue(name) {
+        let value;
+
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
+            if (!view) {
+                continue;
+            }
+
+            if (view.name === name && view.setValue) {
+                value = view.keys[view.index];
+                break;
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
+                value = view.group.children[0].getPanelValue(name);
+
+                if (value !== undefined) {
+                    break;
+                }
+            }
+        }
+
+        return value;
     }
 
     setPanelIndex(name, index, path = []) {
