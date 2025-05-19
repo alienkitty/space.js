@@ -110,9 +110,9 @@ export class MapPanel extends Panel {
                                 mesh.userData.uv = false;
                                 point.toggleUVHelper(false);
 
-                                if (material[key] && material[key].source.data) {
+                                if (material[key] && material[key].userData.thumbnail) {
                                     item.setData(material[key]);
-                                    item.setValue(material[key].source.data);
+                                    item.setValue(material[key].userData.thumbnail);
                                     return;
                                 }
                             }
@@ -132,6 +132,7 @@ export class MapPanel extends Panel {
                                 material[key].colorSpace = value instanceof Texture ? value.colorSpace : this.colorSpace;
                             }
 
+                            material[key].userData.thumbnail = material[key].source.data;
                             material[key].needsUpdate = true;
                             material.needsUpdate = true;
                         } else if (this.supported) {
@@ -273,7 +274,7 @@ export class MapPanel extends Panel {
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[index];
         this.textures = this.materials.map(material => material[this.key]);
-        this.thumbnails = this.textures.map(texture => texture && texture.source.data);
+        this.thumbnails = this.textures.map(texture => texture && texture.userData.thumbnail);
 
         const texture = this.textures[index];
 

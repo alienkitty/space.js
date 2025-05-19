@@ -38,7 +38,7 @@ export class EnvironmentMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 data: this.supported ? scene.environment : {},
-                value: this.supported ? scene.environment.source.data : null,
+                value: this.supported ? scene.environment.userData.thumbnail : null,
                 callback: (value, item) => {
                     const mapItems = [];
 
@@ -55,6 +55,7 @@ export class EnvironmentMapPanel extends Panel {
                                 scene.environment.colorSpace = SRGBColorSpace;
                             }
 
+                            scene.environment.userData.thumbnail = scene.environment.source.data;
                             scene.environment.needsUpdate = true;
                         } else if (this.supported) {
                             scene.environment.dispose();

@@ -38,7 +38,7 @@ export class SubsurfaceMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 data: this.supported ? uniforms.thicknessMap.value : {},
-                value: this.supported ? uniforms.thicknessMap.value.source.data : null,
+                value: this.supported ? uniforms.thicknessMap.value.userData.thumbnail : null,
                 callback: (value, item) => {
                     if (this.initialized) {
                         if (value) {
@@ -49,6 +49,7 @@ export class SubsurfaceMapPanel extends Panel {
                                 uniforms.thicknessMap.value = new Texture(value);
                             }
 
+                            uniforms.thicknessMap.value.userData.thumbnail = uniforms.thicknessMap.value.source.data;
                             uniforms.thicknessMap.value.needsUpdate = true;
                             uniforms.thicknessUseMap.value = true;
                         } else if (this.supported) {

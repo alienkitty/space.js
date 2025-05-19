@@ -39,7 +39,7 @@ export class BackgroundMapPanel extends Panel {
                 type: 'thumbnail',
                 name: 'Map',
                 data: this.supported ? scene.background : {},
-                value: this.supported ? scene.background.source.data : null,
+                value: this.supported ? scene.background.userData.thumbnail : null,
                 callback: (value, item) => {
                     const mapItems = [];
 
@@ -59,6 +59,7 @@ export class BackgroundMapPanel extends Panel {
                                 scene.background.colorSpace = SRGBColorSpace;
                             }
 
+                            scene.background.userData.thumbnail = scene.background.source.data;
                             scene.background.needsUpdate = true;
                         } else if (this.supported) {
                             scene.background.dispose();
