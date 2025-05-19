@@ -82,9 +82,6 @@ export class AssetLoader extends Loader {
     loadImage(path) {
         const image = new Image();
 
-        image.crossOrigin = this.crossOrigin;
-        image.src = this.getPath(path);
-
         const promise = new Promise((resolve, reject) => {
             image.onload = () => {
                 resolve(image);
@@ -98,6 +95,9 @@ export class AssetLoader extends Loader {
                 image.onerror = null;
             };
         });
+
+        image.crossOrigin = this.crossOrigin;
+        image.src = this.getPath(path);
 
         return promise;
     }
