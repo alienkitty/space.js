@@ -9,7 +9,7 @@ import { PanelItem } from '../../../panels/PanelItem.js';
 import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
-import { getThumbnail } from './MapPanelUtils.js';
+import { getBallThumbnail, getThumbnail } from './MapPanelUtils.js';
 
 export class MapPanel extends Panel {
     constructor(mesh, ui, key, mapping = UVMapping, colorSpace = NoColorSpace) {
@@ -133,7 +133,9 @@ export class MapPanel extends Panel {
                                 material[key].colorSpace = value instanceof Texture ? value.colorSpace : this.colorSpace;
                             }
 
-                            if (material[key].source.data instanceof Image) {
+                            if (key === 'envMap') {
+                                material[key].userData.thumbnail = getBallThumbnail(material[key]);
+                            } else if (material[key].source.data instanceof Image) {
                                 material[key].userData.thumbnail = material[key].source.data;
                             } else {
                                 material[key].userData.thumbnail = getThumbnail(material[key]);
