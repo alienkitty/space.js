@@ -20,6 +20,7 @@ export function getThumbnail(texture, size = 200) {
         });
 
         camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        camera.position.set(0, 0, 1);
     }
 
     if (!screen) {
@@ -52,6 +53,7 @@ export function getBallThumbnail(texture, size = 200) {
         });
 
         camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        camera.position.set(0, 0, 1);
     }
 
     if (!ball) {
