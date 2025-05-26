@@ -223,7 +223,12 @@ export class Interface {
 
             if (~Numeric.indexOf(key)) {
                 style[key] = props[key];
-                this.element.style[key] = props[key];
+
+                if (props[key] === '') {
+                    this.element.style.removeProperty(key);
+                } else {
+                    this.element.style[key] = props[key];
+                }
             } else {
                 if (typeof props[key] === 'number') {
                     style[key] = props[key];
