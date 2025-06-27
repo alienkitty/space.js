@@ -442,7 +442,7 @@
                 const event = 'subscribe';
                 const message = {
                     subscription: {
-                        name: 'server-status',
+                        name: 'status',
                         time: 86400 // Past day in seconds
                     }
                 };
@@ -466,7 +466,7 @@
                     case 'heartbeat':
                         this.send({ event, message });
                         break;
-                    case 'server-details': {
+                    case 'details': {
                         const { details, serverUptime/* , latency */ } = message;
 
                         const {
@@ -551,7 +551,7 @@
                         });
                         break;
                     }
-                    case 'server-status': {
+                    case 'status': {
                         const { status, serverUptime, latency } = message;
 
                         let data = status;
