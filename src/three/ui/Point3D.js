@@ -42,6 +42,16 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * scene.add(point);
  * @example
  * // ...
+ * const point = new Point3D(points, {
+ *     name: '',
+ *     type: '',
+ *     noLine: true
+ * });
+ * scene.add(point);
+ * // ...
+ * point.setData({ name: '127.0.0.1' });
+ * @example
+ * // ...
  * const point = new Point3D(mesh, { graph });
  * point.setData({
  *     name: '127.0.0.1',
@@ -633,6 +643,7 @@ export class Point3D extends Group {
         name,
         type,
         graph = null,
+        noLine = false,
         noTracker = false
     } = {}) {
         super();
@@ -655,6 +666,7 @@ export class Point3D extends Group {
         }
 
         this.graph = graph;
+        this.noLine = noLine;
         this.noTracker = noTracker;
         this.isMesh = object.isMesh;
         this.isInstanced = object.isInstancedMesh;
@@ -749,9 +761,11 @@ export class Point3D extends Group {
             this.reticle.setContext(context);
             this.container.add(this.reticle);
 
-            this.line = new LineCanvas();
-            this.line.setContext(context);
-            this.container.add(this.line);
+            if (!this.noLine) {
+                this.line = new LineCanvas();
+                this.line.setContext(context);
+                this.container.add(this.line);
+            }
 
             if (!this.noTracker) {
                 this.tracker = new Tracker({
@@ -1045,32 +1059,37 @@ export class Point3D extends Group {
     theme() {
         if (!this.graph) {
             this.reticle.theme();
-            this.line.theme();
+
+            if (this.line) {
+                this.line.theme();
+            }
         }
     }
 
     update() {
+        // Update canvas elements
         if (this.graph) {
             this.graph.update();
         } else {
-            // Set line start and end points
-            const p0 = this.reticle.position;
-            const p1 = this.point.position;
-
-            const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
-            const radius = 3;
-
-            const x = p0.x + radius * Math.cos(angle);
-            const y = p0.y + radius * Math.sin(angle);
-
-            this.v.set(x, y);
-
-            this.line.setStartPoint(this.v);
-            this.line.setEndPoint(p1);
-
-            // Update canvas elements
             this.reticle.update();
-            this.line.update();
+
+            // Set line start and end points
+            if (this.line) {
+                const p0 = this.reticle.position;
+                const p1 = this.point.position;
+
+                const angle = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+                const radius = 3;
+
+                const x = p0.x + radius * Math.cos(angle);
+                const y = p0.y + radius * Math.sin(angle);
+
+                this.v.set(x, y);
+
+                this.line.setStartPoint(this.v);
+                this.line.setEndPoint(p1);
+                this.line.update();
+            }
         }
     }
 
@@ -1258,7 +1277,10 @@ export class Point3D extends Group {
         if (show) {
             if (!this.graph) {
                 this.reticle.animateOut();
-                this.line.animateOut(true);
+
+                if (this.line) {
+                    this.line.animateOut(true);
+                }
             }
 
             this.tracker.animateIn();
@@ -1274,7 +1296,7 @@ export class Point3D extends Group {
 
                 Point3D.multiple.push(this);
 
-                if (!this.graph) {
+                if (this.line) {
                     this.line.deactivate();
                 }
 
@@ -1289,7 +1311,10 @@ export class Point3D extends Group {
         } else {
             if (!this.graph) {
                 this.reticle.animateIn();
-                this.line.animateIn(true);
+
+                if (this.line) {
+                    this.line.animateIn(true);
+                }
             }
 
             this.tracker.animateOut();
@@ -1430,7 +1455,10 @@ export class Point3D extends Group {
                 }
             } else {
                 this.reticle.animateIn();
-                this.line.animateIn(reverse);
+
+                if (this.line) {
+                    this.line.animateIn(reverse);
+                }
 
                 if (this.tracker) {
                     this.tracker.animateIn();
@@ -1465,7 +1493,10 @@ export class Point3D extends Group {
             this.point.animateOut(true);
         } else {
             this.reticle.animateOut();
-            this.line.animateOut(fast, callback);
+
+            if (this.line) {
+                this.line.animateOut(fast, callback);
+            }
 
             if (this.tracker) {
                 this.tracker.animateOut();
@@ -1507,7 +1538,7 @@ export class Point3D extends Group {
         this.snappedRight = false;
         this.snapped = false;
 
-        if (!this.graph) {
+        if (this.line) {
             this.line.deactivate();
         }
 
