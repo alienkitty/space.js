@@ -88,8 +88,8 @@ export class Point3D extends Group {
         this.objects = [];
         this.points = [];
         this.multiple = [];
-        this.instanceId = null;
-        this.lastInstanceId = null;
+        this.index = null;
+        this.lastIndex = null;
         this.raycaster = new Raycaster();
         this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
@@ -375,12 +375,16 @@ export class Point3D extends Group {
             const intersection = this.raycaster.intersectObjects(this.objects);
 
             if (intersection.length) {
-                this.instanceId = intersection[0].instanceId;
+                if (intersection[0].instanceId !== undefined) {
+                    this.index = intersection[0].instanceId;
+                } else {
+                    this.index = intersection[0].index;
+                }
 
                 const object = this.points[this.objects.indexOf(intersection[0].object)];
 
-                if (!this.hover || this.instanceId !== this.lastInstanceId) {
-                    this.lastInstanceId = this.instanceId;
+                if (!this.hover || this.index !== this.lastIndex) {
+                    this.lastIndex = this.index;
                     this.hover = object;
                     this.hover.onHover({ type: 'over' });
                     this.setCursor('pointer');
@@ -625,7 +629,7 @@ export class Point3D extends Group {
 
     static loadHDRTexture = path => this.rgbeLoader.loadAsync(path);
 
-    constructor(mesh, {
+    constructor(object, {
         name,
         type,
         graph = null,
@@ -633,16 +637,29 @@ export class Point3D extends Group {
     } = {}) {
         super();
 
-        const geometry = mesh.geometry;
-        const material = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+        const geometry = object.geometry;
+        const material = Array.isArray(object.material) ? object.material[0] : object.material;
 
-        this.object = mesh;
-        this.name = name || material.name || geometry.type;
-        this.type = type || material.type;
+        this.object = object;
+
+        if (name !== undefined) {
+            this.name = name;
+        } else {
+            this.name = material.name || geometry.type;
+        }
+
+        if (type !== undefined) {
+            this.type = type;
+        } else {
+            this.type = material.type;
+        }
+
         this.graph = graph;
         this.noTracker = noTracker;
-        this.isInstanced = mesh.isInstancedMesh;
-        this.isDefault = !!(!name && !type);
+        this.isMesh = object.isMesh;
+        this.isInstanced = object.isInstancedMesh;
+        this.isPoints = object.isPoints;
+        this.isDefault = name === undefined && type === undefined;
         this.isMultiple = false;
         this.camera = Point3D.camera;
         this.halfScreen = Point3D.halfScreen;
@@ -672,11 +689,14 @@ export class Point3D extends Group {
     }
 
     initMesh() {
-        // Get world dimensions
-        this.boundingSphere = getBoundingSphereWorld(this.object);
-
         // Tracker geometry
-        this.geometry = new SphereGeometry(this.boundingSphere.radius);
+        if (this.isMesh) {
+            // Get world dimensions
+            this.boundingSphere = getBoundingSphereWorld(this.object);
+            this.geometry = new SphereGeometry(this.boundingSphere.radius);
+        } else {
+            this.geometry = new SphereGeometry();
+        }
 
         if (Point3D.debug) {
             this.material = new MeshBasicMaterial({
@@ -734,7 +754,9 @@ export class Point3D extends Group {
             this.container.add(this.line);
 
             if (!this.noTracker) {
-                this.tracker = new Tracker();
+                this.tracker = new Tracker({
+                    noCorners: this.isInstanced || this.isPoints
+                });
                 this.container.add(this.tracker);
             }
 
@@ -811,14 +833,18 @@ export class Point3D extends Group {
             return;
         }
 
+        Point3D.events.emit('hover', { type, index: Point3D.index, target: this });
+
         if (type === 'over') {
             if (this.isInstanced) {
-                const { instanceId } = Point3D;
-
                 const { position, quaternion, scale } = this.mesh;
 
-                this.object.getMatrixAt(instanceId, this.matrix);
+                this.object.getMatrixAt(Point3D.index, this.matrix);
                 this.matrix.decompose(position, quaternion, scale);
+            } else if (this.isPoints) {
+                const { position } = this.mesh;
+
+                position.fromBufferAttribute(this.object.geometry.attributes.position, Point3D.index);
             }
 
             if (!this.animatedIn) {
@@ -831,18 +857,14 @@ export class Point3D extends Group {
                 this.animateOut();
             });
         }
-
-        Point3D.events.emit('hover', { type, target: this });
     };
 
     onClick = multiple => {
         clearTween(this.timeout);
 
         if (this.tracker) {
-            if (this.isInstanced) {
-                const { instanceId } = Point3D;
-
-                if (!this.instances.some(instance => instance.index === instanceId)) {
+            if (this.isInstanced || this.isPoints) {
+                if (!this.instances.some(instance => instance.index === Point3D.index)) {
                     this.toggle(true, multiple);
                 } else {
                     this.toggle(false, multiple);
@@ -861,10 +883,10 @@ export class Point3D extends Group {
 
             const selected = Point3D.getSelected();
 
-            Point3D.events.emit('change', { selected, target: this });
+            Point3D.events.emit('change', { selected, index: Point3D.index, target: this });
         }
 
-        Point3D.events.emit('click', { target: this });
+        Point3D.events.emit('click', { index: Point3D.index, target: this });
     };
 
     onCursor = ({ cursor }) => {
@@ -902,7 +924,31 @@ export class Point3D extends Group {
     }
 
     setData(data) {
-        this.point.setData(data);
+        if (!data) {
+            return;
+        }
+
+        if (data.primary !== undefined || data.secondary !== undefined) {
+            if (data.index !== undefined) {
+                const index = this.instances.findIndex(instance => instance.index === data.index);
+
+                let tracker;
+
+                if (~index) {
+                    tracker = this.instances[index].tracker;
+                } else {
+                    tracker = this.tracker;
+                }
+
+                if (tracker) {
+                    tracker.setData(data);
+                }
+            } else if (this.tracker) {
+                this.tracker.setData(data);
+            }
+        } else if (data.name !== undefined || data.type !== undefined) {
+            this.point.setData(data);
+        }
     }
 
     setIndex(index) {
@@ -1039,8 +1085,8 @@ export class Point3D extends Group {
         const size = box.getSize(this.size).multiply(this.halfScreen);
         const centerX = this.halfScreen.x + center.x;
         const centerY = this.halfScreen.y - center.y;
-        const width = Math.round(size.x);
-        const height = Math.round(size.y);
+        const width = Math.max(12, Math.round(size.x));
+        const height = Math.max(12, Math.round(size.y));
         const halfWidth = Math.round(width / 2);
         const halfHeight = Math.round(height / 2);
 
@@ -1080,50 +1126,52 @@ export class Point3D extends Group {
             });
         }
 
-        // Update instances and helpers
-        if (this.isInstanced) {
-            this.instances.forEach(instance => {
+        // Update instances
+        this.instances.forEach(instance => {
+            if (this.isInstanced) {
                 const { position, quaternion, scale } = instance;
 
                 this.object.getMatrixAt(instance.index, this.matrix);
                 this.matrix.decompose(position, quaternion, scale);
+            } else if (this.isPoints) {
+                const { position, scale } = instance;
 
-                if (instance.tracker) {
-                    const box = getScreenSpaceBox(instance, this.camera);
-                    const center = box.getCenter(this.center).multiply(this.halfScreen);
-                    const size = box.getSize(this.size).multiply(this.halfScreen);
-                    const centerX = this.halfScreen.x + center.x;
-                    const centerY = this.halfScreen.y - center.y;
-                    const width = Math.round(size.x);
-                    const height = Math.round(size.y);
-                    const halfWidth = Math.round(width / 2);
-                    const halfHeight = Math.round(height / 2);
+                position.fromBufferAttribute(this.object.geometry.attributes.position, instance.index);
+                scale.copy(this.mesh.scale);
+            }
 
-                    instance.tracker.position.set(centerX, centerY);
-                    instance.tracker.update();
-                    instance.tracker.css({
-                        width,
-                        height,
-                        marginLeft: -halfWidth,
-                        marginTop: -halfHeight
-                    });
-                }
+            const box = getScreenSpaceBox(instance, this.camera);
+            const center = box.getCenter(this.center).multiply(this.halfScreen);
+            const size = box.getSize(this.size).multiply(this.halfScreen);
+            const centerX = this.halfScreen.x + center.x;
+            const centerY = this.halfScreen.y - center.y;
+            const width = Math.max(12, Math.round(size.x));
+            const height = Math.max(12, Math.round(size.y));
+            const halfWidth = Math.round(width / 2);
+            const halfHeight = Math.round(height / 2);
+
+            instance.tracker.position.set(centerX, centerY);
+            instance.tracker.update();
+            instance.tracker.css({
+                width,
+                height,
+                marginLeft: -halfWidth,
+                marginTop: -halfHeight
             });
-        } else {
-            if (this.normalsHelper) {
-                this.normalsHelper.update();
-            }
+        });
 
-            if (this.tangentsHelper) {
-                this.tangentsHelper.update();
-            }
+        // Update helpers
+        if (this.normalsHelper) {
+            this.normalsHelper.update();
+        }
+
+        if (this.tangentsHelper) {
+            this.tangentsHelper.update();
         }
     }
 
     toggle(show, multiple) {
-        if (this.isInstanced) {
-            const { instanceId } = Point3D;
-
+        if (this.isInstanced || this.isPoints) {
             if (show) {
                 if (!this.instances.length) {
                     this.togglePanel(true, multiple);
@@ -1135,7 +1183,7 @@ export class Point3D extends Group {
                 }
 
                 const mesh = this.createMesh();
-                mesh.index = instanceId;
+                mesh.index = Point3D.index;
                 this.instances.push(mesh);
 
                 mesh.tracker = new Tracker();
@@ -1149,7 +1197,7 @@ export class Point3D extends Group {
                     this.instances.forEach(instance => this.removeMesh(instance));
                     this.instances.length = 0;
                 } else {
-                    const index = this.instances.findIndex(instance => instance.index === instanceId);
+                    const index = this.instances.findIndex(instance => instance.index === Point3D.index);
 
                     if (~index) {
                         this.removeMesh(this.instances[index]);
@@ -1164,7 +1212,7 @@ export class Point3D extends Group {
 
             if (this.instances.length > 1) {
                 this.point.setData({
-                    name: `${this.instances.length}&nbsp;Instances`
+                    name: `${this.instances.length}&nbsp;${this.isPoints ? 'Points' : 'Instances'}`
                 });
             } else {
                 this.point.setData({
@@ -1213,7 +1261,7 @@ export class Point3D extends Group {
                 this.line.animateOut(true);
             }
 
-            this.tracker.animateIn(this.isInstanced);
+            this.tracker.animateIn();
 
             const selected = Point3D.getSelected();
 
@@ -1383,6 +1431,10 @@ export class Point3D extends Group {
             } else {
                 this.reticle.animateIn();
                 this.line.animateIn(reverse);
+
+                if (this.tracker) {
+                    this.tracker.animateIn();
+                }
             }
 
             this.animatedIn = true;
@@ -1426,7 +1478,7 @@ export class Point3D extends Group {
     }
 
     deactivate() {
-        if (this.isInstanced) {
+        if (this.isInstanced || this.isPoints) {
             this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
 
@@ -1579,7 +1631,7 @@ export class Point3D extends Group {
             this.toggleUVHelper(false);
         }
 
-        if (this.isInstanced) {
+        if (this.isInstanced || this.isPoints) {
             this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
         }

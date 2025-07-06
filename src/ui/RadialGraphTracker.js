@@ -37,7 +37,11 @@ export class RadialGraphTracker extends Interface {
     // Public methods
 
     setData(data) {
-        if (!this.number) {
+        if (!data) {
+            return;
+        }
+
+        if (data.targetNumber && !this.number) {
             this.number = new TargetNumber();
             this.number.css({
                 left: -(this.number.width + 15),
@@ -47,7 +51,9 @@ export class RadialGraphTracker extends Interface {
             this.add(this.number);
         }
 
-        this.number.setData(data);
+        if (data.targetNumber) {
+            this.number.setData(data);
+        }
     }
 
     update() {

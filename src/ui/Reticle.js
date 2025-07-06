@@ -71,6 +71,10 @@ export class Reticle extends Interface {
         this.visible();
         this.css({ scale: 0.25, opacity: 0 }).tween({ scale: 1, opacity: 1 }, 400, 'easeOutCubic');
 
+        if (this.info) {
+            this.info.animateIn();
+        }
+
         this.animatedIn = true;
     }
 
@@ -84,6 +88,10 @@ export class Reticle extends Interface {
                 callback();
             }
         });
+
+        if (this.info) {
+            this.info.animateOut();
+        }
     }
 
     activate() {
