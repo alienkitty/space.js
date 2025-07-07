@@ -50,7 +50,7 @@ export class AssetLoader extends Loader {
             promise = this.loadData(path);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
-                if (/\.mp3|m4a|ogg|wav|aiff?/i.test(path)) {
+                if (/\.mp3|m4a|ogg|wav|aiff|bin?/i.test(path)) {
                     return response.arrayBuffer();
                 } else {
                     return response.text();
