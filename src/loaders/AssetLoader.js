@@ -53,7 +53,13 @@ export class AssetLoader extends Loader {
                 if (/\.mp3|m4a|ogg|wav|aiff|bin?/i.test(path)) {
                     return response.arrayBuffer();
                 } else {
-                    return response.text();
+                    const contentType = response.headers.get('content-type');
+
+                    if (contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
                 }
             });
         }
