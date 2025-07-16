@@ -45,11 +45,11 @@ export class ReticleInfo extends Interface {
             return;
         }
 
-        if (data.primary) {
+        if (data.primary !== undefined) {
             this.primary.html(data.primary);
         }
 
-        if (data.secondary) {
+        if (data.secondary !== undefined) {
             this.secondary.html(data.secondary);
         }
     }

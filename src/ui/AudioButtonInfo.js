@@ -55,7 +55,7 @@ export class AudioButtonInfo extends Interface {
             whiteSpace: 'nowrap'
         });
 
-        if (data.name) {
+        if (data.name !== undefined) {
             name.html(data.name);
         }
 
@@ -66,7 +66,7 @@ export class AudioButtonInfo extends Interface {
             color: 'var(--ui-secondary-color)'
         });
 
-        if (data.title) {
+        if (data.title !== undefined) {
             title.html(data.title);
         }
 
