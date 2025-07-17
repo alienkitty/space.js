@@ -45,7 +45,8 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * const point = new Point3D(points, {
  *     name: '',
  *     type: '',
- *     noLine: true
+ *     noLine: true,
+ *     noPoint: true
  * });
  * scene.add(point);
  * // ...
@@ -501,7 +502,7 @@ export class Point3D extends Group {
     }
 
     static getMoved() {
-        return this.points.filter(ui => ui.point.isMove);
+        return this.points.filter(ui => ui.point && ui.point.isMove);
     }
 
     static getSnapped() {
@@ -594,7 +595,7 @@ export class Point3D extends Group {
         this.points.forEach(ui => {
             if (ui.isMultiple) {
                 ui.onClick();
-            } else if (ui === this.hover && ui.point.isOpen) {
+            } else if (ui === this.hover && ui.point && ui.point.isOpen) {
                 ui.onClick();
             } else if (ui.animatedIn) {
                 ui.animateOut(true);
@@ -644,7 +645,8 @@ export class Point3D extends Group {
         type,
         graph = null,
         noLine = false,
-        noTracker = false
+        noTracker = false,
+        noPoint = false
     } = {}) {
         super();
 
@@ -668,6 +670,7 @@ export class Point3D extends Group {
         this.graph = graph;
         this.noLine = noLine;
         this.noTracker = noTracker;
+        this.noPoint = noPoint;
         this.isMesh = object.isMesh;
         this.isInstanced = object.isInstancedMesh;
         this.isPoints = object.isPoints;
@@ -747,15 +750,17 @@ export class Point3D extends Group {
                 this.container.add(this.tracker);
             }
 
-            this.point = new Point(this, this.tracker);
-            this.point.info.css({ top: -43 });
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
-            this.container.add(this.point);
+            if (!this.noPoint) {
+                this.point = new Point(this, this.tracker);
+                this.point.info.css({ top: -43 });
+                this.point.setData({
+                    name: this.name,
+                    type: this.type
+                });
+                this.container.add(this.point);
 
-            this.point.windowSnapTop = 42;
+                this.point.windowSnapTop = 42;
+            }
         } else {
             this.reticle = new ReticleCanvas();
             this.reticle.setContext(context);
@@ -774,15 +779,17 @@ export class Point3D extends Group {
                 this.container.add(this.tracker);
             }
 
-            this.point = new Point(this, this.tracker);
-            this.point.info.css({ top: -15 });
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
-            this.container.add(this.point);
+            if (!this.noPoint) {
+                this.point = new Point(this, this.tracker);
+                this.point.info.css({ top: -15 });
+                this.point.setData({
+                    name: this.name,
+                    type: this.type
+                });
+                this.container.add(this.point);
 
-            this.point.windowSnapTop = 14;
+                this.point.windowSnapTop = 14;
+            }
         }
     }
 
@@ -809,7 +816,9 @@ export class Point3D extends Group {
     }
 
     setInitialPosition() {
-        this.point.position.copy(this.point.target);
+        if (this.point) {
+            this.point.position.copy(this.point.target);
+        }
 
         this.updateMatrixWorld();
     }
@@ -914,7 +923,7 @@ export class Point3D extends Group {
     };
 
     onUpdate = ({ path, value, index, target }) => {
-        if (this.point.isOpen && !this.point.isMove) {
+        if (this.point && this.point.isOpen && !this.point.isMove) {
             this.point.isMove = true;
         }
 
@@ -961,14 +970,16 @@ export class Point3D extends Group {
                 this.tracker.setData(data);
             }
         } else if (data.name !== undefined || data.type !== undefined) {
-            this.point.setData(data);
+            if (this.point) {
+                this.point.setData(data);
+            }
         }
     }
 
     setIndex(index) {
         this.index = index;
 
-        if (this.tracker) {
+        if (this.tracker && this.point) {
             const targetNumber = index + 1;
 
             this.tracker.setData({ targetNumber });
@@ -1074,7 +1085,7 @@ export class Point3D extends Group {
             this.reticle.update();
 
             // Set line start and end points
-            if (this.line) {
+            if (this.line && this.point) {
                 const p0 = this.reticle.position;
                 const p1 = this.point.position;
 
@@ -1121,17 +1132,21 @@ export class Point3D extends Group {
             }
 
             // Set point position to the right of the start line
-            const radius = this.graph.middle;
-            const x = centerX + this.graph.halfWidth;
-            const y = centerY + radius * Math.sin(this.graph.startAngle);
+            if (this.point) {
+                const radius = this.graph.middle;
+                const x = centerX + this.graph.halfWidth;
+                const y = centerY + radius * Math.sin(this.graph.startAngle);
 
-            this.point.target.set(x - 38, y);
-            this.point.update();
+                this.point.target.set(x - 38, y);
+                this.point.update();
+            }
         } else {
             this.reticle.position.set(centerX, centerY);
 
-            this.point.target.set(centerX + halfWidth, centerY - halfHeight);
-            this.point.update();
+            if (this.point) {
+                this.point.target.set(centerX + halfWidth, centerY - halfHeight);
+                this.point.update();
+            }
         }
 
         if (this.tracker) {
@@ -1193,7 +1208,7 @@ export class Point3D extends Group {
         if (this.isInstanced || this.isPoints) {
             if (show) {
                 if (!this.instances.length) {
-                    this.togglePanel(true, multiple);
+                    this.togglePoint(true, multiple);
                 }
 
                 if (!multiple) {
@@ -1225,32 +1240,38 @@ export class Point3D extends Group {
                 }
 
                 if (!this.instances.length) {
-                    this.togglePanel(false, false);
+                    this.togglePoint(false, false);
                 }
             }
 
-            if (this.instances.length > 1) {
-                this.point.setData({
-                    name: `${this.instances.length}&nbsp;${this.isPoints ? 'Points' : 'Instances'}`
-                });
-            } else {
-                this.point.setData({
-                    name: this.name
-                });
+            // Set label
+            if (this.point) {
+                if (this.instances.length > 1) {
+                    this.point.setData({
+                        name: `${this.instances.length}&nbsp;${this.isPoints ? 'Points' : 'Instances'}`
+                    });
+                } else {
+                    this.point.setData({
+                        name: this.name
+                    });
+                }
             }
         } else {
-            this.togglePanel(show, multiple);
+            this.togglePoint(show, multiple);
         }
 
+        // Set labels
         if (Point3D.multiple.length > 1) {
             const ui = Point3D.multiple[0];
 
-            ui.point.setData({
-                name: Point3D.getMultipleName(),
-                type: Point3D.getMultipleTypes()
-            });
+            if (ui.point) {
+                ui.point.setData({
+                    name: Point3D.getMultipleName(),
+                    type: Point3D.getMultipleTypes()
+                });
+            }
 
-            if (ui.tracker) {
+            if (ui.tracker && ui.point) {
                 ui.point.setTargetNumbers(Point3D.getMultipleTargetNumbers());
             }
 
@@ -1260,12 +1281,14 @@ export class Point3D extends Group {
 
             Point3D.multiple.length = 0;
 
-            ui.point.setData({
-                name: ui.name,
-                type: ui.type
-            });
+            if (ui.point) {
+                ui.point.setData({
+                    name: ui.name,
+                    type: ui.type
+                });
+            }
 
-            if (ui.tracker) {
+            if (ui.tracker && ui.point) {
                 ui.point.setTargetNumbers([ui.index + 1]);
             }
 
@@ -1273,7 +1296,7 @@ export class Point3D extends Group {
         }
     }
 
-    togglePanel(show, multiple) {
+    togglePoint(show, multiple) {
         if (show) {
             if (!this.graph) {
                 this.reticle.animateOut();
@@ -1300,9 +1323,13 @@ export class Point3D extends Group {
                     this.line.deactivate();
                 }
 
-                this.point.deactivate();
+                if (this.point) {
+                    this.point.deactivate();
+                }
             } else {
-                this.point.open();
+                if (this.point) {
+                    this.point.open();
+                }
 
                 if (this.panel) {
                     Stage.events.emit('color_picker', { open: false, target: this.panel });
@@ -1329,12 +1356,14 @@ export class Point3D extends Group {
 
                 Point3D.multiple.length = 0;
 
-                this.point.setData({
-                    name: this.name,
-                    type: this.type
-                });
+                if (this.point) {
+                    this.point.setData({
+                        name: this.name,
+                        type: this.type
+                    });
 
-                this.point.setTargetNumbers([this.index + 1]);
+                    this.point.setTargetNumbers([this.index + 1]);
+                }
 
                 this.isMultiple = false;
             } else if (Point3D.multiple.length) {
@@ -1345,12 +1374,14 @@ export class Point3D extends Group {
                 }
             }
 
-            if (this.point.isMove) {
-                this.point.deactivate(true);
-            } else {
-                this.point.enable();
-                this.point.close();
-                this.point.activate();
+            if (this.point) {
+                if (this.point.isMove) {
+                    this.point.deactivate(true);
+                } else {
+                    this.point.enable();
+                    this.point.close();
+                    this.point.activate();
+                }
             }
         }
     }
@@ -1470,7 +1501,7 @@ export class Point3D extends Group {
             this.graph.animateLabelsIn();
         }
 
-        if (!this.point.animatedIn) {
+        if (this.point && !this.point.animatedIn) {
             this.point.animateIn();
         }
     }
@@ -1490,7 +1521,9 @@ export class Point3D extends Group {
                 this.graph.animateLabelsOut();
             }
 
-            this.point.animateOut(true);
+            if (this.point) {
+                this.point.animateOut(true);
+            }
         } else {
             this.reticle.animateOut();
 
@@ -1502,7 +1535,9 @@ export class Point3D extends Group {
                 this.tracker.animateOut();
             }
 
-            this.point.animateOut();
+            if (this.point) {
+                this.point.animateOut();
+            }
 
             this.animatedIn = false;
         }
@@ -1513,20 +1548,26 @@ export class Point3D extends Group {
             this.instances.forEach(instance => this.removeMesh(instance));
             this.instances.length = 0;
 
-            this.point.setData({
-                name: this.name
-            });
+            // Reset label
+            if (this.point) {
+                this.point.setData({
+                    name: this.name
+                });
+            }
         }
 
+        // Reset labels
         if (this.isMultiple) {
             Point3D.multiple.length = 0;
 
-            this.point.setData({
-                name: this.name,
-                type: this.type
-            });
+            if (this.point) {
+                this.point.setData({
+                    name: this.name,
+                    type: this.type
+                });
+            }
 
-            if (this.tracker) {
+            if (this.tracker && this.point) {
                 this.point.setTargetNumbers([this.index + 1]);
             }
 
@@ -1542,7 +1583,7 @@ export class Point3D extends Group {
             this.line.deactivate();
         }
 
-        if (this.point.isOpen) {
+        if (this.point && this.point.isOpen) {
             this.point.deactivate();
         }
 
