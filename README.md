@@ -269,6 +269,7 @@ scene.environmentIntensity = 1.2;
 [server status](https://space.js.org/examples/three/3d_server_status.html) (details, graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status_thread.html) (websocket thread, details, graph and panel tracking)  
 [mars](https://space.js.org/examples/mars/) (cubemaps, details info, ambient audio)  
+[cyberspace](https://space.js.org/examples/cyberspace/) (geoip, details, points tracking)  
 
 #### audio
 
@@ -300,6 +301,7 @@ npm i -D eslint eslint-plugin-html
 npx eslint src
 npx eslint examples/about/src
 npx eslint examples/mars/src
+npx eslint examples/cyberspace/src
 npx eslint examples/three/*.html
 npx eslint examples/*.html
 ```
