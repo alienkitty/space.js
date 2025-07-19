@@ -122,6 +122,7 @@ export class Point3D extends Group {
         this.openColor = null;
         this.isDragging = false;
         this.enabled = true;
+        this.hoverEnabled = true;
 
         this.initCanvas();
         this.initTextures();
@@ -836,6 +837,10 @@ export class Point3D extends Group {
     // Event handlers
 
     onHover = ({ type, isPoint }) => {
+        if (!Point3D.hoverEnabled && !isPoint) {
+            return;
+        }
+
         clearTween(this.timeout);
 
         if (this.tracker && this.selected) {
