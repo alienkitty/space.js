@@ -16,6 +16,8 @@ export class InputManager {
 
         this.raycaster = new Raycaster();
         this.raycaster.layers.enable(layers.picking);
+        this.raycastInterval = 1 / 10; // 10 frames per second
+        this.lastRaycast = 0;
 
         this.objects = [];
         this.mouse = new Vector2(-1, -1);
@@ -26,8 +28,6 @@ export class InputManager {
         this.click = null;
         this.lastTime = 0;
         this.lastMouse = new Vector2();
-        this.raycastInterval = 1 / 10; // 10 frames per second
-        this.lastRaycast = 0;
         this.body = null;
         this.joint = null;
         this.enabled = true;
@@ -100,10 +100,10 @@ export class InputManager {
         if (this.selected) {
             this.raycaster.setFromCamera(this.coords, this.camera);
 
-            const intersection = this.raycaster.intersectObject(this.dragPlane);
+            const hit = this.raycaster.intersectObject(this.dragPlane)[0];
 
-            if (intersection.length) {
-                const point = intersection[0].point;
+            if (hit) {
+                const point = hit.point;
 
                 PhysicsController.physics.setPosition(this.body, point);
             }
@@ -114,10 +114,10 @@ export class InputManager {
         if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
             this.raycaster.setFromCamera(this.coords, this.camera);
 
-            const intersection = this.raycaster.intersectObjects(this.objects);
+            const hit = this.raycaster.intersectObjects(this.objects)[0];
 
-            if (intersection.length) {
-                let object = intersection[0].object;
+            if (hit) {
+                let object = hit.object;
 
                 if (object.parent.isGroup) {
                     object = object.parent;
@@ -129,7 +129,7 @@ export class InputManager {
                     !CameraController.isTransforming &&
                     this.selected !== object
                 ) {
-                    const point = intersection[0].point;
+                    const point = hit.point;
 
                     const body = new RigidBodyConfig();
                     body.type = RigidBodyType.STATIC;

@@ -96,13 +96,16 @@ export class Point3D extends Group {
         this.uvHelper = uvHelper;
         this.debug = debug;
 
+        this.raycaster = new Raycaster();
+        this.raycaster.layers.enable(31); // Last layer
+        this.raycastInterval = 1 / 10; // 10 frames per second
+        this.lastRaycast = 0;
+
         this.objects = [];
         this.points = [];
         this.multiple = [];
         this.index = null;
         this.lastIndex = null;
-        this.raycaster = new Raycaster();
-        this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
         this.coords = new Vector2(-1, -1);
@@ -111,8 +114,6 @@ export class Point3D extends Group {
         this.lastTime = 0;
         this.lastMouse = new Vector2();
         this.lastCursor = '';
-        this.raycastInterval = 1 / 10; // 10 frames per second
-        this.lastRaycast = 0;
         this.halfScreen = new Vector2();
         this.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
         this.uvTexture = null;
@@ -384,16 +385,16 @@ export class Point3D extends Group {
         if (document.elementFromPoint(this.mouse.x, this.mouse.y) instanceof HTMLCanvasElement) {
             this.raycaster.setFromCamera(this.coords, this.camera);
 
-            const intersection = this.raycaster.intersectObjects(this.objects);
+            const hit = this.raycaster.intersectObjects(this.objects)[0];
 
-            if (intersection.length) {
-                if (intersection[0].instanceId !== undefined) {
-                    this.index = intersection[0].instanceId;
+            if (hit) {
+                if (hit.instanceId !== undefined) {
+                    this.index = hit.instanceId;
                 } else {
-                    this.index = intersection[0].index;
+                    this.index = hit.index;
                 }
 
-                const object = this.points[this.objects.indexOf(intersection[0].object)];
+                const object = this.points[this.objects.indexOf(hit.object)];
 
                 if (!this.hover || this.index !== this.lastIndex) {
                     this.lastIndex = this.index;
