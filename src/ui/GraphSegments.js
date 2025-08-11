@@ -93,7 +93,7 @@ export class GraphSegments extends Interface {
         this.graphs = [];
         this.bounds = null;
         this.origin = new Vector2();
-        this.mouse = new Vector2();
+        this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
         this.lastTime = 0;
         this.lastMouse = new Vector2();

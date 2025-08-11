@@ -105,7 +105,7 @@ export class Point3D extends Group {
         this.raycaster.layers.enable(31); // Last layer
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
-        this.coords = new Vector2(-2, 2);
+        this.coords = new Vector2(-1, -1);
         this.hover = null;
         this.click = null;
         this.lastTime = 0;

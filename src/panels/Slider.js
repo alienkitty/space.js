@@ -34,7 +34,7 @@ export class Slider extends Interface {
 
         this.bounds = null;
         this.origin = new Vector2();
-        this.mouse = new Vector2();
+        this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
         this.lastMouse = new Vector2();
         this.lastOrigin = new Vector2();

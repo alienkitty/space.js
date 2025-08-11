@@ -20,7 +20,7 @@ export class InputManager {
         this.objects = [];
         this.mouse = new Vector2(-1, -1);
         this.delta = new Vector2();
-        this.coords = new Vector2(-2, 2);
+        this.coords = new Vector2(-1, -1);
         this.hover = null;
         this.selected = null;
         this.click = null;
