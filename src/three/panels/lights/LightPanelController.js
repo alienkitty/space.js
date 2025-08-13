@@ -76,7 +76,7 @@ export class LightPanelController {
             const key = getKeyByLight(LightOptions, light);
 
             let count = 1;
-            let lightKey = `${key}${counts[key] > 1 ? count++ : ''}`;
+            let lightKey = `${key} ${counts[key] > 1 ? count++ : ''}`;
 
             while (Array.from(lightOptions.keys()).includes(lightKey)) {
                 lightKey = `${key}${count++}`;
