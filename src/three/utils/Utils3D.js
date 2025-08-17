@@ -38,7 +38,6 @@ export function getSphericalCube(radius = 1, segments = 16) {
     return geometry;
 }
 
-// https://stackoverflow.com/questions/60578028/how-can-i-achieve-an-even-distribution-of-sprites-across-the-surface-of-a-sphere/60579136#60579136
 export function getFibonacciSphere(numPoints, i, radius = 1) {
     const offset = 2 / numPoints;
     const increment = Math.PI * (3 - Math.sqrt(5));
@@ -104,7 +103,6 @@ export function lerpCameras(camera1, camera2, alpha) {
     camera1.quaternion.slerp(camera2.quaternion, alpha);
 }
 
-// Based on https://oframe.github.io/ogl/examples/?src=post-fluid-distortion.html by gordonnl
 export function getDoubleRenderTarget(width, height, options) {
     const renderTarget = {
         read: new WebGLRenderTarget(width, height, options),
