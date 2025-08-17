@@ -38,6 +38,25 @@ export function getSphericalCube(radius = 1, segments = 16) {
     return geometry;
 }
 
+// https://stackoverflow.com/questions/60578028/how-can-i-achieve-an-even-distribution-of-sprites-across-the-surface-of-a-sphere/60579136#60579136
+export function getFibonacciSphere(numPoints, i, radius = 1) {
+    const offset = 2 / numPoints;
+    const increment = Math.PI * (3 - Math.sqrt(5));
+
+    const y = (i * offset - 1) + (offset / 2);
+    const r = Math.sqrt(1 - Math.pow(y, 2));
+
+    const phi = i % numPoints * increment;
+
+    const x = Math.cos(phi) * r;
+    const z = Math.sin(phi) * r;
+
+    const v = new Vector3(x, y, z);
+    v.setLength(radius);
+
+    return v;
+}
+
 export function getBoundingSphereWorld(mesh) {
     mesh.geometry.computeBoundingSphere();
 
