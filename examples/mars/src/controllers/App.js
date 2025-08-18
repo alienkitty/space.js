@@ -19,8 +19,8 @@ export class App {
         this.isTransitioning = false;
         this.animatedIn = false;
 
-        const params = new URL(location.href).searchParams;
-        store.viewIndex = params.has('view') ? Number(params.get('view')) - 1 : 0;
+        const searchParams = new URL(location.href).searchParams;
+        store.viewIndex = searchParams.has('view') ? Number(searchParams.get('view')) - 1 : 0;
 
         this.initThread();
         this.initWorld();
