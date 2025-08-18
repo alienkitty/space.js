@@ -53,11 +53,7 @@ export class ListSelect extends Interface {
     }
 
     getNextIndex() {
-        this.next = this.index + 1;
-
-        if (this.next >= this.list.length) {
-            this.next = 0;
-        }
+        this.next = (this.index + 1) % this.list.length;
 
         return this.next;
     }
