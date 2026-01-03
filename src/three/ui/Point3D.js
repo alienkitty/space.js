@@ -3,7 +3,7 @@
  */
 
 import { Group, Matrix4, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
 import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
 import { VertexTangentsHelper } from 'three/addons/helpers/VertexTangentsHelper.js';
 
@@ -75,7 +75,7 @@ export class Point3D extends Group {
         dividerSnap = false,
         physics = null,
         textureLoader = new TextureLoader(),
-        rgbeLoader = new RGBELoader(),
+        hdrLoader = new HDRLoader(),
         uvTexturePath = 'assets/textures/uv.jpg',
         uvHelper = false,
         debug = false
@@ -91,7 +91,7 @@ export class Point3D extends Group {
         this.dividerSnap = dividerSnap;
         this.physics = physics;
         this.textureLoader = textureLoader;
-        this.rgbeLoader = rgbeLoader;
+        this.hdrLoader = hdrLoader;
         this.uvTexturePath = uvTexturePath;
         this.uvHelper = uvHelper;
         this.debug = debug;
@@ -640,7 +640,7 @@ export class Point3D extends Group {
 
     static loadTexture = path => this.textureLoader.loadAsync(path);
 
-    static loadHDRTexture = path => this.rgbeLoader.loadAsync(path);
+    static loadHDRTexture = path => this.hdrLoader.loadAsync(path);
 
     constructor(object, {
         name,
