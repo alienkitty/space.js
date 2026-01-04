@@ -123,6 +123,14 @@ export class PanelThumbnail extends Interface {
         const data = await loadFiles(files);
 
         if (data.length) {
+            const { image, filename } = data[0];
+
+            if (image instanceof Image) {
+                this.data.name = filename;
+
+                this.setValue(image);
+            }
+
             Stage.events.emit('images_drop', { data, target: this });
         }
     }
@@ -312,7 +320,7 @@ export class PanelThumbnail extends Interface {
 
     setData(data) {
         if (!data) {
-            return;
+            data = {};
         }
 
         this.data = data;
@@ -353,6 +361,7 @@ export class PanelThumbnail extends Interface {
                 top: 0,
                 width: '100%',
                 height: '100%',
+                objectFit: 'cover',
                 pointerEvents: 'none'
             });
 
