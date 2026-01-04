@@ -1496,10 +1496,6 @@ export class Point3D extends Group {
                 if (this.line) {
                     this.line.animateIn(reverse);
                 }
-
-                if (this.tracker) {
-                    this.tracker.animateIn();
-                }
             }
 
             this.animatedIn = true;
