@@ -28,8 +28,8 @@ export class DarkPlanet extends Group {
 
         const material = new MeshStandardMaterial({
             name: 'Dark Planet',
-            color: new Color().offsetHSL(0, 0, -0.65),
-            metalness: 0.7,
+            color: new Color().offsetHSL(0, 0, -0.8),
+            metalness: 0.5,
             roughness: 1
         });
 

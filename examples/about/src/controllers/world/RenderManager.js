@@ -151,7 +151,7 @@ export class RenderManager {
     static invert = isInverted => {
         // Light colour is inverted
         if (isInverted) {
-            this.luminosityMaterial.uniforms.uThreshold.value = 0.75;
+            this.luminosityMaterial.uniforms.uThreshold.value = 0.9;
             this.compositeMaterial.uniforms.uGamma.value = true;
         } else {
             this.luminosityMaterial.uniforms.uThreshold.value = this.luminosityThreshold;

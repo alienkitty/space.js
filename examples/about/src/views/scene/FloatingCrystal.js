@@ -28,8 +28,8 @@ export class FloatingCrystal extends Group {
 
         const material = new MeshStandardMaterial({
             name: 'Floating Crystal',
-            color: new Color().offsetHSL(0, 0, -0.65),
-            metalness: 0.7,
+            color: new Color().offsetHSL(0, 0, -0.8),
+            metalness: 0.5,
             roughness: 0.7,
             flatShading: true
         });

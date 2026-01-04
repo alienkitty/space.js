@@ -36,7 +36,7 @@ export class PhongMaterialSubsurfacePanel extends Panel {
                 thicknessUseMap: { value: false },
                 thicknessDistortion: { value: 0.1 },
                 thicknessAmbient: { value: 0 },
-                thicknessAttenuation: { value: 0.8 },
+                thicknessAttenuation: { value: 0.5 },
                 thicknessPower: { value: 2 },
                 thicknessScale: { value: 10 }
             };
