@@ -84,7 +84,7 @@ export class Graph extends Interface {
         this.lookup = [];
         this.bounds = null;
         this.origin = new Vector2();
-        this.mouse = new Vector2(-1, -1);
+        this.mouse = new Vector2();
         this.delta = new Vector2();
         this.lastTime = 0;
         this.lastMouse = new Vector2();

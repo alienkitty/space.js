@@ -82,7 +82,7 @@ export class RadialGraphCanvas extends Interface {
         this.bounds = null;
         this.offset = new Vector2();
         this.origin = new Vector2();
-        this.mouse = new Vector2(-1, -1);
+        this.mouse = new Vector2();
         this.delta = new Vector2();
         this.lastTime = 0;
         this.lastMouse = new Vector2();
