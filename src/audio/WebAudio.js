@@ -24,15 +24,13 @@ import { basename } from '../utils/Utils.js';
  * });
  * @example
  * WebAudio.init({ sampleRate: 48000 });
+ * WebAudio.load({ cyberspace: 'https://icecast.cyberspace.app/dive.ogg' });
  *
- * // Shoutcast streams append a semicolon (;) to the URL
- * WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
- *
- * const protonradio = WebAudio.get('protonradio');
- * protonradio.gain.set(1);
+ * const cyberspace = WebAudio.get('cyberspace');
+ * cyberspace.gain.set(1);
  *
  * document.addEventListener('pointerdown', () => {
- *     protonradio.play();
+ *     cyberspace.play();
  * });
  */
 export class WebAudio {

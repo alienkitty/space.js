@@ -52,15 +52,15 @@
             }
 
             static initSounds() {
-                this.protonradio = WebAudio.get('protonradio');
-                this.protonradio.gain.set(1);
+                this.cyberspace = WebAudio.get('cyberspace');
+                this.cyberspace.gain.set(1);
             }
 
             static initAnalyser() {
                 // Delay the output to sync with the analyser
                 this.analyserDelay = this.context.createDelay();
                 this.analyserDelay.delayTime.value = 4 / 60; // seconds
-                this.analyserDelay.connect(this.protonradio.parent.input);
+                this.analyserDelay.connect(this.cyberspace.parent.input);
 
                 this.analyser = this.context.createAnalyser();
                 this.analyser.fftSize = 4096;
@@ -69,11 +69,11 @@
                 this.data = new Uint8Array(this.bufferLength);
 
                 // Connect the source to be analyzed (directly without output)
-                // this.protonradio.source.connect(this.analyser);
+                // this.cyberspace.source.connect(this.analyser);
 
                 // Reconnect the output to be analyzed (with analyser output)
-                this.protonradio.output.disconnect();
-                this.protonradio.output.connect(this.analyser);
+                this.cyberspace.output.disconnect();
+                this.cyberspace.output.connect(this.analyser);
                 this.analyser.connect(this.analyserDelay);
 
                 // Find all the chunk sizes evenly divisible by 3
@@ -140,7 +140,7 @@
                     this.ui.audioButton.onClick();
                 }
 
-                this.protonradio.play();
+                this.cyberspace.play();
             };
 
             // Public methods
@@ -206,11 +206,11 @@
             };
 
             static mute = () => {
-                tween(this.protonradio.gain, { value: 0 }, 500, 'easeOutSine');
+                tween(this.cyberspace.gain, { value: 0 }, 500, 'easeOutSine');
             };
 
             static unmute = () => {
-                tween(this.protonradio.gain, { value: 1 }, 500, 'easeOutSine');
+                tween(this.cyberspace.gain, { value: 1 }, 500, 'easeOutSine');
             };
         }
 
@@ -222,7 +222,7 @@
             }
 
             static initPanel() {
-                const { protonradio, analyserDelay } = AudioController;
+                const { cyberspace, analyserDelay } = AudioController;
 
                 const items = [
                     {
@@ -237,9 +237,9 @@
                         min: 0,
                         max: 1,
                         step: 0.01,
-                        value: protonradio.gain.value,
+                        value: cyberspace.gain.value,
                         callback: value => {
-                            protonradio.gain.value = value;
+                            cyberspace.gain.value = value;
                         }
                     },
                     {
@@ -395,9 +395,9 @@
                 document.body.appendChild(this.ui.element);
 
                 this.ui.audioButton.setData({
-                    name: 'Proton Radio',
-                    title: 'protonradio.com',
-                    link: 'https://www.protonradio.com/'
+                    name: 'Cyberspace',
+                    title: 'cyberspace.app',
+                    link: 'https://cyberspace.app/'
                 });
 
                 // Radial graph with 3 segments, ghost and labels
@@ -416,9 +416,7 @@
 
             static initAudio() {
                 WebAudio.init({ sampleRate: 48000 });
-
-                // Shoutcast streams append a semicolon (;) to the URL
-                WebAudio.load({ protonradio: 'https://shoutcast.protonradio.com/;' });
+                WebAudio.load({ cyberspace: 'https://icecast.cyberspace.app/dive.ogg' });
 
                 AudioController.init(this.ui, this.graph);
             }
