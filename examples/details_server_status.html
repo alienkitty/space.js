@@ -153,8 +153,15 @@
                         let swapTotalFormatted = swapTotal / 1024 / 1024 / 1024;
                         swapTotalFormatted = `${Math.round((swapTotalFormatted + Number.EPSILON) * 100) / 100} GiB`;
 
-                        let swapUsedPercentage = (swapUsed / swapTotal) * 100;
-                        swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        let swapUsedPercentage;
+
+                        if (swapUsed) {
+                            swapUsedPercentage = (swapUsed / swapTotal) * 100;
+                            swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        } else {
+                            swapUsedPercentage = 0;
+                            swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        }
 
                         const storageUsed = storageTotal - storageAvailable;
 
