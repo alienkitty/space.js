@@ -169,16 +169,16 @@
                         let storageTotalFormatted;
 
                         if (storageTotal < 1e9) {
-                            storageUsedFormatted = storageUsed / 1000 / 1000;
+                            storageUsedFormatted = storageUsed / 1024 / 1024;
                             storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} MB`;
 
-                            storageTotalFormatted = storageTotal / 1000 / 1000;
+                            storageTotalFormatted = storageTotal / 1024 / 1024;
                             storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} MB`;
                         } else {
-                            storageUsedFormatted = storageUsed / 1000 / 1000 / 1000;
+                            storageUsedFormatted = storageUsed / 1024 / 1024 / 1024;
                             storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} GB`;
 
-                            storageTotalFormatted = storageTotal / 1000 / 1000 / 1000;
+                            storageTotalFormatted = storageTotal / 1024 / 1024 / 1024;
                             storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} GB`;
                         }
 
