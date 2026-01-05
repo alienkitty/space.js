@@ -261,7 +261,7 @@ scene.environmentIntensity = 1.2;
 [materials](https://space.js.org/examples/three/3d_materials.html) (panel tracking)  
 [materials instancing](https://space.js.org/examples/three/3d_materials_instancing.html) ([debug](https://space.js.org/examples/three/3d_materials_instancing.html?3&debug))  
 [materials instancing](https://space.js.org/examples/three/3d_materials_instancing_modified.html) (custom, [debug](https://space.js.org/examples/three/3d_materials_instancing_modified.html?3&debug))  
-[materials spherical cube](https://space.js.org/examples/three/3d_materials_instancing_modified.html) (array of materials)  
+[materials spherical cube](https://space.js.org/examples/three/3d_materials_spherical_cube.html) (array of materials)  
 [lights](https://space.js.org/examples/three/3d_lights.html)  
 [radial graph](https://space.js.org/examples/three/3d_radial_graph.html) (graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status.html) (details, graph and panel tracking)  
