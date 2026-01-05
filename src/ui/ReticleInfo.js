@@ -14,8 +14,10 @@ export class ReticleInfo extends Interface {
     init() {
         this.css({
             position: 'absolute',
-            left: 20,
-            top: -4
+            left: '50%',
+            top: '50%',
+            marginLeft: 15,
+            marginTop: -9
         });
 
         this.primary = new Interface('.primary');
@@ -43,12 +45,20 @@ export class ReticleInfo extends Interface {
             return;
         }
 
-        if (data.primary) {
+        if (data.primary !== undefined) {
             this.primary.html(data.primary);
         }
 
-        if (data.secondary) {
+        if (data.secondary !== undefined) {
             this.secondary.html(data.secondary);
         }
+    }
+
+    animateIn() {
+        this.clearTween().css({ opacity: 0 }).tween({ opacity: 1 }, 400, 'easeOutCubic', 200);
+    }
+
+    animateOut() {
+        this.clearTween().tween({ opacity: 0 }, 400, 'easeOutCubic');
     }
 }

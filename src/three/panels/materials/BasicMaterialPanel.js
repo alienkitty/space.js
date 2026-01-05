@@ -2,25 +2,32 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
-import { BasicMaterialEnvPanel } from './BasicMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const BasicMaterialOptions = {
-    Common: BasicMaterialCommonPanel,
-    Map: MapPanel,
-    Env: BasicMaterialEnvPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const BasicMaterialOptions = new Map([
+    ['Common', BasicMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Specular', SpecularMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class BasicMaterialPanel extends Panel {
     static type = 'Basic';
@@ -30,23 +37,25 @@ export class BasicMaterialPanel extends Panel {
         ...MaterialProperties.Basic
     ];
 
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
-        if (!Point3D.points) {
-            delete BasicMaterialOptions.Helper;
+        if (!ui || !ui.constructor.points) {
+            BasicMaterialOptions.delete('Helper');
         }
 
-        if (!Point3D.physics) {
-            delete BasicMaterialOptions.Physics;
+        if (!ui || !ui.constructor.physics) {
+            BasicMaterialOptions.delete('Physics');
         }
 
         const materialItems = [
@@ -59,9 +68,9 @@ export class BasicMaterialPanel extends Panel {
                 list: BasicMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = BasicMaterialOptions[value];
+                    const MaterialPanel = BasicMaterialOptions.get(value);
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -78,7 +87,7 @@ export class BasicMaterialPanel extends Panel {
                     callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
-                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        const materialPanel = new InstancedMeshPanel(mesh, ui, materialItems);
                         materialPanel.animateIn(true);
 
                         item.setContent(materialPanel);

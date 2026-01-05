@@ -2,7 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
@@ -11,19 +10,35 @@ import { PhongMaterialPatches } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
-import { PhongMaterialEnvPanel } from './PhongMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { SpecularMapPanel } from '../textures/SpecularMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const PhongMaterialOptions = {
-    Common: PhongMaterialCommonPanel,
-    Map: MapPanel,
-    Subsurface: PhongMaterialSubsurfacePanel,
-    Env: PhongMaterialEnvPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const PhongMaterialOptions = new Map([
+    ['Common', PhongMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Specular', SpecularMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Subsurface', PhongMaterialSubsurfacePanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class PhongMaterialPanel extends Panel {
     static type = 'Phong';
@@ -33,30 +48,38 @@ export class PhongMaterialPanel extends Panel {
         ...MaterialProperties.Phong
     ];
 
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
+
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
-        if (!Point3D.points) {
-            delete PhongMaterialOptions.Helper;
+        const materials = this.materials;
+
+        if (!ui || !ui.constructor.points) {
+            PhongMaterialOptions.delete('Helper');
         }
 
-        if (!Point3D.physics) {
-            delete PhongMaterialOptions.Physics;
+        if (!ui || !ui.constructor.physics) {
+            PhongMaterialOptions.delete('Physics');
         }
 
         if (mesh.userData.subsurface) {
-            mesh.material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
-
-            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
-            mesh.material.needsUpdate = true;
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [
@@ -69,9 +92,9 @@ export class PhongMaterialPanel extends Panel {
                 list: PhongMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = PhongMaterialOptions[value];
+                    const MaterialPanel = PhongMaterialOptions.get(value);
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -88,7 +111,7 @@ export class PhongMaterialPanel extends Panel {
                     callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
-                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        const materialPanel = new InstancedMeshPanel(mesh, ui, materialItems);
                         materialPanel.animateIn(true);
 
                         item.setContent(materialPanel);

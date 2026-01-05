@@ -5,7 +5,7 @@
  * Based on https://github.com/mrdoob/three.js/blob/dev/src/loaders/TextureLoader.js
  */
 
-import { ColorManagement, SRGBColorSpace, Texture } from 'three';
+import { Texture } from 'three';
 
 import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
@@ -62,10 +62,6 @@ export class TextureLoader extends Loader {
             }
         } else {
             texture = new Texture();
-
-            if (ColorManagement.enabled) {
-                texture.colorSpace = SRGBColorSpace;
-            }
 
             if (cached) {
                 promise = Promise.resolve(cached);

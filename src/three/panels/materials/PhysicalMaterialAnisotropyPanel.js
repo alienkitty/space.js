@@ -5,19 +5,38 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
+import { MapPanel } from '../textures/MapPanel.js';
+
 export class PhysicalMaterialAnisotropyPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
+
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new MapPanel(mesh, ui, 'anisotropyMap');
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
             {
                 type: 'divider'
             },
@@ -27,9 +46,9 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.anisotropy,
+                value: material.anisotropy,
                 callback: value => {
-                    mesh.material.anisotropy = value;
+                    materials.forEach(material => material.anisotropy = value);
                 }
             },
             {
@@ -38,12 +57,11 @@ export class PhysicalMaterialAnisotropyPanel extends Panel {
                 min: 0,
                 max: Math.PI / 2,
                 step: 0.01,
-                value: mesh.material.anisotropyRotation,
+                value: material.anisotropyRotation,
                 callback: value => {
-                    mesh.material.anisotropyRotation = value;
+                    materials.forEach(material => material.anisotropyRotation = value);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

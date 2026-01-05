@@ -11,11 +11,15 @@ export class PhysicalMaterialSheenPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -27,9 +31,17 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.sheen,
+                value: material.sheen,
                 callback: value => {
-                    mesh.material.sheen = value;
+                    materials.forEach(material => material.sheen = value);
+                }
+            },
+            {
+                type: 'color',
+                name: 'Sheen Color',
+                value: material.sheenColor,
+                callback: value => {
+                    materials.forEach(material => material.sheenColor.copy(value));
                 }
             },
             {
@@ -38,20 +50,11 @@ export class PhysicalMaterialSheenPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.sheenRoughness,
+                value: material.sheenRoughness,
                 callback: value => {
-                    mesh.material.sheenRoughness = value;
-                }
-            },
-            {
-                type: 'color',
-                name: 'Sheen Color',
-                value: mesh.material.sheenColor,
-                callback: value => {
-                    mesh.material.sheenColor.copy(value);
+                    materials.forEach(material => material.sheenRoughness = value);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

@@ -55,11 +55,11 @@ export class PointInfo extends Interface {
             return;
         }
 
-        if (data.name) {
+        if (data.name !== undefined) {
             this.name.html(data.name);
         }
 
-        if (data.type) {
+        if (data.type !== undefined) {
             this.type.html(data.type);
         }
     }

@@ -136,10 +136,11 @@
         };
 
         class InstancedMeshPanel extends Panel {
-            constructor(mesh, materialItems) {
+            constructor(mesh, ui, materialItems) {
                 super();
 
                 this.mesh = mesh;
+                this.ui = ui;
                 this.materialItems = materialItems;
 
                 this.initPanel();
@@ -147,9 +148,14 @@
 
             initPanel() {
                 const mesh = this.mesh;
+                const ui = this.ui;
                 const materialItems = this.materialItems;
 
-                const point = Point3D.getPoint(mesh);
+                let point;
+
+                if (ui.constructor.points) {
+                    point = ui.constructor.getPoint(mesh);
+                }
 
                 const items = [
                     {
@@ -158,7 +164,7 @@
                         list: InstanceOptions,
                         value: 'Mesh',
                         callback: (value, item) => {
-                            if (InstanceOptions[value]) {
+                            if (InstanceOptions.get(value)) {
                                 const index = point.instances[0].index;
 
                                 const instanceItems = [
@@ -173,7 +179,7 @@
                                         step: 0.01,
                                         value: mesh.geometry.attributes.instanceOpacity.getX(index),
                                         callback: value => {
-                                            if (value < 1) {
+                                            if (!mesh.material.transparent) {
                                                 mesh.material.transparent = true;
                                                 mesh.material.needsUpdate = true;
                                             }

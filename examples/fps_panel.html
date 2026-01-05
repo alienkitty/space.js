@@ -22,24 +22,24 @@
 
         const backgroundColor = getComputedStyle(document.querySelector(':root')).getPropertyValue('--bg-color').trim();
 
-        const toggleOptions = {
-            Dark: false,
-            Light: true
-        };
+        const toggleOptions = new Map([
+            ['Dark', false],
+            ['Light', true]
+        ]);
 
-        const selectOptions = {
-            Never: 1,
-            Gonna: 2,
-            Give: 3,
-            You: 4,
-            Up: 5
-        };
+        const selectOptions = new Map([
+            ['Never', 1],
+            ['Gonna', 2],
+            ['Give', 3],
+            ['You', 4],
+            ['Up', 5]
+        ]);
 
-        const contentOptions = {
-            'Content A': 1,
-            'Content B': 2,
-            'Empty': 3
-        };
+        const contentOptions = new Map([
+            ['Content A', 1],
+            ['Content B', 2],
+            ['Empty', 3]
+        ]);
 
         const image = new Image();
         image.crossOrigin = 'anonymous';
@@ -71,7 +71,7 @@
                 callback: value => {
                     console.log('ListToggle callback:', value);
 
-                    const light = toggleOptions[value];
+                    const light = toggleOptions.get(value);
 
                     if (light) {
                         ui.setPanelValue('Color', 0xffffff);
@@ -91,7 +91,7 @@
                 callback: value => {
                     console.log('ListSelect callback:', value);
 
-                    const roll = selectOptions[value];
+                    const roll = selectOptions.get(value);
 
                     if (roll === 5) {
                         open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');

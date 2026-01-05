@@ -14,11 +14,15 @@ export class NormalMaterialCommonPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -26,21 +30,23 @@ export class NormalMaterialCommonPanel extends Panel {
             },
             {
                 type: 'list',
-                name: 'Flat',
-                list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
+                name: 'Wire',
+                list: WireframeOptions,
+                value: getKeyByValue(WireframeOptions, material.wireframe),
                 callback: value => {
-                    mesh.material.flatShading = FlatShadingOptions[value];
-                    mesh.material.needsUpdate = true;
+                    materials.forEach(material => material.wireframe = WireframeOptions.get(value));
                 }
             },
             {
                 type: 'list',
-                name: 'Wire',
-                list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
+                name: 'Flat',
+                list: FlatShadingOptions,
+                value: getKeyByValue(FlatShadingOptions, material.flatShading),
                 callback: value => {
-                    mesh.material.wireframe = WireframeOptions[value];
+                    materials.forEach(material => {
+                        material.flatShading = FlatShadingOptions.get(value);
+                        material.needsUpdate = true;
+                    });
                 }
             }
         ];

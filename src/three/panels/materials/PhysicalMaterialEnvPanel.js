@@ -2,26 +2,41 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { MathUtils } from 'three';
-
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 
-import { TwoPI } from '../../../utils/Utils.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
 export class PhysicalMaterialEnvPanel extends Panel {
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
+
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
+
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
+            {
+                type: 'content',
+                callback: (value, item) => {
+                    const materialPanel = new EnvMapPanel(mesh, ui);
+                    materialPanel.animateIn(true);
+
+                    item.setContent(materialPanel);
+                }
+            },
             {
                 type: 'divider'
             },
@@ -31,9 +46,9 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: mesh.material.ior,
+                value: material.ior,
                 callback: value => {
-                    mesh.material.ior = value;
+                    materials.forEach(material => material.ior = value);
                 }
             },
             {
@@ -42,54 +57,9 @@ export class PhysicalMaterialEnvPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.reflectivity,
+                value: material.reflectivity,
                 callback: value => {
-                    mesh.material.reflectivity = value;
-                }
-            },
-            // TODO: Texture thumbnails
-            {
-                type: 'slider',
-                name: 'Rotate X',
-                min: 0,
-                max: 360,
-                step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.x + (mesh.material.envMapRotation.x < 0 ? TwoPI : 0)),
-                callback: value => {
-                    mesh.material.envMapRotation.x = MathUtils.degToRad(value);
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Rotate Y',
-                min: 0,
-                max: 360,
-                step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.y + (mesh.material.envMapRotation.y < 0 ? TwoPI : 0)),
-                callback: value => {
-                    mesh.material.envMapRotation.y = MathUtils.degToRad(value);
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Rotate Z',
-                min: 0,
-                max: 360,
-                step: 1,
-                value: MathUtils.radToDeg(mesh.material.envMapRotation.z + (mesh.material.envMapRotation.z < 0 ? TwoPI : 0)),
-                callback: value => {
-                    mesh.material.envMapRotation.z = MathUtils.degToRad(value);
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Int',
-                min: 0,
-                max: 10,
-                step: 0.1,
-                value: mesh.material.envMapIntensity,
-                callback: value => {
-                    mesh.material.envMapIntensity = value;
+                    materials.forEach(material => material.reflectivity = value);
                 }
             }
         ];

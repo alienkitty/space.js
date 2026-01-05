@@ -5,6 +5,8 @@
 import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 
+import { loadFiles } from '../loaders/FileUtils.js';
+
 export class Thumbnail extends Interface {
     constructor(data) {
         super('.thumbnail');
@@ -58,7 +60,6 @@ export class Thumbnail extends Interface {
             this.initCanvas();
         }
 
-        this.initDragAndDrop();
         this.setThumbnail(this.image, this.noCanvas);
 
         this.addListeners();
@@ -96,34 +97,28 @@ export class Thumbnail extends Interface {
         this.context = this.canvas.element.getContext('2d');
     }
 
-    initDragAndDrop() {
-        this.reader = new FileReader();
-    }
-
     addListeners() {
         this.element.addEventListener('pointerdown', this.onPointerDown);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onLoad);
     }
 
     removeListeners() {
         this.element.removeEventListener('pointerdown', this.onPointerDown);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onLoad);
     }
 
-    loadImage(path) {
-        const image = new Image();
+    async loadFiles(files) {
+        const data = await loadFiles(files);
 
-        image.onload = () => {
-            this.setThumbnail(image, true);
+        if (data.length) {
+            const { image } = data[0];
 
-            image.onload = null;
-        };
-
-        image.src = path;
+            if (image instanceof Image) {
+                this.setThumbnail(image, true);
+            }
+        }
     }
 
     // Event handlers
@@ -174,11 +169,7 @@ export class Thumbnail extends Interface {
     onDrop = e => {
         e.preventDefault();
 
-        this.reader.readAsDataURL(e.dataTransfer.files[0]);
-    };
-
-    onLoad = e => {
-        this.loadImage(e.target.result);
+        this.loadFiles(e.dataTransfer.files);
     };
 
     // Public methods

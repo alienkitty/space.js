@@ -22,7 +22,7 @@ export function getFullscreenTriangle() {
     return geometry;
 }
 
-export function getSphericalCube(radius, segments) {
+export function getSphericalCube(radius = 1, segments = 16) {
     const geometry = new BoxGeometry(radius, radius, radius, segments, segments, segments);
     const vertices = geometry.getAttribute('position');
     const normals = geometry.getAttribute('normal');
@@ -36,6 +36,24 @@ export function getSphericalCube(radius, segments) {
     }
 
     return geometry;
+}
+
+export function getFibonacciSphere(numPoints, i, radius = 1) {
+    const offset = 2 / numPoints;
+    const increment = Math.PI * (3 - Math.sqrt(5));
+
+    const y = (i * offset - 1) + (offset / 2);
+    const r = Math.sqrt(1 - Math.pow(y, 2));
+
+    const phi = i % numPoints * increment;
+
+    const x = Math.cos(phi) * r;
+    const z = Math.sin(phi) * r;
+
+    const v = new Vector3(x, y, z);
+    v.setLength(radius);
+
+    return v;
 }
 
 export function getBoundingSphereWorld(mesh) {
@@ -85,7 +103,6 @@ export function lerpCameras(camera1, camera2, alpha) {
     camera1.quaternion.slerp(camera2.quaternion, alpha);
 }
 
-// Based on https://oframe.github.io/ogl/examples/?src=post-fluid-distortion.html by gordonnl
 export function getDoubleRenderTarget(width, height, options) {
     const renderTarget = {
         read: new WebGLRenderTarget(width, height, options),

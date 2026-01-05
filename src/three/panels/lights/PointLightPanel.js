@@ -33,7 +33,7 @@ export class PointLightPanel extends Panel {
                 list: HelperOptions,
                 value: getKeyByValue(HelperOptions, light.userData.helper),
                 callback: value => {
-                    light.userData.helper = HelperOptions[value];
+                    light.userData.helper = HelperOptions.get(value);
 
                     this.panel.togglePointLightHelper(light, light.userData.helper);
                 }
@@ -109,7 +109,7 @@ export class PointLightPanel extends Panel {
                         item.setContent(lightPanel);
                     }
 
-                    light.visible = VisibleOptions[value];
+                    light.visible = VisibleOptions.get(value);
 
                     if (light.visible) {
                         item.toggleContent(true);

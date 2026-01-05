@@ -4,7 +4,7 @@
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { FlatShadingOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
+import { FlatShadingOptions, FogOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -14,11 +14,15 @@ export class StandardMaterialCommonPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -27,17 +31,17 @@ export class StandardMaterialCommonPanel extends Panel {
             {
                 type: 'color',
                 name: 'Color',
-                value: mesh.material.color,
+                value: material.color,
                 callback: value => {
-                    mesh.material.color.copy(value);
+                    materials.forEach(material => material.color.copy(value));
                 }
             },
             {
                 type: 'color',
                 name: 'Emissive',
-                value: mesh.material.emissive,
+                value: material.emissive,
                 callback: value => {
-                    mesh.material.emissive.copy(value);
+                    materials.forEach(material => material.emissive.copy(value));
                 }
             },
             {
@@ -46,9 +50,9 @@ export class StandardMaterialCommonPanel extends Panel {
                 min: 0,
                 max: 2,
                 step: 0.01,
-                value: mesh.material.roughness,
+                value: material.roughness,
                 callback: value => {
-                    mesh.material.roughness = value;
+                    materials.forEach(material => material.roughness = value);
                 }
             },
             {
@@ -57,40 +61,50 @@ export class StandardMaterialCommonPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.metalness,
+                value: material.metalness,
                 callback: value => {
-                    mesh.material.metalness = value;
-                }
-            },
-            {
-                type: 'list',
-                name: 'Flat',
-                list: FlatShadingOptions,
-                value: getKeyByValue(FlatShadingOptions, mesh.material.flatShading),
-                callback: value => {
-                    mesh.material.flatShading = FlatShadingOptions[value];
-                    mesh.material.needsUpdate = true;
+                    materials.forEach(material => material.metalness = value);
                 }
             },
             {
                 type: 'list',
                 name: 'Wire',
                 list: WireframeOptions,
-                value: getKeyByValue(WireframeOptions, mesh.material.wireframe),
+                value: getKeyByValue(WireframeOptions, material.wireframe),
                 callback: value => {
-                    mesh.material.wireframe = WireframeOptions[value];
+                    materials.forEach(material => material.wireframe = WireframeOptions.get(value));
+                }
+            },
+            {
+                type: 'list',
+                name: 'Flat',
+                list: FlatShadingOptions,
+                value: getKeyByValue(FlatShadingOptions, material.flatShading),
+                callback: value => {
+                    materials.forEach(material => {
+                        material.flatShading = FlatShadingOptions.get(value);
+                        material.needsUpdate = true;
+                    });
+                }
+            },
+            {
+                type: 'list',
+                name: 'Fog',
+                list: FogOptions,
+                value: getKeyByValue(FogOptions, material.fog),
+                callback: value => {
+                    materials.forEach(material => material.fog = FogOptions.get(value));
                 }
             },
             {
                 type: 'list',
                 name: 'Tone',
                 list: ToneMappedOptions,
-                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                value: getKeyByValue(ToneMappedOptions, material.toneMapped),
                 callback: value => {
-                    mesh.material.toneMapped = ToneMappedOptions[value];
+                    materials.forEach(material => material.toneMapped = ToneMappedOptions.get(value));
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

@@ -11,11 +11,15 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -27,9 +31,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.transmission,
+                value: material.transmission,
                 callback: value => {
-                    mesh.material.transmission = value;
+                    materials.forEach(material => material.transmission = value);
                 }
             },
             {
@@ -38,17 +42,17 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.thickness,
+                value: material.thickness,
                 callback: value => {
-                    mesh.material.thickness = value;
+                    materials.forEach(material => material.thickness = value);
                 }
             },
             {
                 type: 'color',
                 name: 'Attenuation Color',
-                value: mesh.material.attenuationColor,
+                value: material.attenuationColor,
                 callback: value => {
-                    mesh.material.attenuationColor.copy(value);
+                    materials.forEach(material => material.attenuationColor.copy(value));
                 }
             },
             {
@@ -57,9 +61,20 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: -10,
                 max: 10,
                 step: 0.1,
-                value: mesh.material.attenuationDistance,
+                value: material.attenuationDistance,
                 callback: value => {
-                    mesh.material.attenuationDistance = value;
+                    materials.forEach(material => material.attenuationDistance = value);
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Chroma',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: material.dispersion,
+                callback: value => {
+                    materials.forEach(material => material.dispersion = value);
                 }
             },
             {
@@ -68,9 +83,9 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 1,
                 max: 2.333,
                 step: 0.01,
-                value: mesh.material.ior,
+                value: material.ior,
                 callback: value => {
-                    mesh.material.ior = value;
+                    materials.forEach(material => material.ior = value);
                 }
             },
             {
@@ -79,12 +94,11 @@ export class PhysicalMaterialTransmissionPanel extends Panel {
                 min: 0,
                 max: 1,
                 step: 0.01,
-                value: mesh.material.reflectivity,
+                value: material.reflectivity,
                 callback: value => {
-                    mesh.material.reflectivity = value;
+                    materials.forEach(material => material.reflectivity = value);
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

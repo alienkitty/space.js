@@ -17,8 +17,8 @@ export class List extends Interface {
 
         this.name = name;
         this.list = list;
-        this.keys = Object.keys(this.list);
-        this.values = Object.values(this.list);
+        this.keys = Array.from(this.list.keys());
+        this.values = Array.from(this.list.values());
         this.index = this.keys.indexOf(value);
         this.callback = callback;
 
@@ -27,7 +27,7 @@ export class List extends Interface {
         this.init();
         this.initViews();
 
-        this.update();
+        this.setIndex(this.index);
     }
 
     init() {
@@ -110,8 +110,22 @@ export class List extends Interface {
         }
     }
 
-    setValue(value, notify = true) {
-        this.index = this.values.indexOf(value);
+    setList(list) {
+        this.list = list;
+        this.keys = Array.from(this.list.keys());
+        this.values = Array.from(this.list.values());
+
+        if (this.keys.length > 2) {
+            this.items[0].setList(this.keys);
+        } else {
+            this.items.forEach((item, index) => {
+                item.setName(this.keys[index]);
+            });
+        }
+    }
+
+    setIndex(index, notify = true) {
+        this.index = index;
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);
@@ -120,8 +134,8 @@ export class List extends Interface {
         this.update(notify);
     }
 
-    setIndex(index, notify = true) {
-        this.index = index;
+    setValue(value, notify = true) {
+        this.index = this.values.indexOf(value);
 
         if (this.keys.length > 2) {
             this.items[0].setIndex(this.index);

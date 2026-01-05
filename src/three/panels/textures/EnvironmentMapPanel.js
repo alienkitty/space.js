@@ -1,0 +1,150 @@
+/**
+ * @author pschroen / https://ufo.ai/
+ */
+
+import { EquirectangularReflectionMapping, MathUtils, SRGBColorSpace, Texture } from 'three';
+
+import { Panel } from '../../../panels/Panel.js';
+import { PanelItem } from '../../../panels/PanelItem.js';
+
+import { TwoPI } from '../../../utils/Utils.js';
+
+export class EnvironmentMapPanel extends Panel {
+    constructor(scene) {
+        super();
+
+        this.scene = scene;
+
+        this.lastValue = this.scene.environment;
+        this.supported = false;
+        this.initialized = false;
+
+        this.setSupported(this.scene.environment);
+        this.initPanel();
+    }
+
+    setSupported(texture) {
+        this.supported = !!(texture && texture.isTexture && !texture.isRenderTargetTexture && !texture.isCubeTexture);
+    }
+
+    initPanel() {
+        const scene = this.scene;
+
+        const items = [
+            {
+                type: 'divider'
+            },
+            {
+                type: 'thumbnail',
+                name: 'Map',
+                data: this.supported ? scene.environment : {},
+                value: this.supported ? scene.environment.userData.thumbnail : null,
+                callback: (value, item) => {
+                    const mapItems = [];
+
+                    if (this.initialized) {
+                        if (value) {
+                            if (this.supported) {
+                                scene.environment.dispose();
+                                scene.environment = new Texture(value);
+                                scene.environment.mapping = item.data.mapping;
+                                scene.environment.colorSpace = item.data.colorSpace;
+                            } else {
+                                scene.environment = new Texture(value);
+                                scene.environment.mapping = EquirectangularReflectionMapping;
+                                scene.environment.colorSpace = SRGBColorSpace;
+                            }
+
+                            scene.environment.userData.thumbnail = scene.environment.source.data;
+                            scene.environment.needsUpdate = true;
+                        } else if (this.supported) {
+                            scene.environment.dispose();
+                            scene.environment = this.lastValue;
+                        }
+
+                        this.setSupported(scene.environment);
+
+                        item.setData(this.supported ? scene.environment : {});
+                    }
+
+                    if (this.supported) {
+                        mapItems.push(
+                            {
+                                type: 'divider'
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Int',
+                                min: 0,
+                                max: 10,
+                                step: 0.1,
+                                value: scene.environmentIntensity,
+                                callback: value => {
+                                    if (this.initialized) {
+                                        scene.environmentIntensity = value;
+                                    }
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate X',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.x + (scene.environmentRotation.x < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    if (this.initialized) {
+                                        scene.environmentRotation.x = MathUtils.degToRad(value);
+                                    }
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate Y',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.y + (scene.environmentRotation.y < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    if (this.initialized) {
+                                        scene.environmentRotation.y = MathUtils.degToRad(value);
+                                    }
+                                }
+                            },
+                            {
+                                type: 'slider',
+                                name: 'Rotate Z',
+                                min: 0,
+                                max: 360,
+                                step: 1,
+                                value: MathUtils.radToDeg(scene.environmentRotation.z + (scene.environmentRotation.z < 0 ? TwoPI : 0)),
+                                callback: value => {
+                                    if (this.initialized) {
+                                        scene.environmentRotation.z = MathUtils.degToRad(value);
+                                    }
+                                }
+                            }
+                        );
+                    }
+
+                    const mapPanel = new Panel();
+                    mapPanel.animateIn(true);
+
+                    mapItems.forEach(data => {
+                        mapPanel.add(new PanelItem(data));
+                    });
+
+                    item.setContent(mapPanel);
+
+                    if (!this.initialized) {
+                        this.initialized = true;
+                    }
+                }
+            }
+        ];
+
+        items.forEach(data => {
+            this.add(new PanelItem(data));
+        });
+    }
+}

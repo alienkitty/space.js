@@ -44,16 +44,22 @@ export class AssetLoader extends Loader {
 
         if (cached) {
             promise = Promise.resolve(cached);
-        } else if (/\.(jpe?g|png|webp|gif|svg)/.test(path)) {
+        } else if (/\.jpe?g|png|webp|gif|svg/i.test(path)) {
             promise = this.loadImage(path);
-        } else if (/\.json/.test(path)) {
+        } else if (/\.json/i.test(path)) {
             promise = this.loadData(path);
         } else {
             promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
-                if (/\.(mp3|m4a|ogg|wav|aiff?)/.test(path)) {
+                if (/\.mp3|m4a|ogg|wav|aiff|bin?/i.test(path)) {
                     return response.arrayBuffer();
                 } else {
-                    return response.text();
+                    const contentType = response.headers.get('content-type');
+
+                    if (contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        return response.text();
+                    }
                 }
             });
         }
@@ -82,9 +88,6 @@ export class AssetLoader extends Loader {
     loadImage(path) {
         const image = new Image();
 
-        image.crossOrigin = this.crossOrigin;
-        image.src = this.getPath(path);
-
         const promise = new Promise((resolve, reject) => {
             image.onload = () => {
                 resolve(image);
@@ -98,6 +101,9 @@ export class AssetLoader extends Loader {
                 image.onerror = null;
             };
         });
+
+        image.crossOrigin = this.crossOrigin;
+        image.src = this.getPath(path);
 
         return promise;
     }

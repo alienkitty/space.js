@@ -121,62 +121,112 @@ export class Panel extends Interface {
         return super.add(item);
     }
 
-    setPanelIndex(name, index, path = []) {
-        this.items.forEach(({ view }) => {
+    // TODO: Support all panel types
+    getPanelIndex(name) {
+        let index;
+
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
             if (!view) {
-                return;
+                continue;
             }
 
             if (view.name === name && view.setIndex) {
-                view.setIndex(index);
-                return;
+                index = view.index;
+                break;
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
+                index = view.group.children[0].getPanelIndex(name);
+
+                if (index !== undefined) {
+                    break;
+                }
+            }
+        }
+
+        return index;
+    }
+
+    // TODO: Support all panel types
+    getPanelValue(name) {
+        let value;
+
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
+            if (!view) {
+                continue;
+            }
+
+            if (view.name === name && view.setValue) {
+                value = view.keys[view.index];
+                break;
+            }
+
+            if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
+                value = view.group.children[0].getPanelValue(name);
+
+                if (value !== undefined) {
+                    break;
+                }
+            }
+        }
+
+        return value;
+    }
+
+    setPanelIndex(name, index, path = []) {
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
+
+            if (!view) {
+                continue;
             }
 
             if (path.length) {
                 const [pathName, pathIndex] = path[0];
 
                 if (view.name === pathName) {
-                    if (view.index !== pathIndex) {
-                        view.setIndex(pathIndex);
-                    }
-
+                    view.setIndex(pathIndex);
                     path.shift();
                 }
+            } else if (view.name === name && view.setIndex) {
+                view.setIndex(index);
+                break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
                 view.group.children[0].setPanelIndex(name, index, path);
             }
-        });
+        }
     }
 
     setPanelValue(name, value, path = []) {
-        this.items.forEach(({ view }) => {
-            if (!view) {
-                return;
-            }
+        for (let i = 0, l = this.items.length; i < l; i++) {
+            const { view } = this.items[i];
 
-            if (view.name === name && view.setValue) {
-                view.setValue(value);
-                return;
+            if (!view) {
+                continue;
             }
 
             if (path.length) {
                 const [pathName, pathIndex] = path[0];
 
                 if (view.name === pathName) {
-                    if (view.index !== pathIndex) {
-                        view.setIndex(pathIndex);
-                    }
-
+                    view.setIndex(pathIndex);
                     path.shift();
                 }
+            } else if (view.name === name && view.setValue) {
+                view.setValue(value);
+                break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
                 view.group.children[0].setPanelValue(name, value, path);
             }
-        });
+        }
     }
 
     invert(isInverted) {

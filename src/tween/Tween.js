@@ -10,7 +10,7 @@ const Tweens = [];
 
 /**
  * Tween animation engine.
- * @see {@link https://github.com/alienkitty/alien.js/wiki/Tween | Documentation}
+ * @see {@link https://github.com/alienkitty/space.js/wiki/Tween | Documentation}
  * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
  * @example
  * ticker.start();

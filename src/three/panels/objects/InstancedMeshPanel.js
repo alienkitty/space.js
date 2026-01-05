@@ -4,16 +4,16 @@
 
 import { Color } from 'three';
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { InstanceOptions } from '../Options.js';
 
 export class InstancedMeshPanel extends Panel {
-    constructor(mesh, materialItems) {
+    constructor(mesh, ui, materialItems) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
         this.materialItems = materialItems;
 
         this.initPanel();
@@ -21,12 +21,13 @@ export class InstancedMeshPanel extends Panel {
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
         const materialItems = this.materialItems;
 
         let point;
 
-        if (Point3D.points) {
-            point = Point3D.getPoint(mesh);
+        if (ui.constructor.points) {
+            point = ui.constructor.getPoint(mesh);
         }
 
         const color = new Color();
@@ -38,7 +39,7 @@ export class InstancedMeshPanel extends Panel {
                 list: InstanceOptions,
                 value: 'Mesh',
                 callback: (value, item) => {
-                    if (InstanceOptions[value]) {
+                    if (InstanceOptions.get(value)) {
                         mesh.getColorAt(point.instances[0].index, color);
 
                         const instanceItems = [

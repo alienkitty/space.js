@@ -2,7 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-import { Point3D } from '../../ui/Point3D.js';
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
@@ -11,19 +10,37 @@ import { StandardMaterialPatches } from '../Patches.js';
 
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
-import { StandardMaterialEnvPanel } from './StandardMaterialEnvPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
-import { MapPanel } from '../textures/MapPanel.js';
+import { TextureMapPanel } from '../textures/TextureMapPanel.js';
+import { LightMapPanel } from '../textures/LightMapPanel.js';
+import { AOMapPanel } from '../textures/AOMapPanel.js';
+import { EmissiveMapPanel } from '../textures/EmissiveMapPanel.js';
+import { BumpMapPanel } from '../textures/BumpMapPanel.js';
+import { NormalMapPanel } from '../textures/NormalMapPanel.js';
+import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
+import { RoughnessMapPanel } from '../textures/RoughnessMapPanel.js';
+import { MetalnessMapPanel } from '../textures/MetalnessMapPanel.js';
+import { AlphaMapPanel } from '../textures/AlphaMapPanel.js';
+import { EnvMapPanel } from '../textures/EnvMapPanel.js';
 
-export const StandardMaterialOptions = {
-    Common: StandardMaterialCommonPanel,
-    Map: MapPanel,
-    Subsurface: StandardMaterialSubsurfacePanel,
-    Env: StandardMaterialEnvPanel,
-    Helper: MeshHelperPanel,
-    Physics: OimoPhysicsPanel
-};
+export const StandardMaterialOptions = new Map([
+    ['Common', StandardMaterialCommonPanel],
+    ['Map', TextureMapPanel],
+    ['Light', LightMapPanel],
+    ['AO', AOMapPanel],
+    ['Emissive', EmissiveMapPanel],
+    ['Bump', BumpMapPanel],
+    ['Normal', NormalMapPanel],
+    ['Displace', DisplacementMapPanel],
+    ['Rough', RoughnessMapPanel],
+    ['Metal', MetalnessMapPanel],
+    ['Alpha', AlphaMapPanel],
+    ['Subsurface', StandardMaterialSubsurfacePanel],
+    ['Env', EnvMapPanel],
+    ['Helper', MeshHelperPanel],
+    ['Physics', OimoPhysicsPanel]
+]);
 
 export class StandardMaterialPanel extends Panel {
     static type = 'Standard';
@@ -33,30 +50,38 @@ export class StandardMaterialPanel extends Panel {
         ...MaterialProperties.Standard
     ];
 
-    constructor(mesh) {
+    constructor(mesh, ui) {
         super();
 
         this.mesh = mesh;
+        this.ui = ui;
+
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
 
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
+        const ui = this.ui;
 
-        if (!Point3D.points) {
-            delete StandardMaterialOptions.Helper;
+        const materials = this.materials;
+
+        if (!ui || !ui.constructor.points) {
+            StandardMaterialOptions.delete('Helper');
         }
 
-        if (!Point3D.physics) {
-            delete StandardMaterialOptions.Physics;
+        if (!ui || !ui.constructor.physics) {
+            StandardMaterialOptions.delete('Physics');
         }
 
         if (mesh.userData.subsurface) {
-            mesh.material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
-
-            mesh.material.customProgramCacheKey = () => Object.keys(mesh.material.userData.onBeforeCompile).join('|');
-            mesh.material.needsUpdate = true;
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [
@@ -69,9 +94,9 @@ export class StandardMaterialPanel extends Panel {
                 list: StandardMaterialOptions,
                 value: 'Common',
                 callback: (value, item) => {
-                    const MaterialPanel = StandardMaterialOptions[value];
+                    const MaterialPanel = StandardMaterialOptions.get(value);
 
-                    const materialPanel = new MaterialPanel(mesh);
+                    const materialPanel = new MaterialPanel(mesh, ui);
                     materialPanel.animateIn(true);
 
                     item.setContent(materialPanel);
@@ -88,7 +113,7 @@ export class StandardMaterialPanel extends Panel {
                     callback: (value, item) => {
                         const { InstancedMeshPanel } = MaterialPanels;
 
-                        const materialPanel = new InstancedMeshPanel(mesh, materialItems);
+                        const materialPanel = new InstancedMeshPanel(mesh, ui, materialItems);
                         materialPanel.animateIn(true);
 
                         item.setContent(materialPanel);

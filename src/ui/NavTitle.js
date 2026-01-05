@@ -94,11 +94,11 @@ export class NavTitle extends Interface {
 
         this.removeListeners();
 
-        if (this.name) {
+        if (this.name !== undefined) {
             this.name.html(data.name);
         }
 
-        if (this.caption) {
+        if (this.caption !== undefined) {
             this.caption.html(data.caption);
         }
 

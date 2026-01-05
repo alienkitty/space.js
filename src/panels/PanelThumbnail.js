@@ -6,10 +6,11 @@ import { Vector2 } from '../math/Vector2.js';
 import { Interface } from '../utils/Interface.js';
 import { Stage } from '../utils/Stage.js';
 
+import { loadFiles } from '../loaders/FileUtils.js';
+
 export class PanelThumbnail extends Interface {
     constructor({
         name,
-        flipY = false,
         data,
         value,
         callback
@@ -17,7 +18,6 @@ export class PanelThumbnail extends Interface {
         super('.panel-thumbnail');
 
         this.name = name;
-        this.flipY = flipY;
         this.data = data;
         this.value = value;
         this.callback = callback;
@@ -40,7 +40,7 @@ export class PanelThumbnail extends Interface {
         this.duplicate = null;
 
         this.init();
-        this.initDragAndDrop();
+        this.setData(this.data);
         this.setValue(this.value);
 
         this.addListeners();
@@ -80,12 +80,8 @@ export class PanelThumbnail extends Interface {
         this.input = new Interface(null, 'input');
         this.input.attr({
             type: 'file',
-            accept: 'image/*'
+            multiple: ''
         });
-    }
-
-    initDragAndDrop() {
-        this.reader = new FileReader();
     }
 
     addListeners() {
@@ -94,7 +90,6 @@ export class PanelThumbnail extends Interface {
         this.input.element.addEventListener('change', this.onChange);
         this.element.addEventListener('dragover', this.onDragOver);
         this.element.addEventListener('drop', this.onDrop);
-        this.reader.addEventListener('load', this.onLoad);
         window.addEventListener('keyup', this.onKeyUp);
     }
 
@@ -104,7 +99,6 @@ export class PanelThumbnail extends Interface {
         this.input.element.removeEventListener('change', this.onChange);
         this.element.removeEventListener('dragover', this.onDragOver);
         this.element.removeEventListener('drop', this.onDrop);
-        this.reader.removeEventListener('load', this.onLoad);
         window.removeEventListener('keyup', this.onKeyUp);
     }
 
@@ -115,7 +109,7 @@ export class PanelThumbnail extends Interface {
 
         const context = canvas.getContext('2d');
 
-        if (this.flipY) {
+        if (image instanceof ImageBitmap) {
             context.translate(0, canvas.height);
             context.scale(1, -1);
         }
@@ -125,16 +119,20 @@ export class PanelThumbnail extends Interface {
         return canvas;
     }
 
-    loadImage(path) {
-        const image = new Image();
+    async loadFiles(files) {
+        const data = await loadFiles(files);
 
-        image.onload = () => {
-            this.setValue(image);
+        if (data.length) {
+            const { image, filename } = data[0];
 
-            image.onload = null;
-        };
+            if (image instanceof Image) {
+                this.data.name = filename;
 
-        image.src = path;
+                this.setValue(image);
+            }
+
+            Stage.events.emit('images_drop', { data, target: this });
+        }
     }
 
     // Event handlers
@@ -266,21 +264,18 @@ export class PanelThumbnail extends Interface {
     };
 
     onDrop = e => {
+        e.stopPropagation();
         e.preventDefault();
 
-        this.reader.readAsDataURL(e.dataTransfer.files[0]);
+        this.loadFiles(e.dataTransfer.files);
     };
 
     onChange = e => {
         e.preventDefault();
 
         if (e.target.files.length) {
-            this.reader.readAsDataURL(e.target.files[0]);
+            this.loadFiles(e.target.files);
         }
-    };
-
-    onLoad = e => {
-        this.loadImage(e.target.result);
     };
 
     onUpdate = e => {
@@ -325,14 +320,14 @@ export class PanelThumbnail extends Interface {
 
     setData(data) {
         if (!data) {
-            return;
+            data = {};
         }
 
         this.data = data;
     }
 
     setValue(value, notify = true) {
-        if (value instanceof ImageBitmap) {
+        if ((value instanceof Image && !value.src.startsWith('data:')) || value instanceof ImageBitmap) {
             this.value = this.imageToCanvas(value);
         } else if (value && value.nodeName) {
             this.value = value.cloneNode();
@@ -358,30 +353,30 @@ export class PanelThumbnail extends Interface {
             this.add(this.wrapper);
         }
 
-        const content = new Interface(this.value);
-        content.css({
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            pointerEvents: 'none'
-        });
+        if (this.value && this.value.nodeName) {
+            const content = new Interface(this.value);
+            content.css({
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                pointerEvents: 'none'
+            });
 
-        const oldWrapper = this.wrapper;
-        oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
+            const oldWrapper = this.wrapper;
+            oldWrapper.element.removeEventListener('pointerdown', this.onPointerDown);
 
-        const newWrapper = this.wrapper.clone();
-        newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
-        newWrapper.add(content);
+            const newWrapper = this.wrapper.clone();
+            newWrapper.element.addEventListener('pointerdown', this.onPointerDown);
+            newWrapper.add(content);
 
-        this.replace(oldWrapper, newWrapper);
-        this.wrapper = newWrapper;
+            this.replace(oldWrapper, newWrapper);
+            this.wrapper = newWrapper;
 
-        oldWrapper.destroy();
+            oldWrapper.destroy();
 
-        if (this.value) {
             this.wrapper.show();
         } else {
             this.wrapper.hide();

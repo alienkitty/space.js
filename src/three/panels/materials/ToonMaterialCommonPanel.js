@@ -4,7 +4,7 @@
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { ToneMappedOptions } from '../Options.js';
+import { FogOptions, ToneMappedOptions, WireframeOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 
@@ -14,11 +14,15 @@ export class ToonMaterialCommonPanel extends Panel {
 
         this.mesh = mesh;
 
+        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
+        this.material = this.materials[0];
+
         this.initPanel();
     }
 
     initPanel() {
-        const mesh = this.mesh;
+        const materials = this.materials;
+        const material = this.material;
 
         const items = [
             {
@@ -27,21 +31,46 @@ export class ToonMaterialCommonPanel extends Panel {
             {
                 type: 'color',
                 name: 'Color',
-                value: mesh.material.color,
+                value: material.color,
                 callback: value => {
-                    mesh.material.color.copy(value);
+                    materials.forEach(material => material.color.copy(value));
+                }
+            },
+            {
+                type: 'color',
+                name: 'Emissive',
+                value: material.emissive,
+                callback: value => {
+                    materials.forEach(material => material.emissive.copy(value));
+                }
+            },
+            {
+                type: 'list',
+                name: 'Wire',
+                list: WireframeOptions,
+                value: getKeyByValue(WireframeOptions, material.wireframe),
+                callback: value => {
+                    materials.forEach(material => material.wireframe = WireframeOptions.get(value));
+                }
+            },
+            {
+                type: 'list',
+                name: 'Fog',
+                list: FogOptions,
+                value: getKeyByValue(FogOptions, material.fog),
+                callback: value => {
+                    materials.forEach(material => material.fog = FogOptions.get(value));
                 }
             },
             {
                 type: 'list',
                 name: 'Tone',
                 list: ToneMappedOptions,
-                value: getKeyByValue(ToneMappedOptions, mesh.material.toneMapped),
+                value: getKeyByValue(ToneMappedOptions, material.toneMapped),
                 callback: value => {
-                    mesh.material.toneMapped = ToneMappedOptions[value];
+                    materials.forEach(material => material.toneMapped = ToneMappedOptions.get(value));
                 }
             }
-            // TODO: Texture thumbnails
         ];
 
         items.forEach(data => {

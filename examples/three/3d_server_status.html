@@ -95,7 +95,7 @@
             };
 
             static getType = () => {
-                return this.networkName.match(/\(([^)]+)\)/).pop();
+                return this.networkName.match(/\(([^)]+)\)/).pop(); // IP address
             };
         }
 
@@ -442,7 +442,7 @@
                 const event = 'subscribe';
                 const message = {
                     subscription: {
-                        name: 'server-status',
+                        name: 'status',
                         time: 86400 // Past day in seconds
                     }
                 };
@@ -466,13 +466,14 @@
                     case 'heartbeat':
                         this.send({ event, message });
                         break;
-                    case 'server-details': {
+                    case 'details': {
                         const { details, serverUptime/* , latency */ } = message;
 
                         const {
                             // packageVersion,
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             restartTime,
                             memTotal,
@@ -506,8 +507,15 @@
                         let swapTotalFormatted = swapTotal / 1024 / 1024 / 1024;
                         swapTotalFormatted = `${Math.round((swapTotalFormatted + Number.EPSILON) * 100) / 100} GiB`;
 
-                        let swapUsedPercentage = (swapUsed / swapTotal) * 100;
-                        swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        let swapUsedPercentage;
+
+                        if (swapUsed) {
+                            swapUsedPercentage = (swapUsed / swapTotal) * 100;
+                            swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        } else {
+                            swapUsedPercentage = 0;
+                            swapUsedPercentage = Math.round((swapUsedPercentage + Number.EPSILON) * 100) / 100;
+                        }
 
                         const storageUsed = storageTotal - storageAvailable;
 
@@ -515,16 +523,16 @@
                         let storageTotalFormatted;
 
                         if (storageTotal < 1e9) {
-                            storageUsedFormatted = storageUsed / 1000 / 1000;
+                            storageUsedFormatted = storageUsed / 1024 / 1024;
                             storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} MB`;
 
-                            storageTotalFormatted = storageTotal / 1000 / 1000;
+                            storageTotalFormatted = storageTotal / 1024 / 1024;
                             storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} MB`;
                         } else {
-                            storageUsedFormatted = storageUsed / 1000 / 1000 / 1000;
+                            storageUsedFormatted = storageUsed / 1024 / 1024 / 1024;
                             storageUsedFormatted = `${Math.round((storageUsedFormatted + Number.EPSILON) * 100) / 100} GB`;
 
-                            storageTotalFormatted = storageTotal / 1000 / 1000 / 1000;
+                            storageTotalFormatted = storageTotal / 1024 / 1024 / 1024;
                             storageTotalFormatted = `${Math.round((storageTotalFormatted + Number.EPSILON) * 100) / 100} GB`;
                         }
 
@@ -534,6 +542,7 @@
                         this.emit('details', {
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             restartTime,
                             serverUptime: serverUptimeFormatted,
@@ -551,7 +560,7 @@
                         });
                         break;
                     }
-                    case 'server-status': {
+                    case 'status': {
                         const { status, serverUptime, latency } = message;
 
                         let data = status;
@@ -792,11 +801,11 @@
                     });
                     object.add(object.point);
 
-                    const graphOptions = {
-                        'Latency': 0,
-                        'Load': 1,
-                        'Clients': 2
-                    };
+                    const graphOptions = new Map([
+                        ['Latency', 0],
+                        ['Load', 1],
+                        ['Clients', 2]
+                    ]);
 
                     const items = [
                         {
@@ -808,7 +817,7 @@
                             list: graphOptions,
                             value: 'Load',
                             callback: value => {
-                                const index = graphOptions[value];
+                                const index = graphOptions.get(value);
 
                                 object.graph.setIndex(index);
                             }
@@ -828,7 +837,7 @@
                                 object.point.deactivate();
 
                                 this.timeout = delayedCall(300, () => {
-                                    item.setValue(this.ui.details.animatedIn ? 'Map' : 'Details');
+                                    item.setValue(this.ui.details.animatedIn ? 'Map' : 'Details', false);
                                 });
                             }
                         }
@@ -888,7 +897,7 @@
             }
 
             static initSocket() {
-                this.socket = new Socket('wss://hello-websockets-server-status.glitch.me');
+                this.socket = new Socket('wss://hello-websockets-server-status.cyberspace.app');
             }
 
             static initPanel() {
@@ -908,6 +917,7 @@
             static onDetails = ({
                 projectDomain,
                 networkName,
+                networkOrg,
                 serverVersion,
                 restartTime,
                 serverUptime,
@@ -973,7 +983,7 @@
                                     group: [
                                         {
                                             title: 'Network',
-                                            content: `${projectDomain}<br>${networkName}`,
+                                            content: `${projectDomain}<br>${networkName}<br>${networkOrg}`,
                                             width: 330
                                         },
                                         {
