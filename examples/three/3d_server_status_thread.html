@@ -95,7 +95,7 @@
             };
 
             static getType = () => {
-                return this.networkName.match(/\(([^)]+)\)/).pop();
+                return this.networkName.match(/\(([^)]+)\)/).pop(); // IP address
             };
         }
 
@@ -473,6 +473,7 @@
                             // packageVersion,
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             restartTime,
                             memTotal,
@@ -534,6 +535,7 @@
                         this.emit('details', {
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             restartTime,
                             serverUptime: serverUptimeFormatted,
@@ -968,6 +970,7 @@
             static onDetails = ({
                 projectDomain,
                 networkName,
+                networkOrg,
                 serverVersion,
                 restartTime,
                 serverUptime,
@@ -1033,7 +1036,7 @@
                                     group: [
                                         {
                                             title: 'Network',
-                                            content: `${projectDomain}<br>${networkName}`,
+                                            content: `${projectDomain}<br>${networkName}<br>${networkOrg}`,
                                             width: 330
                                         },
                                         {

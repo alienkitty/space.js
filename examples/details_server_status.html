@@ -119,6 +119,7 @@
                             // packageVersion,
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             // restartTime,
                             memTotal,
@@ -180,6 +181,7 @@
                         this.emit('details', {
                             projectDomain,
                             networkName,
+                            networkOrg,
                             serverVersion,
                             serverUptime: serverUptimeFormatted,
                             memUsed: memUsedFormatted,
@@ -336,6 +338,7 @@
             static onServerDetails = ({
                 projectDomain,
                 networkName,
+                networkOrg,
                 serverVersion,
                 serverUptime,
                 memUsed,
@@ -394,7 +397,7 @@
                                     group: [
                                         {
                                             title: 'Network',
-                                            content: `${projectDomain}<br>${networkName}`,
+                                            content: `${projectDomain}<br>${networkName}<br>${networkOrg}`,
                                             width: 330
                                         },
                                         {
