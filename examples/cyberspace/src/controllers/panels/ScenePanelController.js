@@ -37,7 +37,14 @@ export class ScenePanelController {
 
     static onHover = ({ type, index, target }) => {
         console.log('onHover', type, index, target, Data.stars[index]);
-        target.setData({ primary: Data.stars[index].name });
+
+        if (type === 'over') {
+            target.setData({ primary: Data.stars[index].name });
+
+            if (!target.tracker.animatedIn) {
+                target.tracker.animateIn();
+            }
+        }
     };
 
     static onClick = ({ index, target }) => {
