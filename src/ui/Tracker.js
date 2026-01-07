@@ -203,6 +203,13 @@ export class Tracker extends Interface {
                     callback();
                 }
             });
+        } else {
+            this.animatedIn = false;
+            this.isVisible = false;
+
+            if (callback) {
+                callback();
+            }
         }
 
         if (this.info) {
