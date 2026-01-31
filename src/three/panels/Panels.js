@@ -12,6 +12,7 @@ export { BasicMaterialAdjustmentsPanel } from './materials/BasicMaterialAdjustme
 export { LambertMaterialOptions, LambertMaterialPanel } from './materials/LambertMaterialPanel.js';
 export { LambertMaterialCommonPanel } from './materials/LambertMaterialCommonPanel.js';
 export { LambertMaterialAdjustmentsPanel } from './materials/LambertMaterialAdjustmentsPanel.js';
+export { LambertMaterialSubsurfacePanel } from './materials/LambertMaterialSubsurfacePanel.js';
 export { MatcapMaterialOptions, MatcapMaterialPanel } from './materials/MatcapMaterialPanel.js';
 export { MatcapMaterialCommonPanel } from './materials/MatcapMaterialCommonPanel.js';
 export { MatcapMaterialAdjustmentsPanel } from './materials/MatcapMaterialAdjustmentsPanel.js';
