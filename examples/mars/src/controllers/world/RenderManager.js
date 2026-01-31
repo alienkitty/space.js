@@ -174,7 +174,6 @@ export class RenderManager {
         this.compositeMaterial.uniforms.uToneMapping.value = this.toneMapping;
         this.compositeMaterial.uniforms.uExposure.value = this.toneMappingExposure;
         this.compositeMaterial.uniforms.uGamma.value = this.gammaCorrection;
-        this.compositeMaterial.uniforms.uResolution = resolution;
 
         // SMAA edge detection material
         this.edgesMaterial = new SMAAEdgesMaterial();
