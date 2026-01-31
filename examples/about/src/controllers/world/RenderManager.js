@@ -58,6 +58,7 @@ export class RenderManager {
         this.renderTargetB = this.renderTargetA.clone();
 
         this.renderTargetBright = this.renderTargetA.clone();
+
         this.renderTargetsHorizontal = [];
         this.renderTargetsVertical = [];
         this.nMips = 5;
@@ -88,10 +89,10 @@ export class RenderManager {
         // Separable Gaussian blur materials
         this.blurMaterials = [];
 
-        const kernelSizeArray = [3, 5, 7, 9, 11];
+        const kernelSizeArray = [6, 10, 14, 18, 22];
 
         for (let i = 0, l = this.nMips; i < l; i++) {
-            this.blurMaterials.push(new UnrealBloomBlurMaterial(kernelSizeArray[i]));
+            this.blurMaterials.push(this.getSeparableBlurMaterial(kernelSizeArray[i]));
         }
 
         // Bloom composite material
@@ -101,7 +102,7 @@ export class RenderManager {
         this.bloomCompositeMaterial.uniforms.tBlur3.value = this.renderTargetsVertical[2].texture;
         this.bloomCompositeMaterial.uniforms.tBlur4.value = this.renderTargetsVertical[3].texture;
         this.bloomCompositeMaterial.uniforms.tBlur5.value = this.renderTargetsVertical[4].texture;
-        this.bloomCompositeMaterial.uniforms.uBloomFactors.value = this.bloomFactors();
+        this.bloomCompositeMaterial.uniforms.uBloomFactors.value = this.getBloomFactors();
 
         // Composite material
         this.compositeMaterial = new CompositeMaterial();
@@ -116,7 +117,18 @@ export class RenderManager {
         this.copyMaterial = new CopyMaterial();
     }
 
-    static bloomFactors() {
+    static getSeparableBlurMaterial(kernelRadius) {
+        const coefficients = [];
+        const sigma = kernelRadius / 3;
+
+        for (let i = 0; i < kernelRadius; i++) {
+            coefficients.push(0.39894 * Math.exp(-0.5 * i * i / (sigma * sigma)) / sigma);
+        }
+
+        return new UnrealBloomBlurMaterial(kernelRadius, coefficients);
+    }
+
+    static getBloomFactors() {
         const bloomFactors = [1, 0.8, 0.6, 0.4, 0.2];
 
         for (let i = 0, l = this.nMips; i < l; i++) {
@@ -184,7 +196,7 @@ export class RenderManager {
             this.renderTargetsHorizontal[i].setSize(width, height);
             this.renderTargetsVertical[i].setSize(width, height);
 
-            this.blurMaterials[i].uniforms.uResolution.value.set(width, height);
+            this.blurMaterials[i].uniforms.uTexelSize.value.set(1 / width, 1 / height);
 
             width /= 2;
             height /= 2;

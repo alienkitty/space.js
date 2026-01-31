@@ -103,7 +103,7 @@ export class PanelController {
                 value: RenderManager.bloomStrength,
                 callback: value => {
                     RenderManager.bloomStrength = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.getBloomFactors();
                 }
             },
             {
@@ -115,7 +115,7 @@ export class PanelController {
                 value: RenderManager.bloomRadius,
                 callback: value => {
                     RenderManager.bloomRadius = value;
-                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.bloomFactors();
+                    bloomCompositeMaterial.uniforms.uBloomFactors.value = RenderManager.getBloomFactors();
                 }
             }
         ];
