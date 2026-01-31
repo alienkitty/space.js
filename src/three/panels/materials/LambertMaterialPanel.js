@@ -10,6 +10,7 @@ import { LambertMaterialPatches } from '../Patches.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
 import { LambertMaterialAdjustmentsPanel } from './LambertMaterialAdjustmentsPanel.js';
+import { LambertMaterialSubsurfacePanel } from './LambertMaterialSubsurfacePanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
@@ -34,6 +35,7 @@ export const LambertMaterialOptions = new Map([
     ['Displace', DisplacementMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
+    ['Subsurface', LambertMaterialSubsurfacePanel],
     ['Adjust', LambertMaterialAdjustmentsPanel],
     ['Env', EnvMapPanel],
     ['Helper', MeshHelperPanel],
@@ -74,6 +76,14 @@ export class LambertMaterialPanel extends Panel {
         if (mesh.userData.adjustments) {
             materials.forEach(material => {
                 material.userData.onBeforeCompile.adjustments = LambertMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
+        }
+
+        if (mesh.userData.subsurface) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.subsurface = LambertMaterialPatches.subsurface;
                 material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
                 material.needsUpdate = true;
             });

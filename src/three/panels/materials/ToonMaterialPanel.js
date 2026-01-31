@@ -10,6 +10,7 @@ import { ToonMaterialPatches } from '../Patches.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
 import { ToonMaterialAdjustmentsPanel } from './ToonMaterialAdjustmentsPanel.js';
+import { ToonMaterialSubsurfacePanel } from './ToonMaterialSubsurfacePanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
@@ -33,6 +34,7 @@ export const ToonMaterialOptions = new Map([
     ['Normal', NormalMapPanel],
     ['Displace', DisplacementMapPanel],
     ['Alpha', AlphaMapPanel],
+    ['Subsurface', ToonMaterialSubsurfacePanel],
     ['Adjust', ToonMaterialAdjustmentsPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -72,6 +74,14 @@ export class ToonMaterialPanel extends Panel {
         if (mesh.userData.adjustments) {
             materials.forEach(material => {
                 material.userData.onBeforeCompile.adjustments = ToonMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
+        }
+
+        if (mesh.userData.subsurface) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.subsurface = ToonMaterialPatches.subsurface;
                 material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
                 material.needsUpdate = true;
             });

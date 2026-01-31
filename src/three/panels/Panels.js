@@ -12,6 +12,7 @@ export { BasicMaterialAdjustmentsPanel } from './materials/BasicMaterialAdjustme
 export { LambertMaterialOptions, LambertMaterialPanel } from './materials/LambertMaterialPanel.js';
 export { LambertMaterialCommonPanel } from './materials/LambertMaterialCommonPanel.js';
 export { LambertMaterialAdjustmentsPanel } from './materials/LambertMaterialAdjustmentsPanel.js';
+export { LambertMaterialSubsurfacePanel } from './materials/LambertMaterialSubsurfacePanel.js';
 export { MatcapMaterialOptions, MatcapMaterialPanel } from './materials/MatcapMaterialPanel.js';
 export { MatcapMaterialCommonPanel } from './materials/MatcapMaterialCommonPanel.js';
 export { MatcapMaterialAdjustmentsPanel } from './materials/MatcapMaterialAdjustmentsPanel.js';
@@ -22,6 +23,7 @@ export { PhongMaterialSubsurfacePanel } from './materials/PhongMaterialSubsurfac
 export { ToonMaterialOptions, ToonMaterialPanel } from './materials/ToonMaterialPanel.js';
 export { ToonMaterialCommonPanel } from './materials/ToonMaterialCommonPanel.js';
 export { ToonMaterialAdjustmentsPanel } from './materials/ToonMaterialAdjustmentsPanel.js';
+export { ToonMaterialSubsurfacePanel } from './materials/ToonMaterialSubsurfacePanel.js';
 export { StandardMaterialOptions, StandardMaterialPanel } from './materials/StandardMaterialPanel.js';
 export { StandardMaterialCommonPanel } from './materials/StandardMaterialCommonPanel.js';
 export { StandardMaterialAdjustmentsPanel } from './materials/StandardMaterialAdjustmentsPanel.js';
