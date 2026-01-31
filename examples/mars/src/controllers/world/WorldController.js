@@ -111,12 +111,10 @@ export class WorldController {
         this.ktx2Loader.setPath(`${assetPath}/textures/cube/`);
         this.ktx2Loader.setTranscoderPath('https://www.gstatic.com/basis-universal/versioned/2021-04-15-ba1c3e4/');
         this.ktx2Loader.detectSupport(this.renderer);
-        // TODO: Fix KTX2Loader setPath()
-        // console.log('initLoaders', this.ktx2Loader.path);
     }
 
     static async initBackground() {
-        const cubeTexture = await this.loadCompressedTexture(`${assetPath}/textures/cube/hiptyc_2020_cube.ktx2`);
+        const cubeTexture = await this.loadCompressedTexture('hiptyc_2020_cube.ktx2');
         cubeTexture.colorSpace = SRGBColorSpace;
 
         this.scene.background = cubeTexture;
