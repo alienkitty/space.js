@@ -9,6 +9,7 @@ import { MaterialPanels } from '../Custom.js';
 import { PhongMaterialPatches } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
+import { PhongMaterialAdjustmentsPanel } from './PhongMaterialAdjustmentsPanel.js';
 import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
@@ -35,6 +36,7 @@ export const PhongMaterialOptions = new Map([
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
     ['Subsurface', PhongMaterialSubsurfacePanel],
+    ['Adjust', PhongMaterialAdjustmentsPanel],
     ['Env', EnvMapPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -72,6 +74,14 @@ export class PhongMaterialPanel extends Panel {
 
         if (!ui || !ui.constructor.physics) {
             PhongMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = PhongMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         if (mesh.userData.subsurface) {

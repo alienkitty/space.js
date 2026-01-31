@@ -9,6 +9,7 @@ import { MaterialPanels } from '../Custom.js';
 import { StandardMaterialPatches } from '../Patches.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
+import { PhysicalMaterialAdjustmentsPanel } from './PhysicalMaterialAdjustmentsPanel.js';
 import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
 import { PhysicalMaterialClearcoatPanel } from './PhysicalMaterialClearcoatPanel.js';
 import { PhysicalMaterialClearcoatRoughnessPanel } from './PhysicalMaterialClearcoatRoughnessPanel.js';
@@ -67,6 +68,7 @@ export const PhysicalMaterialOptions = new Map([
     ['Specular Color', PhysicalMaterialSpecularColorPanel],
     ['Specular Int', PhysicalMaterialSpecularIntensityPanel],
     ['Subsurface', PhysicalMaterialSubsurfacePanel],
+    ['Adjust', PhysicalMaterialAdjustmentsPanel],
     ['Env', PhysicalMaterialEnvPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -105,6 +107,14 @@ export class PhysicalMaterialPanel extends Panel {
 
         if (!ui || !ui.constructor.physics) {
             PhysicalMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = StandardMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         if (mesh.userData.subsurface) {
