@@ -6,8 +6,10 @@ import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
+import { BasicMaterialPatches } from '../Patches.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
+import { BasicMaterialAdjustmentsPanel } from './BasicMaterialAdjustmentsPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
@@ -24,6 +26,7 @@ export const BasicMaterialOptions = new Map([
     ['AO', AOMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
+    ['Adjust', BasicMaterialAdjustmentsPanel],
     ['Env', EnvMapPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -50,12 +53,22 @@ export class BasicMaterialPanel extends Panel {
         const mesh = this.mesh;
         const ui = this.ui;
 
+        const materials = this.materials;
+
         if (!ui || !ui.constructor.points) {
             BasicMaterialOptions.delete('Helper');
         }
 
         if (!ui || !ui.constructor.physics) {
             BasicMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = BasicMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [

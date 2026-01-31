@@ -9,6 +9,7 @@ import { MaterialPanels } from '../Custom.js';
 import { StandardMaterialPatches } from '../Patches.js';
 
 import { StandardMaterialCommonPanel } from './StandardMaterialCommonPanel.js';
+import { StandardMaterialAdjustmentsPanel } from './StandardMaterialAdjustmentsPanel.js';
 import { StandardMaterialSubsurfacePanel } from './StandardMaterialSubsurfacePanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
@@ -37,6 +38,7 @@ export const StandardMaterialOptions = new Map([
     ['Metal', MetalnessMapPanel],
     ['Alpha', AlphaMapPanel],
     ['Subsurface', StandardMaterialSubsurfacePanel],
+    ['Adjust', StandardMaterialAdjustmentsPanel],
     ['Env', EnvMapPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -74,6 +76,14 @@ export class StandardMaterialPanel extends Panel {
 
         if (!ui || !ui.constructor.physics) {
             StandardMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = StandardMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         if (mesh.userData.subsurface) {

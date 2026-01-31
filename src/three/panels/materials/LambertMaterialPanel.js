@@ -6,8 +6,10 @@ import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
+import { LambertMaterialPatches } from '../Patches.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
+import { LambertMaterialAdjustmentsPanel } from './LambertMaterialAdjustmentsPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
@@ -32,6 +34,7 @@ export const LambertMaterialOptions = new Map([
     ['Displace', DisplacementMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
+    ['Adjust', LambertMaterialAdjustmentsPanel],
     ['Env', EnvMapPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
@@ -58,12 +61,22 @@ export class LambertMaterialPanel extends Panel {
         const mesh = this.mesh;
         const ui = this.ui;
 
+        const materials = this.materials;
+
         if (!ui || !ui.constructor.points) {
             LambertMaterialOptions.delete('Helper');
         }
 
         if (!ui || !ui.constructor.physics) {
             LambertMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = LambertMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [

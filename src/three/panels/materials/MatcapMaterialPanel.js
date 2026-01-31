@@ -6,8 +6,10 @@ import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
 import { MaterialPanels } from '../Custom.js';
+import { MatcapMaterialPatches } from '../Patches.js';
 
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
+import { MatcapMaterialAdjustmentsPanel } from './MatcapMaterialAdjustmentsPanel.js';
 import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
 import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MatcapMapPanel } from '../textures/MatcapMapPanel.js';
@@ -25,6 +27,7 @@ export const MatcapMaterialOptions = new Map([
     ['Normal', NormalMapPanel],
     ['Displace', DisplacementMapPanel],
     ['Alpha', AlphaMapPanel],
+    ['Adjust', MatcapMaterialAdjustmentsPanel],
     ['Helper', MeshHelperPanel],
     ['Physics', OimoPhysicsPanel]
 ]);
@@ -50,12 +53,22 @@ export class MatcapMaterialPanel extends Panel {
         const mesh = this.mesh;
         const ui = this.ui;
 
+        const materials = this.materials;
+
         if (!ui || !ui.constructor.points) {
             MatcapMaterialOptions.delete('Helper');
         }
 
         if (!ui || !ui.constructor.physics) {
             MatcapMaterialOptions.delete('Physics');
+        }
+
+        if (mesh.userData.adjustments) {
+            materials.forEach(material => {
+                material.userData.onBeforeCompile.adjustments = MatcapMaterialPatches.adjustments;
+                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                material.needsUpdate = true;
+            });
         }
 
         const materialItems = [
