@@ -198,7 +198,9 @@ export class MaterialsPanel extends Panel {
 
                         if (MaterialPanel.type in MaterialPatches) {
                             for (const key in MaterialPatches[MaterialPanel.type]) {
-                                target.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
+                                if (mesh.userData[key]) {
+                                    target.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
+                                }
                             }
                         }
 
