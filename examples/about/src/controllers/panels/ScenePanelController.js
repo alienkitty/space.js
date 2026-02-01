@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { MaterialPanelController, Point3D } from '@alienkitty/space.js/three';
+import { MaterialsPanel, Point3D } from '@alienkitty/space.js/three';
 
 import { CameraController } from '../world/CameraController.js';
 
@@ -26,7 +26,10 @@ export class ScenePanelController {
             });
             object.add(object.point);
 
-            MaterialPanelController.init(object.mesh, object.point);
+            const materialPanel = new MaterialsPanel(object.mesh, object.point);
+            materialPanel.animateIn(true);
+
+            object.point.setContent(materialPanel);
         });
 
         // Shrink tracker mesh to better match the visual size of the object

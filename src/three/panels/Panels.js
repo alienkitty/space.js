@@ -5,7 +5,7 @@ export { DirectionalLightPanel } from './lights/DirectionalLightPanel.js';
 export { PointLightPanel } from './lights/PointLightPanel.js';
 export { SpotLightPanel } from './lights/SpotLightPanel.js';
 export { RectAreaLightPanel } from './lights/RectAreaLightPanel.js';
-export * from './materials/MaterialPanelController.js';
+export * from './materials/MaterialsPanel.js';
 export { BasicMaterialOptions, BasicMaterialPanel } from './materials/BasicMaterialPanel.js';
 export { BasicMaterialCommonPanel } from './materials/BasicMaterialCommonPanel.js';
 export { BasicMaterialAdjustmentsPanel } from './materials/BasicMaterialAdjustmentsPanel.js';

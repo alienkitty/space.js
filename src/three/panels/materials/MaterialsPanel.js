@@ -49,10 +49,12 @@ export function getKeyByMaterial(materialOptions, material) {
     }
 }
 
-export class MaterialPanelController {
-    static init(mesh, ui, {
+export class MaterialsPanel extends Panel {
+    constructor(mesh, ui, {
         materialOptions = MaterialOptions
     } = {}) {
+        super();
+
         this.mesh = mesh;
         this.ui = ui;
         this.materialOptions = materialOptions;
@@ -63,7 +65,7 @@ export class MaterialPanelController {
         this.initPanel();
     }
 
-    static initPanel() {
+    initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
         const materialOptions = this.materialOptions;
@@ -265,17 +267,7 @@ export class MaterialPanelController {
         ];
 
         items.forEach(data => {
-            ui.addPanel(new PanelItem(data));
+            this.add(new PanelItem(data));
         });
-    }
-
-    // Public methods
-
-    static destroy() {
-        for (const prop in this) {
-            this[prop] = null;
-        }
-
-        return null;
     }
 }

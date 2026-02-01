@@ -15,6 +15,7 @@ import { ReticleCanvas } from '../../ui/ReticleCanvas.js';
 import { LineCanvas } from '../../ui/LineCanvas.js';
 import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
+import { PanelItem } from '../../panels/PanelItem.js';
 
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
@@ -32,7 +33,10 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * const point = new Point3D(mesh);
  * scene.add(point);
  *
- * MaterialPanelController.init(mesh, point);
+ * const materialPanel = new MaterialsPanel(mesh, point);
+ * materialPanel.animateIn(true);
+ *
+ * point.setContent(materialPanel);
  * @example
  * // ...
  * const point = new Point3D(mesh, {
@@ -991,6 +995,17 @@ export class Point3D extends Group {
             this.tracker.setData({ targetNumber });
             this.point.setTargetNumbers([targetNumber]);
         }
+    }
+
+    setContent(content) {
+        const item = new PanelItem({
+            type: 'content',
+            callback: (value, item) => {
+                item.setContent(content);
+            }
+        });
+
+        this.addPanel(item);
     }
 
     addPanel(item) {

@@ -89,7 +89,7 @@
 
         // panel
 
-        import { InstanceOptions, MaterialPanelController, MaterialPanels, MaterialPatches, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
+        import { InstanceOptions, MaterialPanels, MaterialPatches, MaterialsPanel, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
 
         // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
@@ -234,7 +234,10 @@
         const point = new Point3D(mesh);
         scene.add(point);
 
-        MaterialPanelController.init(mesh, point);
+        const materialPanel = new MaterialsPanel(mesh, point);
+        materialPanel.animateIn(true);
+
+        point.setContent(materialPanel);
 
         // animation
 
