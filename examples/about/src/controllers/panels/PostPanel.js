@@ -119,14 +119,6 @@ export class PostPanel extends Panel {
             },
             {
                 type: 'toggle',
-                name: 'Dirt',
-                value: compositeMaterial.uniforms.uLensDirt.value,
-                callback: value => {
-                    compositeMaterial.uniforms.uLensDirt.value = value;
-                }
-            },
-            {
-                type: 'toggle',
                 name: 'Tone',
                 value: compositeMaterial.uniforms.uToneMapping.value,
                 callback: (value, item) => {
