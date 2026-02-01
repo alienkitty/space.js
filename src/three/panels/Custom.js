@@ -4,7 +4,15 @@
 
 import { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
 
-export const MaterialPatches = {};
+export const MaterialPatches = {
+    Basic: {},
+    Lambert: {},
+    Matcap: {},
+    Phong: {},
+    Toon: {},
+    Standard: {},
+    Physical: {}
+};
 
 export const MaterialPanels = {
     InstancedMeshPanel

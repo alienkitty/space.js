@@ -94,45 +94,43 @@
         // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
 
-        MaterialPatches.Phong = {
-            instanceOpacity(shader) {
-                shader.vertexShader = shader.vertexShader.replace(
-                    '#include <color_pars_vertex>',
-                    /* glsl */ `
-                    #include <color_pars_vertex>
+        MaterialPatches.Phong.instanceOpacity = function (shader) {
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <color_pars_vertex>',
+                /* glsl */ `
+                #include <color_pars_vertex>
 
-                    attribute float instanceOpacity;
-                    varying float vInstanceOpacity;
-                    `
-                );
+                attribute float instanceOpacity;
+                varying float vInstanceOpacity;
+                `
+            );
 
-                shader.vertexShader = shader.vertexShader.replace(
-                    '#include <color_vertex>',
-                    /* glsl */ `
-                    #include <color_vertex>
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <color_vertex>',
+                /* glsl */ `
+                #include <color_vertex>
 
-                    vInstanceOpacity = instanceOpacity;
-                    `
-                );
+                vInstanceOpacity = instanceOpacity;
+                `
+            );
 
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <color_pars_fragment>',
-                    /* glsl */ `
-                    #include <color_pars_fragment>
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <color_pars_fragment>',
+                /* glsl */ `
+                #include <color_pars_fragment>
 
-                    varying float vInstanceOpacity;
-                    `
-                );
+                varying float vInstanceOpacity;
+                `
+            );
 
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <color_fragment>',
-                    /* glsl */ `
-                    #include <color_fragment>
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <color_fragment>',
+                /* glsl */ `
+                #include <color_fragment>
 
-                    diffuseColor.a = vInstanceOpacity * opacity;
-                    `
-                );
-            }
+                diffuseColor.a = vInstanceOpacity * opacity;
+                `
+            );
         };
 
         class InstancedMeshPanel extends Panel {
