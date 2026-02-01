@@ -113,6 +113,9 @@ export class MaterialsPanel extends Panel {
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, this.material),
                 callback: (value, item) => {
+                    this.materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                    this.material = this.materials[0];
+
                     const [Material, MaterialPanel] = materialOptions.get(value);
 
                     const currentPanel = this.lastPanel || MaterialPanel;
