@@ -5,11 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { NormalMaterialCommonPanel } from './NormalMaterialCommonPanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { BumpMapPanel } from '../textures/BumpMapPanel.js';
 import { NormalMapPanel } from '../textures/NormalMapPanel.js';
 import { DisplacementMapPanel } from '../textures/DisplacementMapPanel.js';
@@ -18,9 +16,7 @@ export const NormalMaterialOptions = new Map([
     ['Common', NormalMaterialCommonPanel],
     ['Bump', BumpMapPanel],
     ['Normal', NormalMapPanel],
-    ['Displace', DisplacementMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Displace', DisplacementMapPanel]
 ]);
 
 export class NormalMaterialPanel extends Panel {
@@ -43,14 +39,6 @@ export class NormalMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        if (!ui || !ui.constructor.points) {
-            NormalMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            NormalMaterialOptions.delete('Physics');
-        }
 
         const materialItems = [
             {

@@ -9,6 +9,10 @@ import { RenderManager } from './world/RenderManager.js';
 import { PanelController } from './panels/PanelController.js';
 import { SceneView } from '../views/SceneView.js';
 
+// For color adjustments and subsurface scattering
+import '../materials/Patches.js';
+import './panels/Patches.js';
+
 export class App {
     static async init() {
         this.initThread();

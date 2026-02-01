@@ -1,9 +1,4 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
+import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 export class OimoPhysicsPanel extends Panel {
     constructor(mesh, ui) {

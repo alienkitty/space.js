@@ -1,14 +1,6 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
+import { MaterialPatches, Panel, PanelItem, getKeyByValue } from '@alienkitty/space.js/three';
 
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
-import { ToonMaterialPatches } from '../Patches.js';
-
-import { getKeyByValue } from '../../../utils/Utils.js';
-
-export class ToonMaterialAdjustmentsPanel extends Panel {
+export class LambertMaterialAdjustmentsPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -140,7 +132,7 @@ export class ToonMaterialAdjustmentsPanel extends Panel {
                     mesh.userData.adjustments = adjustmentsOptions.get(value);
 
                     if (mesh.userData.adjustments) {
-                        materials.forEach(material => material.userData.onBeforeCompile.adjustments = ToonMaterialPatches.adjustments);
+                        materials.forEach(material => material.userData.onBeforeCompile.adjustments = MaterialPatches.Lambert.adjustments);
 
                         item.toggleContent(true);
                     } else {

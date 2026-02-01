@@ -5,14 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
-import { LambertMaterialPatches } from '../Patches.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { LambertMaterialCommonPanel } from './LambertMaterialCommonPanel.js';
-import { LambertMaterialAdjustmentsPanel } from './LambertMaterialAdjustmentsPanel.js';
-import { LambertMaterialSubsurfacePanel } from './LambertMaterialSubsurfacePanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
@@ -35,11 +30,7 @@ export const LambertMaterialOptions = new Map([
     ['Displace', DisplacementMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
-    ['Subsurface', LambertMaterialSubsurfacePanel],
-    ['Adjust', LambertMaterialAdjustmentsPanel],
-    ['Env', EnvMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Env', EnvMapPanel]
 ]);
 
 export class LambertMaterialPanel extends Panel {
@@ -62,32 +53,6 @@ export class LambertMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        const materials = this.materials;
-
-        if (!ui || !ui.constructor.points) {
-            LambertMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            LambertMaterialOptions.delete('Physics');
-        }
-
-        if (mesh.userData.adjustments) {
-            materials.forEach(material => {
-                material.userData.onBeforeCompile.adjustments = LambertMaterialPatches.adjustments;
-                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
-                material.needsUpdate = true;
-            });
-        }
-
-        if (mesh.userData.subsurface) {
-            materials.forEach(material => {
-                material.userData.onBeforeCompile.subsurface = LambertMaterialPatches.subsurface;
-                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
-                material.needsUpdate = true;
-            });
-        }
 
         const materialItems = [
             {

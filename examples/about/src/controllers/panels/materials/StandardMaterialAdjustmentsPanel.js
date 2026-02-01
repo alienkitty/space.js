@@ -1,14 +1,6 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
+import { MaterialPatches, Panel, PanelItem, getKeyByValue } from '@alienkitty/space.js/three';
 
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
-import { MatcapMaterialPatches } from '../Patches.js';
-
-import { getKeyByValue } from '../../../utils/Utils.js';
-
-export class MatcapMaterialAdjustmentsPanel extends Panel {
+export class StandardMaterialAdjustmentsPanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -140,7 +132,7 @@ export class MatcapMaterialAdjustmentsPanel extends Panel {
                     mesh.userData.adjustments = adjustmentsOptions.get(value);
 
                     if (mesh.userData.adjustments) {
-                        materials.forEach(material => material.userData.onBeforeCompile.adjustments = MatcapMaterialPatches.adjustments);
+                        materials.forEach(material => material.userData.onBeforeCompile.adjustments = MaterialPatches.Standard.adjustments);
 
                         item.toggleContent(true);
                     } else {

@@ -1,16 +1,8 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
-import { StandardMaterialPatches } from '../Patches.js';
+import { MaterialPatches, Panel, PanelItem, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { SubsurfaceMapPanel } from '../textures/SubsurfaceMapPanel.js';
 
-import { getKeyByValue } from '../../../utils/Utils.js';
-
-export class PhysicalMaterialSubsurfacePanel extends Panel {
+export class ToonMaterialSubsurfacePanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -153,7 +145,7 @@ export class PhysicalMaterialSubsurfacePanel extends Panel {
                     mesh.userData.subsurface = subsurfaceOptions.get(value);
 
                     if (mesh.userData.subsurface) {
-                        materials.forEach(material => material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface);
+                        materials.forEach(material => material.userData.onBeforeCompile.subsurface = MaterialPatches.Toon.subsurface);
 
                         item.toggleContent(true);
                     } else {

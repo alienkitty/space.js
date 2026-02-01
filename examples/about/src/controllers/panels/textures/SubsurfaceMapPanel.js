@@ -1,11 +1,5 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
 import { Texture } from 'three';
-
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
+import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 export class SubsurfaceMapPanel extends Panel {
     constructor(mesh) {
@@ -15,6 +9,7 @@ export class SubsurfaceMapPanel extends Panel {
 
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.uniforms = this.mesh.userData.subsurfaceUniforms;
+
         this.supported = false;
         this.initialized = false;
 

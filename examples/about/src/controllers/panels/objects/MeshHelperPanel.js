@@ -1,12 +1,4 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
-import { NormalsHelperOptions, TangentsHelperOptions, UVHelperOptions } from '../Options.js';
-
-import { getKeyByValue } from '../../../utils/Utils.js';
+import { Panel, PanelItem, getKeyByValue } from '@alienkitty/space.js/three';
 
 export class MeshHelperPanel extends Panel {
     constructor(mesh, ui) {
@@ -41,6 +33,21 @@ export class MeshHelperPanel extends Panel {
             mesh.userData.uv = false;
         }
 
+        const normalsHelperOptions = new Map([
+            ['Off', false],
+            ['Normals', true]
+        ]);
+
+        const tangentsHelperOptions = new Map([
+            ['Off', false],
+            ['Tangents', true]
+        ]);
+
+        const uvHelperOptions = new Map([
+            ['Off', false],
+            ['UV', true]
+        ]);
+
         const items = [
             {
                 type: 'divider'
@@ -48,10 +55,10 @@ export class MeshHelperPanel extends Panel {
             {
                 type: 'list',
                 name: 'Normals',
-                list: NormalsHelperOptions,
-                value: getKeyByValue(NormalsHelperOptions, mesh.userData.normals),
+                list: normalsHelperOptions,
+                value: getKeyByValue(normalsHelperOptions, mesh.userData.normals),
                 callback: value => {
-                    mesh.userData.normals = NormalsHelperOptions.get(value);
+                    mesh.userData.normals = normalsHelperOptions.get(value);
 
                     if (point) {
                         point.toggleNormalsHelper(mesh.userData.normals);
@@ -65,10 +72,10 @@ export class MeshHelperPanel extends Panel {
                 {
                     type: 'list',
                     name: 'Tangents',
-                    list: TangentsHelperOptions,
-                    value: getKeyByValue(TangentsHelperOptions, mesh.userData.tangents),
+                    list: tangentsHelperOptions,
+                    value: getKeyByValue(tangentsHelperOptions, mesh.userData.tangents),
                     callback: value => {
-                        mesh.userData.tangents = TangentsHelperOptions.get(value);
+                        mesh.userData.tangents = tangentsHelperOptions.get(value);
 
                         if (point) {
                             point.toggleTangentsHelper(mesh.userData.tangents);
@@ -83,10 +90,10 @@ export class MeshHelperPanel extends Panel {
                 {
                     type: 'list',
                     name: 'UV',
-                    list: UVHelperOptions,
-                    value: getKeyByValue(UVHelperOptions, mesh.userData.uv),
+                    list: uvHelperOptions,
+                    value: getKeyByValue(uvHelperOptions, mesh.userData.uv),
                     callback: value => {
-                        mesh.userData.uv = UVHelperOptions.get(value);
+                        mesh.userData.uv = uvHelperOptions.get(value);
                         point.toggleUVHelper(mesh.userData.uv);
                     }
                 }

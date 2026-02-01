@@ -1,16 +1,8 @@
-/**
- * @author pschroen / https://ufo.ai/
- */
-
-import { Panel } from '../../../panels/Panel.js';
-import { PanelItem } from '../../../panels/PanelItem.js';
-import { LambertMaterialPatches } from '../Patches.js';
+import { MaterialPatches, Panel, PanelItem, getKeyByValue } from '@alienkitty/space.js/three';
 
 import { SubsurfaceMapPanel } from '../textures/SubsurfaceMapPanel.js';
 
-import { getKeyByValue } from '../../../utils/Utils.js';
-
-export class LambertMaterialSubsurfacePanel extends Panel {
+export class StandardMaterialSubsurfacePanel extends Panel {
     constructor(mesh) {
         super();
 
@@ -153,7 +145,7 @@ export class LambertMaterialSubsurfacePanel extends Panel {
                     mesh.userData.subsurface = subsurfaceOptions.get(value);
 
                     if (mesh.userData.subsurface) {
-                        materials.forEach(material => material.userData.onBeforeCompile.subsurface = LambertMaterialPatches.subsurface);
+                        materials.forEach(material => material.userData.onBeforeCompile.subsurface = MaterialPatches.Standard.subsurface);
 
                         item.toggleContent(true);
                     } else {
