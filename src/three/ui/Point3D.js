@@ -202,13 +202,11 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = async ({ data }) => {
+    static onImagesDrop = ({ data }) => {
         const selected = this.getSelected();
 
-        if (selected.length) {
-            const ui = selected[0];
-
-            if (ui.object.material.isMeshNormalMaterial) {
+        selected.forEach(async ui => {
+            if (!ui.object.geometry.groups.length || ui.object.material.isMeshNormalMaterial) {
                 return;
             }
 
@@ -276,7 +274,7 @@ export class Point3D extends Group {
                     }
                 }
             }
-        }
+        });
     };
 
     static onDragOver = e => {
