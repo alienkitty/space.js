@@ -30,18 +30,6 @@ export class LambertMaterialAdjustmentsPanel extends Panel {
             };
         }
 
-        materials.forEach(material => {
-            if (!material.userData.onBeforeCompile) {
-                material.userData.onBeforeCompile = {};
-
-                material.onBeforeCompile = shader => {
-                    for (const key in material.userData.onBeforeCompile) {
-                        material.userData.onBeforeCompile[key](shader, mesh);
-                    }
-                };
-            }
-        });
-
         const adjustmentsOptions = new Map([
             ['Off', false],
             ['On', true]

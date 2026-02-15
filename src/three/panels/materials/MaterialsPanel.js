@@ -15,7 +15,6 @@ import {
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { MaterialPatches } from '../Patches.js';
 import { SideOptions, VisibleOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
@@ -177,7 +176,10 @@ export class MaterialsPanel extends Panel {
                                     target.clippingPlanes = array;
                                 } else if (key === 'userData') {
                                     target.userData = value;
-                                    target.userData.onBeforeCompile = {};
+
+                                    if (!target.userData.onBeforeCompile) {
+                                        target.userData.onBeforeCompile = {};
+                                    }
 
                                     target.onBeforeCompile = shader => {
                                         for (const key in target.userData.onBeforeCompile) {
@@ -198,14 +200,6 @@ export class MaterialsPanel extends Panel {
                                 }
                             }
                         });
-
-                        if (MaterialPanel.type in MaterialPatches) {
-                            for (const key in MaterialPatches[MaterialPanel.type]) {
-                                if (mesh.userData[key]) {
-                                    target.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
-                                }
-                            }
-                        }
 
                         if (ui.uvTexture) {
                             target.map = ui.uvTexture;

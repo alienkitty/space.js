@@ -34,18 +34,6 @@ export class ToonMaterialSubsurfacePanel extends Panel {
             };
         }
 
-        materials.forEach(material => {
-            if (!material.userData.onBeforeCompile) {
-                material.userData.onBeforeCompile = {};
-
-                material.onBeforeCompile = shader => {
-                    for (const key in material.userData.onBeforeCompile) {
-                        material.userData.onBeforeCompile[key](shader, mesh);
-                    }
-                };
-            }
-        });
-
         const subsurfaceOptions = new Map([
             ['Off', false],
             ['On', true]
