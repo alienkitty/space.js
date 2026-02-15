@@ -5,11 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { ToonMaterialCommonPanel } from './ToonMaterialCommonPanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { GradientMapPanel } from '../textures/GradientMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
@@ -30,9 +28,7 @@ export const ToonMaterialOptions = new Map([
     ['Bump', BumpMapPanel],
     ['Normal', NormalMapPanel],
     ['Displace', DisplacementMapPanel],
-    ['Alpha', AlphaMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Alpha', AlphaMapPanel]
 ]);
 
 export class ToonMaterialPanel extends Panel {
@@ -55,14 +51,6 @@ export class ToonMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        if (!ui || !ui.constructor.points) {
-            ToonMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            ToonMaterialOptions.delete('Physics');
-        }
 
         const materialItems = [
             {

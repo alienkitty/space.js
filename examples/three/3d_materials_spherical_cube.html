@@ -62,7 +62,7 @@
 
         // panel
 
-        import { MaterialPanelController, Point3D, UI } from '../../src/three.js';
+        import { MaterialsPanel, Point3D, UI } from '../../src/three.js';
 
         const ui = new UI({ fps: true });
         ui.animateIn();
@@ -73,7 +73,10 @@
         const point = new Point3D(mesh);
         scene.add(point);
 
-        MaterialPanelController.init(mesh, point);
+        const materialPanel = new MaterialsPanel(mesh, point);
+        materialPanel.animateIn(true);
+
+        point.setContent(materialPanel);
 
         // animation
 

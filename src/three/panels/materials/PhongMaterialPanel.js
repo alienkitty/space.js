@@ -5,13 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
-import { PhongMaterialPatches } from '../Patches.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { PhongMaterialCommonPanel } from './PhongMaterialCommonPanel.js';
-import { PhongMaterialSubsurfacePanel } from './PhongMaterialSubsurfacePanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
@@ -34,10 +30,7 @@ export const PhongMaterialOptions = new Map([
     ['Displace', DisplacementMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
-    ['Subsurface', PhongMaterialSubsurfacePanel],
-    ['Env', EnvMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Env', EnvMapPanel]
 ]);
 
 export class PhongMaterialPanel extends Panel {
@@ -54,33 +47,12 @@ export class PhongMaterialPanel extends Panel {
         this.mesh = mesh;
         this.ui = ui;
 
-        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
-        this.material = this.materials[0];
-
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        const materials = this.materials;
-
-        if (!ui || !ui.constructor.points) {
-            PhongMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            PhongMaterialOptions.delete('Physics');
-        }
-
-        if (mesh.userData.subsurface) {
-            materials.forEach(material => {
-                material.userData.onBeforeCompile.subsurface = PhongMaterialPatches.subsurface;
-                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
-                material.needsUpdate = true;
-            });
-        }
 
         const materialItems = [
             {

@@ -89,50 +89,48 @@
 
         // panel
 
-        import { InstanceOptions, MaterialPanelController, MaterialPanels, MaterialPatches, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
+        import { InstanceOptions, MaterialPanels, MaterialPatches, MaterialsPanel, Panel, PanelItem, Point3D, UI } from '../../src/three.js';
 
         // Add attributes
         geometry.setAttribute('instanceOpacity', new InstancedBufferAttribute(new Float32Array(mesh.instanceMatrix.count).fill(1), 1));
 
-        MaterialPatches.Phong = {
-            instanceOpacity(shader) {
-                shader.vertexShader = shader.vertexShader.replace(
-                    '#include <color_pars_vertex>',
-                    /* glsl */ `
-                    #include <color_pars_vertex>
+        MaterialPatches.Phong.instanceOpacity = function (shader) {
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <color_pars_vertex>',
+                /* glsl */ `
+                #include <color_pars_vertex>
 
-                    attribute float instanceOpacity;
-                    varying float vInstanceOpacity;
-                    `
-                );
+                attribute float instanceOpacity;
+                varying float vInstanceOpacity;
+                `
+            );
 
-                shader.vertexShader = shader.vertexShader.replace(
-                    '#include <color_vertex>',
-                    /* glsl */ `
-                    #include <color_vertex>
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <color_vertex>',
+                /* glsl */ `
+                #include <color_vertex>
 
-                    vInstanceOpacity = instanceOpacity;
-                    `
-                );
+                vInstanceOpacity = instanceOpacity;
+                `
+            );
 
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <color_pars_fragment>',
-                    /* glsl */ `
-                    #include <color_pars_fragment>
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <color_pars_fragment>',
+                /* glsl */ `
+                #include <color_pars_fragment>
 
-                    varying float vInstanceOpacity;
-                    `
-                );
+                varying float vInstanceOpacity;
+                `
+            );
 
-                shader.fragmentShader = shader.fragmentShader.replace(
-                    '#include <color_fragment>',
-                    /* glsl */ `
-                    #include <color_fragment>
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <color_fragment>',
+                /* glsl */ `
+                #include <color_fragment>
 
-                    diffuseColor.a = vInstanceOpacity * opacity;
-                    `
-                );
-            }
+                diffuseColor.a = vInstanceOpacity * opacity;
+                `
+            );
         };
 
         class InstancedMeshPanel extends Panel {
@@ -234,7 +232,10 @@
         const point = new Point3D(mesh);
         scene.add(point);
 
-        MaterialPanelController.init(mesh, point);
+        const materialPanel = new MaterialsPanel(mesh, point);
+        materialPanel.animateIn(true);
+
+        point.setContent(materialPanel);
 
         // animation
 

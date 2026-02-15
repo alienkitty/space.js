@@ -5,11 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { MatcapMaterialCommonPanel } from './MatcapMaterialCommonPanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { MatcapMapPanel } from '../textures/MatcapMapPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { BumpMapPanel } from '../textures/BumpMapPanel.js';
@@ -24,9 +22,7 @@ export const MatcapMaterialOptions = new Map([
     ['Bump', BumpMapPanel],
     ['Normal', NormalMapPanel],
     ['Displace', DisplacementMapPanel],
-    ['Alpha', AlphaMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Alpha', AlphaMapPanel]
 ]);
 
 export class MatcapMaterialPanel extends Panel {
@@ -49,14 +45,6 @@ export class MatcapMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        if (!ui || !ui.constructor.points) {
-            MatcapMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            MatcapMaterialOptions.delete('Physics');
-        }
 
         const materialItems = [
             {

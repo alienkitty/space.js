@@ -96,21 +96,6 @@ export const HelperOptions = new Map([
     ['Helper', true]
 ]);
 
-export const NormalsHelperOptions = new Map([
-    ['Off', false],
-    ['Normals', true]
-]);
-
-export const TangentsHelperOptions = new Map([
-    ['Off', false],
-    ['Tangents', true]
-]);
-
-export const UVHelperOptions = new Map([
-    ['Off', false],
-    ['UV', true]
-]);
-
 export const DisplayOptions = new Map([
     ['Default', 0],
     ['Velocity', 1],

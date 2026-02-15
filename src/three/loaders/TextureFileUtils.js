@@ -86,7 +86,7 @@ export function getTextureName(filename) {
 }
 
 export function isCubeTextures(data) {
-    return data.find(data => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(data.filename));
+    return data.some(data => /^PosX|PX|[-_\s]PosX|PX|Cube/i.test(data.filename));
 }
 
 export function sortCubeTextures(data) {

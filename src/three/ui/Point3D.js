@@ -15,6 +15,7 @@ import { ReticleCanvas } from '../../ui/ReticleCanvas.js';
 import { LineCanvas } from '../../ui/LineCanvas.js';
 import { Tracker } from '../../ui/Tracker.js';
 import { Point } from '../../ui/Point.js';
+import { PanelItem } from '../../panels/PanelItem.js';
 
 import { clearTween, delayedCall } from '../../tween/Tween.js';
 import { getBoundingSphereWorld, getScreenSpaceBox } from '../utils/Utils3D.js';
@@ -32,7 +33,10 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * const point = new Point3D(mesh);
  * scene.add(point);
  *
- * MaterialPanelController.init(mesh, point);
+ * const materialPanel = new MaterialsPanel(mesh, point);
+ * materialPanel.animateIn(true);
+ *
+ * point.setContent(materialPanel);
  * @example
  * // ...
  * const point = new Point3D(mesh, {
@@ -198,13 +202,13 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.theme());
     };
 
-    static onImagesDrop = async ({ data }) => {
+    static onImagesDrop = ({ data }) => {
         const selected = this.getSelected();
 
-        if (selected.length) {
-            const ui = selected[0];
+        selected.forEach(async ui => {
+            const mesh = ui.object;
 
-            if (ui.object.material.isMeshNormalMaterial) {
+            if (!mesh.geometry.groups.length || mesh.material.isMeshNormalMaterial) {
                 return;
             }
 
@@ -213,16 +217,33 @@ export class Point3D extends Group {
             if (data.length >= 6 && isCubeTextures(data)) {
                 sortCubeTextures(data);
 
-                if (!Array.isArray(ui.object.material)) {
-                    ui.object.material = Array.from({ length: ui.object.geometry.groups.length }, (v, i) => {
-                        const material = ui.object.material.clone();
+                if (!Array.isArray(mesh.material)) {
+                    // Copy custom data with functions
+                    const userData = mesh.material.userData;
+
+                    mesh.material = Array.from({ length: mesh.geometry.groups.length }, (v, i) => {
+                        const material = mesh.material.clone();
                         material.name = (i + 1).toString();
+                        material.userData = userData;
+
+                        if (!material.userData.onBeforeCompile) {
+                            material.userData.onBeforeCompile = {};
+                        }
+
+                        material.onBeforeCompile = shader => {
+                            for (const key in material.userData.onBeforeCompile) {
+                                material.userData.onBeforeCompile[key](shader, mesh);
+                            }
+                        };
+
+                        material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                        material.needsUpdate = true;
 
                         return material;
                     });
                 }
 
-                for (let i = 0, l = ui.object.material.length; i < l; i++) {
+                for (let i = 0, l = mesh.material.length; i < l; i++) {
                     if (data[i]) {
                         const { image, filename, key } = data[i];
 
@@ -234,10 +255,10 @@ export class Point3D extends Group {
                             texture = await this.loadHDRTexture(image);
                         }
 
-                        const material = ui.object.material[i];
+                        const material = mesh.material[i];
                         const name = getTextureName(filename);
 
-                        material.name = key || getMaterialName(ui.object.material, filename, (i + 1).toString());
+                        material.name = key || getMaterialName(mesh.material, filename, (i + 1).toString());
 
                         setPanelTexture(ui, material, texture, name, ['Index', i]);
                     }
@@ -245,8 +266,8 @@ export class Point3D extends Group {
 
                 ui.setPanelIndex('Index', 0);
             } else {
-                if (Array.isArray(ui.object.material)) {
-                    ui.object.material = ui.object.material[0].clone();
+                if (Array.isArray(mesh.material)) {
+                    mesh.material = mesh.material[0].clone();
                 }
 
                 for (let i = 0, l = data.length; i < l; i++) {
@@ -264,15 +285,15 @@ export class Point3D extends Group {
                         const type = ui.getPanelValue('Material');
                         const name = getTextureName(filename);
 
-                        setPanelTexture(ui, ui.object.material, texture, name);
+                        setPanelTexture(ui, mesh.material, texture, name);
 
                         ui.setPanelIndex(type, 0);
                     } else {
-                        setPanelTexture(ui, ui.object.material, texture);
+                        setPanelTexture(ui, mesh.material, texture);
                     }
                 }
             }
-        }
+        });
     };
 
     static onDragOver = e => {
@@ -991,6 +1012,17 @@ export class Point3D extends Group {
             this.tracker.setData({ targetNumber });
             this.point.setTargetNumbers([targetNumber]);
         }
+    }
+
+    setContent(content) {
+        const item = new PanelItem({
+            type: 'content',
+            callback: (value, item) => {
+                item.setContent(content);
+            }
+        });
+
+        this.addPanel(item);
     }
 
     addPanel(item) {

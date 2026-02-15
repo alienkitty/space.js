@@ -15,7 +15,6 @@ import {
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { MaterialPatches } from '../Custom.js';
 import { SideOptions, VisibleOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
@@ -49,10 +48,12 @@ export function getKeyByMaterial(materialOptions, material) {
     }
 }
 
-export class MaterialPanelController {
-    static init(mesh, ui, {
+export class MaterialsPanel extends Panel {
+    constructor(mesh, ui, {
         materialOptions = MaterialOptions
     } = {}) {
+        super();
+
         this.mesh = mesh;
         this.ui = ui;
         this.materialOptions = materialOptions;
@@ -63,7 +64,7 @@ export class MaterialPanelController {
         this.initPanel();
     }
 
-    static initPanel() {
+    initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
         const materialOptions = this.materialOptions;
@@ -111,6 +112,9 @@ export class MaterialPanelController {
                 list: materialOptions,
                 value: getKeyByMaterial(materialOptions, this.material),
                 callback: (value, item) => {
+                    this.materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+                    this.material = this.materials[0];
+
                     const [Material, MaterialPanel] = materialOptions.get(value);
 
                     const currentPanel = this.lastPanel || MaterialPanel;
@@ -172,7 +176,10 @@ export class MaterialPanelController {
                                     target.clippingPlanes = array;
                                 } else if (key === 'userData') {
                                     target.userData = value;
-                                    target.userData.onBeforeCompile = {};
+
+                                    if (!target.userData.onBeforeCompile) {
+                                        target.userData.onBeforeCompile = {};
+                                    }
 
                                     target.onBeforeCompile = shader => {
                                         for (const key in target.userData.onBeforeCompile) {
@@ -193,12 +200,6 @@ export class MaterialPanelController {
                                 }
                             }
                         });
-
-                        if (MaterialPanel.type in MaterialPatches) {
-                            for (const key in MaterialPatches[MaterialPanel.type]) {
-                                target.userData.onBeforeCompile[key] = MaterialPatches[MaterialPanel.type][key];
-                            }
-                        }
 
                         if (ui.uvTexture) {
                             target.map = ui.uvTexture;
@@ -265,17 +266,7 @@ export class MaterialPanelController {
         ];
 
         items.forEach(data => {
-            ui.addPanel(new PanelItem(data));
+            this.add(new PanelItem(data));
         });
-    }
-
-    // Public methods
-
-    static destroy() {
-        for (const prop in this) {
-            this[prop] = null;
-        }
-
-        return null;
     }
 }

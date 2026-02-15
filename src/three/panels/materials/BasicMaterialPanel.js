@@ -5,11 +5,9 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { BasicMaterialCommonPanel } from './BasicMaterialCommonPanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
@@ -24,9 +22,7 @@ export const BasicMaterialOptions = new Map([
     ['AO', AOMapPanel],
     ['Specular', SpecularMapPanel],
     ['Alpha', AlphaMapPanel],
-    ['Env', EnvMapPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Env', EnvMapPanel]
 ]);
 
 export class BasicMaterialPanel extends Panel {
@@ -49,14 +45,6 @@ export class BasicMaterialPanel extends Panel {
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        if (!ui || !ui.constructor.points) {
-            BasicMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            BasicMaterialOptions.delete('Physics');
-        }
 
         const materialItems = [
             {

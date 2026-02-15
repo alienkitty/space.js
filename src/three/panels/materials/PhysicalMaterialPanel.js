@@ -5,8 +5,7 @@
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
 import { MaterialProperties } from './MaterialProperties.js';
-import { MaterialPanels } from '../Custom.js';
-import { StandardMaterialPatches } from '../Patches.js';
+import { MaterialPanels } from '../Patches.js';
 
 import { PhysicalMaterialCommonPanel } from './PhysicalMaterialCommonPanel.js';
 import { PhysicalMaterialAnisotropyPanel } from './PhysicalMaterialAnisotropyPanel.js';
@@ -24,10 +23,7 @@ import { PhysicalMaterialTransmissionThicknessPanel } from './PhysicalMaterialTr
 import { PhysicalMaterialSpecularPanel } from './PhysicalMaterialSpecularPanel.js';
 import { PhysicalMaterialSpecularColorPanel } from './PhysicalMaterialSpecularColorPanel.js';
 import { PhysicalMaterialSpecularIntensityPanel } from './PhysicalMaterialSpecularIntensityPanel.js';
-import { PhysicalMaterialSubsurfacePanel } from './PhysicalMaterialSubsurfacePanel.js';
 import { PhysicalMaterialEnvPanel } from './PhysicalMaterialEnvPanel.js';
-import { MeshHelperPanel } from '../objects/MeshHelperPanel.js';
-import { OimoPhysicsPanel } from '../physics/OimoPhysicsPanel.js';
 import { TextureMapPanel } from '../textures/TextureMapPanel.js';
 import { LightMapPanel } from '../textures/LightMapPanel.js';
 import { AOMapPanel } from '../textures/AOMapPanel.js';
@@ -66,10 +62,7 @@ export const PhysicalMaterialOptions = new Map([
     ['Specular', PhysicalMaterialSpecularPanel],
     ['Specular Color', PhysicalMaterialSpecularColorPanel],
     ['Specular Int', PhysicalMaterialSpecularIntensityPanel],
-    ['Subsurface', PhysicalMaterialSubsurfacePanel],
-    ['Env', PhysicalMaterialEnvPanel],
-    ['Helper', MeshHelperPanel],
-    ['Physics', OimoPhysicsPanel]
+    ['Env', PhysicalMaterialEnvPanel]
 ]);
 
 export class PhysicalMaterialPanel extends Panel {
@@ -87,33 +80,12 @@ export class PhysicalMaterialPanel extends Panel {
         this.mesh = mesh;
         this.ui = ui;
 
-        this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
-        this.material = this.materials[0];
-
         this.initPanel();
     }
 
     initPanel() {
         const mesh = this.mesh;
         const ui = this.ui;
-
-        const materials = this.materials;
-
-        if (!ui || !ui.constructor.points) {
-            PhysicalMaterialOptions.delete('Helper');
-        }
-
-        if (!ui || !ui.constructor.physics) {
-            PhysicalMaterialOptions.delete('Physics');
-        }
-
-        if (mesh.userData.subsurface) {
-            materials.forEach(material => {
-                material.userData.onBeforeCompile.subsurface = StandardMaterialPatches.subsurface;
-                material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
-                material.needsUpdate = true;
-            });
-        }
 
         const materialItems = [
             {

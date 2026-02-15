@@ -23,6 +23,7 @@ export class MapPanel extends Panel {
 
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[0];
+
         this.supported = false;
         this.initialized = false;
 
@@ -281,6 +282,7 @@ export class MapPanel extends Panel {
     update(index) {
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[index];
+
         this.textures = this.materials.map(material => material[this.key]);
         this.thumbnails = this.textures.map(texture => texture && texture.userData.thumbnail);
 
