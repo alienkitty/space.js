@@ -45,6 +45,7 @@ export const MaterialProperties = {
         'alphaToCoverage',
         'premultipliedAlpha',
         'forceSinglePass',
+        'allowOverride',
         // 'visible',
         'toneMapped',
         'userData'
