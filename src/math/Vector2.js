@@ -140,15 +140,15 @@ export class Vector2 {
     }
 
     clamp(min, max) {
-        this.x = Math.max(min.x, Math.min(max.x, this.x));
-        this.y = Math.max(min.y, Math.min(max.y, this.y));
+        this.x = clamp(this.x, min.x, max.x);
+        this.y = clamp(this.y, min.y, max.y);
 
         return this;
     }
 
     clampScalar(minVal, maxVal) {
-        this.x = Math.max(minVal, Math.min(maxVal, this.x));
-        this.y = Math.max(minVal, Math.min(maxVal, this.y));
+        this.x = clamp(this.x, minVal, maxVal);
+        this.y = clamp(this.y, minVal, maxVal);
 
         return this;
     }
@@ -224,10 +224,7 @@ export class Vector2 {
 
     angleTo(v) {
         const denominator = Math.sqrt(this.lengthSq() * v.lengthSq());
-
-        if (denominator === 0) {
-            return Math.PI / 2;
-        }
+        if (denominator === 0) return Math.PI / 2;
 
         const theta = this.dot(v) / denominator;
 
