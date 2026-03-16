@@ -4,10 +4,10 @@
  * Based on https://github.com/rveciana/svg-path-properties
  */
 
-// Legendre-Gauss abscissae with n=2 (xi values, defined at i=n as the roots of the nth order Legendre polynomial Pn(x))
-export const tValues = [-0.5773502691896257, 0.5773502691896257];
+// Legendre-Gauss abscissae (xi values, defined at i=n as the roots of the nth order Legendre polynomial Pn(x))
+export const tValues = [-0.5773502691896257, 0.5773502691896258];
 
-// Legendre-Gauss weights with n=2 (wi values, defined by a function linked to in the Bezier primer article)
+// Legendre-Gauss weights (wi values, defined by a function linked to in the Bezier primer article)
 export const cValues = [1, 1];
 
 // LUT for binomial coefficient arrays per curve order n
@@ -60,10 +60,6 @@ export function quadraticPoint(xs, ys, t) {
 }
 
 export function getQuadraticArcLength(xs, ys, t) {
-    if (t === undefined) {
-        t = 1;
-    }
-
     const ax = xs[0] - 2 * xs[1] + xs[2];
     const ay = ys[0] - 2 * ys[1] + ys[2];
     const bx = 2 * xs[1] - 2 * xs[0];
@@ -74,9 +70,7 @@ export function getQuadraticArcLength(xs, ys, t) {
     const C = bx * bx + by * by;
 
     if (A === 0) {
-        return (
-            t * Math.sqrt(Math.pow(xs[2] - xs[0], 2) + Math.pow(ys[2] - ys[0], 2))
-        );
+        return t * Math.sqrt(Math.pow(xs[2] - xs[0], 2) + Math.pow(ys[2] - ys[0], 2));
     }
 
     const b = B / (2 * A);
@@ -87,7 +81,7 @@ export function getQuadraticArcLength(xs, ys, t) {
     const uuk = u * u + k > 0 ? Math.sqrt(u * u + k) : 0;
     const bbk = b * b + k > 0 ? Math.sqrt(b * b + k) : 0;
     const term =
-        b + Math.sqrt(b * b + k) !== 0 && ((u + uuk) / (b + bbk)) !== 0
+        b + Math.sqrt(b * b + k) !== 0 && (u + uuk) / (b + bbk) !== 0
             ? k * Math.log(Math.abs((u + uuk) / (b + bbk)))
             : 0;
 
@@ -127,11 +121,7 @@ function getDerivative(derivative, t, vs) {
         value = 0;
 
         for (let k = 0; k <= n; k++) {
-            value +=
-                binomialCoefficients[n][k] *
-                Math.pow(1 - t, n - k) *
-                Math.pow(t, k) *
-                vs[k];
+            value += binomialCoefficients[n][k] * Math.pow(1 - t, n - k) * Math.pow(t, k) * vs[k];
         }
 
         return value;

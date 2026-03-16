@@ -38,60 +38,33 @@ export class SVGPathProperties {
                 this.functions.push(null);
             } else if (parsed[i][0] === 'L') {
                 // lineTo
-                this.length += Math.sqrt(
-                    Math.pow(cur[0] - parsed[i][1], 2) +
-                        Math.pow(cur[1] - parsed[i][2], 2)
-                );
-                this.functions.push(
-                    new LinearPosition(cur[0], parsed[i][1], cur[1], parsed[i][2])
-                );
+                this.length += Math.sqrt(Math.pow(cur[0] - parsed[i][1], 2) + Math.pow(cur[1] - parsed[i][2], 2));
+                this.functions.push(new LinearPosition(cur[0], parsed[i][1], cur[1], parsed[i][2]));
                 cur = [parsed[i][1], parsed[i][2]];
             } else if (parsed[i][0] === 'l') {
-                this.length += Math.sqrt(
-                    Math.pow(parsed[i][1], 2) + Math.pow(parsed[i][2], 2)
-                );
-                this.functions.push(
-                    new LinearPosition(
-                        cur[0],
-                        parsed[i][1] + cur[0],
-                        cur[1],
-                        parsed[i][2] + cur[1]
-                    )
-                );
+                this.length += Math.sqrt(Math.pow(parsed[i][1], 2) + Math.pow(parsed[i][2], 2));
+                this.functions.push(new LinearPosition(cur[0], parsed[i][1] + cur[0], cur[1], parsed[i][2] + cur[1]));
                 cur = [parsed[i][1] + cur[0], parsed[i][2] + cur[1]];
             } else if (parsed[i][0] === 'H') {
                 this.length += Math.abs(cur[0] - parsed[i][1]);
-                this.functions.push(
-                    new LinearPosition(cur[0], parsed[i][1], cur[1], cur[1])
-                );
+                this.functions.push(new LinearPosition(cur[0], parsed[i][1], cur[1], cur[1]));
                 cur[0] = parsed[i][1];
             } else if (parsed[i][0] === 'h') {
                 this.length += Math.abs(parsed[i][1]);
-                this.functions.push(
-                    new LinearPosition(cur[0], cur[0] + parsed[i][1], cur[1], cur[1])
-                );
+                this.functions.push(new LinearPosition(cur[0], cur[0] + parsed[i][1], cur[1], cur[1]));
                 cur[0] = parsed[i][1] + cur[0];
             } else if (parsed[i][0] === 'V') {
                 this.length += Math.abs(cur[1] - parsed[i][1]);
-                this.functions.push(
-                    new LinearPosition(cur[0], cur[0], cur[1], parsed[i][1])
-                );
+                this.functions.push(new LinearPosition(cur[0], cur[0], cur[1], parsed[i][1]));
                 cur[1] = parsed[i][1];
             } else if (parsed[i][0] === 'v') {
                 this.length += Math.abs(parsed[i][1]);
-                this.functions.push(
-                    new LinearPosition(cur[0], cur[0], cur[1], cur[1] + parsed[i][1])
-                );
+                this.functions.push(new LinearPosition(cur[0], cur[0], cur[1], cur[1] + parsed[i][1]));
                 cur[1] = parsed[i][1] + cur[1];
             } else if (parsed[i][0] === 'z' || parsed[i][0] === 'Z') {
                 // Close path
-                this.length += Math.sqrt(
-                    Math.pow(start[0] - cur[0], 2) +
-                        Math.pow(start[1] - cur[1], 2)
-                );
-                this.functions.push(
-                    new LinearPosition(cur[0], start[0], cur[1], start[1])
-                );
+                this.length += Math.sqrt(Math.pow(start[0] - cur[0], 2) + Math.pow(start[1] - cur[1], 2));
+                this.functions.push(new LinearPosition(cur[0], start[0], cur[1], start[1]));
                 cur = [start[0], start[1]];
             } else if (parsed[i][0] === 'C') {
                 // Cubic Bezier curves
@@ -126,9 +99,7 @@ export class SVGPathProperties {
                     this.functions.push(curve);
                     cur = [parsed[i][5] + cur[0], parsed[i][6] + cur[1]];
                 } else {
-                    this.functions.push(
-                        new LinearPosition(cur[0], cur[0], cur[1], cur[1])
-                    );
+                    this.functions.push(new LinearPosition(cur[0], cur[0], cur[1], cur[1]));
                 }
             } else if (parsed[i][0] === 'S') {
                 if (i > 0 && ~['C', 'c', 'S', 's'].indexOf(parsed[i - 1][0])) {
@@ -414,7 +385,7 @@ export class SVGPathProperties {
     getParts() {
         const parts = [];
 
-        for (var i = 0, l = this.functions.length; i < l; i++) {
+        for (let i = 0, l = this.functions.length; i < l; i++) {
             if (this.functions[i] !== null) {
                 const properties = {
                     start: this.functions[i].getPointAtLength(0),

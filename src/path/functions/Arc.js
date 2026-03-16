@@ -66,27 +66,21 @@ export class Arc {
             fractionLength = this.length;
         }
 
-        const point_dist = 0.05; // Needs testing
+        const pointDist = 0.05; // Needs testing
         const p1 = this.getPointAtLength(fractionLength);
         let p2;
 
-        if (fractionLength < 0) {
-            fractionLength = 0;
-        } else if (fractionLength > this.length) {
-            fractionLength = this.length;
-        }
-
-        if (fractionLength < this.length - point_dist) {
-            p2 = this.getPointAtLength(fractionLength + point_dist);
+        if (fractionLength < this.length - pointDist) {
+            p2 = this.getPointAtLength(fractionLength + pointDist);
         } else {
-            p2 = this.getPointAtLength(fractionLength - point_dist);
+            p2 = this.getPointAtLength(fractionLength - pointDist);
         }
 
         const xDist = p2.x - p1.x;
         const yDist = p2.y - p1.y;
         const dist = Math.sqrt(xDist * xDist + yDist * yDist);
 
-        if (fractionLength < this.length - point_dist) {
+        if (fractionLength < this.length - pointDist) {
             return { x: -xDist / dist, y: -yDist / dist };
         } else {
             return { x: xDist / dist, y: yDist / dist };
