@@ -158,14 +158,11 @@ export class CameraController {
         if (width < height) {
             offsetX = 0;
             offsetY = 50;
-            // this.obliqueCamera.position.set(0, 0, 4.5);
             this.obliqueCamera.position.set(-2.2, 0.9, 3.8);
         } else {
             offsetX = 0;
             offsetY = 0;
-            // this.obliqueCamera.position.set(0, 0, 2.5);
             this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
-            // this.obliqueCamera.position.set(-1.3, 0.7, 11);
         }
 
         this.obliqueCamera.setViewOffset(
@@ -300,7 +297,6 @@ export class CameraController {
 
     static update = () => {
         this.obliqueCameraControls.update();
-        // console.log('update', this.obliqueCameraControls.position);
     };
 
     static start = () => {
