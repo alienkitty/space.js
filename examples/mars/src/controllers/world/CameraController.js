@@ -305,7 +305,7 @@ export class CameraController {
         }
 
         this.scene.backgroundIntensity = 10;
-        this.camera.scale.z = -1;
+        this.camera.zoom = 0;
         RenderManager.vlMaterial.uniforms.uTransition.value = true;
         RenderManager.vlMaterial.uniforms.uPower.value = 0.8;
         RenderManager.vlMaterial.uniforms.uAmount.value = 0.4;
@@ -320,15 +320,17 @@ export class CameraController {
             return;
         }
 
-        tween(this.camera.scale, { z: 1 }, 7000, 'easeInOutCubic', () => {
+        tween(this.camera, { zoom: 1 }, 7000, 'easeInOutCubic', () => {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
             RenderManager.vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
             RenderManager.vlMaterial.uniforms.uAmount.value = RenderManager.glowAmount;
         }, () => {
-            const multiplier = 1 - this.camera.scale.z;
+            const multiplier = 1 - this.camera.zoom;
 
             this.scene.backgroundIntensity = Math.max(WorldController.backgroundIntensity, 10 * multiplier);
+
+            this.camera.updateProjectionMatrix();
         });
 
         this.progress = 0;
