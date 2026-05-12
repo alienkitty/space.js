@@ -1,5 +1,6 @@
 export const isMobile = !!navigator.maxTouchPoints;
 export const isDebug = /[?&]debug/.test(location.search);
+export const isPosition = /[?&]position/.test(location.search);
 export const is4k = /[?&]4k/.test(location.search);
 
 export const basePath = '/examples/mars/public';
@@ -23,11 +24,24 @@ export const params = {
     sunGlow: false,
     lights: false,
     stars: true,
-    animate: !isDebug,
+    animate: !(isDebug || isPosition),
     speed: 0.2
 };
 
 export const store = {
     loading: '',
-    viewIndex: 0
+    viewIndex: 0,
+    userIndex: 0,
+    userPosition: null
 };
+
+const searchParams = new URLSearchParams(location.search);
+
+if (searchParams.has('view')) {
+    store.userIndex = Number(searchParams.get('view')) - 1;
+    store.viewIndex = store.userIndex;
+}
+
+if (searchParams.has('position')) {
+    store.userPosition = searchParams.get('position').split(',').map(v => Number(v));
+}

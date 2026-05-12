@@ -4,7 +4,7 @@ import { clearTween, tween } from '@alienkitty/space.js/three';
 import { WorldController } from './WorldController.js';
 import { RenderManager } from './RenderManager.js';
 
-import { isDebug } from '../../config/Config.js';
+import { isDebug, store } from '../../config/Config.js';
 
 export class CameraController {
     static init(
@@ -136,6 +136,16 @@ export class CameraController {
             this.height
         );
         this.camera.updateProjectionMatrix();
+
+        // User defined position
+        if (store.userIndex === store.viewIndex && store.userPosition) {
+            this.setCameraPosition(store.userPosition);
+        }
+    };
+
+    static setCameraPosition = array => {
+        this.camera.position.set(...array);
+        this.camera.lookAt(this.scene.position);
     };
 
     static setDetails = (open, fast) => {
@@ -165,7 +175,6 @@ export class CameraController {
             this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
         }
 
-        this.obliqueCamera.lookAt(this.scene.position);
         this.obliqueCamera.setViewOffset(
             width,
             height,
@@ -189,7 +198,6 @@ export class CameraController {
             this.northPolarCamera.position.set(0, 2.5, 0);
         }
 
-        this.northPolarCamera.lookAt(this.scene.position);
         this.northPolarCamera.setViewOffset(
             width,
             height,
@@ -213,7 +221,6 @@ export class CameraController {
             this.southPolarCamera.position.set(0, -2.5, 0);
         }
 
-        this.southPolarCamera.lookAt(this.scene.position);
         this.southPolarCamera.setViewOffset(
             width,
             height,
@@ -258,10 +265,8 @@ export class CameraController {
             offsetX = 0;
             offsetY = 0;
             this.point2Camera.position.set(0, 0, 1.25);
-            // this.point2Camera.position.set(-0.8, 0.2, 0.54); // Valles Marineris
         }
 
-        this.point2Camera.lookAt(this.scene.position);
         this.point2Camera.setViewOffset(
             width,
             height,
@@ -298,6 +303,11 @@ export class CameraController {
             height
         );
         this.point3Camera.updateProjectionMatrix();
+
+        // User defined position
+        if (store.userIndex === store.viewIndex && store.userPosition) {
+            this.setCameraPosition(store.userPosition);
+        }
     };
 
     static update = () => {

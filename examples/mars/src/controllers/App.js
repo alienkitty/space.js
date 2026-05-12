@@ -19,9 +19,6 @@ export class App {
         this.isTransitioning = false;
         this.animatedIn = false;
 
-        const searchParams = new URL(location.href).searchParams;
-        store.viewIndex = searchParams.has('view') ? Number(searchParams.get('view')) - 1 : 0;
-
         this.initThread();
         this.initWorld();
 
@@ -324,6 +321,8 @@ Distance from Sun: 230 million km
     };
 
     static setView = index => {
+        store.viewIndex = index;
+
         let camera;
         let controls;
 
@@ -369,14 +368,16 @@ Distance from Sun: 230 million km
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'Horizon view' });
-        }
+        }    
 
         WorldController.setCamera(camera, controls);
         CameraController.setCamera(camera, controls);
         RenderManager.setCamera(camera);
         this.ui.detailsButton.setData({ number: index + 1 }, true);
 
-        store.viewIndex = index;
+        this.ui.setPanelValue('X', camera.position.x, false);
+        this.ui.setPanelValue('Y', camera.position.y, false);
+        this.ui.setPanelValue('Z', camera.position.z, false);
     };
 
     static setDetails = data => {

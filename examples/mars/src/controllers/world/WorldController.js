@@ -41,21 +41,18 @@ export class WorldController {
         this.obliqueCamera.near = 0.1;
         this.obliqueCamera.far = 20000;
         this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
-        this.obliqueCamera.lookAt(this.scene.position);
 
         // North polar camera
         this.northPolarCamera = new PerspectiveCamera(30);
         this.northPolarCamera.near = 0.1;
         this.northPolarCamera.far = 20000;
         this.northPolarCamera.position.set(0, 2.5, 0);
-        this.northPolarCamera.lookAt(this.scene.position);
 
         // South polar camera
         this.southPolarCamera = new PerspectiveCamera(30);
         this.southPolarCamera.near = 0.1;
         this.southPolarCamera.far = 20000;
         this.southPolarCamera.position.set(0, -2.5, 0);
-        this.southPolarCamera.lookAt(this.scene.position);
 
         // Point of interest #1 camera
         this.point1Camera = new PerspectiveCamera(30);
@@ -68,7 +65,6 @@ export class WorldController {
         this.point2Camera.near = 0.1;
         this.point2Camera.far = 20000;
         this.point2Camera.position.set(0, 0, 1.25);
-        this.point2Camera.lookAt(this.scene.position);
 
         // Point of interest #3 camera
         this.point3Camera = new PerspectiveCamera(30);
