@@ -68,6 +68,7 @@ export class WorldController {
         this.point2Camera.near = 0.1;
         this.point2Camera.far = 20000;
         this.point2Camera.position.set(0, 0, 1.25);
+        this.point2Camera.lookAt(this.scene.position);
 
         // Point of interest #3 camera
         this.point3Camera = new PerspectiveCamera(30);

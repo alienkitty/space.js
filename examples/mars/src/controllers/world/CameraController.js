@@ -165,6 +165,7 @@ export class CameraController {
             this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
         }
 
+        this.obliqueCamera.lookAt(this.scene.position);
         this.obliqueCamera.setViewOffset(
             width,
             height,
@@ -188,6 +189,7 @@ export class CameraController {
             this.northPolarCamera.position.set(0, 2.5, 0);
         }
 
+        this.northPolarCamera.lookAt(this.scene.position);
         this.northPolarCamera.setViewOffset(
             width,
             height,
@@ -211,6 +213,7 @@ export class CameraController {
             this.southPolarCamera.position.set(0, -2.5, 0);
         }
 
+        this.southPolarCamera.lookAt(this.scene.position);
         this.southPolarCamera.setViewOffset(
             width,
             height,
@@ -255,8 +258,10 @@ export class CameraController {
             offsetX = 0;
             offsetY = 0;
             this.point2Camera.position.set(0, 0, 1.25);
+            // this.point2Camera.position.set(-0.8, 0.2, 0.54); // Valles Marineris
         }
 
+        this.point2Camera.lookAt(this.scene.position);
         this.point2Camera.setViewOffset(
             width,
             height,

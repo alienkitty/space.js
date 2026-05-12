@@ -1,5 +1,6 @@
 export const isMobile = !!navigator.maxTouchPoints;
 export const isDebug = /[?&]debug/.test(location.search);
+export const is4k = /[?&]4k/.test(location.search);
 
 export const basePath = '/examples/mars/public';
 export const assetPath = '/examples/assets';

@@ -2,7 +2,7 @@ import { AssetLoader, MultiLoader, Stage } from '@alienkitty/space.js/three';
 
 import { PreloaderView } from '../views/PreloaderView.js';
 
-import { assetPath, basePath, store } from '../config/Config.js';
+import { assetPath, basePath, is4k, store } from '../config/Config.js';
 
 export class Preloader {
     static init() {
@@ -33,18 +33,18 @@ export class Preloader {
         assetLoader.loadAll([
             `${basePath}/assets/data/data.json`,
             // `${assetPath}/textures/cube/hiptyc_2020_cube.ktx2`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_px.jpg`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_nx.jpg`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_py.jpg`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_ny.jpg`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_pz.jpg`,
-            `${assetPath}/textures/cube/mars/mars_basecolor_nz.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_px.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_nx.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_py.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_ny.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_pz.jpg`,
-            `${assetPath}/textures/cube/mars/mars_normal_nz.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_px.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_nx.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_py.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_ny.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_pz.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_basecolor_nz.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_px.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_nx.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_py.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_ny.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_pz.jpg`,
+            `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_nz.jpg`,
             `${assetPath}/textures/smaa/area.png`,
             `${assetPath}/textures/smaa/search.png`,
             `${assetPath}/sounds/enough_loop.mp3`,

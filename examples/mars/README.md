@@ -33,12 +33,19 @@ gdal_translate --config GDAL_ALLOW_LARGE_LIBJPEG_MEM_ALLOC YES -a_srs "+proj=lon
 gdal_translate --config GDAL_ALLOW_LARGE_LIBJPEG_MEM_ALLOC YES -a_srs "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs" -a_ullr -180 90 180 -90 hiptyc_2020_16k_gal.png hiptyc_2020_16k_gal.tif
 ```
 
-Download the Python script ([make_cube_faces.py](make_cube_faces.py) included with this demo), which we'll use to generate all the cube faces with GDAL's warp utility and ImageMagick. Ignore all the `magick: Unknown field with tag` warnings, they are from the TIFF format tags used by GDAL.
+Download the Python script ([make_cube_faces.py](make_cube_faces.py) included with this demo), which we'll use to generate all the cube faces with GDAL's warp utility and ImageMagick.
 
 ```sh
 python3 make_cube_faces.py 32k.Mars.Surface.tif mars_basecolor 2048 sRGB .
 python3 make_cube_faces.py 32k.Mars.Normal.tif mars_normal 2048 RGB .
 python3 make_cube_faces.py hiptyc_2020_16k_gal.tif hiptyc_2020 4096 sRGB .
+```
+
+For 4k faces of the surface map and normal map.
+
+```sh
+python3 make_cube_faces.py 32k.Mars.Surface.tif mars_basecolor 4096 sRGB .
+python3 make_cube_faces.py 32k.Mars.Normal.tif mars_normal 4096 RGB .
 ```
 
 And finally optimizing the output images. I tried a variety of compression formats, KTX2 Basis, ASTC, UASTC, WebP, and after all that, I'm finding that good old JPEG compression still has a better quality to file size ratio for high quality textures.
