@@ -37,6 +37,7 @@ const item = new PanelItem({
     // name: 'FPS'
     // type: 'spacer'
     // type: 'divider'
+    // type: 'info'
     // type: 'link'
     // type: 'thumbnail'
     // type: 'graph'

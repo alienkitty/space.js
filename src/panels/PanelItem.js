@@ -3,6 +3,7 @@
  */
 
 import { Interface } from '../utils/Interface.js';
+import { PanelInfo } from './PanelInfo.js';
 import { PanelLink } from './PanelLink.js';
 import { PanelThumbnail } from './PanelThumbnail.js';
 import { PanelGraph } from './PanelGraph.js';
@@ -21,6 +22,7 @@ import { ColorPicker } from './ColorPicker.js';
  *     name: 'FPS'
  *     // type: 'spacer'
  *     // type: 'divider'
+ *     // type: 'info'
  *     // type: 'link'
  *     // type: 'thumbnail'
  *     // type: 'graph'
@@ -72,6 +74,10 @@ export class PanelItem extends Interface {
                 backgroundColor: 'var(--ui-color-divider-line)'
             });
             this.container.add(this.line);
+        } else if (this.data.type === 'info') {
+            this.view = new PanelInfo(this.data);
+            this.view.events.on('update', this.onUpdate);
+            this.container.add(this.view);
         } else if (this.data.type === 'link') {
             this.container.css({
                 margin: '2px 0 0'
