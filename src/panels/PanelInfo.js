@@ -10,14 +10,12 @@ import { Interface } from '../utils/Interface.js';
 export class PanelInfo extends Interface {
     constructor({
         name,
-        precision = 2,
-        value = 0
+        value
     }) {
         super('.info');
 
         this.name = name;
-        this.precision = precision;
-        this.value = this.getValue(value);
+        this.value = value;
 
         this.init();
         this.setValue(this.value);
@@ -51,14 +49,10 @@ export class PanelInfo extends Interface {
         this.container.add(this.number);
     }
 
-    getValue(value) {
-        return parseFloat(value).toFixed(this.precision);
-    }
-
     // Public methods
 
     setValue(value) {
-        this.value = this.getValue(value);
+        this.value = value;
 
         this.number.text(this.value);
     }
