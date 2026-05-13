@@ -267,7 +267,7 @@ scene.environmentIntensity = 1.2;
 [radial graph](https://space.js.org/examples/three/3d_radial_graph.html) (graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status.html) (details, graph and panel tracking)  
 [server status](https://space.js.org/examples/three/3d_server_status_thread.html) (websocket thread, details, graph and panel tracking)  
-[mars](https://space.js.org/examples/mars/) (cubemaps, details info, ambient audio, [debug](https://space.js.org/examples/mars/?debug), [4k](https://space.js.org/examples/mars/?4k), [valles marineris](https://space.js.org/examples/mars/?4k&position=-0.8,0.21,0.56))  
+[mars](https://space.js.org/examples/mars/) (cubemaps, details info, ambient audio, [debug](https://space.js.org/examples/mars/?debug), [4k](https://space.js.org/examples/mars/?4k), [valles marineris](https://space.js.org/examples/mars/?4k&position=-0.8,0.21,0.56&caption=Valles%20Marineris))  
 [cyberspace](https://space.js.org/examples/cyberspace/) (geoip, details, points tracking)  
 
 #### audio

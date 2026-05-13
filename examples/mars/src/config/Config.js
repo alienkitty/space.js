@@ -32,7 +32,8 @@ export const store = {
     loading: '',
     viewIndex: 0,
     userIndex: 0,
-    userPosition: null
+    userPosition: null,
+    userCaption: null
 };
 
 const searchParams = new URLSearchParams(location.search);
@@ -44,4 +45,8 @@ if (searchParams.has('view')) {
 
 if (searchParams.has('position')) {
     store.userPosition = searchParams.get('position').split(',').map(v => Number(v));
+}
+
+if (searchParams.has('caption')) {
+    store.userCaption = searchParams.get('caption');
 }
