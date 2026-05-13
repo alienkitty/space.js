@@ -5,7 +5,7 @@ import { WorldController } from '../world/WorldController.js';
 import { CameraController } from '../world/CameraController.js';
 import { RenderManager } from '../world/RenderManager.js';
 
-import { isDebug, params } from '../../config/Config.js';
+import { isDebug, isPosition, params, store } from '../../config/Config.js';
 
 export class MarsPanel extends Panel {
     constructor(scene, lights, view) {
@@ -302,7 +302,7 @@ export class MarsPanel extends Panel {
                     this.setPanelValue('Sun Glow', false);
                     this.setPanelValue('Lights', false);
                     this.setPanelValue('Stars', true);
-                    this.setPanelValue('Animate', !isDebug);
+                    this.setPanelValue('Animate', !(isDebug || isPosition));
                     this.setPanelValue('Speed', 0.2);
                     this.setPanelValue('Normal X', 2);
                     this.setPanelValue('Normal Y', -2);
@@ -332,6 +332,15 @@ export class MarsPanel extends Panel {
                         this.setPanelValue('Light Y', 1.5);
                         this.setPanelValue('Light Z', -1.5);
                     }
+
+                    // User defined position
+                    if (store.userIndex === store.viewIndex && store.userPosition) {
+                        CameraController.setCameraPosition(store.userPosition);
+                    }
+
+                    this.setPanelValue('X', WorldController.camera.position.x, false);
+                    this.setPanelValue('Y', WorldController.camera.position.y, false);
+                    this.setPanelValue('Z', WorldController.camera.position.z, false);
                 }
             }
         ];
