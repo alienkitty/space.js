@@ -40,6 +40,7 @@ export { Sound } from './audio/Sound.js';
 // Panels
 export { Panel } from './panels/Panel.js';
 export { PanelItem } from './panels/PanelItem.js';
+export { PanelInfo } from './panels/PanelInfo.js';
 export { PanelLink } from './panels/PanelLink.js';
 export { PanelThumbnail } from './panels/PanelThumbnail.js';
 export { PanelGraph } from './panels/PanelGraph.js';

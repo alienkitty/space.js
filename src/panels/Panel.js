@@ -15,6 +15,7 @@ import { ticker } from '../tween/Ticker.js';
  *     // name: 'FPS'
  *     // type: 'spacer'
  *     // type: 'divider'
+ *     // type: 'info'
  *     // type: 'link'
  *     // type: 'thumbnail'
  *     // type: 'graph'
