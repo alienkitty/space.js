@@ -374,11 +374,17 @@ Distance from Sun: 230 million km
         WorldController.setCamera(camera, controls);
         CameraController.setCamera(camera, controls);
         RenderManager.setCamera(camera);
-        this.ui.detailsButton.setData({ number: index + 1 }, true);
 
         this.ui.setPanelValue('X', camera.position.x, false);
         this.ui.setPanelValue('Y', camera.position.y, false);
         this.ui.setPanelValue('Z', camera.position.z, false);
+
+        // User defined caption
+        if (store.userIndex === store.viewIndex && store.userCaption) {
+            this.ui.header.title.setData({ caption: store.userCaption });
+        }
+
+        this.ui.detailsButton.setData({ number: index + 1 }, true);
     };
 
     static setDetails = data => {
