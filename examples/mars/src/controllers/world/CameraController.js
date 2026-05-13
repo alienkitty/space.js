@@ -22,7 +22,8 @@ export class CameraController {
         point2CameraControls,
         point3CameraControls,
         camera,
-        controls
+        controls,
+        ui
     ) {
         this.scene = scene;
         this.obliqueCamera = obliqueCamera;
@@ -39,6 +40,7 @@ export class CameraController {
         this.point3CameraControls = point3CameraControls;
         this.camera = camera;
         this.controls = controls;
+        this.ui = ui;
 
         this.width = 0;
         this.height = 0;
@@ -47,6 +49,10 @@ export class CameraController {
         this.detailsOffsetX = 0;
         this.progress = 0;
         this.isDetailsOpen = false;
+
+        this.isDown = false;
+
+        this.addListeners();
     }
 
     static transition(fast) {
@@ -70,6 +76,56 @@ export class CameraController {
             });
         }
     }
+
+    static addListeners() {
+        // Oblique camera
+        this.obliqueCameraControls.addEventListener('change', this.onChange);
+        this.obliqueCameraControls.addEventListener('start', this.onInteraction);
+        this.obliqueCameraControls.addEventListener('end', this.onInteraction);
+
+        // North polar camera
+        this.northPolarCameraControls.addEventListener('change', this.onChange);
+        this.northPolarCameraControls.addEventListener('start', this.onInteraction);
+        this.northPolarCameraControls.addEventListener('end', this.onInteraction);
+
+        // South polar camera
+        this.southPolarCameraControls.addEventListener('change', this.onChange);
+        this.southPolarCameraControls.addEventListener('start', this.onInteraction);
+        this.southPolarCameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #1 camera
+        this.point1CameraControls.addEventListener('change', this.onChange);
+        this.point1CameraControls.addEventListener('start', this.onInteraction);
+        this.point1CameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #2 camera
+        this.point2CameraControls.addEventListener('change', this.onChange);
+        this.point2CameraControls.addEventListener('start', this.onInteraction);
+        this.point2CameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #3 camera
+        this.point3CameraControls.addEventListener('change', this.onChange);
+        this.point3CameraControls.addEventListener('start', this.onInteraction);
+        this.point3CameraControls.addEventListener('end', this.onInteraction);
+    }
+
+    // Event handlers
+
+    static onChange = () => {
+        if (this.isDown) {
+            this.ui.setPanelValue('X', this.camera.position.x);
+            this.ui.setPanelValue('Y', this.camera.position.y);
+            this.ui.setPanelValue('Z', this.camera.position.z);
+        }
+    };
+
+    static onInteraction = ({ type }) => {
+        if (type === 'start') {
+            this.isDown = true;
+        } else {
+            this.isDown = false;
+        }
+    };
 
     // Public methods
 

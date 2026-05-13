@@ -1,6 +1,8 @@
+import { Vector3 } from 'three';
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
+import { CameraController } from '../world/CameraController.js';
 import { RenderManager } from '../world/RenderManager.js';
 
 import { isDebug, params } from '../../config/Config.js';
@@ -13,6 +15,8 @@ export class MarsPanel extends Panel {
         this.lights = lights;
         this.view = view;
 
+        this.initialized = false;
+
         this.initPanel();
     }
 
@@ -20,6 +24,8 @@ export class MarsPanel extends Panel {
         const { vlMaterial } = RenderManager;
 
         const { mars } = this.view;
+
+        const vector3 = new Vector3();
 
         const items = [
             {
@@ -235,6 +241,57 @@ export class MarsPanel extends Panel {
                 }
             },
             {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'X',
+                min: -10,
+                max: 10,
+                step: 0.01,
+                value: vector3.x,
+                callback: value => {
+                    vector3.x = value;
+
+                    if (this.initialized && !CameraController.isDown) {
+                        const array = vector3.toArray();
+                        CameraController.setCameraPosition(array);
+                    }
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Y',
+                min: -10,
+                max: 10,
+                step: 0.01,
+                value: vector3.y,
+                callback: value => {
+                    vector3.y = value;
+
+                    if (this.initialized && !CameraController.isDown) {
+                        const array = vector3.toArray();
+                        CameraController.setCameraPosition(array);
+                    }
+                }
+            },
+            {
+                type: 'slider',
+                name: 'Z',
+                min: -10,
+                max: 10,
+                step: 0.01,
+                value: vector3.z,
+                callback: value => {
+                    vector3.z = value;
+
+                    if (this.initialized && !CameraController.isDown) {
+                        const array = vector3.toArray();
+                        CameraController.setCameraPosition(array);
+                    }
+                }
+            },
+            {
                 type: 'spacer'
             },
             {
@@ -282,5 +339,7 @@ export class MarsPanel extends Panel {
         items.forEach(data => {
             this.add(new PanelItem(data));
         });
+
+        this.initialized = true;
     }
 }

@@ -177,7 +177,8 @@ Distance from Sun: 230 million km
             point2CameraControls,
             point3CameraControls,
             camera,
-            controls
+            controls,
+            this.ui
         );
 
         SceneController.init(renderer, scene, camera, this.view);
