@@ -200,6 +200,7 @@ export class CameraController {
     };
 
     static setCameraPosition = array => {
+        this.controls.reset();
         this.camera.position.set(...array);
         this.camera.lookAt(this.scene.position);
     };
