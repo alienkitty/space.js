@@ -25,7 +25,9 @@ export const params = {
     lights: false,
     stars: true,
     animate: !(isDebug || isPosition),
-    speed: 0.2
+    speed: 0.2,
+    tilt: true,
+    lines: false
 };
 
 export const store = {
