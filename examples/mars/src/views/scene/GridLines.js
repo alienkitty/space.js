@@ -8,6 +8,8 @@ export class GridLines extends Group {
         this.radius = radius;
         this.segments = segments;
 
+        this.visible = false;
+
         this.initLines();
     }
 

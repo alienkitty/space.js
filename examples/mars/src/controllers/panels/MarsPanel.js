@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import { MathUtils, Vector3 } from 'three';
 import { Panel, PanelItem } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../world/WorldController.js';
@@ -289,6 +289,34 @@ export class MarsPanel extends Panel {
                         const array = vector3.toArray();
                         CameraController.setCameraPosition(array);
                     }
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'toggle',
+                name: 'Tilt',
+                value: params.tilt,
+                callback: value => {
+                    params.tilt = value;
+
+                    if (value) {
+                        // 25 degree tilt
+                        mars.rotation.z = MathUtils.degToRad(-25);
+                    } else {
+                        mars.rotation.z = 0;
+                    }
+                }
+            },
+            {
+                type: 'toggle',
+                name: 'Lines',
+                value: params.lines,
+                callback: value => {
+                    params.lines = value;
+
+                    mars.gridLines.visible = value;
                 }
             },
             {
