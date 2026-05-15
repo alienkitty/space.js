@@ -2,6 +2,7 @@ import { Group, MathUtils, Mesh, MeshPhongMaterial, NoColorSpace, SRGBColorSpace
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
+import { GridLines } from './GridLines.js';
 
 import { is4k, params } from '../../config/Config.js';
 
@@ -58,7 +59,12 @@ export class Mars extends Group {
         this.add(southPolarCamera);
         this.add(point3Camera);
 
+        // Add grid lines to the mesh (rotates with planet)
+        const gridLines = new GridLines(0.6005, 128);
+        mesh.add(gridLines);
+
         this.mesh = mesh;
+        this.gridLines = gridLines;
     }
 
     createCubeFaceMaterial({ mapFaces, normalFaces }) {
