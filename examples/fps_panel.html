@@ -13,6 +13,8 @@
     <script type="module">
         import { Panel, PanelItem, UI, brightness, getKeyByValue } from '../src/index.js';
 
+        // init
+
         const ui = new UI({
             fps: true,      // Hover or tap to open
             fpsOpen: true   // Always open
@@ -332,6 +334,8 @@
         // Call after adding to show the fps panel right away
         // ui.animateIn();
         ui.header.info.animateIn();
+
+        // animation
 
         function animate() {
             requestAnimationFrame(animate);
