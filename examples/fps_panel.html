@@ -302,6 +302,24 @@
                 }
             },
             {
+                type: 'divider'
+            },
+            {
+                type: 'info',
+                name: 'Mouse X',
+                value: 0
+            },
+            {
+                type: 'info',
+                name: 'Mouse Y',
+                value: 0
+            },
+            {
+                type: 'info',
+                name: 'Time',
+                value: '0s'
+            },
+            {
                 type: 'spacer'
             },
             {
@@ -341,9 +359,20 @@
             requestAnimationFrame(animate);
 
             ui.update();
+
+            ui.setPanelValue('Time', `${(performance.now() / 1000).toFixed(1)}s`);
         }
 
         requestAnimationFrame(animate);
+
+        // mouse
+
+        window.addEventListener('pointermove', onPointerMove);
+
+        function onPointerMove({ clientX, clientY }) {
+            ui.setPanelValue('Mouse X', clientX.toFixed());
+            ui.setPanelValue('Mouse Y', clientY.toFixed());
+        }
     </script>
 </head>
 <body>
