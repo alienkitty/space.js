@@ -369,6 +369,9 @@ export class MarsPanel extends Panel {
                     this.setPanelValue('X', WorldController.camera.position.x, false);
                     this.setPanelValue('Y', WorldController.camera.position.y, false);
                     this.setPanelValue('Z', WorldController.camera.position.z, false);
+
+                    this.setPanelValue('Tilt', true);
+                    this.setPanelValue('Lines', false);
                 }
             }
         ];
