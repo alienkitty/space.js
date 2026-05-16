@@ -21,6 +21,8 @@
     <script type="module">
         import { Panel, PanelItem, brightness, getKeyByValue } from '../src/index.js';
 
+        // init
+
         const panel = new Panel();
         panel.animateIn();
         document.body.appendChild(panel.element);
@@ -330,6 +332,8 @@
 
         // Call after adding
         panel.animateIn();
+
+        // animation
 
         function animate() {
             requestAnimationFrame(animate);
