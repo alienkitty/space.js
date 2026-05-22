@@ -65,7 +65,7 @@ export class RenderManager {
     }
 
     static initRenderer() {
-        const { screenTriangle, resolution, texelSize, textureLoader } = WorldController;
+        const { screenTriangle, resolution, texelSize } = WorldController;
 
         // Manually clear
         this.renderer.autoClear = false;
@@ -85,6 +85,10 @@ export class RenderManager {
         });
 
         this.renderTargetB = this.renderTargetA.clone();
+
+        this.renderTargetLines = this.renderTargetA.clone();
+        // this.renderTargetLines.samples = 4;
+
         this.renderTargetEdges = this.renderTargetA.clone();
         this.renderTargetWeights = this.renderTargetA.clone();
 
@@ -105,6 +109,7 @@ export class RenderManager {
         }
 
         this.renderTargetB.depthBuffer = true;
+        this.renderTargetLines.depthBuffer = true;
         this.renderTargetBlurA.depthBuffer = true;
 
         // Occlusion material
@@ -181,10 +186,7 @@ export class RenderManager {
         this.edgesMaterial.uniforms.uTexelSize = texelSize;
 
         // SMAA weights material
-        this.weightsMaterial = new SMAAWeightsMaterial(textureLoader, {
-            areaTexturePath: 'smaa/area.png',
-            searchTexturePath: 'smaa/search.png'
-        });
+        this.weightsMaterial = new SMAAWeightsMaterial();
         this.weightsMaterial.uniforms.uTexelSize = texelSize;
 
         // SMAA material
@@ -257,6 +259,7 @@ export class RenderManager {
 
         this.renderTargetA.setSize(width, height);
         this.renderTargetB.setSize(width, height);
+        this.renderTargetLines.setSize(width, height);
 
         // SMAA
         this.renderTargetEdges.setSize(width, height);
@@ -312,6 +315,7 @@ export class RenderManager {
 
         const renderTargetA = this.renderTargetA;
         const renderTargetB = this.renderTargetB;
+        const renderTargetLines = this.renderTargetLines;
         const renderTargetEdges = this.renderTargetEdges;
         const renderTargetWeights = this.renderTargetWeights;
         const renderTargetBloomA = this.renderTargetBloomA;
@@ -366,7 +370,24 @@ export class RenderManager {
         // this.restoreRendererState();
         // return;
 
+        // Lines layer
+        // TODO: Skip helpers
+        // https://github.com/mrdoob/three.js/issues/26732
+        scene.overrideMaterial = this.blackoutMaterial;
+        renderer.setRenderTarget(renderTargetLines);
+        renderer.clear();
+        renderer.render(scene, camera);
+        scene.overrideMaterial = this.currentOverrideMaterial;
+
+        camera.layers.set(layers.lines);
+
+        renderer.render(scene, camera);
+        // this.restoreRendererState();
+        // return;
+
         // Occlusion layer
+        camera.layers.set(layers.default);
+
         // TODO: Skip helpers
         // https://github.com/mrdoob/three.js/issues/26732
         scene.overrideMaterial = this.blackoutMaterial;
@@ -444,6 +465,7 @@ export class RenderManager {
             this.compositeMaterial.uniforms.tScene.value = renderTargetB.texture;
             this.compositeMaterial.uniforms.tBloom.value = renderTargetsHorizontal[0].texture;
             this.compositeMaterial.uniforms.tAdd.value = renderTargetBlurB.texture;
+            this.compositeMaterial.uniforms.tLines.value = renderTargetLines.texture;
             this.screen.material = this.compositeMaterial;
             renderer.setRenderTarget(renderTargetA);
             renderer.clear();
@@ -462,6 +484,8 @@ export class RenderManager {
             renderer.setRenderTarget(renderTargetWeights);
             renderer.clear();
             renderer.render(this.screen, this.screenCamera);
+            // this.restoreRendererState();
+            // return;
 
             // SMAA pass (render to screen)
             this.smaaMaterial.uniforms.tMap.value = renderTargetA.texture;
@@ -474,6 +498,7 @@ export class RenderManager {
             this.compositeMaterial.uniforms.tScene.value = renderTargetB.texture;
             this.compositeMaterial.uniforms.tBloom.value = renderTargetsHorizontal[0].texture;
             this.compositeMaterial.uniforms.tAdd.value = renderTargetBlurB.texture;
+            this.compositeMaterial.uniforms.tLines.value = renderTargetLines.texture;
             this.screen.material = this.compositeMaterial;
             renderer.setRenderTarget(null);
             renderer.clear();

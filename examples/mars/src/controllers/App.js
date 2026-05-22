@@ -33,12 +33,14 @@ export class App {
         this.initViews();
         this.initControllers();
 
+        store.loading = 'Events';
         this.addListeners();
         this.onResize();
 
         store.loading = 'Textures';
         await SceneController.ready();
         await WorldController.ready();
+
         store.loading = 'Shaders';
         await SceneController.precompile();
         await wait(250);
@@ -46,8 +48,10 @@ export class App {
         store.loading = 'Audio';
         this.initAudio();
         this.initPanel();
+
         store.loading = 'View';
         this.setView(store.viewIndex);
+
         store.loading = 'Nominal';
     }
 
@@ -369,7 +373,7 @@ Distance from Sun: 230 million km
             this.ui.setPanelValue('Light Y', 1.5);
             this.ui.setPanelValue('Light Z', -1.5);
             this.ui.header.title.setData({ caption: 'Horizon view' });
-        }    
+        }
 
         WorldController.setCamera(camera, controls);
         CameraController.setCamera(camera, controls);

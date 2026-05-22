@@ -45,8 +45,6 @@ export class Preloader {
             `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_ny.jpg`,
             `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_pz.jpg`,
             `${assetPath}/textures/cube/mars/${is4k ? '4k/' : ''}mars_normal_nz.jpg`,
-            `${assetPath}/textures/smaa/area.png`,
-            `${assetPath}/textures/smaa/search.png`,
             `${assetPath}/sounds/enough_loop.mp3`,
             `${assetPath}/sounds/hover.mp3`,
             `${assetPath}/sounds/click.mp3`

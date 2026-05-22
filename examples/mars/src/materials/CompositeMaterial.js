@@ -27,6 +27,7 @@ precision highp float;
 uniform sampler2D tScene;
 uniform sampler2D tBloom;
 uniform sampler2D tAdd;
+uniform sampler2D tLines;
 uniform vec3 uColor;
 uniform float uRGBAmount;
 uniform float uReduction;
@@ -63,6 +64,9 @@ void main() {
     // Additive blend soft light background color
     FragColor.rgb += blendSoftLight(glow, vec4(uColor, 1.0), 0.8).rgb;
 
+    // Additive blend lines
+    FragColor.rgb += texture(tLines, vUv).rgb * 0.3;
+
     // Vignetting
     FragColor.rgb *= uBoost - center * uReduction;
 
@@ -92,6 +96,7 @@ export class CompositeMaterial extends RawShaderMaterial {
                 tScene: { value: null },
                 tBloom: { value: null },
                 tAdd: { value: null },
+                tLines: { value: null },
                 uColor: { value: new Color(colors.backgroundColor) },
                 uRGBAmount: { value: 0.2 },
                 uReduction: { value: 0.9 },
