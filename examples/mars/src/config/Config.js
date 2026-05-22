@@ -16,7 +16,8 @@ export const colors = {
 export const layers = {
     default: 0,
     background: 1,
-    occlusion: 2
+    occlusion: 2,
+    lines: 3
 };
 
 export const params = {
@@ -26,8 +27,8 @@ export const params = {
     stars: true,
     animate: !(isDebug || isPosition),
     speed: 0.2,
-    tilt: true,
-    lines: false
+    tilt: !isDebug,
+    lines: isDebug
 };
 
 export const store = {

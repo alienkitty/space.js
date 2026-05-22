@@ -60,7 +60,7 @@ export class Mars extends Group {
         this.add(point3Camera);
 
         // Add grid lines to the mesh (rotates with planet)
-        const gridLines = new GridLines(0.6005, 128);
+        const gridLines = new GridLines(0.601, 128);
         mesh.add(gridLines);
 
         this.mesh = mesh;
