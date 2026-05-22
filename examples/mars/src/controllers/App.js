@@ -35,7 +35,6 @@ export class App {
 
         store.loading = 'Events';
         this.addListeners();
-        this.onResize();
 
         store.loading = 'Textures';
         await SceneController.ready();
@@ -51,6 +50,7 @@ export class App {
 
         store.loading = 'View';
         this.setView(store.viewIndex);
+        this.onResize();
 
         store.loading = 'Nominal';
     }
