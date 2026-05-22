@@ -204,7 +204,6 @@ Distance from Sun: 230 million km
 
     static addListeners() {
         Stage.events.on('details', this.onDetails);
-        window.addEventListener('popstate', this.onPopState);
         window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
@@ -280,7 +279,6 @@ Distance from Sun: 230 million km
         SceneController.update();
         RenderManager.update(time, delta, frame);
         this.ui.update();
-        // console.log('FPS', this.ui.header.info.fps);
     };
 
     static onHover = e => {
