@@ -17,6 +17,7 @@ const Lacuna1 = ['opacity', 'scale', 'brightness', 'contrast', 'saturate', 'stop
 /**
  * A base class for HTML elements with tween and destroy methods,
  * plus helper methods for common utilities.
+ *
  * @example
  * const logo = new Interface('.logo');
  * logo.css({

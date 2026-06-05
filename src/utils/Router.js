@@ -5,6 +5,7 @@
 /**
  * A page transition router with pages created from a given constructor,
  * or function.
+ *
  * @example
  * // ...
  * router.add('/', Home);
@@ -20,6 +21,7 @@
  *
  * // ...
  * router.setPath('/about');
+ *
  * @example
  * // ...
  * router.add(path, object, data);
@@ -28,6 +30,7 @@
  *     path: basePath,
  *     scrollRestoration: 'auto'
  * });
+ *
  * @example
  * router.add('/test_router.html', onPage, { title: 'Home' });
  *

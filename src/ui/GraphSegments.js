@@ -17,6 +17,7 @@ import { clamp, mapLinear } from '../utils/Utils.js';
 
 /**
  * Graph with segments.
+ *
  * @example
  * const graph = new GraphSegments({
  *     value: Array.from({ length: 10 }, () => Math.random()),

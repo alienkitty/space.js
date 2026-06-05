@@ -16,6 +16,7 @@ import { ColorPicker } from './ColorPicker.js';
 
 /**
  * A panel item for various components.
+ *
  * @example
  * // ...
  * const item = new PanelItem({

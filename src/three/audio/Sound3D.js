@@ -9,6 +9,7 @@ import { WebAudioParam } from '../../audio/WebAudioParam.js';
 
 /**
  * A fast 3D audio object based on camera position.
+ *
  * @example
  * const loader = new BufferLoader();
  * await loader.loadAllAsync(['assets/sounds/metal_monk_loop.mp3']);

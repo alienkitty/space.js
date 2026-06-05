@@ -8,6 +8,7 @@ import { absolute } from '../../utils/Utils.js';
 
 /**
  * Creates arrays for buffer geometry from a given source with a worker.
+ *
  * @example
  * BufferGeometryLoaderThread.init();
  *

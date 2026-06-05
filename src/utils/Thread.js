@@ -16,6 +16,7 @@ if (typeof window !== 'undefined') {
 
 /**
  * Creates a shared worker cluster or individual worker with the given methods.
+ *
  * @example
  * Thread.upload(loadImage);
  *

@@ -23,6 +23,7 @@ if (typeof window !== 'undefined') {
 
 /**
  * A minimal requestAnimationFrame render loop with worker support.
+ *
  * @example
  * ticker.add(onUpdate);
  * ticker.start();

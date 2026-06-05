@@ -12,6 +12,7 @@ import { clearTween, defer, tween } from '../tween/Tween.js';
 
 /**
  * Meter.
+ *
  * @example
  * const meter = new Meter({
  *     value: Math.random(),

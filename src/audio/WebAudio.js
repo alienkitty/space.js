@@ -10,6 +10,7 @@ import { basename } from '../utils/Utils.js';
 
 /**
  * Web Audio engine with stream support.
+ *
  * @example
  * const loader = new BufferLoader();
  * await loader.loadAllAsync(['assets/sounds/gong.mp3']);
@@ -22,6 +23,7 @@ import { basename } from '../utils/Utils.js';
  * document.addEventListener('pointerdown', () => {
  *     gong.play();
  * });
+ *
  * @example
  * WebAudio.init({ sampleRate: 48000 });
  * WebAudio.load({ cyberspace: 'https://icecast.cyberspace.app/dive.ogg' });

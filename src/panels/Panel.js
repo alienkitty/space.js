@@ -9,6 +9,7 @@ import { ticker } from '../tween/Ticker.js';
 
 /**
  * A panel container for various components.
+ *
  * @example
  * const panel = new Panel();
  * const item = new PanelItem({
