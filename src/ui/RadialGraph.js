@@ -16,6 +16,7 @@ import { TwoPI, degToRad, mapLinear } from '../utils/Utils.js';
 
 /**
  * Radial graph.
+ *
  * @example
  * const graph = new RadialGraph({
  *     value: Array.from({ length: 10 }, () => Math.random()),

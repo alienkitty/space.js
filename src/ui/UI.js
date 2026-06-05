@@ -19,6 +19,7 @@ import { ticker } from '../tween/Ticker.js';
 
 /**
  * A HUD (heads-up display) container for various components.
+ *
  * @example
  * const ui = new UI({
  *     fps: true

@@ -16,6 +16,7 @@ import { clamp } from '../utils/Utils.js';
 
 /**
  * Graph.
+ *
  * @example
  * const graph = new Graph({
  *     value: Array.from({ length: 10 }, () => Math.random()),

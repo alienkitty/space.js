@@ -9,6 +9,7 @@ import { Loader } from '../../loaders/Loader.js';
 
 /**
  * Creates an environment diffuse texture from a given source with worker support.
+ *
  * @example
  * // ...
  * const loader = new EnvironmentTextureLoader(renderer);
@@ -16,6 +17,7 @@ import { Loader } from '../../loaders/Loader.js';
  *     scene.environment = texture;
  *     scene.environmentIntensity = 1.2;
  * });
+ *
  * @example
  * // ...
  * const loader = new EnvironmentTextureLoader(renderer);

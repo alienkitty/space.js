@@ -26,6 +26,7 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
 /**
  * A UI and panel container for various components in 3D space,
  * with object tracking.
+ *
  * @example
  * // ...
  * Point3D.init(renderer, scene, camera);
@@ -37,6 +38,7 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * materialPanel.animateIn(true);
  *
  * point.setContent(materialPanel);
+ *
  * @example
  * // ...
  * const point = new Point3D(mesh, {
@@ -44,6 +46,7 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  *     noTracker: true
  * });
  * scene.add(point);
+ *
  * @example
  * // ...
  * const point = new Point3D(points, {
@@ -55,6 +58,7 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  * scene.add(point);
  * // ...
  * point.setData({ name: '127.0.0.1' });
+ *
  * @example
  * // ...
  * const point = new Point3D(mesh, { graph });
@@ -63,6 +67,7 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
  *     type: 'localhost'
  * });
  * scene.add(point);
+ *
  * @example
  * // ...
  * const item = new PanelItem({

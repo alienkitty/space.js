@@ -8,6 +8,7 @@ import { absolute } from '../utils/Utils.js';
 
 /**
  * Creates a bitmap from a given source with a worker.
+ *
  * @example
  * ImageBitmapLoaderThread.init();
  *

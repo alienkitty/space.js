@@ -14,6 +14,7 @@ import { Loader } from '../../loaders/Loader.js';
 
 /**
  * Creates a texture from a given source with worker support.
+ *
  * @example
  * const loader = new CubeTextureLoader();
  * loader.setPath('/');
@@ -28,6 +29,7 @@ import { Loader } from '../../loaders/Loader.js';
  *     'pz.jpg', 'nz.jpg'
  * ]);
  * console.log(cubeTexture);
+ *
  * @example
  * const loader = new CubeTextureLoader();
  * const loadCubeTexture = paths => loader.loadAsync(paths);

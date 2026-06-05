@@ -10,8 +10,7 @@ const Tweens = [];
 
 /**
  * Tween animation engine.
- * @see {@link https://github.com/alienkitty/space.js/wiki/Tween | Documentation}
- * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
+ *
  * @example
  * ticker.start();
  *
@@ -22,6 +21,9 @@ const Tweens = [];
  * tween(data, { radius: 24, spring: 1.2, damping: 0.4 }, 1000, 'easeOutElastic', null, () => {
  *     console.log(data.radius);
  * });
+ *
+ * @see {@link https://github.com/alienkitty/space.js/wiki/Tween | Documentation}
+ * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
  */
 export class Tween {
     constructor(object, props, duration, ease, delay = 0, complete, update) {
@@ -108,15 +110,19 @@ export class Tween {
 
 /**
  * Defers a function by the given duration.
- * @param {number} duration Time to wait in milliseconds.
- * @param {function} complete Callback function.
- * @returns {Tween}
+ *
  * @example
  * delayedCall(500, animateIn);
+ *
  * @example
  * delayedCall(500, () => animateIn(delay));
+ *
  * @example
  * timeout = delayedCall(500, () => animateIn(delay));
+ *
+ * @param {number} duration - Time to wait in milliseconds.
+ * @param {function} complete - Callback function.
+ * @returns {Tween}
  */
 export function delayedCall(duration, complete) {
     const tween = new Tween(complete, null, duration, 'linear', 0, complete);
@@ -128,10 +134,12 @@ export function delayedCall(duration, complete) {
 
 /**
  * Defers by the given duration.
- * @param {number} [duration=0] Time to wait in milliseconds.
- * @returns {Promise}
+ *
  * @example
  * await wait(250);
+ *
+ * @param {number} [duration=0] - Time to wait in milliseconds.
+ * @returns {Promise}
  */
 export function wait(duration = 0) {
     return new Promise(resolve => delayedCall(duration, resolve));
@@ -139,14 +147,18 @@ export function wait(duration = 0) {
 
 /**
  * Defers to the next tick.
- * @param {function} [complete] Callback function.
- * @returns {Promise}
+ *
  * @example
  * defer(resize);
+ *
  * @example
  * defer(() => resize());
+ *
  * @example
  * await defer();
+ *
+ * @param {function} [complete] - Callback function.
+ * @returns {Promise}
  */
 export function defer(complete) {
     const promise = new Promise(resolve => delayedCall(0, resolve));
@@ -160,17 +172,19 @@ export function defer(complete) {
 
 /**
  * Tween that animates to the given destination properties.
- * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
- * @param {object} object Target object.
- * @param {object} props Tween properties.
- * @param {number} duration Time in milliseconds.
- * @param {string|function} ease Ease string or function.
- * @param {number} [delay=0] Time to wait in milliseconds.
- * @param {function} [complete] Callback function when the animation has completed.
- * @param {function} [update] Callback function every time the animation updates.
- * @returns {Promise}
+ *
  * @example
  * tween(data, { value: 0.3 }, 1000, 'linear');
+ *
+ * @param {object} object - Target object.
+ * @param {object} props - Tween properties.
+ * @param {number} duration - Time in milliseconds.
+ * @param {string|function} ease - Ease string or function.
+ * @param {number} [delay=0] - Time to wait in milliseconds.
+ * @param {function} [complete] - Callback function when the animation has completed.
+ * @param {function} [update] - Callback function every time the animation updates.
+ * @returns {Promise}
+ * @see {@link https://easings.net/ | Easing Functions Cheat Sheet}
  */
 export function tween(object, props, duration, ease, delay = 0, complete, update) {
     if (typeof delay !== 'number') {
@@ -194,17 +208,21 @@ export function tween(object, props, duration, ease, delay = 0, complete, update
 
 /**
  * Immediately clears all delayedCalls and tweens of a given object.
- * @param {object} object Target object.
- * @returns {void}
+ *
  * @example
  * delayedCall(500, animateIn);
  * clearTween(animateIn);
+ *
  * @example
  * clearTween(timeout);
  * timeout = delayedCall(500, () => animateIn());
+ *
  * @example
  * tween(data, { value: 0.3 }, 1000, 'linear');
  * clearTween(data);
+ *
+ * @param {object} object - Target object.
+ * @returns {void}
  */
 export function clearTween(object) {
     if (object instanceof Tween) {
