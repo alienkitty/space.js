@@ -32,7 +32,7 @@ export class Thread extends EventEmitter {
             this.handlers = [];
         }
 
-        objects.forEach(object => this.handlers.push(object));
+        this.handlers.push(...objects);
     }
 
     static shared(params) {
