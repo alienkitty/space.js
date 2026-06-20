@@ -223,11 +223,11 @@ export class Interface {
             }
 
             if (~Numeric.indexOf(key)) {
-                style[key] = props[key];
-
                 if (props[key] === '') {
+                    delete style[key];
                     this.element.style.removeProperty(key);
                 } else {
+                    style[key] = props[key];
                     this.element.style[key] = props[key];
                 }
             } else {
