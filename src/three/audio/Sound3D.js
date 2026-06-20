@@ -57,7 +57,7 @@ export class Sound3D extends Group {
 
             this.stereoPan = new WebAudioParam(this, 'stereo', 'pan', 0);
 
-            this.input = this.output;
+            this.input = this.stereo;
         } else {
             this.worldPosition = new Vector3();
             this.worldQuaternion = new Quaternion();
