@@ -98,9 +98,7 @@ export class Sound3D extends Group {
             this.worldPosition.setFromMatrixPosition(this.matrixWorld);
 
             this.gain.value = MathUtils.clamp(MathUtils.mapLinear(this.cameraWorldPosition.distanceTo(this.worldPosition) + this.audioDistance, this.audioNearDistance, this.audioFarDistance, 1, 0), 0, 1);
-
             this.screenSpacePosition.copy(this.worldPosition).project(this.camera);
-
             this.stereoPan.value = MathUtils.clamp(this.screenSpacePosition.x, -1, 1);
         } else {
             this.matrixWorld.decompose(this.worldPosition, this.worldQuaternion, this.worldScale);
