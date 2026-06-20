@@ -115,5 +115,7 @@ export class Sound3D extends Group {
 
     destroy() {
         WebAudio.remove(this.sound.id);
+
+        return null;
     }
 }
