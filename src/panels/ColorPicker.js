@@ -14,7 +14,7 @@ import { Stage } from '../utils/Stage.js';
 
 import { PI, PI60, PI90, Third, TwoPI, brightness, clamp, radToDeg } from '../utils/Utils.js';
 
-var id = 0;
+let _id = 0;
 
 export class ColorPicker extends Interface {
     constructor({
@@ -104,7 +104,7 @@ export class ColorPicker extends Interface {
     }
 
     initColorRing() {
-        id++;
+        _id++;
 
         const size = 256;
 

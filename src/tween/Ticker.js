@@ -2,8 +2,8 @@
  * @author pschroen / https://ufo.ai/
  */
 
-var RequestFrame;
-var CancelFrame;
+let RequestFrame;
+let CancelFrame;
 
 if (typeof window !== 'undefined') {
     RequestFrame = window.requestAnimationFrame;
