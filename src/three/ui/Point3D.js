@@ -23,6 +23,9 @@ import { loadFiles } from '../../loaders/FileUtils.js';
 import { getMaterialName, getTextureName, isCubeTextures, sortCubeTextures } from '../loaders/TextureFileUtils.js';
 import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
 
+const _vector = new Vector2();
+const _matrix = new Matrix4();
+
 /**
  * A UI and panel container for various components in 3D space,
  * with object tracking.
@@ -721,9 +724,6 @@ export class Point3D extends Group {
         this.snappedRight = false;
         this.snapped = false;
 
-        this.v = new Vector2();
-        this.matrix = new Matrix4();
-
         this.initMesh();
         this.initContainer();
         this.initViews();
@@ -894,8 +894,8 @@ export class Point3D extends Group {
             if (this.isInstanced) {
                 const { position, quaternion, scale } = this.mesh;
 
-                this.object.getMatrixAt(Point3D.index, this.matrix);
-                this.matrix.decompose(position, quaternion, scale);
+                this.object.getMatrixAt(Point3D.index, _matrix);
+                _matrix.decompose(position, quaternion, scale);
             } else if (this.isPoints) {
                 const { position } = this.mesh;
 
@@ -1138,9 +1138,9 @@ export class Point3D extends Group {
                 const x = p0.x + radius * Math.cos(angle);
                 const y = p0.y + radius * Math.sin(angle);
 
-                this.v.set(x, y);
+                _vector.set(x, y);
 
-                this.line.setStartPoint(this.v);
+                this.line.setStartPoint(_vector);
                 this.line.setEndPoint(p1);
                 this.line.update();
             }
@@ -1208,8 +1208,8 @@ export class Point3D extends Group {
             if (this.isInstanced) {
                 const { position, quaternion, scale } = instance;
 
-                this.object.getMatrixAt(instance.index, this.matrix);
-                this.matrix.decompose(position, quaternion, scale);
+                this.object.getMatrixAt(instance.index, _matrix);
+                _matrix.decompose(position, quaternion, scale);
             } else if (this.isPoints) {
                 const { position, scale } = instance;
 
