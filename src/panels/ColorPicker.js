@@ -14,7 +14,7 @@ import { Stage } from '../utils/Stage.js';
 
 import { PI, PI60, PI90, Third, TwoPI, brightness, clamp, radToDeg } from '../utils/Utils.js';
 
-var id = 0;
+let _id = 0;
 
 export class ColorPicker extends Interface {
     constructor({
@@ -104,7 +104,7 @@ export class ColorPicker extends Interface {
     }
 
     initColorRing() {
-        id++;
+        _id++;
 
         const size = 256;
 
@@ -167,7 +167,7 @@ export class ColorPicker extends Interface {
                     { offset: '100%', stopColor: color, stopOpacity: 1 }
                 ];
 
-                gradient = this.createGradient('linearGradient', { id: `gradient${i}_${id}`, x1: array[0], y1: array[1], x2: array[4], y2: array[5] }, colors);
+                gradient = this.createGradient('linearGradient', { id: `gradient${i}_${_id}`, x1: array[0], y1: array[1], x2: array[4], y2: array[5] }, colors);
                 this.colorRing.defs.add(gradient);
 
                 const path = new Interface(null, 'svg', 'path');
@@ -175,7 +175,7 @@ export class ColorPicker extends Interface {
                     d: `M ${array[0]} ${array[1]} Q ${array[2]} ${array[3]} ${array[4]} ${array[5]}`
                 });
                 path.css({
-                    stroke: `url(#gradient${i}_${id})`,
+                    stroke: `url(#gradient${i}_${_id})`,
                     strokeWidth,
                     strokeLinecap: 'butt'
                 });
@@ -193,7 +193,7 @@ export class ColorPicker extends Interface {
             { offset: '100%', stopColor: '#7f7f7f', stopOpacity: 0 }
         ];
 
-        gradient = this.createGradient('linearGradient', { id: `saturation_${id}`, x1: middle - 49.05, y1: 0, x2: middle + 98, y2: 0 }, colors);
+        gradient = this.createGradient('linearGradient', { id: `saturation_${_id}`, x1: middle - 49.05, y1: 0, x2: middle + 98, y2: 0 }, colors);
         this.colorRing.defs.add(gradient);
 
         // Lightness
@@ -204,7 +204,7 @@ export class ColorPicker extends Interface {
             { offset: '100%', stopColor: '#000', stopOpacity: 1 }
         ];
 
-        gradient = this.createGradient('linearGradient', { id: `lightness_${id}`, x1: 0, y1: middle - 84.90, x2: 0, y2: middle + 84.90 }, colors);
+        gradient = this.createGradient('linearGradient', { id: `lightness_${_id}`, x1: 0, y1: middle - 84.90, x2: 0, y2: middle + 84.90 }, colors);
         this.colorRing.defs.add(gradient);
 
         this.colorRing.sl = new Interface(null, 'svg', 'g');
@@ -228,7 +228,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.saturation.css({
-            fill: `url(#saturation_${id})`
+            fill: `url(#saturation_${_id})`
         });
         this.colorRing.sl.add(this.colorRing.saturation);
 
@@ -237,7 +237,7 @@ export class ColorPicker extends Interface {
             points: '78.95 43.1 78.95 212.85 226 128'
         });
         this.colorRing.lightness.css({
-            fill: `url(#lightness_${id})`
+            fill: `url(#lightness_${_id})`
         });
         this.colorRing.sl.add(this.colorRing.lightness);
 

@@ -7,11 +7,12 @@ import { Cluster } from './Cluster.js';
 
 import { absolute, getConstructor } from './Utils.js';
 
-var id = 0;
-var concurrency;
+let _id = 0;
+
+let Concurrency;
 
 if (typeof window !== 'undefined') {
-    concurrency = navigator.hardwareConcurrency || 4;
+    Concurrency = navigator.hardwareConcurrency || 4;
 }
 
 /**
@@ -24,7 +25,7 @@ if (typeof window !== 'undefined') {
  * console.log(image);
  */
 export class Thread extends EventEmitter {
-    static count = Math.max(Math.min(concurrency, 8), 4);
+    static count = Math.max(Math.min(Concurrency, 8), 4);
     static params = {};
 
     static upload(...objects) {
@@ -128,11 +129,11 @@ export class Thread extends EventEmitter {
         message.fn = name;
 
         if (callback) {
-            id++;
+            _id++;
 
-            message.id = id;
+            message.id = _id;
 
-            this.on(id, callback);
+            this.on(_id, callback);
         }
 
         this.worker.postMessage({ message }, message.buffer);
