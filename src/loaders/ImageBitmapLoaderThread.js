@@ -6,24 +6,15 @@ import { Thread } from '../utils/Thread.js';
 
 import { absolute } from '../utils/Utils.js';
 
-/**
- * Creates a bitmap from a given source with a worker.
- *
- * @example
- * ImageBitmapLoaderThread.init();
- *
- * const bitmap = await ImageBitmapLoaderThread.load(path, options, params);
- * console.log(bitmap);
- */
 export class ImageBitmapLoaderThread {
     static init() {
         Thread.upload(loadImage);
 
-        function loadImage({ path, options, params, id }) {
-            fetch(path, options).then(response => {
+        function loadImage({ path, fetchOptions, options, id }) {
+            fetch(path, fetchOptions).then(response => {
                 return response.blob();
             }).then(blob => {
-                return createImageBitmap(blob, params);
+                return createImageBitmap(blob, options);
             }).then(bitmap => {
                 postMessage({ id, message: bitmap }, [bitmap]);
             }).catch(error => {
@@ -36,9 +27,9 @@ export class ImageBitmapLoaderThread {
         }
     }
 
-    static load(path, options, params) {
+    static load(path, fetchOptions, options) {
         path = absolute(path);
 
-        return Thread.shared().loadImage({ path, options, params });
+        return Thread.shared().loadImage({ path, fetchOptions, options });
     }
 }

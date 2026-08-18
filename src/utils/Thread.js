@@ -15,15 +15,6 @@ if (typeof window !== 'undefined') {
     Concurrency = navigator.hardwareConcurrency || 4;
 }
 
-/**
- * Creates a shared worker cluster or individual worker with the given methods.
- *
- * @example
- * Thread.upload(loadImage);
- *
- * const image = await Thread.shared().loadImage({ path, options, params });
- * console.log(image);
- */
 export class Thread extends EventEmitter {
     static count = Math.max(Math.min(Concurrency, 8), 4);
     static params = {};

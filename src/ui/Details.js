@@ -82,39 +82,6 @@ export class Details extends Interface {
         }
     }
 
-    addListeners() {
-        if (this.bg) {
-            this.bg.element.addEventListener('click', this.onClick);
-        }
-    }
-
-    removeListeners() {
-        if (this.bg) {
-            this.bg.element.removeEventListener('click', this.onClick);
-        }
-    }
-
-    // Event handlers
-
-    onClick = e => {
-        this.events.emit('click', e, { target: this });
-    };
-
-    // Public methods
-
-    setData(data) {
-        if (!data) {
-            return;
-        }
-
-        this.data = data;
-        this.content = [];
-        this.links = [];
-
-        this.container.empty();
-        this.initViews();
-    }
-
     addContent(target, data) {
         if (typeof data === 'object') {
             if (data.group !== undefined) {
@@ -197,6 +164,39 @@ export class Details extends Interface {
             target.add(content);
             this.content.push(content);
         }
+    }
+
+    addListeners() {
+        if (this.bg) {
+            this.bg.element.addEventListener('click', this.onClick);
+        }
+    }
+
+    removeListeners() {
+        if (this.bg) {
+            this.bg.element.removeEventListener('click', this.onClick);
+        }
+    }
+
+    // Event handlers
+
+    onClick = e => {
+        this.events.emit('click', e, { target: this });
+    };
+
+    // Public methods
+
+    setData(data) {
+        if (!data) {
+            return;
+        }
+
+        this.data = data;
+        this.content = [];
+        this.links = [];
+
+        this.container.empty();
+        this.initViews();
     }
 
     resize(width, height, dpr, breakpoint) {

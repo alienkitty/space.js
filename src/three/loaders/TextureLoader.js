@@ -11,29 +11,6 @@ import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
 import { Loader } from '../../loaders/Loader.js';
 
-/**
- * Creates a texture from a given source with worker support.
- *
- * @example
- * const loader = new TextureLoader();
- * loader.setPath('/');
- * loader.setOptions({
- *     preserveData: true
- * });
- * loader.cache = true;
- *
- * const map = await loader.loadAsync('assets/textures/cubemap.jpg');
- * console.log(map);
- *
- * @example
- * const loader = new TextureLoader();
- * const loadTexture = path => loader.loadAsync(path);
- *
- * // ...
- * const map = await loadTexture('assets/images/alienkitty.svg');
- * map.minFilter = LinearFilter;
- * map.generateMipmaps = false;
- */
 export class TextureLoader extends Loader {
     constructor() {
         super();
@@ -68,19 +45,19 @@ export class TextureLoader extends Loader {
             if (cached) {
                 promise = Promise.resolve(cached);
             } else {
-                const params = {
+                const options = {
                     imageOrientation: this.options.imageOrientation,
                     premultiplyAlpha: this.options.premultiplyAlpha,
                     colorSpaceConversion: this.options.colorSpaceConversion
                 };
 
                 if (Thread.handlers) {
-                    promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, params);
+                    promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, options);
                 } else {
                     promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
                         return response.blob();
                     }).then(blob => {
-                        return createImageBitmap(blob, params);
+                        return createImageBitmap(blob, options);
                     });
                 }
             }

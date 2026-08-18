@@ -14,26 +14,6 @@ import { ticker } from '../tween/Ticker.js';
 import { clearTween, delayedCall, tween } from '../tween/Tween.js';
 import { clamp } from '../utils/Utils.js';
 
-/**
- * Graph.
- *
- * @example
- * const graph = new Graph({
- *     value: Array.from({ length: 10 }, () => Math.random()),
- *     precision: 2,
- *     lookupPrecision: 100
- * });
- * graph.animateIn();
- * document.body.appendChild(graph.element);
- *
- * function animate() {
- *     requestAnimationFrame(animate);
- *
- *     graph.update();
- * }
- *
- * requestAnimationFrame(animate);
- */
 export class Graph extends Interface {
     constructor({
         value,
@@ -288,6 +268,19 @@ export class Graph extends Interface {
         return (this.height - 5) / range;
     }
 
+    getMarkerName() {
+        const names = this.items.map(item => item.name);
+
+        let count = 1;
+        let name = `Marker ${count++}`;
+
+        while (names.includes(name)) {
+            name = `Marker ${count++}`;
+        }
+
+        return name;
+    }
+
     // Event handlers
 
     onHover = ({ type }) => {
@@ -394,19 +387,6 @@ export class Graph extends Interface {
     };
 
     // Public methods
-
-    getMarkerName() {
-        const names = this.items.map(item => item.name);
-
-        let count = 1;
-        let name = `Marker ${count++}`;
-
-        while (names.includes(name)) {
-            name = `Marker ${count++}`;
-        }
-
-        return name;
-    }
 
     setMarkers(markers, fast) {
         this.items.forEach(item => item.destroy());

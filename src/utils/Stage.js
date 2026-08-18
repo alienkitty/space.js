@@ -6,33 +6,8 @@ import { Interface } from './Interface.js';
 
 import { ticker } from '../tween/Ticker.js';
 
-/**
- * The root interface object.
- *
- * @example
- * Stage.init();
- *
- * @example
- * Stage.init(document.querySelector('#root'));
- * Stage.css({ opacity: 0 });
- * Stage.tween({ opacity: 1 }, 1000, 'linear', () => {
- *     Stage.css({ opacity: '' });
- * });
- */
 export const Stage = new Interface(null, null);
 
-/**
- * Sets the root interface element, root styles, and starts the ticker.
- *
- * @example
- * Stage.init();
- *
- * @example
- * Stage.init(document.querySelector('#root'));
- *
- * @param {HTMLElement} element - Target element.
- * @returns {void}
- */
 Stage.init = (element = document.body) => {
     Stage.element = element;
 

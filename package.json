@@ -10,6 +10,7 @@
     "./src/*": "./src/*"
   },
   "sideEffects": false,
+  "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/alienkitty/space.js"
