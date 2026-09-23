@@ -229,18 +229,6 @@ export class PanelMeter extends Interface {
         this.needsUpdate = true;
     }
 
-    setGhostValue(value) {
-        if (!isNaN(value)) {
-            this.ghost = value;
-        } else {
-            this.ghost = this.value;
-        }
-
-        this.needsUpdate = true;
-
-        this.update();
-    }
-
     setValue(value) {
         if (value === undefined) {
             return;
@@ -257,6 +245,18 @@ export class PanelMeter extends Interface {
 
             this.info.css({ right: x });
             this.info.text(this.format(this.value.toFixed(this.precision)));
+        }
+
+        this.needsUpdate = true;
+
+        this.update();
+    }
+
+    setGhostValue(value) {
+        if (!isNaN(value)) {
+            this.ghost = value;
+        } else {
+            this.ghost = this.value;
         }
 
         this.needsUpdate = true;

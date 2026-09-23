@@ -26,58 +26,6 @@ import { setPanelTexture } from '../panels/textures/TexturePanelUtils.js';
 const _vector = new Vector2();
 const _matrix = new Matrix4();
 
-/**
- * A UI and panel container for various components in 3D space,
- * with object tracking.
- *
- * @example
- * // ...
- * Point3D.init(renderer, scene, camera);
- *
- * const point = new Point3D(mesh);
- * scene.add(point);
- *
- * const materialPanel = new MaterialsPanel(mesh, point);
- * materialPanel.animateIn(true);
- *
- * point.setContent(materialPanel);
- *
- * @example
- * // ...
- * const point = new Point3D(mesh, {
- *     type: '',
- *     noTracker: true
- * });
- * scene.add(point);
- *
- * @example
- * // ...
- * const point = new Point3D(points, {
- *     name: '',
- *     type: '',
- *     noLine: true,
- *     noPoint: true
- * });
- * scene.add(point);
- * // ...
- * point.setData({ name: '127.0.0.1' });
- *
- * @example
- * // ...
- * const point = new Point3D(mesh, { graph });
- * point.setData({
- *     name: '127.0.0.1',
- *     type: 'localhost'
- * });
- * scene.add(point);
- *
- * @example
- * // ...
- * const item = new PanelItem({
- *     // ...
- * });
- * point.addPanel(item);
- */
 export class Point3D extends Group {
     static init(renderer, scene, camera, {
         root = document.body,
@@ -520,8 +468,8 @@ export class Point3D extends Group {
         this.points.forEach(ui => ui.setCamera(camera));
     }
 
-    static getPoint(mesh) {
-        return this.points.find(ui => ui.object === mesh);
+    static getPoint(object) {
+        return this.points.find(ui => ui.object === object);
     }
 
     static getSelected() {
@@ -872,9 +820,9 @@ export class Point3D extends Group {
 
         if (this.tracker && this.selected) {
             if (type === 'over') {
-                this.tracker.show();
+                this.tracker.activate();
             } else {
-                this.tracker.hide();
+                this.tracker.deactivate();
             }
 
             if (isPoint && this.isMultiple) {
@@ -1493,7 +1441,7 @@ export class Point3D extends Group {
 
     show() {
         if (this.tracker) {
-            this.tracker.show();
+            this.tracker.activate();
 
             if (this.isMultiple) {
                 Point3D.multiple.forEach(ui => {
@@ -1507,7 +1455,7 @@ export class Point3D extends Group {
 
     hide() {
         if (this.tracker) {
-            this.tracker.hide(true);
+            this.tracker.deactivate(true);
 
             if (this.isMultiple) {
                 Point3D.multiple.forEach(ui => {

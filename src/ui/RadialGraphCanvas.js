@@ -306,6 +306,19 @@ export class RadialGraphCanvas extends Interface {
         return textOffset;
     }
 
+    getMarkerName() {
+        const names = this.items.map(item => item.name);
+
+        let count = 1;
+        let name = `Marker ${count++}`;
+
+        while (names.includes(name)) {
+            name = `Marker ${count++}`;
+        }
+
+        return name;
+    }
+
     // Event handlers
 
     onPointerDown = e => {
@@ -388,19 +401,6 @@ export class RadialGraphCanvas extends Interface {
     };
 
     // Public methods
-
-    getMarkerName() {
-        const names = this.items.map(item => item.name);
-
-        let count = 1;
-        let name = `Marker ${count++}`;
-
-        while (names.includes(name)) {
-            name = `Marker ${count++}`;
-        }
-
-        return name;
-    }
 
     setMarkers(markers, fast) {
         this.items.forEach(item => item.destroy());

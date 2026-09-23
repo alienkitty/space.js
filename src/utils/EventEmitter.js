@@ -6,10 +6,6 @@
  * Based on https://github.com/brunosimon/folio-2019/blob/master/src/javascript/Utils/EventEmitter.js
  */
 
-/**
- * A simple implementation of EventTarget with Map() based types,
- * and event parameter spread.
- */
 export class EventEmitter {
     constructor() {
         this.map = new Map();

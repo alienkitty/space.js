@@ -14,28 +14,6 @@ import { Toggle } from './Toggle.js';
 import { Content } from './Content.js';
 import { ColorPicker } from './ColorPicker.js';
 
-/**
- * A panel item for various components.
- *
- * @example
- * // ...
- * const item = new PanelItem({
- *     name: 'FPS'
- *     // type: 'spacer'
- *     // type: 'divider'
- *     // type: 'info'
- *     // type: 'link'
- *     // type: 'thumbnail'
- *     // type: 'graph'
- *     // type: 'meter'
- *     // type: 'list'
- *     // type: 'slider'
- *     // type: 'toggle'
- *     // type: 'content'
- *     // type: 'color'
- * });
- * ui.addPanel(item);
- */
 export class PanelItem extends Interface {
     constructor(data) {
         super('.panel-item');

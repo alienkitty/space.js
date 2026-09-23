@@ -4,25 +4,6 @@
 
 import { Loader } from './Loader.js';
 
-/**
- * Creates an array buffer from a given source.
- *
- * @example
- * const loader = new BufferLoader();
- * const buffers = await loader.loadAllAsync(['assets/sounds/gong.mp3']);
- * console.log(buffers);
- *
- * @example
- * const loader = new BufferLoader();
- * await loader.loadAllAsync(['assets/sounds/gong.mp3']);
- * console.log(loader.files);
- *
- * @example
- * const loader = new BufferLoader();
- * loader.setPath('assets/sounds/');
- * await loader.loadAllAsync(['gong.mp3']);
- * console.log(loader.files);
- */
 export class BufferLoader extends Loader {
     constructor() {
         super();

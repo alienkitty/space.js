@@ -2,9 +2,6 @@
  * @author pschroen / https://ufo.ai/
  */
 
-/**
- * A linked list of objects.
- */
 export class LinkedList {
     constructor() {
         this.nodes = [];
