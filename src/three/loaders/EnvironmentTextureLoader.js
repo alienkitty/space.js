@@ -7,23 +7,6 @@ import { PMREMGenerator } from 'three';
 import { TextureLoader } from './TextureLoader.js';
 import { Loader } from '../../loaders/Loader.js';
 
-/**
- * Creates an environment diffuse texture from a given source with worker support.
- *
- * @example
- * // ...
- * const loader = new EnvironmentTextureLoader(renderer);
- * loader.load('assets/textures/env/jewelry_black_contrast.jpg', texture => {
- *     scene.environment = texture;
- *     scene.environmentIntensity = 1.2;
- * });
- *
- * @example
- * // ...
- * const loader = new EnvironmentTextureLoader(renderer);
- * scene.environment = await loader.loadAsync('assets/textures/env/jewelry_black_contrast.jpg');
- * scene.environmentIntensity = 1.2;
- */
 export class EnvironmentTextureLoader extends Loader {
     constructor(renderer, options = {}) {
         super();
@@ -60,15 +43,21 @@ export class EnvironmentTextureLoader extends Loader {
     }
 
     setPath(path) {
-        return this.textureLoader.setPath(path);
+        this.textureLoader.setPath(path);
+
+        return this;
     }
 
     setCrossOrigin(crossOrigin) {
-        return this.textureLoader.setCrossOrigin(crossOrigin);
+        this.textureLoader.setCrossOrigin(crossOrigin);
+
+        return this;
     }
 
     setFetchOptions(fetchOptions) {
-        return this.textureLoader.setFetchOptions(fetchOptions);
+        this.textureLoader.setFetchOptions(fetchOptions);
+
+        return this;
     }
 
     destroy() {

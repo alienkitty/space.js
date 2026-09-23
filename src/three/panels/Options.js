@@ -74,7 +74,7 @@ export const RefractionMappingOptions = new Map([
     ['Refract', EquirectangularRefractionMapping]
 ]);
 
-export const WrapOptions = new Map([
+export const WrappingOptions = new Map([
     ['Repeat', RepeatWrapping],
     ['Clamp', ClampToEdgeWrapping],
     ['Mirror', MirroredRepeatWrapping]

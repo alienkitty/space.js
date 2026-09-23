@@ -6,7 +6,7 @@ import { MathUtils, SRGBColorSpace, Texture } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { BackgroundMappingOptions, ColorSpaceOptions, WrapOptions } from '../Options.js';
+import { BackgroundMappingOptions, ColorSpaceOptions, WrappingOptions } from '../Options.js';
 
 import { TwoPI, getKeyByValue } from '../../../utils/Utils.js';
 
@@ -123,11 +123,11 @@ export class BackgroundMapPanel extends Panel {
                                                 {
                                                     type: 'list',
                                                     name: 'Wrap',
-                                                    list: WrapOptions,
-                                                    value: getKeyByValue(WrapOptions, scene.background.wrapS),
+                                                    list: WrappingOptions,
+                                                    value: getKeyByValue(WrappingOptions, scene.background.wrapS),
                                                     callback: value => {
                                                         if (this.initialized) {
-                                                            const wrapping = WrapOptions.get(value);
+                                                            const wrapping = WrappingOptions.get(value);
 
                                                             scene.background.wrapS = wrapping;
                                                             scene.background.wrapT = wrapping;

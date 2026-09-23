@@ -4,9 +4,6 @@
 
 import { Interface } from '../utils/Interface.js';
 
-/**
- * An info panel.
- */
 export class PanelInfo extends Interface {
     constructor({
         name,
