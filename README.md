@@ -295,7 +295,7 @@ npx servez
 ### ESLint
 
 ```sh
-npm i -D eslint eslint-plugin-html @eslint/js globals
+npm i -D eslint@~10.10.0 eslint-plugin-html @eslint/js globals
 npx eslint src
 npx eslint examples/about/src
 npx eslint examples/mars/src
