@@ -16,6 +16,7 @@ export * from './three/loaders/TextureFileUtils.js';
 // Math
 export { Color } from './math/Color.js';
 export { Vector2 } from './math/Vector2.js';
+export { ImprovedNoise } from './math/ImprovedNoise.js';
 
 // Path
 export { SVGPathProperties } from './path/SVGPathProperties.js';
