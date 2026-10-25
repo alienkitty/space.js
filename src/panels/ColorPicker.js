@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  *
  * Based on https://acko.net/blog/farbtastic-jquery-color-picker-plug-in/
  * Based on https://github.com/mattfarina/farbtastic

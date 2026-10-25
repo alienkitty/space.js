@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  *
  * Based on https://github.com/mrdoob/three.js/blob/dev/src/math/Color.js
  */

@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  */
 
 import { InstancedMeshPanel } from './objects/InstancedMeshPanel.js';
