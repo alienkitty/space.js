@@ -2,9 +2,6 @@
  * @author pschroen / https://alienkitty.com/
  */
 
-/**
- * A pool of objects created from a given constructor.
- */
 export class ObjectPool {
     constructor(typeConstructor, num = 10) {
         this.typeConstructor = typeConstructor;

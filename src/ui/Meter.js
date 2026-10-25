@@ -10,25 +10,6 @@ import { Stage } from '../utils/Stage.js';
 import { ticker } from '../tween/Ticker.js';
 import { clearTween, defer, tween } from '../tween/Tween.js';
 
-/**
- * Meter.
- *
- * @example
- * const meter = new Meter({
- *     value: Math.random(),
- *     precision: 2
- * });
- * meter.animateIn();
- * document.body.appendChild(meter.element);
- *
- * function animate() {
- *     requestAnimationFrame(animate);
- *
- *     meter.update();
- * }
- *
- * requestAnimationFrame(animate);
- */
 export class Meter extends Interface {
     constructor({
         value,
@@ -213,18 +194,6 @@ export class Meter extends Interface {
         this.needsUpdate = true;
     }
 
-    setGhostValue(value) {
-        if (!isNaN(value)) {
-            this.ghost = value;
-        } else {
-            this.ghost = this.value;
-        }
-
-        this.needsUpdate = true;
-
-        this.update();
-    }
-
     setValue(value) {
         if (value === undefined) {
             return;
@@ -244,6 +213,18 @@ export class Meter extends Interface {
             }
 
             this.info.text(this.format(this.value.toFixed(this.precision)));
+        }
+
+        this.needsUpdate = true;
+
+        this.update();
+    }
+
+    setGhostValue(value) {
+        if (!isNaN(value)) {
+            this.ghost = value;
+        } else {
+            this.ghost = this.value;
         }
 
         this.needsUpdate = true;

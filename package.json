@@ -4,10 +4,18 @@
   "description": "Minimal monospace UI library",
   "type": "module",
   "main": "./src/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
-    ".": "./src/index.js",
-    "./three": "./src/three.js",
-    "./src/*": "./src/*"
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    },
+    "./three": {
+      "import": "./src/three.js",
+      "types": "./types/three.d.ts"
+    },
+    "./src/*": "./src/*",
+    "./types/*": "./types/*"
   },
   "sideEffects": false,
   "repository": {

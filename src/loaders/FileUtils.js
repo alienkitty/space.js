@@ -35,5 +35,5 @@ export async function loadFiles(files) {
         filenames.push(file.name);
     }
 
-    return (await Promise.all(array)).map((image, i) => ({ image, filename: filenames[i] }));
+    return (await Promise.all(array)).map((asset, i) => ({ asset, filename: filenames[i] }));
 }

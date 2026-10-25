@@ -304,6 +304,13 @@ npx eslint examples/three/*.html
 npx eslint examples/*.html
 ```
 
+### Types
+
+```sh
+npm i three alienkitty/alien.js#dev --allow-git=all
+npm i -D @types/three
+```
+
 ### Resources
 
 * [The Wiki](https://github.com/alienkitty/space.js/wiki)

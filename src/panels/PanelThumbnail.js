@@ -123,12 +123,12 @@ export class PanelThumbnail extends Interface {
         const data = await loadFiles(files);
 
         if (data.length) {
-            const { image, filename } = data[0];
+            const { asset, filename } = data[0];
 
-            if (image instanceof Image) {
+            if (asset instanceof Image) {
                 this.data.name = filename;
 
-                this.setValue(image);
+                this.setValue(asset);
             }
 
             Stage.events.emit('images_drop', { data, target: this });

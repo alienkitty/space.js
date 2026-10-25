@@ -113,10 +113,10 @@ export class Thumbnail extends Interface {
         const data = await loadFiles(files);
 
         if (data.length) {
-            const { image } = data[0];
+            const { asset } = data[0];
 
-            if (image instanceof Image) {
-                this.setThumbnail(image, true);
+            if (asset instanceof Image) {
+                this.setThumbnail(asset, true);
             }
         }
     }

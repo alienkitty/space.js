@@ -12,36 +12,6 @@ import { Thread } from '../../utils/Thread.js';
 import { ImageBitmapLoaderThread } from '../../loaders/ImageBitmapLoaderThread.js';
 import { Loader } from '../../loaders/Loader.js';
 
-/**
- * Creates a texture from a given source with worker support.
- *
- * @example
- * const loader = new CubeTextureLoader();
- * loader.setPath('/');
- * loader.setOptions({
- *     preserveData: true
- * });
- * loader.cache = true;
- *
- * const cubeTexture = await loader.loadAsync([
- *     'px.jpg', 'nx.jpg',
- *     'py.jpg', 'ny.jpg',
- *     'pz.jpg', 'nz.jpg'
- * ]);
- * console.log(cubeTexture);
- *
- * @example
- * const loader = new CubeTextureLoader();
- * const loadCubeTexture = paths => loader.loadAsync(paths);
- *
- * // ...
- * const cubeTexture = await loadCubeTexture([
- *     'px.jpg', 'nx.jpg',
- *     'py.jpg', 'ny.jpg',
- *     'pz.jpg', 'nz.jpg'
- * ]);
- * console.log(cubeTexture);
- */
 export class CubeTextureLoader extends Loader {
     constructor() {
         super();
@@ -69,19 +39,19 @@ export class CubeTextureLoader extends Loader {
             if (cached) {
                 promise = Promise.resolve(cached);
             } else {
-                const params = {
+                const options = {
                     imageOrientation: this.options.imageOrientation,
                     premultiplyAlpha: this.options.premultiplyAlpha,
                     colorSpaceConversion: this.options.colorSpaceConversion
                 };
 
                 if (Thread.handlers) {
-                    promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, params);
+                    promise = ImageBitmapLoaderThread.load(this.getPath(path), this.fetchOptions, options);
                 } else {
                     promise = fetch(this.getPath(path), this.fetchOptions).then(response => {
                         return response.blob();
                     }).then(blob => {
-                        return createImageBitmap(blob, params);
+                        return createImageBitmap(blob, options);
                     });
                 }
             }

@@ -9,7 +9,6 @@ import { ReticleInfo } from './ReticleInfo.js';
 
 import { clearTween, delayedCall } from '../tween/Tween.js';
 
-// TODO: JSDoc descriptions and examples
 export class Tracker extends Interface {
     constructor({
         noCorners = false
@@ -146,7 +145,7 @@ export class Tracker extends Interface {
         this.locked = false;
     }
 
-    show() {
+    activate() {
         clearTween(this.timeout);
 
         if (this.corners) {
@@ -156,7 +155,7 @@ export class Tracker extends Interface {
         this.animatedIn = true;
     }
 
-    hide(fast) {
+    deactivate(fast) {
         if (this.locked) {
             return;
         }
