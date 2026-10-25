@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  */
 
 import { Group, Matrix4, Mesh, MeshBasicMaterial, Raycaster, SphereGeometry, TextureLoader, Vector2 } from 'three';

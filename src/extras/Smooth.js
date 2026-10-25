@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  *
  * Based on https://gist.github.com/jesperlandberg/dd2cb6c6d7c928601b7f0229db818171
  */

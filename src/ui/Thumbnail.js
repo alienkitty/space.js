@@ -1,5 +1,5 @@
 /**
- * @author pschroen / https://ufo.ai/
+ * @author pschroen / https://alienkitty.com/
  */
 
 import { Vector2 } from '../math/Vector2.js';
