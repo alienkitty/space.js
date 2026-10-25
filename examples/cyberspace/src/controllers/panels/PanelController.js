@@ -29,12 +29,39 @@ export class PanelController {
     static initPanel() {
         const { luminosityMaterial, bloomCompositeMaterial, compositeMaterial } = RenderManager;
 
+        const { stars } = this.view;
+
         const items = [
             {
                 name: 'FPS'
             },
             {
                 type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'Aperture',
+                min: 0,
+                max: 1,
+                step: 0.01,
+                value: stars.material.uniforms.uCameraFar.value / this.camera.far,
+                callback: value => {
+                    stars.material.uniforms.uCameraFar.value = value * this.camera.far;
+                }
+            },
+            {
+                type: 'divider'
+            },
+            {
+                type: 'slider',
+                name: 'Blur',
+                min: 0,
+                max: 10,
+                step: 0.1,
+                value: compositeMaterial.uniforms.uBlurAmount.value,
+                callback: value => {
+                    compositeMaterial.uniforms.uBlurAmount.value = value;
+                }
             },
             {
                 type: 'slider',
@@ -45,17 +72,6 @@ export class PanelController {
                 value: compositeMaterial.uniforms.uBlurDist.value,
                 callback: value => {
                     compositeMaterial.uniforms.uBlurDist.value = value;
-                }
-            },
-            {
-                type: 'slider',
-                name: 'Strength',
-                min: 0,
-                max: 10,
-                step: 0.1,
-                value: compositeMaterial.uniforms.uBlurAmount.value,
-                callback: value => {
-                    compositeMaterial.uniforms.uBlurAmount.value = value;
                 }
             },
             {

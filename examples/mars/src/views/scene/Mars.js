@@ -2,8 +2,9 @@ import { Group, MathUtils, Mesh, MeshPhongMaterial, NoColorSpace, SRGBColorSpace
 import { getSphericalCube } from '@alienkitty/space.js/three';
 
 import { WorldController } from '../../controllers/world/WorldController.js';
+import { GridLines } from './GridLines.js';
 
-import { params } from '../../config/Config.js';
+import { is4k, params } from '../../config/Config.js';
 
 import hsv2rgbSmooth from '@alienkitty/alien.js/src/shaders/modules/hsv/hsv2rgbSmooth.glsl.js';
 import rgb2hsv from '@alienkitty/alien.js/src/shaders/modules/hsv/rgb2hsv.glsl.js';
@@ -31,20 +32,20 @@ export class Mars extends Group {
 
         const material = this.createCubeFaceMaterial({
             mapFaces: await Promise.all([
-                loadTexture('cube/mars/mars_basecolor_px.jpg'),
-                loadTexture('cube/mars/mars_basecolor_nx.jpg'),
-                loadTexture('cube/mars/mars_basecolor_py.jpg'),
-                loadTexture('cube/mars/mars_basecolor_ny.jpg'),
-                loadTexture('cube/mars/mars_basecolor_pz.jpg'),
-                loadTexture('cube/mars/mars_basecolor_nz.jpg')
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_px.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_nx.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_py.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_ny.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_pz.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_basecolor_nz.jpg`)
             ]),
             normalFaces: await Promise.all([
-                loadTexture('cube/mars/mars_normal_px.jpg'),
-                loadTexture('cube/mars/mars_normal_nx.jpg'),
-                loadTexture('cube/mars/mars_normal_py.jpg'),
-                loadTexture('cube/mars/mars_normal_ny.jpg'),
-                loadTexture('cube/mars/mars_normal_pz.jpg'),
-                loadTexture('cube/mars/mars_normal_nz.jpg')
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_px.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_nx.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_py.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_ny.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_pz.jpg`),
+                loadTexture(`cube/mars/${is4k ? '4k/' : ''}mars_normal_nz.jpg`)
             ])
         });
 
@@ -58,7 +59,12 @@ export class Mars extends Group {
         this.add(southPolarCamera);
         this.add(point3Camera);
 
+        // Add grid lines to the mesh (rotates with planet)
+        const gridLines = new GridLines(0.601, 128);
+        mesh.add(gridLines);
+
         this.mesh = mesh;
+        this.gridLines = gridLines;
     }
 
     createCubeFaceMaterial({ mapFaces, normalFaces }) {

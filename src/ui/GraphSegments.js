@@ -17,6 +17,7 @@ import { clamp, mapLinear } from '../utils/Utils.js';
 
 /**
  * Graph with segments.
+ *
  * @example
  * const graph = new GraphSegments({
  *     value: Array.from({ length: 10 }, () => Math.random()),
@@ -669,8 +670,8 @@ export class GraphSegments extends Interface {
         this.context.stroke();
 
         // Draw segment lines
-        let start = 0;
-        let width = 0;
+        let start;
+        let width;
         let end = 0;
 
         for (let i = 0, l = this.array.length, il = this.segments.length; i < il; i++) {

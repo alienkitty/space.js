@@ -2,8 +2,8 @@
  * @author pschroen / https://ufo.ai/
  */
 
-var RequestFrame;
-var CancelFrame;
+let RequestFrame;
+let CancelFrame;
 
 if (typeof window !== 'undefined') {
     RequestFrame = window.requestAnimationFrame;
@@ -23,6 +23,7 @@ if (typeof window !== 'undefined') {
 
 /**
  * A minimal requestAnimationFrame render loop with worker support.
+ *
  * @example
  * ticker.add(onUpdate);
  * ticker.start();

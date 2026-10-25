@@ -19,6 +19,7 @@ import { ticker } from '../tween/Ticker.js';
 
 /**
  * A HUD (heads-up display) container for various components.
+ *
  * @example
  * const ui = new UI({
  *     fps: true
@@ -327,12 +328,22 @@ export class UI extends Interface {
         return this.header.info.panel.getPanelValue(name);
     }
 
-    setPanelIndex(name, index, path) {
-        this.header.info.panel.setPanelIndex(name, index, path);
+    setPanelIndex(name, index, notify = true, path = []) {
+        if (typeof notify !== 'boolean') {
+            path = notify;
+            notify = true;
+        }
+
+        this.header.info.panel.setPanelIndex(name, index, notify, path);
     }
 
-    setPanelValue(name, value, path) {
-        this.header.info.panel.setPanelValue(name, value, path);
+    setPanelValue(name, value, notify = true, path = []) {
+        if (typeof notify !== 'boolean') {
+            path = notify;
+            notify = true;
+        }
+
+        this.header.info.panel.setPanelValue(name, value, notify, path);
     }
 
     invert(isInverted) {

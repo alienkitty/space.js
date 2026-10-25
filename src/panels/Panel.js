@@ -9,12 +9,14 @@ import { ticker } from '../tween/Ticker.js';
 
 /**
  * A panel container for various components.
+ *
  * @example
  * const panel = new Panel();
  * const item = new PanelItem({
  *     // name: 'FPS'
  *     // type: 'spacer'
  *     // type: 'divider'
+ *     // type: 'info'
  *     // type: 'link'
  *     // type: 'thumbnail'
  *     // type: 'graph'
@@ -177,7 +179,12 @@ export class Panel extends Interface {
         return value;
     }
 
-    setPanelIndex(name, index, path = []) {
+    setPanelIndex(name, index, notify = true, path = []) {
+        if (typeof notify !== 'boolean') {
+            path = notify;
+            notify = true;
+        }
+
         for (let i = 0, l = this.items.length; i < l; i++) {
             const { view } = this.items[i];
 
@@ -189,21 +196,26 @@ export class Panel extends Interface {
                 const [pathName, pathIndex] = path[0];
 
                 if (view.name === pathName) {
-                    view.setIndex(pathIndex);
+                    view.setIndex(pathIndex, notify);
                     path.shift();
                 }
             } else if (view.name === name && view.setIndex) {
-                view.setIndex(index);
+                view.setIndex(index, notify);
                 break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelIndex) {
-                view.group.children[0].setPanelIndex(name, index, path);
+                view.group.children[0].setPanelIndex(name, index, notify, path);
             }
         }
     }
 
-    setPanelValue(name, value, path = []) {
+    setPanelValue(name, value, notify = true, path = []) {
+        if (typeof notify !== 'boolean') {
+            path = notify;
+            notify = true;
+        }
+
         for (let i = 0, l = this.items.length; i < l; i++) {
             const { view } = this.items[i];
 
@@ -215,16 +227,16 @@ export class Panel extends Interface {
                 const [pathName, pathIndex] = path[0];
 
                 if (view.name === pathName) {
-                    view.setIndex(pathIndex);
+                    view.setIndex(pathIndex, notify);
                     path.shift();
                 }
             } else if (view.name === name && view.setValue) {
-                view.setValue(value);
+                view.setValue(value, notify);
                 break;
             }
 
             if (view.group && view.group.children[0] && view.group.children[0].setPanelValue) {
-                view.group.children[0].setPanelValue(name, value, path);
+                view.group.children[0].setPanelValue(name, value, notify, path);
             }
         }
     }

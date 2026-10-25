@@ -19,9 +19,6 @@ export class App {
         this.isTransitioning = false;
         this.animatedIn = false;
 
-        const searchParams = new URL(location.href).searchParams;
-        store.viewIndex = searchParams.has('view') ? Number(searchParams.get('view')) - 1 : 0;
-
         this.initThread();
         this.initWorld();
 
@@ -36,12 +33,13 @@ export class App {
         this.initViews();
         this.initControllers();
 
+        store.loading = 'Events';
         this.addListeners();
-        this.onResize();
 
         store.loading = 'Textures';
         await SceneController.ready();
         await WorldController.ready();
+
         store.loading = 'Shaders';
         await SceneController.precompile();
         await wait(250);
@@ -49,8 +47,11 @@ export class App {
         store.loading = 'Audio';
         this.initAudio();
         this.initPanel();
+
         store.loading = 'View';
         this.setView(store.viewIndex);
+        this.onResize();
+
         store.loading = 'Nominal';
     }
 
@@ -180,7 +181,8 @@ Distance from Sun: 230 million km
             point2CameraControls,
             point3CameraControls,
             camera,
-            controls
+            controls,
+            this.ui
         );
 
         SceneController.init(renderer, scene, camera, this.view);
@@ -202,7 +204,6 @@ Distance from Sun: 230 million km
 
     static addListeners() {
         Stage.events.on('details', this.onDetails);
-        window.addEventListener('popstate', this.onPopState);
         window.addEventListener('keyup', this.onKeyUp);
         window.addEventListener('resize', this.onResize);
         ticker.add(this.onUpdate);
@@ -278,7 +279,6 @@ Distance from Sun: 230 million km
         SceneController.update();
         RenderManager.update(time, delta, frame);
         this.ui.update();
-        // console.log('FPS', this.ui.header.info.fps);
     };
 
     static onHover = e => {
@@ -324,6 +324,8 @@ Distance from Sun: 230 million km
     };
 
     static setView = index => {
+        store.viewIndex = index;
+
         let camera;
         let controls;
 
@@ -374,9 +376,17 @@ Distance from Sun: 230 million km
         WorldController.setCamera(camera, controls);
         CameraController.setCamera(camera, controls);
         RenderManager.setCamera(camera);
-        this.ui.detailsButton.setData({ number: index + 1 }, true);
 
-        store.viewIndex = index;
+        this.ui.setPanelValue('X', camera.position.x, false);
+        this.ui.setPanelValue('Y', camera.position.y, false);
+        this.ui.setPanelValue('Z', camera.position.z, false);
+
+        // User defined caption
+        if (store.userIndex === store.viewIndex && store.userCaption) {
+            this.ui.header.title.setData({ caption: store.userCaption });
+        }
+
+        this.ui.detailsButton.setData({ number: index + 1 }, true);
     };
 
     static setDetails = data => {

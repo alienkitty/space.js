@@ -602,6 +602,13 @@ export class PanelGraph extends Interface {
         }
 
         this.animatedIn = true;
+        this.needsUpdate = true;
+
+        if (!this.noHover && this.lookupPrecision) {
+            this.graphNeedsUpdate = true;
+        }
+
+        this.update();
     }
 
     disable() {

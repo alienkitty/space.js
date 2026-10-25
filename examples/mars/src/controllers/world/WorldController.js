@@ -41,21 +41,18 @@ export class WorldController {
         this.obliqueCamera.near = 0.1;
         this.obliqueCamera.far = 20000;
         this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
-        this.obliqueCamera.lookAt(this.scene.position);
 
         // North polar camera
         this.northPolarCamera = new PerspectiveCamera(30);
         this.northPolarCamera.near = 0.1;
         this.northPolarCamera.far = 20000;
         this.northPolarCamera.position.set(0, 2.5, 0);
-        this.northPolarCamera.lookAt(this.scene.position);
 
         // South polar camera
         this.southPolarCamera = new PerspectiveCamera(30);
         this.southPolarCamera.near = 0.1;
         this.southPolarCamera.far = 20000;
         this.southPolarCamera.position.set(0, -2.5, 0);
-        this.southPolarCamera.lookAt(this.scene.position);
 
         // Point of interest #1 camera
         this.point1Camera = new PerspectiveCamera(30);
@@ -87,6 +84,7 @@ export class WorldController {
         this.resolution = { value: new Vector2() };
         this.texelSize = { value: new Vector2() };
         this.aspect = { value: 1 };
+        this.dpr = { value: 1 };
         this.time = { value: 0 };
         this.frame = { value: 0 };
 
@@ -198,6 +196,7 @@ export class WorldController {
         this.resolution.value.set(width, height);
         this.texelSize.value.set(1 / width, 1 / height);
         this.aspect.value = width / height;
+        this.dpr.value = dpr;
     };
 
     static update = (time, delta, frame) => {

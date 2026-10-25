@@ -4,7 +4,7 @@ import { clearTween, tween } from '@alienkitty/space.js/three';
 import { WorldController } from './WorldController.js';
 import { RenderManager } from './RenderManager.js';
 
-import { isDebug } from '../../config/Config.js';
+import { isDebug, store } from '../../config/Config.js';
 
 export class CameraController {
     static init(
@@ -22,7 +22,8 @@ export class CameraController {
         point2CameraControls,
         point3CameraControls,
         camera,
-        controls
+        controls,
+        ui
     ) {
         this.scene = scene;
         this.obliqueCamera = obliqueCamera;
@@ -39,6 +40,7 @@ export class CameraController {
         this.point3CameraControls = point3CameraControls;
         this.camera = camera;
         this.controls = controls;
+        this.ui = ui;
 
         this.width = 0;
         this.height = 0;
@@ -47,6 +49,10 @@ export class CameraController {
         this.detailsOffsetX = 0;
         this.progress = 0;
         this.isDetailsOpen = false;
+
+        this.isDown = false;
+
+        this.addListeners();
     }
 
     static transition(fast) {
@@ -70,6 +76,56 @@ export class CameraController {
             });
         }
     }
+
+    static addListeners() {
+        // Oblique camera
+        this.obliqueCameraControls.addEventListener('change', this.onChange);
+        this.obliqueCameraControls.addEventListener('start', this.onInteraction);
+        this.obliqueCameraControls.addEventListener('end', this.onInteraction);
+
+        // North polar camera
+        this.northPolarCameraControls.addEventListener('change', this.onChange);
+        this.northPolarCameraControls.addEventListener('start', this.onInteraction);
+        this.northPolarCameraControls.addEventListener('end', this.onInteraction);
+
+        // South polar camera
+        this.southPolarCameraControls.addEventListener('change', this.onChange);
+        this.southPolarCameraControls.addEventListener('start', this.onInteraction);
+        this.southPolarCameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #1 camera
+        this.point1CameraControls.addEventListener('change', this.onChange);
+        this.point1CameraControls.addEventListener('start', this.onInteraction);
+        this.point1CameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #2 camera
+        this.point2CameraControls.addEventListener('change', this.onChange);
+        this.point2CameraControls.addEventListener('start', this.onInteraction);
+        this.point2CameraControls.addEventListener('end', this.onInteraction);
+
+        // Point of interest #3 camera
+        this.point3CameraControls.addEventListener('change', this.onChange);
+        this.point3CameraControls.addEventListener('start', this.onInteraction);
+        this.point3CameraControls.addEventListener('end', this.onInteraction);
+    }
+
+    // Event handlers
+
+    static onChange = () => {
+        if (this.isDown) {
+            this.ui.setPanelValue('X', this.camera.position.x);
+            this.ui.setPanelValue('Y', this.camera.position.y);
+            this.ui.setPanelValue('Z', this.camera.position.z);
+        }
+    };
+
+    static onInteraction = ({ type }) => {
+        if (type === 'start') {
+            this.isDown = true;
+        } else {
+            this.isDown = false;
+        }
+    };
 
     // Public methods
 
@@ -136,6 +192,17 @@ export class CameraController {
             this.height
         );
         this.camera.updateProjectionMatrix();
+
+        // User defined position
+        if (store.userIndex === store.viewIndex && store.userPosition) {
+            this.setCameraPosition(store.userPosition);
+        }
+    };
+
+    static setCameraPosition = array => {
+        this.controls.reset();
+        this.camera.position.set(...array);
+        this.camera.lookAt(this.scene.position);
     };
 
     static setDetails = (open, fast) => {
@@ -158,14 +225,11 @@ export class CameraController {
         if (width < height) {
             offsetX = 0;
             offsetY = 50;
-            // this.obliqueCamera.position.set(0, 0, 4.5);
             this.obliqueCamera.position.set(-2.2, 0.9, 3.8);
         } else {
             offsetX = 0;
             offsetY = 0;
-            // this.obliqueCamera.position.set(0, 0, 2.5);
             this.obliqueCamera.position.set(-1.3, 0.7, 2.015);
-            // this.obliqueCamera.position.set(-1.3, 0.7, 11);
         }
 
         this.obliqueCamera.setViewOffset(
@@ -296,11 +360,15 @@ export class CameraController {
             height
         );
         this.point3Camera.updateProjectionMatrix();
+
+        // User defined position
+        if (store.userIndex === store.viewIndex && store.userPosition) {
+            this.setCameraPosition(store.userPosition);
+        }
     };
 
     static update = () => {
         this.obliqueCameraControls.update();
-        // console.log('update', this.obliqueCameraControls.position);
     };
 
     static start = () => {
@@ -309,7 +377,7 @@ export class CameraController {
         }
 
         this.scene.backgroundIntensity = 10;
-        this.camera.scale.z = -1;
+        this.camera.zoom = 0;
         RenderManager.vlMaterial.uniforms.uTransition.value = true;
         RenderManager.vlMaterial.uniforms.uPower.value = 0.8;
         RenderManager.vlMaterial.uniforms.uAmount.value = 0.4;
@@ -324,15 +392,17 @@ export class CameraController {
             return;
         }
 
-        tween(this.camera.scale, { z: 1 }, 7000, 'easeInOutCubic', () => {
+        tween(this.camera, { zoom: 1 }, 7000, 'easeInOutCubic', () => {
             RenderManager.animatedIn = true;
             RenderManager.vlMaterial.uniforms.uTransition.value = false;
             RenderManager.vlMaterial.uniforms.uPower.value = RenderManager.glowPower;
             RenderManager.vlMaterial.uniforms.uAmount.value = RenderManager.glowAmount;
         }, () => {
-            const multiplier = 1 - this.camera.scale.z;
+            const multiplier = 1 - this.camera.zoom;
 
             this.scene.backgroundIntensity = Math.max(WorldController.backgroundIntensity, 10 * multiplier);
+
+            this.camera.updateProjectionMatrix();
         });
 
         this.progress = 0;

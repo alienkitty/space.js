@@ -9,6 +9,7 @@ import { WebAudioParam } from '../../audio/WebAudioParam.js';
 
 /**
  * A fast 3D audio object based on camera position.
+ *
  * @example
  * const loader = new BufferLoader();
  * await loader.loadAllAsync(['assets/sounds/metal_monk_loop.mp3']);
@@ -56,7 +57,7 @@ export class Sound3D extends Group {
 
             this.stereoPan = new WebAudioParam(this, 'stereo', 'pan', 0);
 
-            this.input = this.output;
+            this.input = this.stereo;
         } else {
             this.worldPosition = new Vector3();
             this.worldQuaternion = new Quaternion();
@@ -97,9 +98,7 @@ export class Sound3D extends Group {
             this.worldPosition.setFromMatrixPosition(this.matrixWorld);
 
             this.gain.value = MathUtils.clamp(MathUtils.mapLinear(this.cameraWorldPosition.distanceTo(this.worldPosition) + this.audioDistance, this.audioNearDistance, this.audioFarDistance, 1, 0), 0, 1);
-
             this.screenSpacePosition.copy(this.worldPosition).project(this.camera);
-
             this.stereoPan.value = MathUtils.clamp(this.screenSpacePosition.x, -1, 1);
         } else {
             this.matrixWorld.decompose(this.worldPosition, this.worldQuaternion, this.worldScale);
@@ -116,5 +115,7 @@ export class Sound3D extends Group {
 
     destroy() {
         WebAudio.remove(this.sound.id);
+
+        return null;
     }
 }

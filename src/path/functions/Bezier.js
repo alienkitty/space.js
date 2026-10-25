@@ -39,6 +39,16 @@ export class Bezier {
         );
     }
 
+    normalizeTangent(derivative) {
+        const mdl = Math.sqrt(derivative.x * derivative.x + derivative.y * derivative.y);
+
+        if (mdl > 0) {
+            return { x: derivative.x / mdl, y: derivative.y / mdl };
+        }
+
+        return { x: 0, y: 0 };
+    }
+
     getTotalLength() {
         return this.length;
     }
@@ -57,14 +67,7 @@ export class Bezier {
         const t = t2length(length, this.length, i => this.getArcLength(xs, xy, i));
 
         const derivative = this.getDerivative(xs, xy, t);
-        const mdl = Math.sqrt(derivative.x * derivative.x + derivative.y * derivative.y);
-        let tangent;
-
-        if (mdl > 0) {
-            tangent = { x: derivative.x / mdl, y: derivative.y / mdl };
-        } else {
-            tangent = { x: 0, y: 0 };
-        }
+        const tangent = this.normalizeTangent(derivative);
 
         return tangent;
     }
@@ -75,15 +78,7 @@ export class Bezier {
         const t = t2length(length, this.length, i => this.getArcLength(xs, xy, i));
 
         const derivative = this.getDerivative(xs, xy, t);
-        const mdl = Math.sqrt(derivative.x * derivative.x + derivative.y * derivative.y);
-        let tangent;
-
-        if (mdl > 0) {
-            tangent = { x: derivative.x / mdl, y: derivative.y / mdl };
-        } else {
-            tangent = { x: 0, y: 0 };
-        }
-
+        const tangent = this.normalizeTangent(derivative);
         const point = this.getPoint(xs, xy, t);
 
         return { x: point.x, y: point.y, tangentX: tangent.x, tangentY: tangent.y };

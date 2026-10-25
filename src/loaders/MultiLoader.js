@@ -6,6 +6,7 @@ import { Loader } from './Loader.js';
 
 /**
  * A multi-loader.
+ *
  * @example
  * const assetLoader = new AssetLoader();
  * assetLoader.setPath('/');

@@ -10,6 +10,7 @@ import { Loader } from './Loader.js';
 
 /**
  * Creates a bitmap from a given source with worker support.
+ *
  * @example
  * const loader = new ImageBitmapLoader();
  * const bitmap = await loader.loadAsync(path, options, params);

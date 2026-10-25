@@ -1,5 +1,5 @@
 import { AdditiveBlending, MathUtils, Mesh, OrthographicCamera, Vector2, WebGLRenderTarget } from 'three';
-import { BloomCompositeMaterial, CopyMaterial, LuminosityMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
+import { BloomCompositeMaterial, LuminosityMaterial, UnrealBloomBlurMaterial } from '@alienkitty/alien.js/three';
 
 import { WorldController } from './WorldController.js';
 import { CompositeMaterial } from '../../materials/CompositeMaterial.js';
@@ -37,24 +37,22 @@ export class RenderManager {
         this.screen.frustumCulled = false;
 
         // Render targets
-        this.renderTargetA = new WebGLRenderTarget(1, 1, {
+        this.renderTarget = new WebGLRenderTarget(1, 1, {
             depthBuffer: false
         });
 
-        this.renderTargetB = this.renderTargetA.clone();
-
-        this.renderTargetBright = this.renderTargetA.clone();
+        this.renderTargetBright = this.renderTarget.clone();
 
         this.renderTargetsHorizontal = [];
         this.renderTargetsVertical = [];
         this.nMips = 5;
 
         for (let i = 0, l = this.nMips; i < l; i++) {
-            this.renderTargetsHorizontal.push(this.renderTargetA.clone());
-            this.renderTargetsVertical.push(this.renderTargetA.clone());
+            this.renderTargetsHorizontal.push(this.renderTarget.clone());
+            this.renderTargetsVertical.push(this.renderTarget.clone());
         }
 
-        this.renderTargetA.depthBuffer = true;
+        this.renderTarget.depthBuffer = true;
 
         // Luminosity high pass material
         this.luminosityMaterial = new LuminosityMaterial();
@@ -81,9 +79,6 @@ export class RenderManager {
 
         // Blend it additively
         this.bloomCompositeMaterial.blending = AdditiveBlending;
-
-        // Copy material
-        this.copyMaterial = new CopyMaterial();
 
         // Composite material
         this.compositeMaterial = new CompositeMaterial();
@@ -120,8 +115,7 @@ export class RenderManager {
         width = Math.round(width * dpr);
         height = Math.round(height * dpr);
 
-        this.renderTargetA.setSize(width, height);
-        this.renderTargetB.setSize(width, height);
+        this.renderTarget.setSize(width, height);
 
         // Unreal bloom
         width = Math.round(width / 2);
@@ -152,26 +146,18 @@ export class RenderManager {
             return;
         }
 
-        const renderTargetA = this.renderTargetA;
-        const renderTargetB = this.renderTargetB;
+        const renderTarget = this.renderTarget;
         const renderTargetBright = this.renderTargetBright;
         const renderTargetsHorizontal = this.renderTargetsHorizontal;
         const renderTargetsVertical = this.renderTargetsVertical;
 
         // Scene pass
-        renderer.setRenderTarget(renderTargetA);
+        renderer.setRenderTarget(renderTarget);
         renderer.clear();
         renderer.render(scene, camera);
 
-        // Copy pass
-        this.copyMaterial.uniforms.tMap.value = renderTargetA.texture;
-        this.screen.material = this.copyMaterial;
-        renderer.setRenderTarget(renderTargetB);
-        renderer.clear();
-        renderer.render(this.screen, this.screenCamera);
-
         // Extract bright areas
-        this.luminosityMaterial.uniforms.tMap.value = renderTargetB.texture;
+        this.luminosityMaterial.uniforms.tMap.value = renderTarget.texture;
         this.screen.material = this.luminosityMaterial;
         renderer.setRenderTarget(renderTargetBright);
         renderer.clear();
@@ -200,11 +186,11 @@ export class RenderManager {
 
         // Composite all the mips
         this.screen.material = this.bloomCompositeMaterial;
-        renderer.setRenderTarget(renderTargetB);
+        renderer.setRenderTarget(renderTarget);
         renderer.render(this.screen, this.screenCamera);
 
         // Composite pass (render to screen)
-        this.compositeMaterial.uniforms.tMap.value = renderTargetB.texture;
+        this.compositeMaterial.uniforms.tMap.value = renderTarget.texture;
         this.screen.material = this.compositeMaterial;
         renderer.setRenderTarget(null);
         renderer.clear();

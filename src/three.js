@@ -16,6 +16,7 @@ export * from './three/loaders/TextureFileUtils.js';
 // Math
 export { Color } from './math/Color.js';
 export { Vector2 } from './math/Vector2.js';
+export { ImprovedNoise } from './math/ImprovedNoise.js';
 
 // Path
 export { SVGPathProperties } from './path/SVGPathProperties.js';
@@ -49,6 +50,7 @@ export { Sound3D } from './three/audio/Sound3D.js';
 // Panels
 export { Panel } from './panels/Panel.js';
 export { PanelItem } from './panels/PanelItem.js';
+export { PanelInfo } from './panels/PanelInfo.js';
 export { PanelLink } from './panels/PanelLink.js';
 export { PanelThumbnail } from './panels/PanelThumbnail.js';
 export { PanelGraph } from './panels/PanelGraph.js';
