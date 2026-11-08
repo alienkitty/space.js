@@ -311,6 +311,13 @@ npm i three alienkitty/alien.js#dev --allow-git=all
 npm i -D @types/three
 ```
 
+### Example Projects
+
+```sh
+cd examples/about
+npm i --allow-git=all
+```
+
 ### Resources
 
 * [The Wiki](https://github.com/alienkitty/space.js/wiki)
