@@ -199,6 +199,11 @@
                                 });
 
                                 item.setContent(instancePanel);
+
+                                mesh.material.userData.onBeforeCompile.instanceOpacity = MaterialPatches.Phong.instanceOpacity;
+
+                                mesh.material.customProgramCacheKey = () => Object.keys(material.userData.onBeforeCompile).join('|');
+                                mesh.material.needsUpdate = true;
                             } else {
                                 const materialPanel = new Panel();
                                 materialPanel.animateIn(true);
