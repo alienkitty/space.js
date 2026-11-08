@@ -6,7 +6,7 @@ import { NoColorSpace, Texture, UVMapping } from 'three';
 
 import { Panel } from '../../../panels/Panel.js';
 import { PanelItem } from '../../../panels/PanelItem.js';
-import { ColorSpaceOptions, RefractionMappingOptions, WrapOptions } from '../Options.js';
+import { ColorSpaceOptions, RefractionMappingOptions, WrappingOptions } from '../Options.js';
 
 import { getKeyByValue } from '../../../utils/Utils.js';
 import { getBallThumbnail, getThumbnail } from './MapPanelUtils.js';
@@ -65,7 +65,7 @@ export class MapPanel extends Panel {
     }
 
     initThumbnailPanel(index, panel, parent) {
-        this.update(index);
+        this.updateThumbnail(index);
 
         const mesh = this.mesh;
         const ui = this.ui;
@@ -216,11 +216,11 @@ export class MapPanel extends Panel {
                                 {
                                     type: 'list',
                                     name: 'Wrap',
-                                    list: WrapOptions,
-                                    value: getKeyByValue(WrapOptions, material[key].wrapS),
+                                    list: WrappingOptions,
+                                    value: getKeyByValue(WrappingOptions, material[key].wrapS),
                                     callback: value => {
                                         if (this.initialized) {
-                                            const wrapping = WrapOptions.get(value);
+                                            const wrapping = WrappingOptions.get(value);
 
                                             material[key].wrapS = wrapping;
                                             material[key].wrapT = wrapping;
@@ -279,7 +279,7 @@ export class MapPanel extends Panel {
         });
     }
 
-    update(index) {
+    updateThumbnail(index) {
         this.materials = Array.isArray(this.mesh.material) ? this.mesh.material : [this.mesh.material];
         this.material = this.materials[index];
 

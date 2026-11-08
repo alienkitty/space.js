@@ -8,33 +8,6 @@ import { Sound } from './Sound.js';
 import { tween } from '../tween/Tween.js';
 import { basename } from '../utils/Utils.js';
 
-/**
- * Web Audio engine with stream support.
- *
- * @example
- * const loader = new BufferLoader();
- * await loader.loadAllAsync(['assets/sounds/gong.mp3']);
- * WebAudio.init({ sampleRate: 48000 });
- * WebAudio.load(loader.files);
- *
- * const gong = WebAudio.get('gong');
- * gong.gain.set(0.5);
- *
- * document.addEventListener('pointerdown', () => {
- *     gong.play();
- * });
- *
- * @example
- * WebAudio.init({ sampleRate: 48000 });
- * WebAudio.load({ cyberspace: 'https://icecast.cyberspace.app/dive.ogg' });
- *
- * const cyberspace = WebAudio.get('cyberspace');
- * cyberspace.gain.set(1);
- *
- * document.addEventListener('pointerdown', () => {
- *     cyberspace.play();
- * });
- */
 export class WebAudio {
     static path = '';
     static crossOrigin = 'anonymous';

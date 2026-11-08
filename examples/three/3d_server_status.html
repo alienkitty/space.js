@@ -1224,14 +1224,12 @@
                     if (this.latencyAvgData.smallCounter === 0) {
                         this.view.latencyAvgGraph.ghostArray.splice(0, 12, ...this.latencyAvgData.smallGhostArrayReversed);
                         this.view.latencyAvgGraph.array.splice(0, 12, ...this.latencyAvgData.smallArrayReversed);
-                        this.view.latencyAvgGraph.needsUpdate = true;
                         this.view.latencyAvgGraph.graphNeedsUpdate = true;
                     }
 
                     if (this.latencyAvgData.largeCounter === 0) {
                         this.view.latencyAvgGraph.ghostArray.splice(-90, 90, ...this.latencyAvgData.largeGhostArrayReversed);
                         this.view.latencyAvgGraph.array.splice(-90, 90, ...this.latencyAvgData.largeArrayReversed);
-                        this.view.latencyAvgGraph.needsUpdate = true;
                         this.view.latencyAvgGraph.graphNeedsUpdate = true;
                     }
                 }
@@ -1253,14 +1251,12 @@
 
                         this.view.loadAvgGraph.ghostArray.splice(0, 12, ...this.loadAvgData.smallGhostArrayReversed);
                         this.view.loadAvgGraph.array.splice(0, 12, ...this.loadAvgData.smallArrayReversed);
-                        this.view.loadAvgGraph.needsUpdate = true;
                         this.view.loadAvgGraph.graphNeedsUpdate = true;
                     }
 
                     if (this.loadAvgData.largeCounter === 0) {
                         this.view.loadAvgGraph.ghostArray.splice(-90, 90, ...this.loadAvgData.largeGhostArrayReversed);
                         this.view.loadAvgGraph.array.splice(-90, 90, ...this.loadAvgData.largeArrayReversed);
-                        this.view.loadAvgGraph.needsUpdate = true;
                         this.view.loadAvgGraph.graphNeedsUpdate = true;
                     }
 
@@ -1275,14 +1271,12 @@
                     if (this.clientsData.smallCounter === 0) {
                         this.view.clientsGraph.ghostArray.splice(0, 12, ...this.clientsData.smallGhostArrayReversed);
                         this.view.clientsGraph.array.splice(0, 12, ...this.clientsData.smallArrayReversed);
-                        this.view.clientsGraph.needsUpdate = true;
                         this.view.clientsGraph.graphNeedsUpdate = true;
                     }
 
                     if (this.clientsData.largeCounter === 0) {
                         this.view.clientsGraph.ghostArray.splice(-90, 90, ...this.clientsData.largeGhostArrayReversed);
                         this.view.clientsGraph.array.splice(-90, 90, ...this.clientsData.largeArrayReversed);
-                        this.view.clientsGraph.needsUpdate = true;
                         this.view.clientsGraph.graphNeedsUpdate = true;
                     }
                 }
@@ -1550,12 +1544,12 @@
                 CameraController.resize(width, height);
             };
 
-            static onUpdate = (time, delta, frame) => {
-                WorldController.update(time, delta, frame);
+            static onUpdate = (time) => {
+                WorldController.update();
                 CameraController.update();
                 SceneController.update(time);
                 PanelController.update(time);
-                ServerStatusController.update(time);
+                ServerStatusController.update();
             };
         }
 

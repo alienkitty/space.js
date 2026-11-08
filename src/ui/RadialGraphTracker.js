@@ -78,11 +78,11 @@ export class RadialGraphTracker extends Interface {
         this.locked = false;
     }
 
-    show() {
+    activate() {
         this.animatedIn = true;
     }
 
-    hide() {
+    deactivate() {
         if (this.locked) {
             return;
         }

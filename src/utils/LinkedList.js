@@ -2,9 +2,6 @@
  * @author pschroen / https://alienkitty.com/
  */
 
-/**
- * A linked list of objects.
- */
 export class LinkedList {
     constructor() {
         this.nodes = [];
